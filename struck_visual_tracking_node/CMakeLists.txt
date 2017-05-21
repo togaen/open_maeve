@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(struck_visual_tracking_node)
 
-## Add support for C++11, supported in ROS Kinetic and newer
-add_definitions(-std=c++11)
+## Include Maeve Automation cmake
+include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/CMakeLists.txt)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
