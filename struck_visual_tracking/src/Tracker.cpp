@@ -46,6 +46,8 @@
 
 #include <Eigen/Core>
 
+#include <assert.h>
+#include <cfloat>
 #include <vector>
 #include <algorithm>
 
