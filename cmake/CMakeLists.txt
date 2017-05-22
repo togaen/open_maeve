@@ -5,3 +5,5 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
 add_definitions(-std=c++11)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
