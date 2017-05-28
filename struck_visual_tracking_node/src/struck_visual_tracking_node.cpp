@@ -9,7 +9,6 @@
 
 #include "vot.hpp"
 
-using namespace std;
 using namespace cv;
 
 static const int kLiveBoxWidth = 80;
@@ -24,17 +23,17 @@ void rectangle(Mat& rMat, const FloatRect& rRect, const Scalar& rColour)
 int main(int argc, char* argv[])
 {
 	// read config file
-	string configPath = "config.txt";
+	std::string configPath = "config.txt";
 	if (argc > 1)
 	{
 		configPath = argv[1];
 	}
 	Config conf(configPath);
-	cout << conf << endl;
+	std::cout << conf << std::endl;
 	
 	if (conf.features.size() == 0)
 	{
-		cout << "error: no features specified in config" << endl;
+		std::cout << "error: no features specified in config" << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -81,13 +80,13 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 	
-	ofstream outFile;
+	std::ofstream outFile;
 	if (conf.resultsPath != "")
 	{
-		outFile.open(conf.resultsPath.c_str(), ios::out);
+		outFile.open(conf.resultsPath.c_str(), std::ios::out);
 		if (!outFile)
 		{
-			cout << "error: could not open results file: " << conf.resultsPath << endl;
+			std::cout << "error: could not open results file: " << conf.resultsPath << std::endl;
 			return EXIT_FAILURE;
 		}
 	}
@@ -100,7 +99,7 @@ int main(int argc, char* argv[])
 	int startFrame = -1;
 	int endFrame = -1;
 	FloatRect initBB;
-	string imgFormat;
+	std::string imgFormat;
 	float scaleW = 1.f;
 	float scaleH = 1.f;
 	
@@ -108,7 +107,7 @@ int main(int argc, char* argv[])
 	{
 		if (!cap.open(0))
 		{
-			cout << "error: could not start camera capture" << endl;
+			std::cout << "error: could not start camera capture" << std::endl;
 			return EXIT_FAILURE;
 		}
 		startFrame = 0;
@@ -119,24 +118,24 @@ int main(int argc, char* argv[])
 		scaleH = (float)conf.frameHeight/tmp.rows;
 
 		initBB = IntRect(conf.frameWidth/2-kLiveBoxWidth/2, conf.frameHeight/2-kLiveBoxHeight/2, kLiveBoxWidth, kLiveBoxHeight);
-		cout << "press 'i' to initialise tracker" << endl;
+		std::cout << "press 'i' to initialise tracker" << std::endl;
 	}
 	else
 	{
 		// parse frames file
-		string framesFilePath = conf.sequenceBasePath+"/"+conf.sequenceName+"/"+conf.sequenceName+"_frames.txt";
-		ifstream framesFile(framesFilePath.c_str(), ios::in);
+		std::string framesFilePath = conf.sequenceBasePath+"/"+conf.sequenceName+"/"+conf.sequenceName+"_frames.txt";
+		std::ifstream framesFile(framesFilePath.c_str(), std::ios::in);
 		if (!framesFile)
 		{
-			cout << "error: could not open sequence frames file: " << framesFilePath << endl;
+			std::cout << "error: could not open sequence frames file: " << framesFilePath << std::endl;
 			return EXIT_FAILURE;
 		}
-		string framesLine;
+		std::string framesLine;
 		getline(framesFile, framesLine);
 		sscanf(framesLine.c_str(), "%d,%d", &startFrame, &endFrame);
 		if (framesFile.fail() || startFrame == -1 || endFrame == -1)
 		{
-			cout << "error: could not parse sequence frames file" << endl;
+			std::cout << "error: could not parse sequence frames file" << std::endl;
 			return EXIT_FAILURE;
 		}
 		
@@ -150,14 +149,14 @@ int main(int argc, char* argv[])
 		scaleH = (float)conf.frameHeight/tmp.rows;
 		
 		// read init box from ground truth file
-		string gtFilePath = conf.sequenceBasePath+"/"+conf.sequenceName+"/"+conf.sequenceName+"_gt.txt";
-		ifstream gtFile(gtFilePath.c_str(), ios::in);
+		std::string gtFilePath = conf.sequenceBasePath+"/"+conf.sequenceName+"/"+conf.sequenceName+"_gt.txt";
+		std::ifstream gtFile(gtFilePath.c_str(), std::ios::in);
 		if (!gtFile)
 		{
-			cout << "error: could not open sequence gt file: " << gtFilePath << endl;
+			std::cout << "error: could not open sequence gt file: " << gtFilePath << std::endl;
 			return EXIT_FAILURE;
 		}
-		string gtLine;
+		std::string gtLine;
 		getline(gtFile, gtLine);
 		float xmin = -1.f;
 		float ymin = -1.f;
@@ -166,7 +165,7 @@ int main(int argc, char* argv[])
 		sscanf(gtLine.c_str(), "%f,%f,%f,%f", &xmin, &ymin, &width, &height);
 		if (gtFile.fail() || xmin < 0.f || ymin < 0.f || width < 0.f || height < 0.f)
 		{
-			cout << "error: could not parse sequence gt file" << endl;
+		  std::cout << "error: could not parse sequence gt file" << std::endl;
 			return EXIT_FAILURE;
 		}
 		initBB = FloatRect(xmin*scaleW, ymin*scaleH, width*scaleW, height*scaleH);
@@ -217,7 +216,7 @@ int main(int argc, char* argv[])
 			Mat frameOrig = cv::imread(imgPath, 0);
 			if (frameOrig.empty())
 			{
-				cout << "error: could not read frame: " << imgPath << endl;
+				std::cout << "error: could not read frame: " << imgPath << std::endl;
 				return EXIT_FAILURE;
 			}
 			resize(frameOrig, frame, Size(conf.frameWidth, conf.frameHeight));
@@ -243,7 +242,7 @@ int main(int argc, char* argv[])
 			if (outFile)
 			{
 				const FloatRect& bb = tracker.GetBB();
-				outFile << bb.XMin()/scaleW << "," << bb.YMin()/scaleH << "," << bb.Width()/scaleW << "," << bb.Height()/scaleH << endl;
+				outFile << bb.XMin()/scaleW << "," << bb.YMin()/scaleH << "," << bb.Width()/scaleW << "," << bb.Height()/scaleH << std::endl;
 			}
 		}
 		
@@ -268,7 +267,7 @@ int main(int argc, char* argv[])
 			}
 			if (conf.debugMode && frameInd == endFrame)
 			{
-				cout << "\n\nend of sequence, press any key to exit" << endl;
+				std::cout << "\n\nend of sequence, press any key to exit" << std::endl;
 				waitKey();
 			}
 		}
