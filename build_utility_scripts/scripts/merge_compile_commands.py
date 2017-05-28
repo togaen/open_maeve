@@ -13,6 +13,6 @@ for root, folder, files in os.walk(root):
         with open(os.path.join(root, compile_command_filename), 'r') as handle:
             head += json.load(handle)
 
-print output_file
+print 'Outputting to: ' + output_file
 with open(output_file, 'w') as output_file_handle:
     json.dump(head, output_file_handle, indent=0)
