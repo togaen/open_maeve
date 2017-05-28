@@ -9,15 +9,13 @@
 
 #include "vot.hpp"
 
-using namespace cv;
-
 static const int kLiveBoxWidth = 80;
 static const int kLiveBoxHeight = 80;
 
-void rectangle(Mat& rMat, const FloatRect& rRect, const Scalar& rColour)
+void rectangle(cv::Mat& rMat, const FloatRect& rRect, const cv::Scalar& rColour)
 {
 	IntRect r(rRect);
-	rectangle(rMat, Point(r.XMin(), r.YMin()), Point(r.XMax(), r.YMax()), rColour);
+	rectangle(rMat, cv::Point(r.XMin(), r.YMin()), cv::Point(r.XMax(), r.YMax()), rColour);
 }
 
 int main(int argc, char* argv[])
@@ -49,11 +47,11 @@ int main(int argc, char* argv[])
 
 	if (challengeMode) {
 		//load region, images and prepare for output
-		Mat frameOrig;
-		Mat frame;
+		cv::Mat frameOrig;
+		cv::Mat frame;
 		VOT vot_io("region.txt", "images.txt", "output.txt");
 		vot_io.getNextImage(frameOrig);
-		resize(frameOrig, frame, Size(conf.frameWidth, conf.frameHeight));
+		resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
 		cv::Rect initPos = vot_io.getInitRectangle();
 		vot_io.outputBoundingBox(initPos);
 		float scaleW = (float)conf.frameWidth/frameOrig.cols;
@@ -63,7 +61,7 @@ int main(int argc, char* argv[])
 		tracker.Initialise(frame, initBB_vot);
 
 		while (vot_io.getNextImage(frameOrig) == 1){
-			resize(frameOrig, frame, Size(conf.frameWidth, conf.frameHeight));
+			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
 			
 			tracker.Track(frame);
 			const FloatRect& bb = tracker.GetBB();
@@ -94,7 +92,7 @@ int main(int argc, char* argv[])
 	// if no sequence specified then use the camera
 	bool useCamera = (conf.sequenceName == "");
 	
-	VideoCapture cap;
+	cv::VideoCapture cap;
 	
 	int startFrame = -1;
 	int endFrame = -1;
@@ -112,7 +110,7 @@ int main(int argc, char* argv[])
 		}
 		startFrame = 0;
 		endFrame = INT_MAX;
-		Mat tmp;
+		cv::Mat tmp;
 		cap >> tmp;
 		scaleW = (float)conf.frameWidth/tmp.cols;
 		scaleH = (float)conf.frameHeight/tmp.rows;
@@ -144,7 +142,7 @@ int main(int argc, char* argv[])
 		// read first frame to get size
 		char imgPath[256];
 		sprintf(imgPath, imgFormat.c_str(), startFrame);
-		Mat tmp = cv::imread(imgPath, 0);
+		cv::Mat tmp = cv::imread(imgPath, 0);
 		scaleW = (float)conf.frameWidth/tmp.cols;
 		scaleH = (float)conf.frameHeight/tmp.rows;
 		
@@ -175,21 +173,21 @@ int main(int argc, char* argv[])
 	
 	if (!conf.quietMode)
 	{
-		namedWindow("result");
+		cv::namedWindow("result");
 	}
 	
-	Mat result(conf.frameHeight, conf.frameWidth, CV_8UC3);
+	cv::Mat result(conf.frameHeight, conf.frameWidth, CV_8UC3);
 	bool paused = false;
 	bool doInitialise = false;
 	srand(conf.seed);
 	for (int frameInd = startFrame; frameInd <= endFrame; ++frameInd)
 	{
-		Mat frame;
+		cv::Mat frame;
 		if (useCamera)
 		{
-			Mat frameOrig;
+			cv::Mat frameOrig;
 			cap >> frameOrig;
-			resize(frameOrig, frame, Size(conf.frameWidth, conf.frameHeight));
+			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
 			flip(frame, frame, 1);
 			frame.copyTo(result);
 			if (doInitialise)
@@ -213,13 +211,13 @@ int main(int argc, char* argv[])
 		{			
 			char imgPath[256];
 			sprintf(imgPath, imgFormat.c_str(), frameInd);
-			Mat frameOrig = cv::imread(imgPath, 0);
+			cv::Mat frameOrig = cv::imread(imgPath, 0);
 			if (frameOrig.empty())
 			{
 				std::cout << "error: could not read frame: " << imgPath << std::endl;
 				return EXIT_FAILURE;
 			}
-			resize(frameOrig, frame, Size(conf.frameWidth, conf.frameHeight));
+			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
 			cvtColor(frame, result, CV_GRAY2RGB);
 		
 			if (frameInd == startFrame)
@@ -249,7 +247,7 @@ int main(int argc, char* argv[])
 		if (!conf.quietMode)
 		{
 			imshow("result", result);
-			int key = waitKey(paused ? 0 : 1);
+			int key = cv::waitKey(paused ? 0 : 1);
 			if (key != -1)
 			{
 				if (key == 27 || key == 113) // esc q
@@ -268,7 +266,7 @@ int main(int argc, char* argv[])
 			if (conf.debugMode && frameInd == endFrame)
 			{
 				std::cout << "\n\nend of sequence, press any key to exit" << std::endl;
-				waitKey();
+				cv::waitKey();
 			}
 		}
 	}
