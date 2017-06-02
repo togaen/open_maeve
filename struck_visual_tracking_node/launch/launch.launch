@@ -1,0 +1,7 @@
+<launch>
+	<rosparam command="load" file="$(find rosparam)/params/params.yaml" />
+  <node
+		name="struck_visual_tracking_node"
+		pkg="struck_visual_tracking_node"
+		type="struck_visual_tracking_node"/>
+</launch>
