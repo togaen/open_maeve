@@ -26,7 +26,17 @@ bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
 	LOAD_PARAM(svmC);
 	LOAD_PARAM(svmBudgetSize);
 	LOAD_PARAM(feature);
-  return true;
+	CHECK_NONEMPTY(feature);
+
+  return SanityCheckConfig(*this);
+}
+
+bool StruckVisualTrackingParams::SanityCheckStruckConfig(const Config& c) {
+  if (!SanityCheckConfig(c)) {
+		return false;
+	}
+	CHECK_NONEMPTY(c.features);
+	return true;
 }
 
 Config StruckVisualTrackingParams::toStruckConfig() const {
@@ -53,6 +63,8 @@ Config StruckVisualTrackingParams::toStruckConfig() const {
 
 	return config;
 }
+
+
 
 std::ostream& operator<<(std::ostream& os, const StruckVisualTrackingParams& params) {
   return os << params.loaded_param_set.str();

@@ -42,6 +42,10 @@ int main(int argc, char* argv[]) {
 
 	// Initialize STRUCK tracker.
 	auto conf = params.toStruckConfig();
+	if (!StruckVisualTrackingParams::SanityCheckStruckConfig(conf)) {
+    ROS_INFO_STREAM("Struck config object failed sanity check.");
+		return EXIT_FAILURE;
+	}
 	Tracker tracker(conf);
 
 	//Check if --challenge was passed as an argument
@@ -184,8 +188,8 @@ int main(int argc, char* argv[]) {
 	}
 	
 	cv::Mat result(conf.frameHeight, conf.frameWidth, CV_8UC3);
-	bool paused = false;
-	bool doInitialise = false;
+	auto paused = false;
+	auto doInitialise = false;
 	srand(conf.seed);
 	for (int frameInd = startFrame; frameInd <= endFrame; ++frameInd)
 	{

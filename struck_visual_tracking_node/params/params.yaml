@@ -8,7 +8,7 @@ quietMode: false
 debugMode: true
 
 # base path for video sequences.
-sequenceBasePath: '/home/jj56/catkin_ws/src/maeve_automation_core/struck_visual_tracking_node/sequences'
+sequenceBasePath: '' #'/home/jj56/catkin_ws/src/maeve_automation_core/struck_visual_tracking_node/sequences'
 
 # path for output results file.
 # leave empty to disable output.
@@ -17,7 +17,7 @@ resultsPath: ''
 
 # video sequence to run the tracker on.
 # comment this out to use webcam.
-sequenceName: 'girl'
+sequenceName: '' #'girl'
 
 # frame size for use during tracking.
 # the input image will be scaled to this size.
