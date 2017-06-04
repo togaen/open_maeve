@@ -8,7 +8,7 @@ quietMode: false
 debugMode: true
 
 # base path for video sequences.
-sequenceBasePath: 'sequences'
+sequenceBasePath: '/home/jj56/catkin_ws/src/maeve_automation_core/struck_visual_tracking_node/sequences'
 
 # path for output results file.
 # leave empty to disable output.

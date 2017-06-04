@@ -39,7 +39,6 @@ int main(int argc, char* argv[]) {
 	if (params.debugMode) {	
 		ROS_INFO_STREAM("Loaded params:\n" << params);
 	}
-	return EXIT_SUCCESS;
 
 	// Initialize STRUCK tracker.
 	auto conf = params.toStruckConfig();
