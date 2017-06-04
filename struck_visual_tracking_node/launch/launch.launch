@@ -3,7 +3,7 @@
 		name="struck_visual_tracking_node"
 		pkg="struck_visual_tracking_node"
 		type="struck_visual_tracking_node"
-		output="screen">
+		output="screen" launch-prefix="xterm -e">
 		<rosparam command="load" file="$(find struck_visual_tracking_node)/params/params.yaml"/>
 	</node>
 </launch>
