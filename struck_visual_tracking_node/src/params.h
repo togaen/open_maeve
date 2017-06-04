@@ -3,14 +3,19 @@
 #include <string>
 #include <sstream>
 
-#include <ros/ros.h>
+#include "ros/ros.h"
 
+#include "maeve_automation_core/struck_visual_tracking/Config.h"
 
 struct StruckVisualTrackingParams {
+	/// \brief Stream overload
   friend std::ostream& operator<<(std::ostream &os, const StruckVisualTrackingParams& params);
 
 	/// \brief Load parameters from parameter server.
   bool load(const ros::NodeHandle& nh);
+
+	/// \brief Convert this parameter object to a STRUCK config object.
+  Config toStruckConfig() const;
 
 	// topic name for camera images
 	std::string camera_topic;
@@ -56,9 +61,10 @@ struct StruckVisualTrackingParams {
   //   kernel = gaussian/linear/intersection/chi2
   //   for kernel=gaussian, kernel-params is sigma
   // multiple features can be specified and will be combined
-	std::string feature;
+	std::string features;
 
 	private:
-	std::stringstream debug_out;
+	/// \brief Human-readable string of parameters loaded by load() function.
+	std::stringstream loaded_param_set;
 };  // struct StruckVisualTrackingParams
 

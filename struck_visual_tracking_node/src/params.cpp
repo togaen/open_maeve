@@ -1,10 +1,12 @@
 #include "params.h"
 
+#include <sstream>
+
 #define LOAD_PARAM(var) \
 	if (!nh.getParam(#var, var)) {\
 		return false;\
 	}\
-  debug_out << #var << ": " << var << "\n";
+  loaded_param_set << #var << ": " << var << "\n";
 
 bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(camera_topic);
@@ -19,10 +21,35 @@ bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
 	LOAD_PARAM(searchRadius);
 	LOAD_PARAM(svmC);
 	LOAD_PARAM(svmBudgetSize);
-	LOAD_PARAM(feature);
+	LOAD_PARAM(features);
   return true;
 }
 
+Config StruckVisualTrackingParams::toStruckConfig() const {
+  Config config;
+
+	config.quietMode = quietMode;
+	config.debugMode = debugMode;
+	
+	config.sequenceBasePath = sequenceBasePath;
+	config.sequenceName = sequenceName;
+	config.resultsPath = resultsPath;
+	
+	config.frameWidth = frameWidth;
+	config.frameHeight = frameHeight;
+	
+	config.seed = seed;
+	config.searchRadius = searchRadius;
+	config.svmC = svmC;
+	config.svmBudgetSize = svmBudgetSize;
+	
+	config.features.clear();
+	std::istringstream iss(features);
+	config.ParseFeatureString(iss);
+
+	return config;
+}
+
 std::ostream& operator<<(std::ostream& os, const StruckVisualTrackingParams& params) {
-  return os << params.debug_out.str();
+  return os << params.loaded_param_set.str();
 }

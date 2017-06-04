@@ -1,13 +1,15 @@
-#include "maeve_automation_core/struck_visual_tracking/Tracker.h"
-#include "maeve_automation_core/struck_visual_tracking/Config.h"
+#include "vot.hpp"
+#include "params.h"
 
 #include <iostream>
 #include <fstream>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include "ros/ros.h"
+#include "opencv/cv.h"
+#include "opencv/highgui.h"
 
-#include "vot.hpp"
+#include "maeve_automation_core/struck_visual_tracking/Tracker.h"
+#include "maeve_automation_core/struck_visual_tracking/Config.h"
 
 static const int kLiveBoxWidth = 80;
 static const int kLiveBoxHeight = 80;
@@ -20,21 +22,24 @@ void rectangle(cv::Mat& rMat, const FloatRect& rRect, const cv::Scalar& rColour)
 
 int main(int argc, char* argv[])
 {
-	// read config file
-	std::string configPath = "config.txt";
-	if (argc > 1)
-	{
-		configPath = argv[1];
-	}
-	Config conf(configPath);
-	std::cout << conf << std::endl;
-	
-	if (conf.features.size() == 0)
-	{
-		std::cout << "error: no features specified in config" << std::endl;
+	// Initialize ROS stuff.
+	ros::init(argc, argv, "struck_visual_tracking_node");
+	ros::NodeHandle nh;
+
+	// Load parameters.
+  auto params = StruckVisualTrackingParams();
+	if (!params.load(nh)) {
+		std::cerr << "Failed to load parameters. Aborting." << std::endl;
 		return EXIT_FAILURE;
 	}
 
+	// Debug params?
+	if (params.debugMode) {
+		std::cout << "Loaded params:\n" << params << std::endl;
+	}
+
+	// Initialize STRUCK tracker.
+	auto conf = params.toStruckConfig();
 	Tracker tracker(conf);
 
 	//Check if --challenge was passed as an argument
