@@ -67,43 +67,47 @@ Config::Config(const std::string& path)
 		else if (name == "svmBudgetSize") iss >> svmBudgetSize;
 		else if (name == "feature")
 		{
-			string featureName, kernelName;
-			double param;
-			iss >> featureName >> kernelName >> param;
-			
-			FeatureKernelPair fkp;
-			
-			if      (featureName == FeatureName(kFeatureTypeHaar)) fkp.feature = kFeatureTypeHaar;
-			else if (featureName == FeatureName(kFeatureTypeRaw)) fkp.feature = kFeatureTypeRaw;
-			else if (featureName == FeatureName(kFeatureTypeHistogram)) fkp.feature = kFeatureTypeHistogram;
-			else
-			{
-				cout << "error: unrecognised feature: " << featureName << endl;
-				continue;
-			}
-			
-			if      (kernelName == KernelName(kKernelTypeLinear)) fkp.kernel = kKernelTypeLinear;
-			else if (kernelName == KernelName(kKernelTypeIntersection)) fkp.kernel = kKernelTypeIntersection;
-			else if (kernelName == KernelName(kKernelTypeChi2)) fkp.kernel = kKernelTypeChi2;
-			else if (kernelName == KernelName(kKernelTypeGaussian))
-			{
-				if (iss.fail())
-				{
-					cout << "error: gaussian kernel requires a parameter (sigma)" << endl;
-					continue;
-				}
-				fkp.kernel = kKernelTypeGaussian;
-				fkp.params.push_back(param);
-			}
-			else
-			{
-				cout << "error: unrecognised kernel: " << kernelName << endl;
-				continue;
-			}
-			
-			features.push_back(fkp);
+			ParseFeatureString(iss);
 		}
 	}
+}
+
+void Config::ParseFeatureString(std::istringstream& iss) {
+	string featureName, kernelName;
+	double param;
+	iss >> featureName >> kernelName >> param;
+
+	FeatureKernelPair fkp;
+
+	if      (featureName == FeatureName(kFeatureTypeHaar)) fkp.feature = kFeatureTypeHaar;
+	else if (featureName == FeatureName(kFeatureTypeRaw)) fkp.feature = kFeatureTypeRaw;
+	else if (featureName == FeatureName(kFeatureTypeHistogram)) fkp.feature = kFeatureTypeHistogram;
+	else
+	{
+		cout << "error: unrecognised feature: " << featureName << endl;
+		return;
+	}
+
+	if      (kernelName == KernelName(kKernelTypeLinear)) fkp.kernel = kKernelTypeLinear;
+  else if (kernelName == KernelName(kKernelTypeIntersection)) fkp.kernel = kKernelTypeIntersection;
+	else if (kernelName == KernelName(kKernelTypeChi2)) fkp.kernel = kKernelTypeChi2;
+	else if (kernelName == KernelName(kKernelTypeGaussian))
+	{
+	  if (iss.fail())
+		{
+			cout << "error: gaussian kernel requires a parameter (sigma)" << endl;
+			return;
+		}
+		fkp.kernel = kKernelTypeGaussian;
+		fkp.params.push_back(param);
+	}
+	else
+	{
+		cout << "error: unrecognised kernel: " << kernelName << endl;
+		return;
+	}
+			
+	features.push_back(fkp);
 }
 
 void Config::SetDefaults()

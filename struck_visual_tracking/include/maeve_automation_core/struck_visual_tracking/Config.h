@@ -80,6 +80,9 @@ public:
 	
 	friend std::ostream& operator<< (std::ostream& out, const Config& conf);
 	
+	/// \brief Encapsulate feature string parsing into this function.
+	void ParseFeatureString(std::istringstream& iss);
+
 private:
 	void SetDefaults();
 	static std::string FeatureName(FeatureType f);
