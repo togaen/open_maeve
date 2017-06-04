@@ -61,7 +61,7 @@ struct StruckVisualTrackingParams {
   //   kernel = gaussian/linear/intersection/chi2
   //   for kernel=gaussian, kernel-params is sigma
   // multiple features can be specified and will be combined
-	std::string features;
+	std::string feature;
 
 	private:
 	/// \brief Human-readable string of parameters loaded by load() function.

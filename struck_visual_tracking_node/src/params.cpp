@@ -1,9 +1,13 @@
 #include "params.h"
 
+#include <iostream>
 #include <sstream>
+
+#include "ros/console.h"
 
 #define LOAD_PARAM(var) \
 	if (!nh.getParam(#var, var)) {\
+		ROS_ERROR_STREAM("Failed to load parameter '" << #var << "'");\
 		return false;\
 	}\
   loaded_param_set << #var << ": " << var << "\n";
@@ -21,7 +25,7 @@ bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
 	LOAD_PARAM(searchRadius);
 	LOAD_PARAM(svmC);
 	LOAD_PARAM(svmBudgetSize);
-	LOAD_PARAM(features);
+	LOAD_PARAM(feature);
   return true;
 }
 
@@ -44,7 +48,7 @@ Config StruckVisualTrackingParams::toStruckConfig() const {
 	config.svmBudgetSize = svmBudgetSize;
 	
 	config.features.clear();
-	std::istringstream iss(features);
+	std::istringstream iss(feature);
 	config.ParseFeatureString(iss);
 
 	return config;

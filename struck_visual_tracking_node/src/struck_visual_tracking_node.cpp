@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "ros/ros.h"
+#include "ros/console.h"
 #include "opencv/cv.h"
 #include "opencv/highgui.h"
 
@@ -20,23 +21,25 @@ void rectangle(cv::Mat& rMat, const FloatRect& rRect, const cv::Scalar& rColour)
 	rectangle(rMat, cv::Point(r.XMin(), r.YMin()), cv::Point(r.XMax(), r.YMax()), rColour);
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
+	const auto node_name = std::string("struck_visual_tracking_node");
+
 	// Initialize ROS stuff.
-	ros::init(argc, argv, "struck_visual_tracking_node");
-	ros::NodeHandle nh;
+	ros::init(argc, argv, node_name);
+	ros::NodeHandle nh(node_name);
 
 	// Load parameters.
   auto params = StruckVisualTrackingParams();
 	if (!params.load(nh)) {
-		std::cerr << "Failed to load parameters. Aborting." << std::endl;
+		ROS_ERROR_STREAM("Failed to load parameters. Aborting.");
 		return EXIT_FAILURE;
 	}
 
 	// Debug params?
-	if (params.debugMode) {
-		std::cout << "Loaded params:\n" << params << std::endl;
+	if (params.debugMode) {	
+		ROS_INFO_STREAM("Loaded params:\n" << params);
 	}
+	return EXIT_SUCCESS;
 
 	// Initialize STRUCK tracker.
 	auto conf = params.toStruckConfig();
@@ -80,7 +83,7 @@ int main(int argc, char* argv[])
 			vot_io.outputBoundingBox(output);
 		}
 
-		return 0;
+		return EXIT_SUCCESS;
 	}
 	
 	std::ofstream outFile;
@@ -89,7 +92,7 @@ int main(int argc, char* argv[])
 		outFile.open(conf.resultsPath.c_str(), std::ios::out);
 		if (!outFile)
 		{
-			std::cout << "error: could not open results file: " << conf.resultsPath << std::endl;
+			ROS_ERROR_STREAM("error: could not open results file: " << conf.resultsPath);
 			return EXIT_FAILURE;
 		}
 	}
@@ -110,7 +113,7 @@ int main(int argc, char* argv[])
 	{
 		if (!cap.open(0))
 		{
-			std::cout << "error: could not start camera capture" << std::endl;
+			ROS_ERROR_STREAM("error: could not start camera capture");
 			return EXIT_FAILURE;
 		}
 		startFrame = 0;
@@ -121,7 +124,7 @@ int main(int argc, char* argv[])
 		scaleH = (float)conf.frameHeight/tmp.rows;
 
 		initBB = IntRect(conf.frameWidth/2-kLiveBoxWidth/2, conf.frameHeight/2-kLiveBoxHeight/2, kLiveBoxWidth, kLiveBoxHeight);
-		std::cout << "press 'i' to initialise tracker" << std::endl;
+		ROS_INFO_STREAM("press 'i' to initialise tracker");
 	}
 	else
 	{
@@ -130,7 +133,7 @@ int main(int argc, char* argv[])
 		std::ifstream framesFile(framesFilePath.c_str(), std::ios::in);
 		if (!framesFile)
 		{
-			std::cout << "error: could not open sequence frames file: " << framesFilePath << std::endl;
+			ROS_ERROR_STREAM("error: could not open sequence frames file: " << framesFilePath);
 			return EXIT_FAILURE;
 		}
 		std::string framesLine;
@@ -138,7 +141,7 @@ int main(int argc, char* argv[])
 		sscanf(framesLine.c_str(), "%d,%d", &startFrame, &endFrame);
 		if (framesFile.fail() || startFrame == -1 || endFrame == -1)
 		{
-			std::cout << "error: could not parse sequence frames file" << std::endl;
+			ROS_ERROR_STREAM("error: could not parse sequence frames file");
 			return EXIT_FAILURE;
 		}
 		
@@ -156,7 +159,7 @@ int main(int argc, char* argv[])
 		std::ifstream gtFile(gtFilePath.c_str(), std::ios::in);
 		if (!gtFile)
 		{
-			std::cout << "error: could not open sequence gt file: " << gtFilePath << std::endl;
+			ROS_ERROR_STREAM("error: could not open sequence gt file: " << gtFilePath);
 			return EXIT_FAILURE;
 		}
 		std::string gtLine;
@@ -168,7 +171,7 @@ int main(int argc, char* argv[])
 		sscanf(gtLine.c_str(), "%f,%f,%f,%f", &xmin, &ymin, &width, &height);
 		if (gtFile.fail() || xmin < 0.f || ymin < 0.f || width < 0.f || height < 0.f)
 		{
-		  std::cout << "error: could not parse sequence gt file" << std::endl;
+		  ROS_ERROR_STREAM("error: could not parse sequence gt file");
 			return EXIT_FAILURE;
 		}
 		initBB = FloatRect(xmin*scaleW, ymin*scaleH, width*scaleW, height*scaleH);
@@ -219,7 +222,7 @@ int main(int argc, char* argv[])
 			cv::Mat frameOrig = cv::imread(imgPath, 0);
 			if (frameOrig.empty())
 			{
-				std::cout << "error: could not read frame: " << imgPath << std::endl;
+				ROS_ERROR_STREAM("error: could not read frame: " << imgPath);
 				return EXIT_FAILURE;
 			}
 			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
@@ -270,7 +273,7 @@ int main(int argc, char* argv[])
 			}
 			if (conf.debugMode && frameInd == endFrame)
 			{
-				std::cout << "\n\nend of sequence, press any key to exit" << std::endl;
+				ROS_INFO_STREAM("\n\nend of sequence, press any key to exit");
 				cv::waitKey();
 			}
 		}
