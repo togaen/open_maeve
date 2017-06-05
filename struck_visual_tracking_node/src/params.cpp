@@ -32,11 +32,8 @@ bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
 }
 
 bool StruckVisualTrackingParams::SanityCheckStruckConfig(const Config& c) {
-  if (!SanityCheckConfig(c)) {
-		return false;
-	}
 	CHECK_NONEMPTY(c.features);
-	return true;
+	return SanityCheckConfig(c);
 }
 
 Config StruckVisualTrackingParams::toStruckConfig() const {

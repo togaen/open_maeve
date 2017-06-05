@@ -137,6 +137,7 @@ add_library(${PROJECT_NAME}
   src/RawFeatures.cpp
   src/Tracker.cpp
   src/GraphUtils/GraphUtils.cpp
+  src/struck_visual_tracking.cpp
 )
 
 ## Add cmake target dependencies of the library
