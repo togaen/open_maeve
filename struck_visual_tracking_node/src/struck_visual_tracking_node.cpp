@@ -59,52 +59,12 @@ int main(int argc, char* argv[]) {
 	
 	cv::Mat result(conf.frameHeight, conf.frameWidth, CV_8UC3);
 	auto paused = false;
-	auto doInitialise = false;
 	srand(conf.seed);
 	for (int frameInd = tracker_init.startFrame; frameInd <= tracker_init.endFrame; ++frameInd)
 	{
 		cv::Mat frame;
-		if (tracker_init.useCamera)
-		{
-			cv::Mat frameOrig;
-			tracker_init.cap >> frameOrig;
-			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
-			flip(frame, frame, 1);
-			frame.copyTo(result);
-			if (doInitialise)
-			{
-				if (tracker.IsInitialised())
-				{
-					tracker.Reset();
-				}
-				else
-				{
-					tracker.Initialise(frame, tracker_init.initBB);
-				}
-				doInitialise = false;
-			}
-			else if (!tracker.IsInitialised())
-			{
-				rectangle(result, tracker_init.initBB, CV_RGB(255, 255, 255));
-			}
-		}
-		else
-		{			
-			char imgPath[256];
-			sprintf(imgPath, tracker_init.imgFormat.c_str(), frameInd);
-			cv::Mat frameOrig = cv::imread(imgPath, 0);
-			if (frameOrig.empty())
-			{
-				ROS_ERROR_STREAM("error: could not read frame: " << imgPath);
-				return EXIT_FAILURE;
-			}
-			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
-			cvtColor(frame, result, CV_GRAY2RGB);
-		
-			if (frameInd == tracker_init.startFrame)
-			{
-				tracker.Initialise(frame, tracker_init.initBB);
-			}
+		if (!initializeTracker(conf, tracker_init, tracker, frame, result, frameInd)) {
+			return EXIT_FAILURE;
 		}
 		
 		if (tracker.IsInitialised())
@@ -141,7 +101,7 @@ int main(int argc, char* argv[]) {
 				}
 				else if (key == 105 && tracker_init.useCamera)
 				{
-					doInitialise = true;
+					tracker_init.doInitialise = true;
 				}
 			}
 			if (conf.debugMode && frameInd == tracker_init.endFrame)

@@ -11,8 +11,9 @@
 
 /// \brief Convenience struct for initializing tracker.
 struct TrackerInit {
-	TrackerInit() : valid(false), useCamera(false), startFrame(-1), endFrame(-1), scaleW(1.f), scaleH(1.f) {}
-  bool valid;
+	TrackerInit() : doInitialise(false), valid(false), useCamera(false), startFrame(-1), endFrame(-1), scaleW(1.f), scaleH(1.f) {}
+  bool doInitialise;
+	bool valid;
 	bool useCamera;
 	cv::VideoCapture cap;
 	int startFrame;
@@ -22,6 +23,8 @@ struct TrackerInit {
 	float scaleW;
 	float scaleH;
 };  // struct TrackerInit
+
+bool initializeTracker(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd);
 
 TrackerInit BuildTrackerInit(const Config& conf);
 

@@ -5,6 +5,51 @@
 static const int kLiveBoxWidth = 80;
 static const int kLiveBoxHeight = 80;
 
+bool initializeTracker(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd) {
+	if (tracker_init.useCamera) {
+			cv::Mat frameOrig;
+			tracker_init.cap >> frameOrig;
+			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
+			flip(frame, frame, 1);
+			frame.copyTo(result);
+			if (tracker_init.doInitialise)
+			{
+				if (tracker.IsInitialised())
+				{
+					tracker.Reset();
+				}
+				else
+				{
+					tracker.Initialise(frame, tracker_init.initBB);
+				}
+				tracker_init.doInitialise = false;
+			}
+			else if (!tracker.IsInitialised())
+			{
+				rectangle(result, tracker_init.initBB, CV_RGB(255, 255, 255));
+			}
+		}
+		else
+		{	
+			char imgPath[256];
+			sprintf(imgPath, tracker_init.imgFormat.c_str(), frameInd);
+			cv::Mat frameOrig = cv::imread(imgPath, 0);
+			if (frameOrig.empty())
+			{
+				ROS_ERROR_STREAM("error: could not read frame: " << imgPath);
+				return false;
+			}
+			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
+			cvtColor(frame, result, CV_GRAY2RGB);
+		
+			if (frameInd == tracker_init.startFrame)
+			{
+				tracker.Initialise(frame, tracker_init.initBB);
+			}
+		}
+		return true;
+}
+
 TrackerInit BuildTrackerInit(const Config& conf) {
 	auto tracker_init = TrackerInit();
 
