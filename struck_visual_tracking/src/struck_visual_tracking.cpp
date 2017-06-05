@@ -5,6 +5,35 @@
 static const int kLiveBoxWidth = 80;
 static const int kLiveBoxHeight = 80;
 
+bool showOutput(const Config& conf, const cv::Mat& result, TrackerInit& tracker_init, int frameInd, bool paused) {
+		if (!conf.quietMode)
+		{
+			imshow("result", result);
+			int key = cv::waitKey(paused ? 0 : 1);
+			if (key != -1)
+			{
+				if (key == 27 || key == 113) // esc q
+				{
+					return false;
+				}
+				else if (key == 112) // p
+				{
+					paused = !paused;
+				}
+				else if (key == 105 && tracker_init.useCamera)
+				{
+					tracker_init.doInitialise = true;
+				}
+			}
+			if (conf.debugMode && frameInd == tracker_init.endFrame)
+			{
+				ROS_INFO_STREAM("\n\nend of sequence, press any key to exit");
+				cv::waitKey();
+			}
+		}
+		return true;
+}
+
 bool initializeTracker(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd) {
 	if (tracker_init.useCamera) {
 			cv::Mat frameOrig;

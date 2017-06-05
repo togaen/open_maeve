@@ -24,6 +24,8 @@ struct TrackerInit {
 	float scaleH;
 };  // struct TrackerInit
 
+bool showOutput(const Config& conf, const cv::Mat& result, TrackerInit& tracker_init, int frameInd, bool paused); 
+
 bool initializeTracker(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd);
 
 TrackerInit BuildTrackerInit(const Config& conf);

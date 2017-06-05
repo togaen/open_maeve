@@ -84,31 +84,9 @@ int main(int argc, char* argv[]) {
 				outFile << bb.XMin()/tracker_init.scaleW << "," << bb.YMin()/tracker_init.scaleH << "," << bb.Width()/tracker_init.scaleW << "," << bb.Height()/tracker_init.scaleH << std::endl;
 			}
 		}
-		
-		if (!conf.quietMode)
-		{
-			imshow("result", result);
-			int key = cv::waitKey(paused ? 0 : 1);
-			if (key != -1)
-			{
-				if (key == 27 || key == 113) // esc q
-				{
-					break;
-				}
-				else if (key == 112) // p
-				{
-					paused = !paused;
-				}
-				else if (key == 105 && tracker_init.useCamera)
-				{
-					tracker_init.doInitialise = true;
-				}
-			}
-			if (conf.debugMode && frameInd == tracker_init.endFrame)
-			{
-				ROS_INFO_STREAM("\n\nend of sequence, press any key to exit");
-				cv::waitKey();
-			}
+
+		if (!showOutput(conf, result, tracker_init, frameInd, paused)) {
+			break;
 		}
 	}
 	
