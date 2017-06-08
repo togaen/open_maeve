@@ -5,6 +5,14 @@
 static const int kLiveBoxWidth = 80;
 static const int kLiveBoxHeight = 80;
 
+void writeOutput(const Tracker& tracker, const TrackerInit& tracker_init, std::ofstream& outFile) {
+	if (outFile)
+	{
+		const FloatRect& bb = tracker.GetBB();
+		outFile << bb.XMin()/tracker_init.scaleW << "," << bb.YMin()/tracker_init.scaleH << "," << bb.Width()/tracker_init.scaleW << "," << bb.Height()/tracker_init.scaleH << std::endl;
+	}
+}
+
 bool showOutput(const Config& conf, const cv::Mat& result, TrackerInit& tracker_init, int frameInd, bool paused) {
 		if (!conf.quietMode)
 		{
@@ -79,7 +87,7 @@ bool initializeTracker(const Config& conf, TrackerInit& tracker_init, Tracker& t
 		return true;
 }
 
-TrackerInit BuildTrackerInit(const Config& conf) {
+TrackerInit buildTrackerInit(const Config& conf) {
 	auto tracker_init = TrackerInit();
 
   // if no sequence specified then use the camera

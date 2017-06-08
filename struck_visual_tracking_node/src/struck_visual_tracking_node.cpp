@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-  auto tracker_init = BuildTrackerInit(conf);
+  auto tracker_init = buildTrackerInit(conf);
 	if (!tracker_init.valid) {
 		return EXIT_FAILURE;
 	}
@@ -77,12 +77,8 @@ int main(int argc, char* argv[]) {
 			}
 			
 			rectangle(result, tracker.GetBB(), CV_RGB(0, 255, 0));
-			
-			if (outFile)
-			{
-				const FloatRect& bb = tracker.GetBB();
-				outFile << bb.XMin()/tracker_init.scaleW << "," << bb.YMin()/tracker_init.scaleH << "," << bb.Width()/tracker_init.scaleW << "," << bb.Height()/tracker_init.scaleH << std::endl;
-			}
+
+      writeOutput(tracker, tracker_init, outFile);
 		}
 
 		if (!showOutput(conf, result, tracker_init, frameInd, paused)) {

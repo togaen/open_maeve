@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <fstream>
 
 #include "opencv/cv.h"
 #include "opencv/highgui.h"
@@ -24,11 +25,13 @@ struct TrackerInit {
 	float scaleH;
 };  // struct TrackerInit
 
+void writeOutput(const Tracker& tracker, const TrackerInit& tracker_init, std::ofstream& outFile);
+
 bool showOutput(const Config& conf, const cv::Mat& result, TrackerInit& tracker_init, int frameInd, bool paused); 
 
 bool initializeTracker(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd);
 
-TrackerInit BuildTrackerInit(const Config& conf);
+TrackerInit buildTrackerInit(const Config& conf);
 
 void rectangle(cv::Mat& rMat, const FloatRect& rRect, const cv::Scalar& rColour);
 
