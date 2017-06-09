@@ -44,10 +44,7 @@ bool showOutput(const Config& conf, const cv::Mat& result, TrackerInit& tracker_
 		return true;
 }
 
-bool prepareTrackingFrame(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd) {
-	if (tracker_init.useCamera) {
-			cv::Mat frameOrig;
-			tracker_init.cap >> frameOrig;
+void prepareCameraTrackingFrame(const cv::Mat& frameOrig, const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result) {
 			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
 			flip(frame, frame, 1);
 			frame.copyTo(result);
@@ -67,6 +64,14 @@ bool prepareTrackingFrame(const Config& conf, TrackerInit& tracker_init, Tracker
 			{
 				rectangle(result, tracker_init.initBB, CV_RGB(255, 255, 255));
 			}
+}
+
+
+bool prepareTrackingFrame(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd) {
+	if (tracker_init.useCamera) {
+			cv::Mat frameOrig;
+			tracker_init.cap >> frameOrig;
+			prepareCameraTrackingFrame(frameOrig, conf, tracker_init, tracker, frame, result);
 		}
 		else
 		{	

@@ -32,6 +32,8 @@ void writeOutput(const Tracker& tracker, const TrackerInit& tracker_init, std::o
 
 bool showOutput(const Config& conf, const cv::Mat& result, TrackerInit& tracker_init, int frameInd, bool paused); 
 
+void prepareCameraTrackingFrame(const cv::Mat& frameOrig, const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result);
+
 bool prepareTrackingFrame(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd);
 
 TrackerInit buildTrackerInit(const Config& conf, const std::string& camera_topic);
