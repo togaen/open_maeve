@@ -1,5 +1,13 @@
-# topic name for camera images
+# If a topic name for camera images is given, tracking will be performed on it.
 camera_topic: 'camera_topic'
+
+# If the camera topic is empty, look to a base path for video sequences.
+sequenceBasePath: '' #'/home/jj56/catkin_ws/src/maeve_automation_core/struck_visual_tracking_node/sequences'
+sequenceName: '' #'girl'
+
+#
+# If neither camera topic nor sequence name is set, tracker will use webcam.
+#
 
 # quiet mode disables all visual output (for experiments).
 quietMode: false
@@ -7,17 +15,10 @@ quietMode: false
 # debug mode enables additional drawing and visualization.
 debugMode: true
 
-# base path for video sequences.
-sequenceBasePath: '' #'/home/jj56/catkin_ws/src/maeve_automation_core/struck_visual_tracking_node/sequences'
-
 # path for output results file.
 # leave empty to disable output.
 #resultsPath: 'log.txt'
 resultsPath: ''
-
-# video sequence to run the tracker on.
-# comment this out to use webcam.
-sequenceName: '' #'girl'
 
 # frame size for use during tracking.
 # the input image will be scaled to this size.

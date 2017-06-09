@@ -21,17 +21,20 @@ struct TrackerInit {
 	int endFrame;
 	FloatRect initBB;
 	std::string imgFormat;
+	std::string camera_topic;
 	float scaleW;
 	float scaleH;
 };  // struct TrackerInit
+
+bool runTracker(const Config& conf, TrackerInit& tracker_init, Tracker& tracker);
 
 void writeOutput(const Tracker& tracker, const TrackerInit& tracker_init, std::ofstream& outFile);
 
 bool showOutput(const Config& conf, const cv::Mat& result, TrackerInit& tracker_init, int frameInd, bool paused); 
 
-bool initializeTracker(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd);
+bool prepareTrackingFrame(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd);
 
-TrackerInit buildTrackerInit(const Config& conf);
+TrackerInit buildTrackerInit(const Config& conf, const std::string& camera_topic);
 
 void rectangle(cv::Mat& rMat, const FloatRect& rRect, const cv::Scalar& rColour);
 
