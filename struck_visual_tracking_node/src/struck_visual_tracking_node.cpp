@@ -33,12 +33,18 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-  // If camera topic is not set, run tracker from config file.
+  // If camera topic is set, run from camera topic.
 	if (struck_tracker.runFromCameraTopic) {
-		// Loop here.
-		// Exit.
+		ROS_INFO_STREAM("Running from camera topic: " << params.camera_topic);
+		auto sub = nh.subscribe(params.camera_topic, 1000, &StruckTracker::cameraCallback, &struck_tracker);
+		ros::spin();
+		return EXIT_SUCCESS;
 	}
 
+	// Uncommenting this leads to segfaults when not built in debug mode. Weird.
+	//ROS_INFO_STREAM("Running from direct input.");
+
+	// Otherwise, run directly from file/webcam input.
 	if (!struck_tracker.runTracker()) {
 		return EXIT_FAILURE;
 	}
