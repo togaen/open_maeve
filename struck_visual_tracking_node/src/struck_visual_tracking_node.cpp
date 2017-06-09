@@ -1,4 +1,3 @@
-#include "vot.hpp"
 #include "params.h"
 
 #include <iostream>
