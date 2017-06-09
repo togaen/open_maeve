@@ -3,7 +3,37 @@
 #include <ros/console.h>
 
 void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
-// Track on ROS input.
+
+	srand(conf.seed);
+	const auto paused = false;
+	cv::Mat result(conf.frameHeight, conf.frameWidth, CV_8UC3);
+	for (int frameInd = tracker_init.startFrame; frameInd <= tracker_init.endFrame; ++frameInd)
+	{
+
+		/// BEGIN 
+		cv::Mat frame;
+	  cv::Mat frameOrig; // <-- set this to incoming image message
+    cv::Mat result(conf.frameHeight, conf.frameWidth, CV_8UC3);
+    prepareCameraTrackingFrame(frameOrig, conf, tracker_init, tracker, frame, result);
+		/// END
+		
+		if (tracker.IsInitialised())
+		{
+			tracker.Track(frame);
+			
+			if (!conf.quietMode && conf.debugMode)
+			{
+				tracker.Debug();
+			}
+			
+			rectangle(result, tracker.GetBB(), CV_RGB(0, 255, 0));
+		}
+
+		// publish to output viz topic
+		if (!showOutput(conf, result, tracker_init, frameInd, paused)) {
+			break;
+		}
+	}
 }
 
 bool StruckTracker::runTracker() {
