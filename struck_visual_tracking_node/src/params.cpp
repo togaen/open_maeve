@@ -61,8 +61,6 @@ Config StruckVisualTrackingParams::toStruckConfig() const {
 	return config;
 }
 
-
-
 std::ostream& operator<<(std::ostream& os, const StruckVisualTrackingParams& params) {
   return os << params.loaded_param_set.str();
 }

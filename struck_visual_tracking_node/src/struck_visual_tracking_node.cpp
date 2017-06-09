@@ -1,18 +1,7 @@
 #include "params.h"
+#include "struck_tracker.h"
 
-#include <iostream>
-#include <fstream>
-
-#include <boost/lockfree/spsc_queue.hpp>
 #include <ros/ros.h>
-#include <ros/console.h>
-#include <sensor_msgs/Image.h>
-
-#include "maeve_automation_core/struck_visual_tracking/struck_visual_tracking.h"
-
-void cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
-	// invoke tracker here
-}
 
 int main(int argc, char* argv[]) {
 	const auto node_name = std::string("struck_visual_tracking_node");
@@ -34,25 +23,23 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Initialize STRUCK tracker.
-	auto conf = params.toStruckConfig();
-	if (!StruckVisualTrackingParams::SanityCheckStruckConfig(conf)) {
+	auto struck_tracker = StruckTracker(params.toStruckConfig(), params.camera_topic);
+	if (!StruckVisualTrackingParams::SanityCheckStruckConfig(struck_tracker.conf)) {
     ROS_INFO_STREAM("Struck config object failed sanity check.");
 		return EXIT_FAILURE;
 	}
-	Tracker tracker(conf);
 
-  auto tracker_init = buildTrackerInit(conf, params.camera_topic);
-	if (!tracker_init.valid) {
+	if (!struck_tracker.tracker_init.valid) {
 		return EXIT_FAILURE;
 	}
 
   // If camera topic is not set, run tracker from config file.
-	if (tracker_init.camera_topic.empty()) {
+	if (struck_tracker.runFromCameraTopic) {
 		// Loop here.
 		// Exit.
 	}
 
-	if (!runTracker(conf, tracker_init, tracker)) {
+	if (!struck_tracker.runTracker()) {
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
