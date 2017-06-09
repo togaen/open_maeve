@@ -3,6 +3,7 @@
 #include <ros/console.h>
 
 void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
+// Track on ROS input.
 }
 
 bool StruckTracker::runTracker() {
