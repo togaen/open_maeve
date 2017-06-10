@@ -2,6 +2,17 @@
 
 #include <ros/console.h>
 
+void StruckTracker::userInitCallback(const std_msgs::Bool::ConstPtr& msg) {
+ROS_INFO("here1");
+	if (!is_user_initted) {
+		ROS_INFO("here2");
+				if (msg->data && tracker_init.useCamera)
+				{
+					ROS_INFO("here3");
+					tracker_init.doInitialise = true;
+				}
+	}
+}
 
 void StruckTracker::publishTrackerImage(const ros::Time& time) {
     result.header.stamp = time;
@@ -86,9 +97,6 @@ bool StruckTracker::runTracker() {
 		}
 
 		publishTrackerImage(ros::Time::now());
-		if (!captureInput(conf, tracker_init, frameInd, paused)) {
-			break;
-		}
 	}
 	
 	if (outFile.is_open())

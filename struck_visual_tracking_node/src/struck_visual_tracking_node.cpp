@@ -35,13 +35,19 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
+	// This topic enables user to initialize tracking.
+	auto init_sub = nh.subscribe("init_tracker", 1000, &StruckTracker::userInitCallback, &struck_tracker);
+
   // If camera topic is set, run from camera topic.
 	if (struck_tracker.runFromCameraTopic) {
 		ROS_INFO_STREAM("Running from camera topic: " << params.camera_topic);
-		auto sub = nh.subscribe(params.camera_topic, 1000, &StruckTracker::cameraCallback, &struck_tracker);
+		auto camera_sub = nh.subscribe(params.camera_topic, 1000, &StruckTracker::cameraCallback, &struck_tracker);
 		ros::spin();
 		return EXIT_SUCCESS;
 	}
+
+	ros::AsyncSpinner spinner(1);
+	spinner.start();
 
 	// Uncommenting this leads to segfaults when not built in debug mode. Weird.
 	//ROS_INFO_STREAM("Running from direct input.");
@@ -50,5 +56,6 @@ int main(int argc, char* argv[]) {
 	if (!struck_tracker.runTracker()) {
 		return EXIT_FAILURE;
 	}
+	ros::waitForShutdown();
 	return EXIT_SUCCESS;
 }
