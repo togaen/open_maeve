@@ -3,12 +3,9 @@
 #include <ros/console.h>
 
 void StruckTracker::userInitCallback(const std_msgs::Bool::ConstPtr& msg) {
-ROS_INFO("here1");
 	if (!is_user_initted) {
-		ROS_INFO("here2");
 				if (msg->data && tracker_init.useCamera)
 				{
-					ROS_INFO("here3");
 					tracker_init.doInitialise = true;
 				}
 	}
