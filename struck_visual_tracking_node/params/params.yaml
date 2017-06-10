@@ -1,6 +1,12 @@
 # If a topic name for camera images is given, tracking will be performed on it.
 camera_topic: '' #'camera_topic'
 
+# A visualization of tracker output (node relative topic name) if enable_viz is true
+tracker_image_topic: 'tracker_image'
+
+# Visualize tracker results
+enable_viz: true
+
 # If the camera topic is empty, look to a base path for video sequences.
 sequenceBasePath: '' #'/home/jj56/catkin_ws/src/maeve_automation_core/struck_visual_tracking_node/sequences'
 sequenceName: '' #'girl'
@@ -13,7 +19,7 @@ sequenceName: '' #'girl'
 quietMode: false
 
 # debug mode enables additional drawing and visualization.
-debugMode: true
+debugMode: false
 
 # path for output results file.
 # leave empty to disable output.
