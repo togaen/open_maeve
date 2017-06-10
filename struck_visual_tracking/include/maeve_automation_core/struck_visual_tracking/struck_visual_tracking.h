@@ -16,7 +16,6 @@ struct TrackerInit {
   bool doInitialise;
 	bool valid;
 	bool useCamera;
-	cv::VideoCapture cap;
 	int startFrame;
 	int endFrame;
 	FloatRect initBB;

@@ -1,0 +1,7 @@
+rate: 30 # (double: default 30.0) publish rate [Hz].
+device_id: 0 # (int: default 0) capture device id.
+frame_id: 'camera' # (string: default "camera") frame_id of message header.
+image_width: 320 # (int) try to set capture image width.
+image_height: 240 # (int) try to set capture image height.
+camera_info_url: '' # (string) url of camera info yaml.
+file: '' # (string: default "") if not "" then use movie file instead of device.

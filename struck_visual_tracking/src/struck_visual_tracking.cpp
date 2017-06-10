@@ -38,20 +38,10 @@ TrackerInit buildTrackerInit(const Config& conf, const std::string& camera_topic
 	
 	if (tracker_init.useCamera)
 	{
-		if (!tracker_init.cap.open(0))
-		{
-			ROS_ERROR_STREAM("error: could not start camera capture");
-			return tracker_init;
-		}
 		tracker_init.startFrame = 0;
 		tracker_init.endFrame = INT_MAX;
-		cv::Mat tmp;
-		tracker_init.cap >> tmp;
-		tracker_init.scaleW = static_cast<float>(conf.frameWidth/tmp.cols);
-		tracker_init.scaleH = static_cast<float>(conf.frameHeight/tmp.rows);
 
 		tracker_init.initBB = IntRect(conf.frameWidth/2-kLiveBoxWidth/2, conf.frameHeight/2-kLiveBoxHeight/2, kLiveBoxWidth, kLiveBoxHeight);
-		ROS_INFO_STREAM("press 'i' to initialise tracker");
 	}
 
 	// Initialized a valid object.

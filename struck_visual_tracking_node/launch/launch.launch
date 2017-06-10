@@ -1,5 +1,5 @@
 <launch>	
-<node
+	<node
 		name="struck_visual_tracking_node"
 		pkg="struck_visual_tracking_node"
 		type="struck_visual_tracking_node"
