@@ -15,34 +15,6 @@ void writeOutput(const Tracker& tracker, const TrackerInit& tracker_init, std::o
 	}
 }
 
-bool captureInput(const Config& conf, TrackerInit& tracker_init, int frameInd, bool paused) {
-		if (!conf.quietMode)
-		{
-			int key = cv::waitKey(paused ? 0 : 1);
-			if (key != -1)
-			{
-				if (key == 27 || key == 113) // esc q
-				{
-					return false;
-				}
-				else if (key == 112) // p
-				{
-					paused = !paused;
-				}
-				else if (key == 105 && tracker_init.useCamera)
-				{
-					tracker_init.doInitialise = true;
-				}
-			}
-			if (conf.debugMode && frameInd == tracker_init.endFrame)
-			{
-				ROS_INFO_STREAM("\n\nend of sequence, press any key to exit");
-				cv::waitKey();
-			}
-		}
-		return true;
-}
-
 void prepareCameraTrackingFrame(const cv::Mat& frameOrig, const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result) {
 			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
 			flip(frame, frame, 1);

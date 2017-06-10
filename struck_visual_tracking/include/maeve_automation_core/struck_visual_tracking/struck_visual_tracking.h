@@ -30,8 +30,6 @@ bool runTracker(const Config& conf, TrackerInit& tracker_init, Tracker& tracker)
 
 void writeOutput(const Tracker& tracker, const TrackerInit& tracker_init, std::ofstream& outFile);
 
-bool captureInput(const Config& conf, TrackerInit& tracker_init, int frameInd, bool paused); 
-
 void prepareCameraTrackingFrame(const cv::Mat& frameOrig, const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result);
 
 bool prepareTrackingFrame(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd);
