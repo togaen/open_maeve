@@ -8,10 +8,10 @@ void StruckTracker::publishBoundingBox(const ros::Time& time) {
 		bb_msg.header.stamp = time;
 		bb_msg.image_width = conf.frameWidth;
 	  bb_msg.image_height = conf.frameHeight;	
-		bb_msg.x_min = bb.XMin() / tracker_init.scaleW;
-		bb_msg.x_max = bb.XMax() / tracker_init.scaleW;
-		bb_msg.y_min = bb.YMax() / tracker_init.scaleH;
-		bb_msg.y_max = bb.YMax() / tracker_init.scaleH;
+		bb_msg.x_min = bb.XMin();
+		bb_msg.x_max = bb.XMax();
+		bb_msg.y_min = bb.YMin();
+		bb_msg.y_max = bb.YMax();
     tracker_bb_pub.publish(bb_msg);
 }
 
@@ -46,7 +46,6 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
 			ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
 		  return;
 		}
-
 		// Perform tracking.
 		cv::Mat frame;
     prepareCameraTrackingFrame(frameOrig->image, conf, tracker_init, tracker, frame, result.image);
@@ -70,33 +69,14 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
 }
 
 bool StruckTracker::runTracker() {
-	if (!conf.quietMode)
-	{
-		cv::namedWindow("result");
-	}
-	
-	auto paused = false;
-	srand(conf.seed);
-	for (int frameInd = tracker_init.startFrame; frameInd <= tracker_init.endFrame; ++frameInd)
-	{
-		cv::Mat frame;
-		if (!prepareTrackingFrame(conf, tracker_init, tracker, frame, result.image, frameInd)) {
-			return false;
-		}
-		
-		if (tracker.IsInitialised())
-		{
-			tracker.Track(frame);
-			
-			if (!conf.quietMode && conf.debugMode)
-			{
-				tracker.Debug();
-			}
-			
-			rectangle(result.image, tracker.GetBB(), CV_RGB(0, 255, 0));
-		}
 
-		publishTrackerImage(ros::Time::now());
+	while (tracker_init.useCamera) {
+		cv_bridge::CvImage frameOrig;
+		frameOrig.header.stamp = ros::Time::now();
+		frameOrig.encoding = sensor_msgs::image_encodings::TYPE_8UC3; 
+		tracker_init.cap >> frameOrig.image;
+		auto img_msg = frameOrig.toImageMsg();
+		cameraCallback(img_msg);
 	}
 	return true;
 }

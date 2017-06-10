@@ -28,10 +28,11 @@ result.encoding = sensor_msgs::image_encodings::TYPE_8UC3;
 	bool runTracker();
 	void cameraCallback(const sensor_msgs::Image::ConstPtr& msg);
 	void userInitCallback(const std_msgs::Bool::ConstPtr& msg);
+
+	private:
   void publishTrackerImage(const ros::Time& time);
   void publishBoundingBox(const ros::Time& time);
 
-	private:
 	bool is_user_initted;
 
 	cv_bridge::CvImage result;
