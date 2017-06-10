@@ -15,10 +15,9 @@ void writeOutput(const Tracker& tracker, const TrackerInit& tracker_init, std::o
 	}
 }
 
-bool showOutput(const Config& conf, const cv::Mat& result, TrackerInit& tracker_init, int frameInd, bool paused) {
+bool captureInput(const Config& conf, TrackerInit& tracker_init, int frameInd, bool paused) {
 		if (!conf.quietMode)
 		{
-			imshow("result", result);
 			int key = cv::waitKey(paused ? 0 : 1);
 			if (key != -1)
 			{
