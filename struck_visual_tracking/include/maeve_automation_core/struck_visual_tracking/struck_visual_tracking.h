@@ -30,10 +30,6 @@ bool runTracker(const Config& conf, TrackerInit& tracker_init, Tracker& tracker)
 
 void prepareCameraTrackingFrame(const cv::Mat& frameOrig, const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result);
 
-bool prepareTrackingFrame(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd);
-
 TrackerInit buildTrackerInit(const Config& conf, const std::string& camera_topic);
 
 void rectangle(cv::Mat& rMat, const FloatRect& rRect, const cv::Scalar& rColour);
-
-bool TrackFromSequence(const std::string& sequence_base_path);

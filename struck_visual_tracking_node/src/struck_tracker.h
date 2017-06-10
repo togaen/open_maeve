@@ -25,7 +25,6 @@ struct StruckTracker {
 	result.image = cv::Mat(conf.frameHeight, conf.frameWidth, CV_8UC3);
 result.encoding = sensor_msgs::image_encodings::TYPE_8UC3;
 	}
-	bool runTracker();
 	void cameraCallback(const sensor_msgs::Image::ConstPtr& msg);
 	void userInitCallback(const std_msgs::Bool::ConstPtr& msg);
 

@@ -29,9 +29,6 @@ bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
 	LOAD_PARAM(enable_viz);
 	LOAD_PARAM(quietMode);
 	LOAD_PARAM(debugMode);
-	LOAD_PARAM(sequenceBasePath);
-	LOAD_PARAM(resultsPath);
-	LOAD_PARAM(sequenceName);
 	LOAD_PARAM(frameWidth);
 	LOAD_PARAM(frameHeight);
 	LOAD_PARAM(seed);
@@ -56,9 +53,9 @@ Config StruckVisualTrackingParams::toStruckConfig() const {
 	config.quietMode = quietMode;
 	config.debugMode = debugMode;
 	
-	config.sequenceBasePath = sequenceBasePath;
-	config.sequenceName = sequenceName;
-	config.resultsPath = resultsPath;
+	config.sequenceBasePath = "";
+	config.sequenceName = "";
+	config.resultsPath = "";
 	
 	config.frameWidth = frameWidth;
 	config.frameHeight = frameHeight;

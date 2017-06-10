@@ -68,15 +68,3 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
 		publishBoundingBox(msg->header.stamp);
 }
 
-bool StruckTracker::runTracker() {
-
-	while (tracker_init.useCamera) {
-		cv_bridge::CvImage frameOrig;
-		frameOrig.header.stamp = ros::Time::now();
-		frameOrig.encoding = sensor_msgs::image_encodings::TYPE_8UC3; 
-		tracker_init.cap >> frameOrig.image;
-		auto img_msg = frameOrig.toImageMsg();
-		cameraCallback(img_msg);
-	}
-	return true;
-}

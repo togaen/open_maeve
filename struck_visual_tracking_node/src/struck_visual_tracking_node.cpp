@@ -25,7 +25,6 @@ int main(int argc, char* argv[]) {
 
 	// Initialize STRUCK tracker.
 	auto struck_tracker = StruckTracker(params, nh);
-	//auto struck_tracker = StruckTracker(params.toStruckConfig(), params.camera_topic, nh.advertise<sensor_msgs::Image>(params.tracker_image_topic, 1000));
 	if (!StruckVisualTrackingParams::SanityCheckStruckConfig(struck_tracker.conf)) {
     ROS_INFO_STREAM("Struck config object failed sanity check.");
 		return EXIT_FAILURE;
@@ -53,9 +52,15 @@ int main(int argc, char* argv[]) {
 	//ROS_INFO_STREAM("Running from direct input.");
 
 	// Otherwise, run directly from file/webcam input.
-	if (!struck_tracker.runTracker()) {
-		return EXIT_FAILURE;
+	while (struck_tracker.tracker_init.useCamera) {
+		cv_bridge::CvImage frameOrig;
+		frameOrig.header.stamp = ros::Time::now();
+		frameOrig.encoding = sensor_msgs::image_encodings::TYPE_8UC3; 
+		struck_tracker.tracker_init.cap >> frameOrig.image;
+		auto img_msg = frameOrig.toImageMsg();
+		struck_tracker.cameraCallback(img_msg);
 	}
+
 	ros::waitForShutdown();
 	return EXIT_SUCCESS;
 }

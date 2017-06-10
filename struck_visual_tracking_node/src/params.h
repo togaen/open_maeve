@@ -50,17 +50,6 @@ struct StruckVisualTrackingParams {
   // debug mode enables additional drawing and visualization.
 	bool debugMode;
 
-  // base path for video sequences.
-	std::string sequenceBasePath;
-
-  // path for output results file.
-  // comment this out to disable output.
-  std::string resultsPath;
-
-  // video sequence to run the tracker on.
-  // comment this out to use webcam.
-	std::string sequenceName;
-
   // frame size for use during tracking.
   // the input image will be scaled to this size.
 	int frameWidth;
@@ -92,10 +81,6 @@ struct StruckVisualTrackingParams {
 	/// \return True if seems okay; otherwise false.
 	template <typename T>
   static bool SanityCheckConfig(const T& c) {
-		if (c.sequenceName.empty() != c.sequenceBasePath.empty()) {
-			ROS_ERROR_STREAM("sequenceName.empty() != sequenceBasePath.empty(): check failed");
-			return false;
-		}
 	  CHECK_STRICTLY_POSITIVE(c.frameWidth);
     CHECK_STRICTLY_POSITIVE(c.frameHeight);
 	  CHECK_STRICTLY_POSITIVE(c.searchRadius);

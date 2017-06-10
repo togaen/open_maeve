@@ -10,10 +10,6 @@ tracker_bb_topic: 'track_bounding_box'
 # Visualize tracker results
 enable_viz: true
 
-# If the camera topic is empty, look to a base path for video sequences.
-sequenceBasePath: '' #'/home/jj56/catkin_ws/src/maeve_automation_core/struck_visual_tracking_node/sequences'
-sequenceName: '' #'girl'
-
 #
 # If neither camera topic nor sequence name is set, tracker will use webcam.
 #
@@ -23,11 +19,6 @@ quietMode: false
 
 # debug mode enables additional drawing and visualization.
 debugMode: false
-
-# path for output results file.
-# leave empty to disable output.
-#resultsPath: 'log.txt'
-resultsPath: ''
 
 # frame size for use during tracking.
 # the input image will be scaled to this size.
