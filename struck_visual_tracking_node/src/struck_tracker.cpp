@@ -2,6 +2,19 @@
 
 #include <ros/console.h>
 
+void StruckTracker::publishBoundingBox(const ros::Time& time) {
+		const FloatRect& bb = tracker.GetBB();
+    struck_visual_tracking_interface::ImageBoundingBox bb_msg;
+		bb_msg.header.stamp = time;
+		bb_msg.image_width = conf.frameWidth;
+	  bb_msg.image_height = conf.frameHeight;	
+		bb_msg.x_min = bb.XMin() / tracker_init.scaleW;
+		bb_msg.x_max = bb.XMax() / tracker_init.scaleW;
+		bb_msg.y_min = bb.YMax() / tracker_init.scaleH;
+		bb_msg.y_max = bb.YMax() / tracker_init.scaleH;
+    tracker_bb_pub.publish(bb_msg);
+}
+
 void StruckTracker::userInitCallback(const std_msgs::Bool::ConstPtr& msg) {
 	if (!is_user_initted) {
 				if (msg->data && tracker_init.useCamera)
@@ -51,20 +64,12 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
 
 		// Set result header and publish image (optionally).
 		publishTrackerImage(msg->header.stamp);
+
+		// Publish track.
+		publishBoundingBox(msg->header.stamp);
 }
 
 bool StruckTracker::runTracker() {
-  std::ofstream outFile;
-	if (conf.resultsPath != "")
-	{
-		outFile.open(conf.resultsPath.c_str(), std::ios::out);
-		if (!outFile)
-		{
-			ROS_ERROR_STREAM("error: could not open results file: " << conf.resultsPath);
-			return false;
-		}
-	}
-
 	if (!conf.quietMode)
 	{
 		cv::namedWindow("result");
@@ -89,17 +94,9 @@ bool StruckTracker::runTracker() {
 			}
 			
 			rectangle(result.image, tracker.GetBB(), CV_RGB(0, 255, 0));
-
-      writeOutput(tracker, tracker_init, outFile);
 		}
 
 		publishTrackerImage(ros::Time::now());
 	}
-	
-	if (outFile.is_open())
-	{
-		outFile.close();
-	}
-
 	return true;
 }

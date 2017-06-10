@@ -2,7 +2,10 @@
 camera_topic: '' #'camera_topic'
 
 # A visualization of tracker output (node relative topic name) if enable_viz is true
-tracker_image_topic: 'tracker_image'
+tracker_image_topic: 'track_image'
+
+# Output topic for tracker
+tracker_bb_topic: 'track_bounding_box'
 
 # Visualize tracker results
 enable_viz: true

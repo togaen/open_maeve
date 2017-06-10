@@ -7,14 +7,6 @@
 static const int kLiveBoxWidth = 80;
 static const int kLiveBoxHeight = 80;
 
-void writeOutput(const Tracker& tracker, const TrackerInit& tracker_init, std::ofstream& outFile) {
-	if (outFile)
-	{
-		const FloatRect& bb = tracker.GetBB();
-		outFile << bb.XMin()/tracker_init.scaleW << "," << bb.YMin()/tracker_init.scaleH << "," << bb.Width()/tracker_init.scaleW << "," << bb.Height()/tracker_init.scaleH << std::endl;
-	}
-}
-
 void prepareCameraTrackingFrame(const cv::Mat& frameOrig, const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result) {
 			resize(frameOrig, frame, cv::Size(conf.frameWidth, conf.frameHeight));
 			flip(frame, frame, 1);
@@ -36,7 +28,6 @@ void prepareCameraTrackingFrame(const cv::Mat& frameOrig, const Config& conf, Tr
 				rectangle(result, tracker_init.initBB, CV_RGB(255, 255, 255));
 			}
 }
-
 
 bool prepareTrackingFrame(const Config& conf, TrackerInit& tracker_init, Tracker& tracker, cv::Mat& frame, cv::Mat& result, int frameInd) {
 	if (tracker_init.useCamera) {

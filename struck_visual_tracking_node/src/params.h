@@ -38,6 +38,9 @@ struct StruckVisualTrackingParams {
 	// topic to publish tracker images to
   std::string tracker_image_topic;
 
+  // topic to publish tracker bounding boxes to
+	std::string tracker_bb_topic;
+
   // enable visualization topic
 	bool enable_viz;
 

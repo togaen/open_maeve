@@ -16,9 +16,16 @@
    loaded_param_set += ss.str();\
 	}
 
+#define CHECK_NONEMPTY(var) \
+	if (var.empty()) {\
+		ROS_INFO_STREAM(#var << ".empty(): check failed");\
+		return false;\
+	}
+
 bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(camera_topic);
   LOAD_PARAM(tracker_image_topic);
+  LOAD_PARAM(tracker_bb_topic);
 	LOAD_PARAM(enable_viz);
 	LOAD_PARAM(quietMode);
 	LOAD_PARAM(debugMode);
@@ -33,6 +40,7 @@ bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
 	LOAD_PARAM(svmBudgetSize);
 	LOAD_PARAM(feature);
 	CHECK_NONEMPTY(feature);
+	CHECK_NONEMPTY(tracker_bb_topic);
 
   return SanityCheckConfig(*this);
 }
