@@ -2,6 +2,8 @@
 # This message defines a bounding box on an image
 #
 
+std_msgs/Header header
+
 int64 image_width
 int64 image_height
 
