@@ -5,8 +5,12 @@
 int64 image_width
 int64 image_height
 
-int64 lower_left
-int64 lower_right
-int64 upper_right
-int64 upper_left
+#
+# Extents in image plane coordinates: (0, 0) upper left corner, x from left to right, y from top to bottom
+#
+
+float64 x_min
+float64 x_max
+float64 y_min
+float64 y_max
 
