@@ -8,7 +8,8 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/CMakeLists.txt)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
+  cv_bridge
+	roscpp
 	struck_visual_tracking
 )
 

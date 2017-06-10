@@ -1,25 +1,34 @@
 #include "struck_tracker.h"
 
 #include <ros/console.h>
+#include <image_transport/image_transport.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 
 void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
-
 	srand(conf.seed);
-	const auto paused = false;
-	cv::Mat result(conf.frameHeight, conf.frameWidth, CV_8UC3);
-	for (int frameInd = tracker_init.startFrame; frameInd <= tracker_init.endFrame; ++frameInd)
-	{
+	const auto paused = false;	
 
-		/// BEGIN 
-		cv::Mat frame;
-	  cv::Mat frameOrig; // <-- set this to incoming image message
-    cv::Mat result(conf.frameHeight, conf.frameWidth, CV_8UC3);
-    prepareCameraTrackingFrame(frameOrig, conf, tracker_init, tracker, frame, result);
-		/// END
-		
+		// Convert ROS message to opencv image.
+		cv_bridge::CvImageConstPtr cv_ptr;
+    try
+		{
+		  cv_ptr = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::TYPE_8UC3);
+		}
+		catch (cv_bridge::Exception& e)
+		{
+			ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
+		  return;
+		}
+
+		// Perform tracking.
+		cv_bridge::CvImage frame;
+		frame.header = msg->header;
+		frame.encoding = sensor_msgs::image_encodings::TYPE_8UC3;
+    prepareCameraTrackingFrame(cv_ptr->image, conf, tracker_init, tracker, frame.image, result);
 		if (tracker.IsInitialised())
 		{
-			tracker.Track(frame);
+			tracker.Track(frame.image);
 			
 			if (!conf.quietMode && conf.debugMode)
 			{
@@ -29,11 +38,11 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
 			rectangle(result, tracker.GetBB(), CV_RGB(0, 255, 0));
 		}
 
-		// publish to output viz topic
-		if (!showOutput(conf, result, tracker_init, frameInd, paused)) {
-			break;
-		}
-	}
+	
+	  if (params.enable_viz) {
+			ROS_INFO_STREAM("Publishing tracker image...");
+			tracker_image_pub.publish(frame.toImageMsg());
+		}	
 }
 
 bool StruckTracker::runTracker() {

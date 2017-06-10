@@ -2,6 +2,7 @@
 #include "struck_tracker.h"
 
 #include <ros/ros.h>
+#include <sensor_msgs/Image.h>
 
 int main(int argc, char* argv[]) {
 	const auto node_name = std::string("struck_visual_tracking_node");
@@ -23,7 +24,8 @@ int main(int argc, char* argv[]) {
 	}
 
 	// Initialize STRUCK tracker.
-	auto struck_tracker = StruckTracker(params.toStruckConfig(), params.camera_topic);
+	auto struck_tracker = StruckTracker(params, nh);
+	//auto struck_tracker = StruckTracker(params.toStruckConfig(), params.camera_topic, nh.advertise<sensor_msgs::Image>(params.tracker_image_topic, 1000));
 	if (!StruckVisualTrackingParams::SanityCheckStruckConfig(struck_tracker.conf)) {
     ROS_INFO_STREAM("Struck config object failed sanity check.");
 		return EXIT_FAILURE;

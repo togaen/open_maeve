@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <sstream>
 
 #include "ros/ros.h"
 
@@ -35,6 +34,12 @@ struct StruckVisualTrackingParams {
 
 	// topic name for camera images
 	std::string camera_topic;
+
+	// topic to publish tracker images to
+  std::string tracker_image_topic;
+
+  // enable visualization topic
+	bool enable_viz;
 
 	// quiet mode disables all visual output (for experiments).
 	bool quietMode;
@@ -97,6 +102,6 @@ struct StruckVisualTrackingParams {
   }
 
 	/// \brief Human-readable string of parameters loaded by load() function.
-	std::stringstream loaded_param_set;
+	std::string loaded_param_set;
 };  // struct StruckVisualTrackingParams
 

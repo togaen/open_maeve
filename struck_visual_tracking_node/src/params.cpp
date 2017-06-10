@@ -10,11 +10,17 @@
 		ROS_ERROR_STREAM("Failed to load parameter '" << #var << "'");\
 		return false;\
 	}\
-  loaded_param_set << #var << ": " << var << "\n";
+  {\
+	 std::stringstream ss;\
+   ss << #var << ": " << var << "\n";\
+   loaded_param_set += ss.str();\
+	}
 
 bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(camera_topic);
-  LOAD_PARAM(quietMode);
+  LOAD_PARAM(tracker_image_topic);
+	LOAD_PARAM(enable_viz);
+	LOAD_PARAM(quietMode);
 	LOAD_PARAM(debugMode);
 	LOAD_PARAM(sequenceBasePath);
 	LOAD_PARAM(resultsPath);
@@ -62,5 +68,5 @@ Config StruckVisualTrackingParams::toStruckConfig() const {
 }
 
 std::ostream& operator<<(std::ostream& os, const StruckVisualTrackingParams& params) {
-  return os << params.loaded_param_set.str();
+  return os << params.loaded_param_set;
 }
