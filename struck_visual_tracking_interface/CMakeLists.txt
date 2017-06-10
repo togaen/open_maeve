@@ -45,14 +45,14 @@ find_package(catkin REQUIRED COMPONENTS message_generation)
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-	struck_visual_track_msg.msg
+	image_bounding_box.msg
 )
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  struck_visual_track_srv.srv
-)
+#add_service_files(
+#  FILES
+#  image_bounding_box_srv.srv
+#)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -99,7 +99,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES struck_visual_tracking_interface
-  CATKIN_DEPENDS message_runtime
+#  CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 

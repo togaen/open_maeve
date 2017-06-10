@@ -1,7 +1,0 @@
-#
-# This service message defines the output of the Struck visual tracking system
-#
-
-int64 a
----
-int64 b
