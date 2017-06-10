@@ -45,7 +45,7 @@ find_package(catkin REQUIRED COMPONENTS message_generation)
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-	image_bounding_box.msg
+	ImageBoundingBox.msg
 )
 
 ## Generate services in the 'srv' folder
