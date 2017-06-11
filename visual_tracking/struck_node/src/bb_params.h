@@ -2,6 +2,8 @@
 
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
+namespace maeve_automation_core {
+
 struct BoundingBoxParams : public ParamsBase {
 	/// \brief Load parameters from parameter server.
   bool load(const ros::NodeHandle& nh) override;
@@ -22,3 +24,6 @@ struct BoundingBoxParams : public ParamsBase {
 	double height;
 	/// \}
 };  // struct BoundingBoxParams
+
+}  // namespace maeve_automation_core
+

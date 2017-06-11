@@ -2,6 +2,8 @@
 
 #include <ros/console.h>
 
+namespace maeve_automation_core {
+
 StruckTracker::StruckTracker(ros::NodeHandle& nh) : doInitialise(false), is_user_initted(false), initialized_successfully(false) {
   if (params.load(nh)) {
 		ROS_INFO_STREAM("Loaded params:\n" << params);
@@ -108,4 +110,6 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
 		// Publish track.
 		publishBoundingBox(msg->header.stamp);
 }
+
+}  // namespace maeve_automation_core
 

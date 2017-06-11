@@ -5,6 +5,8 @@
 #include "maeve_automation_core/struck/Config.h"
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
+namespace maeve_automation_core {
+
 struct StruckVisualTrackingParams : public ParamsBase {
 	/// \brief Load parameters from parameter server.
   bool load(const ros::NodeHandle& nh) override;
@@ -85,4 +87,7 @@ struct StruckVisualTrackingParams : public ParamsBase {
     return true;
   }
 };  // struct StruckVisualTrackingParams
+
+}  // namespace maeve_automation_core
+
 

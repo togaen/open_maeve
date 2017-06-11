@@ -1,5 +1,7 @@
 #include "params.h"
 
+namespace maeve_automation_core {
+
 bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(camera_topic);
 	LOAD_PARAM(camera_topic_queue_size);
@@ -61,4 +63,6 @@ Config StruckVisualTrackingParams::toStruckConfig() const {
 
 	return config;
 }
+
+}  // namespace maeve_automation_core
 

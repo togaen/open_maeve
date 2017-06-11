@@ -1,5 +1,7 @@
 #include "bb_params.h"
 
+namespace maeve_automation_core {
+
 bool BoundingBoxParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(bb_x_min);
   LOAD_PARAM(bb_x_max);
@@ -17,4 +19,6 @@ bool BoundingBoxParams::load(const ros::NodeHandle& nh) {
 
 	return true;
 }
+
+}  // namespace maeve_automation_core
 

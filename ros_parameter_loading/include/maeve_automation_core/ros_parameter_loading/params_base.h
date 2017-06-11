@@ -35,6 +35,8 @@
    loaded_param_set += ss.str();\
 	}
 
+namespace maeve_automation_core {
+
 struct ParamsBase {
 	/// \brief Stream overload
   friend std::ostream& operator<<(std::ostream &os, const ParamsBase& params) {
@@ -49,4 +51,6 @@ struct ParamsBase {
 	/// \brief Human-readable string of parameters loaded by load() function.
 	std::string loaded_param_set;
 };  // struct StruckVisualTrackingParams
+
+}  // namespace maeve_automation_core
 

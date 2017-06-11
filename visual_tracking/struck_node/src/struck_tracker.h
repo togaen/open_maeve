@@ -14,6 +14,8 @@
 #include "struck_node/ImageBoundingBox.h"
 #include "maeve_automation_core/struck/struck.h"
 
+namespace maeve_automation_core {
+
 struct StruckTracker {
   bool doInitialise;
 	StruckVisualTrackingParams params;
@@ -37,3 +39,6 @@ struct StruckTracker {
 	ros::Publisher tracker_image_pub;
   ros::Publisher tracker_bb_pub;
 };  // struct StruckTracker
+
+}  // namespace maeve_automation_core
+
