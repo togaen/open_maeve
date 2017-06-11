@@ -27,7 +27,7 @@ bool StruckTracker::valid() const {
 	return initialized_successfully;
 }
 
-void StruckTracker::publishBoundingBox(const ros::Time& time) {
+void StruckTracker::publishBoundingBox(const ros::Time& time) const {
   const FloatRect& bb = tracker->GetBB();
   struck_visual_tracking_node::ImageBoundingBox bb_msg;
 	bb_msg.header.stamp = time;
@@ -46,10 +46,11 @@ void StruckTracker::userInitCallback(const std_msgs::Bool::ConstPtr& msg) {
 	}
 }
 
-void StruckTracker::publishTrackerImage(const ros::Time& time) {
-    result.header.stamp = time;
+void StruckTracker::publishTrackerImage(const ros::Time& time) const {
 	  if (params.enable_viz) {
-			tracker_image_pub.publish(result.toImageMsg());
+		auto msg = result.toImageMsg();
+		msg->header.stamp = time;
+			tracker_image_pub.publish(msg);
 		}
 }
 

@@ -27,8 +27,8 @@ struct StruckTracker {
 	void userInitCallback(const std_msgs::Bool::ConstPtr& msg);
 
 	private:
-  void publishTrackerImage(const ros::Time& time);
-  void publishBoundingBox(const ros::Time& time);
+  void publishTrackerImage(const ros::Time& time) const;
+  void publishBoundingBox(const ros::Time& time) const;
 
 	bool is_user_initted;
 	bool initialized_successfully;
