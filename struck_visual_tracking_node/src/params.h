@@ -22,8 +22,14 @@ struct StruckVisualTrackingParams : public ParamsBase {
   // topic to listening for tracker initialized signale
 	std::string init_tracker_topic;
 
+  // init topic queue size
+	int init_tracker_topic_queue_size;
+
 	// topic name for camera images
 	std::string camera_topic;
+
+  // camera topic queue size
+	int camera_topic_queue_size;
 
 	// topic to publish tracker images to
   std::string tracker_image_topic;

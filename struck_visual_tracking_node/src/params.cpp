@@ -2,7 +2,9 @@
 
 bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(camera_topic);
+	LOAD_PARAM(camera_topic_queue_size);
 	LOAD_PARAM(init_tracker_topic);
+	LOAD_PARAM(init_tracker_topic_queue_size);
   LOAD_PARAM(tracker_image_topic);
   LOAD_PARAM(tracker_bb_topic);
 	LOAD_PARAM(enable_viz);

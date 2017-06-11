@@ -17,11 +17,14 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	} 
 
+  // For convenience.
+	const auto& params = struck_tracker.params;
+
 	// This topic enables user to initialize tracking.
-	auto init_sub = nh.subscribe(struck_tracker.params.init_tracker_topic, 1000, &StruckTracker::userInitCallback, &struck_tracker);
+	auto init_sub = nh.subscribe(params.init_tracker_topic, params.init_tracker_topic_queue_size, &StruckTracker::userInitCallback, &struck_tracker);
 
 	// Set camera image stream topic.
-	auto camera_sub = nh.subscribe(struck_tracker.params.camera_topic, 1000, &StruckTracker::cameraCallback, &struck_tracker);
+	auto camera_sub = nh.subscribe(params.camera_topic, params.camera_topic_queue_size, &StruckTracker::cameraCallback, &struck_tracker);
 
   // Kick it off.
 	ros::spin();
