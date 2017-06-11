@@ -1,30 +1,11 @@
 #pragma once
 
-#include <string>
-#include <iostream>
-
-#include "ros/ros.h"
-
 #include "maeve_automation_core/struck_visual_tracking/Config.h"
+#include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
-#define CHECK_STRICTLY_POSITIVE(var)\
-	if (var <= 0) {\
-		ROS_ERROR_STREAM(#var << " <= 0: check failed");\
-		return false;\
-	}
-
-#define CHECK_NONEMPTY(var) \
-	if (var.empty()) {\
-		ROS_INFO_STREAM(#var << ".empty(): check failed");\
-		return false;\
-	}
-
-struct StruckVisualTrackingParams {
-	/// \brief Stream overload
-  friend std::ostream& operator<<(std::ostream &os, const StruckVisualTrackingParams& params);
-
+struct StruckVisualTrackingParams : public ParamsBase {
 	/// \brief Load parameters from parameter server.
-  bool load(const ros::NodeHandle& nh);
+  bool load(const ros::NodeHandle& nh) override;
 
 	/// \brief Convert this parameter object to a STRUCK config object.
   Config toStruckConfig() const;
@@ -89,8 +70,5 @@ struct StruckVisualTrackingParams {
 	  CHECK_STRICTLY_POSITIVE(c.svmBudgetSize);
     return true;
   }
-
-	/// \brief Human-readable string of parameters loaded by load() function.
-	std::string loaded_param_set;
 };  // struct StruckVisualTrackingParams
 

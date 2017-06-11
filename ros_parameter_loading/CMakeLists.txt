@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(struck_visual_tracking_node)
+project(ros_parameter_loading)
 
 ## Set build type
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
@@ -15,14 +15,7 @@ add_definitions(-std=c++11)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  cv_bridge
-	roscpp
-	struck_visual_tracking
-  std_msgs
-	message_generation
-  ros_parameter_loading
-	)
+find_package(catkin REQUIRED roscpp)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -58,10 +51,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-	ImageBoundingBox.msg
-)
+# add_message_files(
+#   FILES
+#   Message1.msg
+#   Message2.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -78,10 +72,10 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-   DEPENDENCIES
-   std_msgs  # Or other packages containing msgs
-)
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs  # Or other packages containing msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -113,9 +107,9 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS message_runtime
+  INCLUDE_DIRS include
+#  LIBRARIES ros_parameter_loading
+  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
 )
 
@@ -125,15 +119,11 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
-include_directories(
-	src
-	${catkin_INCLUDE_DIRS}
-)
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/struck_visual_tracking_node.cpp
+#   src/${PROJECT_NAME}/ros_parameter_loading.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -144,10 +134,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}
-	src/struck_tracker.cpp
-	src/struck_visual_tracking_node.cpp
-	src/params.cpp)
+# add_executable(${PROJECT_NAME}_node src/ros_parameter_loading_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -157,12 +144,12 @@ add_executable(${PROJECT_NAME}
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(${PROJECT_NAME}_node
+#   ${catkin_LIBRARIES}
+# )
 
 #############
 ## Install ##
@@ -204,7 +191,7 @@ target_link_libraries(${PROJECT_NAME}
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_struck_visual_tracking_node.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_ros_parameter_loading.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

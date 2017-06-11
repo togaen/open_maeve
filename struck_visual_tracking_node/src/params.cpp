@@ -1,27 +1,5 @@
 #include "params.h"
 
-#include <iostream>
-#include <sstream>
-
-#include "ros/console.h"
-
-#define LOAD_PARAM(var) \
-	if (!nh.getParam(#var, var)) {\
-		ROS_ERROR_STREAM("Failed to load parameter '" << #var << "'");\
-		return false;\
-	}\
-  {\
-	 std::stringstream ss;\
-   ss << #var << ": " << var << "\n";\
-   loaded_param_set += ss.str();\
-	}
-
-#define CHECK_NONEMPTY(var) \
-	if (var.empty()) {\
-		ROS_INFO_STREAM(#var << ".empty(): check failed");\
-		return false;\
-	}
-
 bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(camera_topic);
   LOAD_PARAM(tracker_image_topic);
@@ -72,6 +50,3 @@ Config StruckVisualTrackingParams::toStruckConfig() const {
 	return config;
 }
 
-std::ostream& operator<<(std::ostream& os, const StruckVisualTrackingParams& params) {
-  return os << params.loaded_param_set;
-}
