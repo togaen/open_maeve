@@ -1,6 +1,9 @@
 # If a topic name for camera images is given, tracking will be performed on it.
 camera_topic: '/cv_camera_node/image_raw'
 
+# This topic is a bool signal that is user-fired when ready to start tracking
+init_tracker_topic: 'init_tracker'
+
 # A visualization of tracker output (node relative topic name) if enable_viz is true
 tracker_image_topic: 'track_image'
 

@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	// This topic enables user to initialize tracking.
-	auto init_sub = nh.subscribe("init_tracker", 1000, &StruckTracker::userInitCallback, &struck_tracker);
+	auto init_sub = nh.subscribe(params.init_tracker_topic, 1000, &StruckTracker::userInitCallback, &struck_tracker);
 
 	// Set camera image stream topic.
 	auto camera_sub = nh.subscribe(params.camera_topic, 1000, &StruckTracker::cameraCallback, &struck_tracker);

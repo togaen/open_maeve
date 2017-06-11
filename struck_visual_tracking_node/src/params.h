@@ -19,6 +19,9 @@ struct StruckVisualTrackingParams : public ParamsBase {
   // params for bounding box
 	BoundingBoxParams bb_params;
 
+  // topic to listening for tracker initialized signale
+	std::string init_tracker_topic;
+
 	// topic name for camera images
 	std::string camera_topic;
 
