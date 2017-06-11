@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 
 	// Initialize STRUCK tracker.
 	auto struck_tracker = StruckTracker(params, nh);
-	if (!StruckVisualTrackingParams::SanityCheckStruckConfig(struck_tracker.conf)) {
+	if (!struck_tracker.valid()) {
     ROS_INFO_STREAM("Struck config object failed sanity check.");
 		return EXIT_FAILURE;
 	}

@@ -8,6 +8,9 @@ StruckTracker::StruckTracker(const StruckVisualTrackingParams& p, ros::NodeHandl
   initBB = IntRect(params.bb_params.bb_x_min, params.bb_params.bb_y_min, params.bb_params.width, params.bb_params.height);
 }
 
+bool StruckTracker::valid() const {
+	return StruckVisualTrackingParams::SanityCheckStruckConfig(conf);
+}
 
 void StruckTracker::publishBoundingBox(const ros::Time& time) {
 		const FloatRect& bb = tracker.GetBB();

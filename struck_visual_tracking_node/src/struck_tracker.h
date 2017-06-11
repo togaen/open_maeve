@@ -21,6 +21,7 @@ struct StruckTracker {
 	FloatRect initBB;
 
 	StruckTracker(const StruckVisualTrackingParams& p, ros::NodeHandle& nh);
+  bool valid() const;
 	void cameraCallback(const sensor_msgs::Image::ConstPtr& msg);
 	void userInitCallback(const std_msgs::Bool::ConstPtr& msg);
 
