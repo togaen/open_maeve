@@ -14,7 +14,7 @@
 
 #define CHECK_NONEMPTY(var) \
 	if (var.empty()) {\
-		ROS_INFO_STREAM(#var << ".empty(): check failed");\
+		ROS_ERROR_STREAM(#var << ".empty(): check failed");\
 		return false;\
 	}
 
