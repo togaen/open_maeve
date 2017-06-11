@@ -1,0 +1,5 @@
+<launch>	
+	<node name="struck_node" pkg="struck_node" type="struck_node" output="screen">
+		<rosparam command="load" file="$(find struck_node)/params/params.yaml"/>
+	</node>
+</launch>

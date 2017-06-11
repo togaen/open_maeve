@@ -1,3 +1,0 @@
-<launch>
-	<node pkg="rostopic" type="rostopic" name="rostopic" args="pub struck_visual_tracking_node/init_tracker std_msgs/Bool true --once"/>
-</launch>

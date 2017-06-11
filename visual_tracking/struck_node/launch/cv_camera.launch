@@ -1,0 +1,8 @@
+<launch>
+ 	<node name="cv_camera_node" pkg="cv_camera" type="cv_camera_node" output="screen">
+		<rosparam
+			command="load"
+			ns="cv_camera"
+			file="$(find struck_node)/params/cv_camera.yaml"/>
+	</node>
+</launch>
