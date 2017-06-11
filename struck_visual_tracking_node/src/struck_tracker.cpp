@@ -2,9 +2,12 @@
 
 #include <ros/console.h>
 
-TrackerInit::TrackerInit(const StruckVisualTrackingParams& params) : doInitialise(false) {
-	initBB = IntRect(params.bb_params.bb_x_min, params.bb_params.bb_y_min, params.bb_params.width, params.bb_params.height);
+StruckTracker::StruckTracker(const StruckVisualTrackingParams& p, ros::NodeHandle& nh) : doInitialise(false), params(p), conf(params.toStruckConfig()), tracker(conf), is_user_initted(false), tracker_image_pub(nh.advertise<sensor_msgs::Image>(params.tracker_image_topic, 1)), tracker_bb_pub(nh.advertise<struck_visual_tracking_node::ImageBoundingBox>(params.tracker_bb_topic, 1000)) {
+	result.image = cv::Mat(conf.frameHeight, conf.frameWidth, CV_8UC3);
+	result.encoding = sensor_msgs::image_encodings::TYPE_8UC3;
+  initBB = IntRect(params.bb_params.bb_x_min, params.bb_params.bb_y_min, params.bb_params.width, params.bb_params.height);
 }
+
 
 void StruckTracker::publishBoundingBox(const ros::Time& time) {
 		const FloatRect& bb = tracker.GetBB();
@@ -23,7 +26,7 @@ void StruckTracker::userInitCallback(const std_msgs::Bool::ConstPtr& msg) {
 	if (!is_user_initted) {
 				if (msg->data)
 				{
-					tracker_init.doInitialise = true;
+					doInitialise = true;
 				}
 	}
 }
@@ -56,7 +59,7 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
 		cv::resize(frameOrig->image, frame, cv::Size(conf.frameWidth, conf.frameHeight));
 		flip(frame, frame, 1);
 		frame.copyTo(result.image);
-		if (tracker_init.doInitialise)
+		if (doInitialise)
 		{
 			if (tracker.IsInitialised())
 			{
@@ -64,13 +67,13 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
 			}
 			else
 			{
-				tracker.Initialise(frame, tracker_init.initBB);
+				tracker.Initialise(frame, initBB);
 			}
-			tracker_init.doInitialise = false;
+			doInitialise = false;
 		}
 		else if (!tracker.IsInitialised())
 		{
-			rectangle(result.image, tracker_init.initBB, CV_RGB(255, 255, 255));
+			rectangle(result.image, initBB, CV_RGB(255, 255, 255));
 		}
 
     // Perform tracking.
