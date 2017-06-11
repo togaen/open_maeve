@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script to generate Eclipse files for ROS packages. See: http://wiki.ros.org/IDEs#Eclipse
-# Copyright (C) 2017  Open Source Robotics Foundation, Inc. - All Rights Reserved
+# Copyright (C) 2017 Open Source Robotics Foundation, Inc. - All Rights Reserved
 # Permission to copy and modify is granted under the Creative Commons Attribution 3.0 license
 
 #
