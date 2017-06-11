@@ -30,8 +30,6 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-  ROS_INFO_STREAM("Use ROS camera: " << struck_tracker.runFromCameraTopic);
-
 	// This topic enables user to initialize tracking.
 	auto init_sub = nh.subscribe("init_tracker", 1000, &StruckTracker::userInitCallback, &struck_tracker);
 
