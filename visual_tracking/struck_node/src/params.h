@@ -1,69 +1,73 @@
+// Copyright 2017 Maeve Automation
 #pragma once
 
-#include "bb_params.h"
+#include <string>
 
-#include "maeve_automation_core/struck/Config.h"
+#include "./bb_params.h"
+
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
+#include "maeve_automation_core/struck/Config.h"
 
 namespace maeve_automation_core {
 
 struct StruckVisualTrackingParams : public ParamsBase {
-	/// \brief Load parameters from parameter server.
+  /// \brief Load parameters from parameter server.
   bool load(const ros::NodeHandle& nh) override;
 
-	/// \brief Convert this parameter object to a STRUCK config object.
+  /// \brief Convert this parameter object to a STRUCK config object.
   Config toStruckConfig() const;
 
-  /// \brief Check that a Struck config object has its members set to reasonable values.
-	/// \return True if params seem okay; otherwise false.
-	static bool SanityCheckStruckConfig(const Config& c);
+  /// \brief Check that a Struck config object has its members set to reasonable
+  /// values.
+  /// \return True if params seem okay; otherwise false.
+  static bool SanityCheckStruckConfig(const Config& c);
 
   // params for bounding box
-	BoundingBoxParams bb_params;
+  BoundingBoxParams bb_params;
 
   // topic to listening for tracker initialized signale
-	std::string init_tracker_topic;
+  std::string init_tracker_topic;
 
   // init topic queue size
-	int init_tracker_topic_queue_size;
+  int init_tracker_topic_queue_size;
 
-	// topic name for camera images
-	std::string camera_topic;
+  // topic name for camera images
+  std::string camera_topic;
 
   // camera topic queue size
-	int camera_topic_queue_size;
+  int camera_topic_queue_size;
 
-	// topic to publish tracker images to
+  // topic to publish tracker images to
   std::string tracker_image_topic;
 
   // topic to publish tracker bounding boxes to
-	std::string tracker_bb_topic;
+  std::string tracker_bb_topic;
 
   // enable visualization topic
-	bool enable_viz;
+  bool enable_viz;
 
-	// quiet mode disables all visual output (for experiments).
-	bool quietMode;
+  // quiet mode disables all visual output (for experiments).
+  bool quietMode;
 
   // debug mode enables additional drawing and visualization.
-	bool debugMode;
+  bool debugMode;
 
   // frame size for use during tracking.
   // the input image will be scaled to this size.
-	int frameWidth;
-	int frameHeight;
+  int frameWidth;
+  int frameHeight;
 
   // seed for random number generator.
-	int seed;
+  int seed;
 
   // tracker search radius in pixels.
-	int searchRadius;
+  int searchRadius;
 
   // SVM regularization parameter.
-	double svmC;
+  double svmC;
 
   // SVM budget size (0 = no budget).
-	int svmBudgetSize;
+  int svmBudgetSize;
 
   // image features to use.
   // format is: feature kernel [kernel-params]
@@ -72,22 +76,20 @@ struct StruckVisualTrackingParams : public ParamsBase {
   //   kernel = gaussian/linear/intersection/chi2
   //   for kernel=gaussian, kernel-params is sigma
   // multiple features can be specified and will be combined
-	std::string feature;
+  std::string feature;
 
-	private:
-	/// \brief Check common values of Struck and MA param types.
-	/// \return True if seems okay; otherwise false.
-	template <typename T>
+ private:
+  /// \brief Check common values of Struck and MA param types.
+  /// \return True if seems okay; otherwise false.
+  template <typename T>
   static bool SanityCheckConfig(const T& c) {
-	  CHECK_STRICTLY_POSITIVE(c.frameWidth);
+    CHECK_STRICTLY_POSITIVE(c.frameWidth);
     CHECK_STRICTLY_POSITIVE(c.frameHeight);
-	  CHECK_STRICTLY_POSITIVE(c.searchRadius);
-	  CHECK_STRICTLY_POSITIVE(c.svmC);
-	  CHECK_STRICTLY_POSITIVE(c.svmBudgetSize);
+    CHECK_STRICTLY_POSITIVE(c.searchRadius);
+    CHECK_STRICTLY_POSITIVE(c.svmC);
+    CHECK_STRICTLY_POSITIVE(c.svmBudgetSize);
     return true;
   }
 };  // struct StruckVisualTrackingParams
 
 }  // namespace maeve_automation_core
-
-
