@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+# When using catkin tools with ROS, the compile_commands.json files are
+# generated per package. This script collects them all and dumps them into a
+# single file at the root of the workspace. This is needed for the
+# YouCompleteMe vim plugin.
+# Copyright (C) 2017 Sebastian Klose - All Rights Reserved
+# Permission to copy and modify is granted under the GPLv3 license
+
 import os
 import json
 
