@@ -1,8 +1,16 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(struck_visual_tracking)
 
-## Include Maeve Automation cmake
-include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/CMakeLists.txt)
+## Set build type
+set(CMAKE_BUILD_TYPE RelWithDebInfo)
+#set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Release)
+
+## Useful for YCM vim extension
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+## Add support for C++11, supported in ROS Kinetic and newer
+add_definitions(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
