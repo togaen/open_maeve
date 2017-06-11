@@ -147,6 +147,7 @@ include_directories(
 add_executable(${PROJECT_NAME}
 	src/struck_tracker.cpp
 	src/struck_visual_tracking_node.cpp
+  src/bb_params.cpp
 	src/params.cpp)
 
 ## Rename C++ executable without prefix

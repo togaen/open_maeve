@@ -17,7 +17,16 @@ bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
 	CHECK_NONEMPTY(feature);
 	CHECK_NONEMPTY(tracker_bb_topic);
 
-  return SanityCheckConfig(*this);
+  const auto bb_loaded = bb_params.load(nh);
+	if (bb_loaded) {
+		std::stringstream ss;
+		ss << bb_params;
+		loaded_param_set += ss.str();
+	}
+
+	const auto sanity_passed = SanityCheckConfig(*this);
+
+	return bb_loaded && sanity_passed;
 }
 
 bool StruckVisualTrackingParams::SanityCheckStruckConfig(const Config& c) {

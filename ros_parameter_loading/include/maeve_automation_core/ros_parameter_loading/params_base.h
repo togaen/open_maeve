@@ -6,9 +6,15 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
+#define CHECK_GT(var1, var2)\
+	if (!(var1 > var2)) {\
+		ROS_ERROR_STREAM(#var1 << " > " << #var2 << ": check failed for " << #var1 << " = " << var1 << ", " << #var2 << " = " << var2);\
+		return false;\
+	}
+
 #define CHECK_STRICTLY_POSITIVE(var)\
 	if (var <= 0) {\
-		ROS_ERROR_STREAM(#var << " <= 0: check failed");\
+		ROS_ERROR_STREAM(#var << " <= 0: check failed for " << #var << " = " << var);\
 		return false;\
 	}
 

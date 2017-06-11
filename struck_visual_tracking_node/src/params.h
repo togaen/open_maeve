@@ -1,5 +1,7 @@
 #pragma once
 
+#include "bb_params.h"
+
 #include "maeve_automation_core/struck_visual_tracking/Config.h"
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
@@ -13,6 +15,9 @@ struct StruckVisualTrackingParams : public ParamsBase {
   /// \brief Check that a Struck config object has its members set to reasonable values.
 	/// \return True if params seem okay; otherwise false.
 	static bool SanityCheckStruckConfig(const Config& c);
+
+  // params for bounding box
+	BoundingBoxParams bb_params;
 
 	// topic name for camera images
 	std::string camera_topic;

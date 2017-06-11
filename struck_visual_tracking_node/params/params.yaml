@@ -10,9 +10,11 @@ tracker_bb_topic: 'track_bounding_box'
 # Visualize tracker results
 enable_viz: true
 
-#
-# If neither camera topic nor sequence name is set, tracker will use webcam.
-#
+# Initial bounding box specification
+bb_x_min: 120
+bb_x_max: 200
+bb_y_min: 80
+bb_y_max: 160
 
 # quiet mode disables all visual output (for experiments).
 quietMode: false
