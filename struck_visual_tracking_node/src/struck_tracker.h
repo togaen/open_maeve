@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <string>
+#include <memory>
 
 #include <ros/ros.h>
 #include <std_msgs/Bool.h>
@@ -17,10 +18,10 @@ struct StruckTracker {
   bool doInitialise;
 	StruckVisualTrackingParams params;
 	Config conf;
-	Tracker tracker;
+	std::unique_ptr<Tracker> tracker;
 	FloatRect initBB;
 
-	StruckTracker(const StruckVisualTrackingParams& p, ros::NodeHandle& nh);
+	explicit StruckTracker(ros::NodeHandle& nh);
   bool valid() const;
 	void cameraCallback(const sensor_msgs::Image::ConstPtr& msg);
 	void userInitCallback(const std_msgs::Bool::ConstPtr& msg);
@@ -30,6 +31,7 @@ struct StruckTracker {
   void publishBoundingBox(const ros::Time& time);
 
 	bool is_user_initted;
+	bool initialized_successfully;
 
 	cv_bridge::CvImage result;
 	ros::Publisher tracker_image_pub;
