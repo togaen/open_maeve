@@ -4,7 +4,7 @@
 
 void StruckTracker::publishBoundingBox(const ros::Time& time) {
 		const FloatRect& bb = tracker.GetBB();
-    struck_visual_tracking_interface::ImageBoundingBox bb_msg;
+    struck_visual_tracking_node::ImageBoundingBox bb_msg;
 		bb_msg.header.stamp = time;
 		bb_msg.image_width = conf.frameWidth;
 	  bb_msg.image_height = conf.frameHeight;	
