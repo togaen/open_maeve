@@ -13,4 +13,12 @@ struct BoundingBoxParams : public ParamsBase {
 	double bb_y_min;
 	double bb_y_max;
 	/// \}
+
+  /// \brief alternative representation; computed after loading above params.
+	/// \{
+	double x_pos;
+	double y_pos;
+	double width;
+	double height;
+	/// \}
 };  // struct BoundingBoxParams

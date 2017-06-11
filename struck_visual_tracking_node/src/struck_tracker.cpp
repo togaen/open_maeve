@@ -2,6 +2,10 @@
 
 #include <ros/console.h>
 
+TrackerInit::TrackerInit(const StruckVisualTrackingParams& params) : doInitialise(false) {
+	initBB = IntRect(params.bb_params.bb_x_min, params.bb_params.bb_y_min, params.bb_params.width, params.bb_params.height);
+}
+
 void StruckTracker::publishBoundingBox(const ros::Time& time) {
 		const FloatRect& bb = tracker.GetBB();
     struck_visual_tracking_node::ImageBoundingBox bb_msg;
@@ -17,7 +21,7 @@ void StruckTracker::publishBoundingBox(const ros::Time& time) {
 
 void StruckTracker::userInitCallback(const std_msgs::Bool::ConstPtr& msg) {
 	if (!is_user_initted) {
-				if (msg->data && tracker_init.useCamera)
+				if (msg->data)
 				{
 					tracker_init.doInitialise = true;
 				}
@@ -46,9 +50,30 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
 			ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
 		  return;
 		}
-		// Perform tracking.
+	
+		// Prepare frame for tracking.
 		cv::Mat frame;
-    prepareCameraTrackingFrame(frameOrig->image, conf, tracker_init, tracker, frame, result.image);
+		cv::resize(frameOrig->image, frame, cv::Size(conf.frameWidth, conf.frameHeight));
+		flip(frame, frame, 1);
+		frame.copyTo(result.image);
+		if (tracker_init.doInitialise)
+		{
+			if (tracker.IsInitialised())
+			{
+				tracker.Reset();
+			}
+			else
+			{
+				tracker.Initialise(frame, tracker_init.initBB);
+			}
+			tracker_init.doInitialise = false;
+		}
+		else if (!tracker.IsInitialised())
+		{
+			rectangle(result.image, tracker_init.initBB, CV_RGB(255, 255, 255));
+		}
+
+    // Perform tracking.
 		if (tracker.IsInitialised())
 		{
 			tracker.Track(frame);

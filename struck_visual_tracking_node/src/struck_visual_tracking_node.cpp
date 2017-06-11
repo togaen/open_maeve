@@ -26,19 +26,15 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	if (!struck_tracker.tracker_init.valid) {
-		return EXIT_FAILURE;
-	}
-
 	// This topic enables user to initialize tracking.
 	auto init_sub = nh.subscribe("init_tracker", 1000, &StruckTracker::userInitCallback, &struck_tracker);
 
-  // If camera topic is set, run from camera topic.
-	if (!struck_tracker.runFromCameraTopic) {
-		ROS_ERROR_STREAM("Must run from webcam.");
-		return EXIT_FAILURE;
-	}
+	// Set camera image stream topic.
 	auto camera_sub = nh.subscribe(params.camera_topic, 1000, &StruckTracker::cameraCallback, &struck_tracker);
+
+  // Kick it off.
 	ros::spin();
+
+	// Done.
 	return EXIT_SUCCESS;
 }
