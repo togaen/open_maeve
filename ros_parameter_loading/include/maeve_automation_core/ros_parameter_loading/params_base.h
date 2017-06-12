@@ -27,6 +27,12 @@
 #include <iostream>
 #include <string>
 
+/**
+ * @brief Check that var1 > var2; return false immediately if check fails.
+ *
+ * @param var1 First argument to comparison.
+ * @param var2 Second argument to comparison.
+ */
 #define CHECK_GT(var1, var2)                                                   \
   if (!(var1 > var2)) {                                                        \
     ROS_ERROR_STREAM(#var1 << " > " << #var2 << ": check failed for " << #var1 \
@@ -35,6 +41,11 @@
     return false;                                                              \
   }
 
+/**
+ * @brief Check that var > 0; return false immediately if check fails.
+ *
+ * @param var The value to check.
+ */
 #define CHECK_STRICTLY_POSITIVE(var)                                     \
   if (var <= 0) {                                                        \
     ROS_ERROR_STREAM(#var << " <= 0: check failed for " << #var << " = " \
@@ -42,12 +53,28 @@
     return false;                                                        \
   }
 
+/**
+ * @brief Check that container var is non-empty; return false immediately if
+ * check fails.
+ *
+ * @param var
+ */
 #define CHECK_NONEMPTY(var)                             \
   if (var.empty()) {                                    \
     ROS_ERROR_STREAM(#var << ".empty(): check failed"); \
     return false;                                       \
   }
 
+/**
+ * @brief Convenience macro for loading params into a ParamsBase object.
+ *
+ * var is a member variable of the ParamsBase object, and it must have
+ * 'exactly' the same name as the ROS parameter. Return false immediately if
+ * loading fails. Otherwise, append the name and value of var to the
+ * loaded_param_set string in the ParamsBase object.
+ *
+ * @param var The name of the variable into which to load the param.
+ */
 #define LOAD_PARAM(var)                                            \
   if (!nh.getParam(#var, var)) {                                   \
     ROS_ERROR_STREAM("Failed to load parameter '" << #var << "'"); \
