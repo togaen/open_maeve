@@ -25,7 +25,7 @@
 
 namespace maeve_automation_core {
 
-/** Parameter class for a geometric description of a 2D bounding box.*/
+/** @brief Parameter class for a geometric description of a 2D bounding box.*/
 struct BoundingBoxParams : public ParamsBase {
   /** @name Box Bounds
 	 * Bounding box specification.

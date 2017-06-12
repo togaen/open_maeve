@@ -38,7 +38,7 @@
 
 namespace maeve_automation_core {
 
-/** Parameter object to load and convert STRUCK parameters from ROS.*/
+/** @brief Parameter object to load and convert STRUCK parameters from ROS.*/
 struct StruckVisualTrackingParams : public ParamsBase {
   /** @brief The geometry of the initial bounding box.*/
   BoundingBoxParams bb_params;
