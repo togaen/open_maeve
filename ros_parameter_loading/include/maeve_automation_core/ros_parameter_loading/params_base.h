@@ -62,17 +62,35 @@
 namespace maeve_automation_core {
 
 struct ParamsBase {
-  /// \brief Stream overload
-  friend std::ostream& operator<<(std::ostream& os, const ParamsBase& params) {
+	/**
+	 * @brief Write a parameter object to a string stream. 
+	 *
+	 * @param os The output stream.
+	 * @param params The parameter object.
+	 *
+	 * @return The stream with the serialized parameter object.
+	 */
+	friend std::ostream& operator<<(std::ostream& os, const ParamsBase& params) {
     return os << params.loaded_param_set;
   }
 
-  /// \brief Load parameters from parameter server.
+	/**
+	 * @brief Load parameters from the ROS parameter server.
+	 *
+	 * @param nh The ROS node handle.
+	 *
+	 * @return True if loading passed sanity check; otherwise false.
+	 */
   virtual bool load(const ros::NodeHandle& nh) = 0;
 
  protected:
-  /// \brief Human-readable string of parameters loaded by load() function.
-  std::string loaded_param_set;
+	/**
+	 * @brief Human-readable string of parameters loaded by load() function.
+	 *
+	 * @note This is for informational use only, it is not guaranteed to be in
+	 * sync with the member values.
+	 */
+	std::string loaded_param_set;
 };  // struct StruckVisualTrackingParams
 
 }  // namespace maeve_automation_core
