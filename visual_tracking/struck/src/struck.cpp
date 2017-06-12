@@ -3,14 +3,14 @@
  *
  * Struck: Structured Output Tracking with Kernels
  *
- * Code to accompany the paper:
+ * Derived work of code to accompany the paper:
  *   Struck: Structured Output Tracking with Kernels
  *   Sam Hare, Amir Saffari, Philip H. S. Torr
  *   International Conference on Computer Vision (ICCV), 2011
  *
  * Copyright (C) 2011 Sam Hare, Oxford Brookes University, Oxford, UK
  *
- * This file is part of Struck.
+ * This file is a derivative work of Struck.
  *
  * Struck is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
