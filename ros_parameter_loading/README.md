@@ -9,25 +9,25 @@ example below.
 Assume a parameter file:
 
 
-    string\_param:  'foo'
-    integer\_param: 1234
-    float\_param:   1234.5
-    boolean\_param: true
+    string_param:  'foo'
+    integer_param: 1234
+    float_param:   1234.5
+    boolean_param: true
 
 A struct definition that corresponds to this paramter file might look like:
 
 ```c++ 
-#include "maeve\_automation\_core/ros\_parameter\_loading/params\_base.h"
+#include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
 #include <string>
 
 struct MyParams : public ParamsBase {
-  std::string string\_param;
-  int integer\_param;
-  float float\_param;
-  bool boolean\_param;
+  std::string string_param;
+  int integer_param;
+  float float_param;
+  bool boolean_param;
 
-  \_\_attribute\_\_((warn\_unused\_result)) bool load(const ros::NodeHandle& nh) override;
+  __attribute__((warn_unused_result)) bool load(const ros::NodeHandle& nh) override;
 };
 ```
 
@@ -41,17 +41,17 @@ An implementation of the struct definition might look like:
 bool MyParams::load(const ros::NodeHandle& nh) {
   // Try to load all params from ROS parameter server. If any param fails,
   // the function immediately returns false.
-  LOAD_PARAM(string\_param);
-  LOAD_PARAM(integer\_param);
-  LOAD_PARAM(float\_param);
-  LOAD_PARAM(boolean\_param);
+  LOAD_PARAM(string_param);
+  LOAD_PARAM(integer_param);
+  LOAD_PARAM(float_param);
+  LOAD_PARAM(boolean_param);
 
   // All params successfully loaded. Sanity checking can be done if wanted.
   // Below are a few convenience macros defined by this package. If any
   // check fails, the function immediately returns false.
-  CHECK_GT(float\_param, 0.f);
-  CHECK_STRICTLY_POSITIVE(integer\_param);
-  CHECK_NONEMPTY(string\_param);
+  CHECK_GT(float_param, 0.f);
+  CHECK_STRICTLY_POSITIVE(integer_param);
+  CHECK_NONEMPTY(string_param);
 
   // All params loaded, and all checks passed. Return success.
   return true;
