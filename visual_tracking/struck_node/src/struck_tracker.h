@@ -49,19 +49,19 @@ namespace maeve_automation_core {
  */
 struct StruckTracker {
 
-	/** Flag for whether to initialize the tracker.*/
+	/** @brief Flag for whether to initialize the tracker.*/
   bool doInitialise;
 
-	/** ROS parameter object.*/
+	/** @brief ROS parameter object.*/
   StruckVisualTrackingParams params;
 
-	/** STRUCK parameter object.*/
+	/** @brief STRUCK parameter object.*/
   Config conf;
 
-	/** The STRUCK tracker object.*/
+	/** @brief The STRUCK tracker object.*/
   std::unique_ptr<Tracker> tracker;
 
-	/** The gemoetry of the initial bounding box.*/
+	/** @brief The gemoetry of the initial bounding box.*/
 	FloatRect initBB;
 
 	/**
@@ -96,19 +96,19 @@ struct StruckTracker {
   void userInitCallback(const std_msgs::Bool::ConstPtr& msg);
 
  private:
-	/** Whether the user has triggered initialization yet.*/
+	/** @brief Whether the user has triggered initialization yet.*/
   bool is_user_initted;
 
-	/** Whether the tracker has been successfully initialized.*/
+	/** @brief Whether the tracker has been successfully initialized.*/
   bool initialized_successfully;
 
-	/** Storage for the tracker visualization.*/
+	/** @brief Storage for the tracker visualization.*/
   cv_bridge::CvImage result;
 
-	/** ROS publisher for tracker visualization.*/
+	/** @brief ROS publisher for tracker visualization.*/
   ros::Publisher tracker_image_pub;
 
-	/** ROS publisher for tracker bounding box output.*/
+	/** @brief ROS publisher for tracker bounding box output.*/
   ros::Publisher tracker_bb_pub;
 
 	/**

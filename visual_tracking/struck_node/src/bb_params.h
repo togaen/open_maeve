@@ -27,23 +27,31 @@ namespace maeve_automation_core {
 
 /** Parameter class for a geometric description of a 2D bounding box.*/
 struct BoundingBoxParams : public ParamsBase {
-  /**
-   *  \brief Bounding box specification.
-   *  @{
-   */
+  /** @name Box Bounds
+	 * Bounding box specification.
+   * @{
+	 */
+  /** @brief Minimum x extent.*/
   double bb_x_min;
+  /** @brief Maximum x extent.*/
   double bb_x_max;
+  /** @brief Minimum y extent.*/
   double bb_y_min;
+  /** @brief Maximum y extent.*/
   double bb_y_max;
   /** @} */
 
-  /**
-   *  \brief alternative representation; computed after loading above params.
-   *  @{
-   */
+  /** @name Box Geometry
+	 * Alternative representation; computed after loading Box Bounds params.
+	 * @{
+	 */
+  /** @brief The x coordinate of the box center.*/
   double x_pos;
+  /** @brief The y coordinate of the box center.*/
   double y_pos;
+  /** @brief The width (x extent) of the box.*/
   double width;
+  /** @brief The height (y extent) of the box.*/
   double height;
   /** @} */
 

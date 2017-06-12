@@ -40,49 +40,54 @@ namespace maeve_automation_core {
 
 /** Parameter object to load and convert STRUCK parameters from ROS.*/
 struct StruckVisualTrackingParams : public ParamsBase {
-  /** The geometry of the initial bounding box.*/
+  /** @brief The geometry of the initial bounding box.*/
   BoundingBoxParams bb_params;
 
-  /** Topic to listen for user-initiated tracker ready signal.*/
+  /** @brief Topic to listen for user-initiated tracker ready signal.*/
   std::string init_tracker_topic;
 
-  /** Queue size for user-initiated tracker ready signal topic.*/
+  /** @brief Queue size for user-initiated tracker ready signal topic.*/
   int init_tracker_topic_queue_size;
 
-  /** Topic to listen to for camera image stream.*/
+  /** @brief Topic to listen to for camera image stream.*/
   std::string camera_topic;
 
-  /** Queue size for camera image stream topic.*/
+  /** @brief Queue size for camera image stream topic.*/
   int camera_topic_queue_size;
 
-  /** Topic to publish tracker visualization to.*/
+  /** @brief Topic to publish tracker visualization to.*/
   std::string tracker_image_topic;
 
-  /** Topic to publish tracker bounding boxes to.*/
+  /** @brief Topic to publish tracker bounding boxes to.*/
   std::string tracker_bb_topic;
 
-  /** Whether to publish to the tracker visualization topic.*/
+  /** @brief Whether to publish to the tracker visualization topic.*/
   bool enable_viz;
 
-  /**
-   * @brief Frame size for use during tracking; input is scaled to this size.
-   * @{
-   */
-  int frameWidth;
-  int frameHeight;
-  /** @} */
-
-  /** Seed for random number generator.*/
+  /** @brief Seed for random number generator.*/
   int seed;
 
   /** Tracker search radius in pixels.*/
   int searchRadius;
 
-  /** SVM regularization parameter.*/
-  double svmC;
+  /** @name Frame Size
+   * Frame size for use during tracking; input is scaled to this size.
+   * @{
+   */
+	/** @brief The width of the input image for tracking.*/
+  int frameWidth;
+	/** @brief The height of the input image for tracking.*/
+  int frameHeight;
+  /** @} */
 
-  /** SVM budget size (0 = no budget).*/
+	/** @name SVM Settings
+	 * @{
+	 */
+  /** @brief SVM regularization parameter.*/
+  double svmC;
+  /** @brief SVM budget size (0 = no budget).*/
   int svmBudgetSize;
+	/**@}*/
 
   /**
    * @brief Image features to use.
