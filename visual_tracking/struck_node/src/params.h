@@ -74,20 +74,20 @@ struct StruckVisualTrackingParams : public ParamsBase {
    * Frame size for use during tracking; input is scaled to this size.
    * @{
    */
-	/** @brief The width of the input image for tracking.*/
+  /** @brief The width of the input image for tracking.*/
   int frameWidth;
-	/** @brief The height of the input image for tracking.*/
+  /** @brief The height of the input image for tracking.*/
   int frameHeight;
   /** @} */
 
-	/** @name SVM Settings
-	 * @{
-	 */
+  /** @name SVM Settings
+   * @{
+   */
   /** @brief SVM regularization parameter.*/
   double svmC;
   /** @brief SVM budget size (0 = no budget).*/
   int svmBudgetSize;
-	/**@}*/
+  /**@}*/
 
   /**
    * @brief Image features to use.
@@ -101,10 +101,11 @@ struct StruckVisualTrackingParams : public ParamsBase {
    */
   std::string feature;
 
-	/**
+  /**
    * @copydoc ParamsBase::ParamsBase()
    */
-  bool load(const ros::NodeHandle& nh) override;
+  __attribute__((warn_unused_result)) bool load(
+      const ros::NodeHandle& nh) override;
 
   /**
    * @brief Generate a STRUCK config object from the parameters in this object.

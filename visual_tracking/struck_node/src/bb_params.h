@@ -28,9 +28,9 @@ namespace maeve_automation_core {
 /** @brief Parameter class for a geometric description of a 2D bounding box.*/
 struct BoundingBoxParams : public ParamsBase {
   /** @name Box Bounds
-	 * Bounding box specification.
+   * Bounding box specification.
    * @{
-	 */
+   */
   /** @brief Minimum x extent.*/
   double bb_x_min;
   /** @brief Maximum x extent.*/
@@ -42,9 +42,9 @@ struct BoundingBoxParams : public ParamsBase {
   /** @} */
 
   /** @name Box Geometry
-	 * Alternative representation; computed after loading Box Bounds params.
-	 * @{
-	 */
+   * Alternative representation; computed after loading Box Bounds params.
+   * @{
+   */
   /** @brief The x coordinate of the box center.*/
   double x_pos;
   /** @brief The y coordinate of the box center.*/
@@ -58,7 +58,8 @@ struct BoundingBoxParams : public ParamsBase {
   /**
    * @copydoc ParamsBase::ParamsBase()
    */
-  bool load(const ros::NodeHandle& nh) override;
+  __attribute__((warn_unused_result)) bool load(
+      const ros::NodeHandle& nh) override;
 };  // struct BoundingBoxParams
 
 }  // namespace maeve_automation_core
