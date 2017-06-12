@@ -88,7 +88,7 @@
 
 namespace maeve_automation_core {
 
-/** An interface for objects that load and contain ROS parameters.*/
+/** @brief An interface for objects that load and contain ROS parameters.*/
 struct ParamsBase {
   /**
    * @brief Write a parameter object to a string stream.
