@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Maeve Automation
  *
  * Struck: Structured Output Tracking with Kernels
@@ -40,6 +40,13 @@
 
 namespace maeve_automation_core {
 
+/**
+ * @brief Draw a rectangle described by rRect, with rColour, onto rMat.
+ *
+ * @param rMat The output image.
+ * @param rRect The rectangle geometry.
+ * @param rColour The rectangle color.
+ */
 void rectangle(cv::Mat& rMat, const FloatRect& rRect,
                const cv::Scalar& rColour);
 
