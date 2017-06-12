@@ -8,11 +8,12 @@ example below.
 
 Assume a parameter file:
 
-
-    string_param:  'foo'
-    integer_param: 1234
-    float_param:   1234.5
-    boolean_param: true
+```yaml
+string_param:  'foo'
+integer_param: 1234
+float_param:   1234.5
+boolean_param: true
+```
 
 A struct definition that corresponds to this paramter file might look like:
 
