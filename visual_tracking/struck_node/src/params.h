@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Maeve Automation
  *
  * Struck: Structured Output Tracking with Kernels
@@ -38,77 +38,93 @@
 
 namespace maeve_automation_core {
 
+/** Parameter object to load and convert STRUCK parameters from ROS.*/
 struct StruckVisualTrackingParams : public ParamsBase {
-  /// \brief Load parameters from parameter server.
-  bool load(const ros::NodeHandle& nh) override;
-
-  /// \brief Convert this parameter object to a STRUCK config object.
-  Config toStruckConfig() const;
-
-  /// \brief Check that a Struck config object has its members set to reasonable
-  /// values.
-  /// \return True if params seem okay; otherwise false.
-  static bool SanityCheckStruckConfig(const Config& c);
-
-  // params for bounding box
+  /** The geometry of the initial bounding box.*/
   BoundingBoxParams bb_params;
 
-  // topic to listening for tracker initialized signale
+  /** Topic to listen for user-initiated tracker ready signal.*/
   std::string init_tracker_topic;
 
-  // init topic queue size
+  /** Queue size for user-initiated tracker ready signal topic.*/
   int init_tracker_topic_queue_size;
 
-  // topic name for camera images
+  /** Topic to listen to for camera image stream.*/
   std::string camera_topic;
 
-  // camera topic queue size
+  /** Queue size for camera image stream topic.*/
   int camera_topic_queue_size;
 
-  // topic to publish tracker images to
+  /** Topic to publish tracker visualization to.*/
   std::string tracker_image_topic;
 
-  // topic to publish tracker bounding boxes to
+  /** Topic to publish tracker bounding boxes to.*/
   std::string tracker_bb_topic;
 
-  // enable visualization topic
+  /** Whether to publish to the tracker visualization topic.*/
   bool enable_viz;
 
-  // quiet mode disables all visual output (for experiments).
-  bool quietMode;
-
-  // debug mode enables additional drawing and visualization.
-  bool debugMode;
-
-  // frame size for use during tracking.
-  // the input image will be scaled to this size.
+  /**
+   * @brief Frame size for use during tracking; input is scaled to this size.
+   * @{
+   */
   int frameWidth;
   int frameHeight;
+  /** @} */
 
-  // seed for random number generator.
+  /** Seed for random number generator.*/
   int seed;
 
-  // tracker search radius in pixels.
+  /** Tracker search radius in pixels.*/
   int searchRadius;
 
-  // SVM regularization parameter.
+  /** SVM regularization parameter.*/
   double svmC;
 
-  // SVM budget size (0 = no budget).
+  /** SVM budget size (0 = no budget).*/
   int svmBudgetSize;
 
-  // image features to use.
-  // format is: feature kernel [kernel-params]
-  // where:
-  //   feature = haar/raw/histogram
-  //   kernel = gaussian/linear/intersection/chi2
-  //   for kernel=gaussian, kernel-params is sigma
-  // multiple features can be specified and will be combined
+  /**
+   * @brief Image features to use.
+   *
+   * Format is: feature kernel [kernel-params]
+   * where:
+   * feature = haar/raw/histogram
+   * kernel = gaussian/linear/intersection/chi2
+   * for kernel=gaussian, kernel-params is sigma
+   * multiple features can be specified and will be combined
+   */
   std::string feature;
 
+	/**
+   * @copydoc ParamsBase::ParamsBase()
+   */
+  bool load(const ros::NodeHandle& nh) override;
+
+  /**
+   * @brief Generate a STRUCK config object from the parameters in this object.
+   *
+   * @return The STRUCK config.
+   */
+  Config toStruckConfig() const;
+
+  /**
+   * @brief Perform some basic sanity checks on a STRUCK config object.
+   *
+   * @param c The STRUCK config object.
+   *
+   * @return True if sanity checks pass; otherwise false.
+   */
+  static bool SanityCheckStruckConfig(const Config& c);
+
  private:
-  /// \brief Check common values of Struck and MA param types.
-  /// \return True if seems okay; otherwise false.
+  /**
+   * @brief Check common values of Struck and MA param types.
+   *
+   * @param c The config object (STRUCK or ROS) to check.
+   *
+   * @return True if seems okay; otherwise false.
+   */
   template <typename T>
   static bool SanityCheckConfig(const T& c) {
     CHECK_STRICTLY_POSITIVE(c.frameWidth);

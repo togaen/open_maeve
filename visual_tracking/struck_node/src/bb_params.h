@@ -25,25 +25,32 @@
 
 namespace maeve_automation_core {
 
+/** Parameter class for a geometric description of a 2D bounding box.*/
 struct BoundingBoxParams : public ParamsBase {
-  /// \brief Load parameters from parameter server.
-  bool load(const ros::NodeHandle& nh) override;
-
-  /// \brief Bounding box specification.
-  /// \{
+  /**
+   *  \brief Bounding box specification.
+   *  @{
+   */
   double bb_x_min;
   double bb_x_max;
   double bb_y_min;
   double bb_y_max;
-  /// \}
+  /** @} */
 
-  /// \brief alternative representation; computed after loading above params.
-  /// \{
+  /**
+   *  \brief alternative representation; computed after loading above params.
+   *  @{
+   */
   double x_pos;
   double y_pos;
   double width;
   double height;
-  /// \}
+  /** @} */
+
+  /**
+   * @copydoc ParamsBase::ParamsBase()
+   */
+  bool load(const ros::NodeHandle& nh) override;
 };  // struct BoundingBoxParams
 
 }  // namespace maeve_automation_core

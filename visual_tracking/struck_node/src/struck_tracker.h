@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Maeve Automation
  *
  * Struck: Structured Output Tracking with Kernels
@@ -44,28 +44,86 @@
 
 namespace maeve_automation_core {
 
+/**
+ * @brief Convenience encapsulaton of functions/variable for running tracker.
+ */
 struct StruckTracker {
-  bool doInitialise;
-  StruckVisualTrackingParams params;
-  Config conf;
-  std::unique_ptr<Tracker> tracker;
-  FloatRect initBB;
 
+	/** Flag for whether to initialize the tracker.*/
+  bool doInitialise;
+
+	/** ROS parameter object.*/
+  StruckVisualTrackingParams params;
+
+	/** STRUCK parameter object.*/
+  Config conf;
+
+	/** The STRUCK tracker object.*/
+  std::unique_ptr<Tracker> tracker;
+
+	/** The gemoetry of the initial bounding box.*/
+	FloatRect initBB;
+
+	/**
+	 * @brief Construct an instance of this class using a ROS node handle.
+	 *
+	 * @param nh The handle of the node owning this object.
+	 */
   explicit StruckTracker(ros::NodeHandle& nh);
+
+	/**
+	 * @brief Whether this object is probably validly initialized.
+	 *
+	 * @note The tests in this function do not guarantee parameterization is
+	 * correct; they only check for obvious problems.
+	 *
+	 * @return True if the sanity checks pass; otherwise false.
+	 */
   bool valid() const;
+
+	/**
+	 * @brief Callback to run the tracker on each input image frame.
+	 *
+	 * @param msg The image frame.
+	 */
   void cameraCallback(const sensor_msgs::Image::ConstPtr& msg);
+
+	/**
+	 * @brief Callback to initialize the tracker based on the user trigger.
+	 *
+	 * @param msg The boolean flag indicating the user trigger.
+	 */
   void userInitCallback(const std_msgs::Bool::ConstPtr& msg);
 
  private:
-  void publishTrackerImage(const ros::Time& time) const;
-  void publishBoundingBox(const ros::Time& time) const;
-
+	/** Whether the user has triggered initialization yet.*/
   bool is_user_initted;
+
+	/** Whether the tracker has been successfully initialized.*/
   bool initialized_successfully;
 
+	/** Storage for the tracker visualization.*/
   cv_bridge::CvImage result;
+
+	/** ROS publisher for tracker visualization.*/
   ros::Publisher tracker_image_pub;
+
+	/** ROS publisher for tracker bounding box output.*/
   ros::Publisher tracker_bb_pub;
+
+	/**
+	 * @brief Publish a visualization of tracker output.
+	 *
+	 * @param time The desired stamp that the visualization image should have.
+	 */
+  void publishTrackerImage(const ros::Time& time) const;
+
+	/**
+	 * @brief Publish the bounding box output of the tracker.
+	 *
+	 * @param time The desired stamp that the bounding box output should have.
+	 */
+  void publishBoundingBox(const ros::Time& time) const;
 };  // struct StruckTracker
 
 }  // namespace maeve_automation_core
