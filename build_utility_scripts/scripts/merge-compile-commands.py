@@ -12,8 +12,19 @@ import json
 # generated per package. This script collects them all and dumps them into a
 # single file at the root of the workspace. This is needed for the
 # YouCompleteMe vim plugin.
+#
+# To determine the ROS workspace location, this script first looks for the
+# ROS_WORKSPACE environment variable, and, if that is not found, assumes the
+# standard location in ~/catkin_ws.
+#
+# For this to be useful, packages need the following CMake command:
+# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-workspace_path = os.path.expanduser('~') + '/catkin_ws'
+if "ROS_WORKSPACE" in os.environ:
+    workspace_path = os.environ["ROS_WORKSPACE"]
+else:
+    workspace_path = os.path.expanduser('~/catkin_ws')
+
 compile_command_filename = 'compile_commands.json'
 root = workspace_path
 output_file = root + '/' + compile_command_filename
