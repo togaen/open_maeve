@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2017 Maeve Automation
  *
  * Struck: Structured Output Tracking with Kernels

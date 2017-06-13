@@ -48,81 +48,81 @@ namespace maeve_automation_core {
  * @brief Convenience encapsulaton of functions/variable for running tracker.
  */
 class StruckTracker {
-	public:
-	/** @brief Flag for whether to initialize the tracker.*/
+ public:
+  /** @brief Flag for whether to initialize the tracker.*/
   bool doInitialise;
 
-	/** @brief ROS parameter object.*/
+  /** @brief ROS parameter object.*/
   StruckVisualTrackingParams params;
 
-	/** @brief STRUCK parameter object.*/
+  /** @brief STRUCK parameter object.*/
   Config conf;
 
-	/** @brief The STRUCK tracker object.*/
+  /** @brief The STRUCK tracker object.*/
   std::unique_ptr<Tracker> tracker;
 
-	/** @brief The gemoetry of the initial bounding box.*/
-	FloatRect initBB;
+  /** @brief The gemoetry of the initial bounding box.*/
+  FloatRect initBB;
 
-	/**
-	 * @brief Construct an instance of this class using a ROS node handle.
-	 *
-	 * @param nh The handle of the node owning this object.
-	 */
+  /**
+   * @brief Construct an instance of this class using a ROS node handle.
+   *
+   * @param nh The handle of the node owning this object.
+   */
   explicit StruckTracker(ros::NodeHandle& nh);
 
-	/**
-	 * @brief Whether this object is probably validly initialized.
-	 *
-	 * @note The tests in this function do not guarantee parameterization is
-	 * correct; they only check for obvious problems.
-	 *
-	 * @return True if the sanity checks pass; otherwise false.
-	 */
+  /**
+   * @brief Whether this object is probably validly initialized.
+   *
+   * @note The tests in this function do not guarantee parameterization is
+   * correct; they only check for obvious problems.
+   *
+   * @return True if the sanity checks pass; otherwise false.
+   */
   bool valid() const;
 
-	/**
-	 * @brief Callback to run the tracker on each input image frame.
-	 *
-	 * @param msg The image frame.
-	 */
+  /**
+   * @brief Callback to run the tracker on each input image frame.
+   *
+   * @param msg The image frame.
+   */
   void cameraCallback(const sensor_msgs::Image::ConstPtr& msg);
 
-	/**
-	 * @brief Callback to initialize the tracker based on the user trigger.
-	 *
-	 * @param msg The boolean flag indicating the user trigger.
-	 */
+  /**
+   * @brief Callback to initialize the tracker based on the user trigger.
+   *
+   * @param msg The boolean flag indicating the user trigger.
+   */
   void userInitCallback(const std_msgs::Bool::ConstPtr& msg);
 
  private:
-	/** @brief Whether the user has triggered initialization yet.*/
+  /** @brief Whether the user has triggered initialization yet.*/
   bool is_user_initted;
 
-	/** @brief Whether the tracker has been successfully initialized.*/
+  /** @brief Whether the tracker has been successfully initialized.*/
   bool initialized_successfully;
 
-	/** @brief Storage for the tracker visualization.*/
+  /** @brief Storage for the tracker visualization.*/
   cv_bridge::CvImage result;
 
-	/** @brief ROS publisher for tracker visualization.*/
+  /** @brief ROS publisher for tracker visualization.*/
   ros::Publisher tracker_image_pub;
 
-	/** @brief ROS publisher for tracker bounding box output.*/
+  /** @brief ROS publisher for tracker bounding box output.*/
   ros::Publisher tracker_bb_pub;
 
-	/**
-	 * @brief Publish a visualization of tracker output.
-	 *
-	 * @param time The desired stamp that the visualization image should have.
-	 */
+  /**
+   * @brief Publish a visualization of tracker output.
+   *
+   * @param time The desired stamp that the visualization image should have.
+   */
   void publishTrackerImage(const ros::Time& time) const;
 
-	/**
-	 * @brief Publish the bounding box output of the tracker.
-	 *
-	 * @param time The desired stamp that the bounding box output should have.
-	 */
+  /**
+   * @brief Publish the bounding box output of the tracker.
+   *
+   * @param time The desired stamp that the bounding box output should have.
+   */
   void publishBoundingBox(const ros::Time& time) const;
 };  // class StruckTracker
 
