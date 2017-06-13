@@ -13,14 +13,14 @@
   <!-- One license tag required, multiple allowed, one license per tag -->
   <!-- Commonly used license strings: -->
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-	<license>GPLv3</license>
-	<license>MIT</license>
+  <license>GPLv3</license>
+  <license>MIT</license>
 
 
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
-	<!-- Example: -->
-	<url type="repository">https://bitbucket.org/maeveautomation/core/src</url>
+  <!-- Example: -->
+  <url type="repository">https://bitbucket.org/maeveautomation/core/src</url>
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
@@ -40,18 +40,18 @@
   <!--   <run_depend>message_runtime</run_depend> -->
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
-	<buildtool_depend>catkin</buildtool_depend>
-	<build_depend>roscpp</build_depend>
-	<build_depend>struck</build_depend>
-	<build_depend>cv_bridge</build_depend>
-	<build_depend>message_generation</build_depend>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>struck</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>message_generation</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>ros_parameter_loading</build_depend>
-	<run_depend>struck</run_depend>
-	<run_depend>roscpp</run_depend>
-	<run_depend>message_runtime</run_depend>
-	<run_depend>cv_bridge</run_depend>
-	<run_depend>std_msgs</run_depend>
+  <run_depend>struck</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>std_msgs</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
