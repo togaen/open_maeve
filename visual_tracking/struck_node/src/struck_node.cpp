@@ -30,7 +30,6 @@
 #include "./struck_tracker.h"
 
 #include <ros/ros.h>
-#include <sensor_msgs/Image.h>
 
 #include <string>
 
