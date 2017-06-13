@@ -47,8 +47,8 @@ namespace maeve_automation_core {
 /**
  * @brief Convenience encapsulaton of functions/variable for running tracker.
  */
-struct StruckTracker {
-
+class StruckTracker {
+	public:
 	/** @brief Flag for whether to initialize the tracker.*/
   bool doInitialise;
 
@@ -124,6 +124,6 @@ struct StruckTracker {
 	 * @param time The desired stamp that the bounding box output should have.
 	 */
   void publishBoundingBox(const ros::Time& time) const;
-};  // struct StruckTracker
+};  // class StruckTracker
 
 }  // namespace maeve_automation_core
