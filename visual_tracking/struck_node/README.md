@@ -35,6 +35,7 @@ Using the node is straightforward. Below outlines a typical use case: it assumes
 ## Parameters: params/params.yaml ##
 
 The below parameters are specific to the struck\_node wrapper:
+
 * camera\_topic (default /cv\_camera\_node/image\_raw): Listen to this topic for camera image stream.
 * camera\_topic\_queue\_size (default 1): Queue size for camera topic.
 * init\_tracker\_topic (default ~/init\_tracker): Listen to this topic for user initialization trigger.
@@ -44,6 +45,7 @@ The below parameters are specific to the struck\_node wrapper:
 * enable\_viz (default true): Flag to enable tracker output visualization.
 
 The below parameters are specific to the STRUCK tracker:
+
 * bb\_(x|y)\_(min|max) (default [120 200]x[80 160]): Bounding box used to initialize tracker.
 * frame(Width|Height) (default 320x240): Size of image to perform tracking on; input is scaled to these dimensions.
 * seed (default 0): Seed for random number generator.
