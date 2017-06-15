@@ -28,7 +28,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Tracker Viz
+    SyncSource: Webcam
 Visualization Manager:
   Class: ""
   Displays:
@@ -64,7 +64,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /pi_cam
+      Image Topic: /raspicam_node/image_republished_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
