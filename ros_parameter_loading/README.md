@@ -9,6 +9,7 @@ example below.
 Assume a parameter file:
 
 ```yaml
+# my_params.yaml
 string_param:  'foo'
 integer_param: 1234
 float_param:   1234.5
