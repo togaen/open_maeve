@@ -30,6 +30,7 @@
 #pragma once
 
 #include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <std_msgs/Bool.h>
@@ -49,21 +50,6 @@ namespace maeve_automation_core {
  */
 class StruckTracker {
  public:
-  /** @brief Flag for whether to initialize the tracker.*/
-  bool doInitialise;
-
-  /** @brief ROS parameter object.*/
-  StruckVisualTrackingParams params;
-
-  /** @brief STRUCK parameter object.*/
-  Config conf;
-
-  /** @brief The STRUCK tracker object.*/
-  std::unique_ptr<Tracker> tracker;
-
-  /** @brief The gemoetry of the initial bounding box.*/
-  FloatRect initBB;
-
   /**
    * @brief Construct an instance of this class using a ROS node handle.
    *
@@ -81,6 +67,46 @@ class StruckTracker {
    */
   bool valid() const;
 
+ private:
+  /** @brief Flag for whether to initialize the tracker.*/
+  bool doInitialise;
+
+  /** @brief ROS parameter object.*/
+  StruckVisualTrackingParams params;
+
+  /** @brief STRUCK parameter object.*/
+  Config conf;
+
+  /** @brief The STRUCK tracker object.*/
+  std::unique_ptr<Tracker> tracker;
+
+  /** @brief The gemoetry of the initial bounding box.*/
+  FloatRect initBB;
+
+  /** @brief Whether the user has triggered initialization yet.*/
+  bool is_user_initted;
+
+  /** @brief Whether the tracker has been successfully initialized.*/
+  bool initialized_successfully;
+
+  /** @brief Storage for the tracker visualization.*/
+  cv_bridge::CvImage result;
+
+  /** @brief Image transport object for publish/subscribe of images.*/
+  image_transport::ImageTransport it;
+
+  /** @brief ROS publisher for tracker visualization.*/
+  image_transport::Publisher tracker_image_pub;
+
+  /** @brief ROS publisher for tracker bounding box output.*/
+  ros::Publisher tracker_bb_pub;
+
+  /** @brief ROS subscriber for user initialization trigger topic.*/
+  ros::Subscriber user_init_sub;
+
+  /** @brief ROS subscriber for camera topic.*/
+  image_transport::Subscriber camera_sub;
+
   /**
    * @brief Callback to run the tracker on each input image frame.
    *
@@ -94,22 +120,6 @@ class StruckTracker {
    * @param msg The boolean flag indicating the user trigger.
    */
   void userInitCallback(const std_msgs::Bool::ConstPtr& msg);
-
- private:
-  /** @brief Whether the user has triggered initialization yet.*/
-  bool is_user_initted;
-
-  /** @brief Whether the tracker has been successfully initialized.*/
-  bool initialized_successfully;
-
-  /** @brief Storage for the tracker visualization.*/
-  cv_bridge::CvImage result;
-
-  /** @brief ROS publisher for tracker visualization.*/
-  ros::Publisher tracker_image_pub;
-
-  /** @brief ROS publisher for tracker bounding box output.*/
-  ros::Publisher tracker_bb_pub;
 
   /**
    * @brief Publish a visualization of tracker output.
