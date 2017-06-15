@@ -3,6 +3,6 @@
 		<rosparam
 			command="load"
 			ns="cv_camera"
-			file="$(find struck_node)/params/cv_camera.yaml"/>
+			file="$(find maeve_cameras)/params/cv_camera.yaml"/>
 	</node>
 </launch>
