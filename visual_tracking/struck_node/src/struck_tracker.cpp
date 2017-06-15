@@ -36,21 +36,32 @@ namespace maeve_automation_core {
 StruckTracker::StruckTracker(ros::NodeHandle& nh)
     : doInitialise(false),
       is_user_initted(false),
-      initialized_successfully(false) {
+      initialized_successfully(false),
+      it(nh) {
   if (params.load(nh)) {
     ROS_INFO_STREAM("Loaded params:\n" << params);
     conf = params.toStruckConfig();
     if (StruckVisualTrackingParams::SanityCheckStruckConfig(conf)) {
       srand(conf.seed);
       tracker = std::move(std::unique_ptr<Tracker>(new Tracker(conf)));
-      tracker_image_pub =
-          nh.advertise<sensor_msgs::Image>(params.tracker_image_topic, 1);
-      tracker_bb_pub = nh.advertise<struck_node::ImageBoundingBox>(
-          params.tracker_bb_topic, 1000);
       result.image = cv::Mat(conf.frameHeight, conf.frameWidth, CV_8UC3);
       result.encoding = sensor_msgs::image_encodings::TYPE_8UC3;
       initBB = IntRect(params.bb_params.bb_x_min, params.bb_params.bb_y_min,
                        params.bb_params.width, params.bb_params.height);
+
+      // Advertise topics.
+      tracker_image_pub = it.advertise(params.tracker_image_topic, 1);
+      tracker_bb_pub = nh.advertise<struck_node::ImageBoundingBox>(
+          params.tracker_bb_topic, 1000);
+
+      // Register callbacks.
+      user_init_sub = nh.subscribe(params.init_tracker_topic,
+                                   params.init_tracker_topic_queue_size,
+                                   &StruckTracker::userInitCallback, this);
+      camera_sub =
+          it.subscribe(params.camera_topic, params.camera_topic_queue_size,
+                       &StruckTracker::cameraCallback, this);
+
       initialized_successfully = true;
     } else {
       ROS_ERROR_STREAM("STRUCK conf failed sanity check.");

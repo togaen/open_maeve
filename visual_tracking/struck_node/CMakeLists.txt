@@ -22,7 +22,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 	message_generation
   ros_parameter_loading
-	)
+  image_transport
+  )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
