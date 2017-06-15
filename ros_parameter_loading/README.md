@@ -17,10 +17,13 @@ boolean_param: true
 
 A struct definition that corresponds to this paramter file might look like:
 
-```c++ 
-#include "maeve_automation_core/ros_parameter_loading/params_base.h"
+```c++
+// my_params.h
+#pragma once
 
 #include <string>
+
+#include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
 struct MyParams : public ParamsBase {
   std::string string_param;
@@ -39,6 +42,9 @@ help check that the return value of `load()` is being used.
 An implementation of the struct definition might look like:
 
 ```c++
+// my_params.cpp
+#include "path/to/my_params.h"
+
 bool MyParams::load(const ros::NodeHandle& nh) {
   // Try to load all params from ROS parameter server. If any param fails,
   // the function immediately returns false.
