@@ -69,7 +69,7 @@ bool StruckVisualTrackingParams::SanityCheckStruckConfig(const Config& c) {
 Config StruckVisualTrackingParams::toStruckConfig() const {
   Config config;
 
-  config.quietMode = false;
+  config.quietMode = true;
   config.debugMode = false;
 
   config.sequenceBasePath = "";
