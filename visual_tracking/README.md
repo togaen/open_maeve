@@ -1,4 +1,3 @@
 # README #
 
-This direction contain a collection of libraries and nodes related to visual
-tracking.
+This stack contains packages related to visual tracking. See individual packages for details.
