@@ -103,7 +103,7 @@ catkin_python_setup()
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES adafruit_pca9685
-#  CATKIN_DEPENDS rospy
+  CATKIN_DEPENDS rospy
 #  DEPENDS system_lib
 )
 
