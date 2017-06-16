@@ -1,0 +1,3 @@
+<launch>
+  <rosparam command="load" file="$(find donkey_vehicle_controller)/params/actuator_params.yaml" ns="donkey_vehicle_controller"/>
+</launch>

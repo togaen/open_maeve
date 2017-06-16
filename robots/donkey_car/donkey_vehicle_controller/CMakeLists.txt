@@ -9,6 +9,7 @@ project(donkey_vehicle_controller)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  adafruit_pca9685
 )
 
 ## System dependencies are found with CMake's conventions
