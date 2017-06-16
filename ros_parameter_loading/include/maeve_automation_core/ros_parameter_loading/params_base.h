@@ -68,12 +68,12 @@
 /**
  * @brief Convenience macro for loading params into a ParamsBase object.
  *
- * var is a member variable of the ParamsBase object, and it must have
+ * 'var' is a member variable of the ParamsBase object, and it must have
  * 'exactly' the same name as the ROS parameter. Return false immediately if
  * loading fails. Otherwise, append the name and value of var to the
  * loaded_param_set string in the ParamsBase object.
  *
- * @param var The name of the variable into which to load the param.
+ * @param var The name of the parameter and of the variable that holds it.
  */
 #define LOAD_PARAM(var)                                            \
   if (!nh.getParam(#var, var)) {                                   \
@@ -84,6 +84,31 @@
     std::stringstream ss;                                          \
     ss << #var << ": " << var << "\n";                             \
     loaded_param_set += ss.str();                                  \
+  }
+
+/**
+ * @brief Convenience macro for loading scoped params into a ParamsBase object.
+ *
+ * 'var' is a member of an object 'ns' in the ParamsBase object, where 'var'
+ * must have 'exactly' the same name as the ROS parameter, and 'ns' must have
+ * 'exactly' the same name as the namespace of the 'var' parameter. Return
+ * false immediately if loading fails. Otherwise, append the name and value of
+ * ns.var to the loaded_param_set string in the ParamsBase object.
+
+ * @param ns The namespace (or scope) of var in the parameter server.
+ * @param var The name of the parameter and of the variable that holds it.
+ */
+#define LOAD_NS_PARAM(ns, var)                                              \
+  if (!nh.getParam(std::string(#ns) + std::string("/") + std::string(#var), \
+                   ns.var)) {                                               \
+    ROS_ERROR_STREAM("Failed to load parameter '" << #ns << "/" << #var     \
+                                                  << "'");                  \
+    return false;                                                           \
+  }                                                                         \
+  {                                                                         \
+    std::stringstream ss;                                                   \
+    ss << #ns << "." << #var << ": " << ns.var << "\n";                     \
+    loaded_param_set += ss.str();                                           \
   }
 
 namespace maeve_automation_core {

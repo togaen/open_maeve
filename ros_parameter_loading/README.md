@@ -6,7 +6,14 @@ the package maintainer defines a struct to contain all parameters for the node
 and then uses the utilities in this package to initialize the struct. An
 example below.
 
-Assume a parameter file:
+## Assumptions ##
+
+* This package assumes parameters are loaded namespace-relative to the node
+that is loading them.
+
+## Usage ##
+
+This section gives an example usage. Assume a parameter file:
 
 ```yaml
 # my_params.yaml
@@ -14,6 +21,9 @@ string_param:  'foo'
 integer_param: 1234
 float_param:   1234.5
 boolean_param: true
+scoped_params:
+  inner_param1: true
+  inner_param2: 37
 ```
 
 A struct definition that corresponds to this paramter file might look like:
@@ -27,10 +37,16 @@ A struct definition that corresponds to this paramter file might look like:
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
 struct MyParams : public ParamsBase {
+  struct ScopedParams {
+    bool inner_param1;
+    int inner_param2;
+  };
+
   std::string string_param;
   int integer_param;
   float float_param;
   bool boolean_param;
+  ScopedParams scoped_params;
 
   __attribute__((warn_unused_result)) bool load(const ros::NodeHandle& nh) override;
 };
@@ -53,11 +69,14 @@ bool MyParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(integer_param);
   LOAD_PARAM(float_param);
   LOAD_PARAM(boolean_param);
+  LOAD_NS_PARAM(scoped_params, inner_param1);
+  LOAD_NS_PARAM(scoped_params, inner_param2);
 
   // All params successfully loaded. Sanity checking can be done if wanted.
   // Below are a few convenience macros defined by this package. If any
   // check fails, the function immediately returns false.
   CHECK_GT(float_param, 0.f);
+  CHECK_GT(scoped_params.inner_param2, 36);
   CHECK_STRICTLY_POSITIVE(integer_param);
   CHECK_NONEMPTY(string_param);
 
