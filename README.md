@@ -10,7 +10,7 @@ under the same license.
 ## Releases ##
 
 Each release of the codebase is tagged with `release-X` where 'X' is the
-release number. Release represent functionality that is in some sense complete
+release number. Releases represent functionality that is in some sense complete
 and tested.
 
 Revisions of the codebase between releases may include new functionality and
