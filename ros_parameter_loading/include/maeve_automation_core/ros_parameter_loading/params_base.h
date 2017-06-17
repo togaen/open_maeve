@@ -28,6 +28,34 @@
 #include <string>
 
 /**
+ * @brief Check that var1 < var2; return false immediately if check fails.
+ *
+ * @param var1 First argument to comparison.
+ * @param var2 Second argument to comparison.
+ */
+#define CHECK_LT(var1, var2)                                                   \
+  if (!(var1 < var2)) {                                                        \
+    ROS_ERROR_STREAM(#var1 << " > " << #var2 << ": check failed for " << #var1 \
+                           << " = " << var1 << ", " << #var2 << " = "          \
+                           << var2);                                           \
+    return false;                                                              \
+  }
+
+/**
+ * @brief Check that var1 <= var2; return false immediately if check fails.
+ *
+ * @param var1 First argument to comparison.
+ * @param var2 Second argument to comparison.
+ */
+#define CHECK_LE(var1, var2)                                                   \
+  if (!(var1 <= var2)) {                                                        \
+    ROS_ERROR_STREAM(#var1 << " > " << #var2 << ": check failed for " << #var1 \
+                           << " = " << var1 << ", " << #var2 << " = "          \
+                           << var2);                                           \
+    return false;                                                              \
+  }
+
+/**
  * @brief Check that var1 > var2; return false immediately if check fails.
  *
  * @param var1 First argument to comparison.
@@ -35,6 +63,20 @@
  */
 #define CHECK_GT(var1, var2)                                                   \
   if (!(var1 > var2)) {                                                        \
+    ROS_ERROR_STREAM(#var1 << " > " << #var2 << ": check failed for " << #var1 \
+                           << " = " << var1 << ", " << #var2 << " = "          \
+                           << var2);                                           \
+    return false;                                                              \
+  }
+
+/**
+ * @brief Check that var1 >= var2; return false immediately if check fails.
+ *
+ * @param var1 First argument to comparison.
+ * @param var2 Second argument to comparison.
+ */
+#define CHECK_GE(var1, var2)                                                   \
+  if (!(var1 >= var2)) {                                                        \
     ROS_ERROR_STREAM(#var1 << " > " << #var2 << ": check failed for " << #var1 \
                            << " = " << var1 << ", " << #var2 << " = "          \
                            << var2);                                           \

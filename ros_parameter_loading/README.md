@@ -37,7 +37,12 @@ if __name__ == '__main__':
     print node_params.string_param
     print node_params.float_param
     print node_params.scoped_params
+    print node_params.scoped_params[inner_int_param]
 ```
+
+Note that top-level params (e.g. `string_param` and `float_param`) are loaded
+as attributes, and that nested params (e.g. `inner_int_param`) are loaded as
+dictionary entries.
 
 If the class attempts to load a non-existent paramter, a `KeyError` exception
 is thrown.
