@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(build_utility_scripts)
+project(build_utilities)
 
 ## Set build type
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
@@ -108,7 +108,7 @@ find_package(catkin REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES build_utility_scripts
+#  LIBRARIES build_utilities
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
@@ -123,7 +123,7 @@ catkin_package(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/build_utility_scripts.cpp
+#   src/${PROJECT_NAME}/build_utilities.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -134,7 +134,7 @@ catkin_package(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/build_utility_scripts_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/build_utilities_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -191,7 +191,7 @@ catkin_package(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_build_utility_scripts.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_build_utilities.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

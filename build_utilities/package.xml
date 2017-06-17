@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>build_utility_scripts</name>
+  <name>build_utilities</name>
   <version>0.0.0</version>
   <description>Collection of scripts that may be of use for build tasks</description>
 
