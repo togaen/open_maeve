@@ -6,12 +6,15 @@ import Adafruit_PCA9685
 ## @package adafruit_pca9685
 # Interface for Adafruit PCA9685 controller.
 
+
 class PCA9685_Controller:
-    ''' 
-    Adafruit PWM controler. 
+
+    '''
+    Adafruit PWM controler.
     This is used for most RC Cars
     '''
-    def __init__(self, channel, frequency=60): 
+
+    def __init__(self, channel, frequency=60):
         # Initialise the PCA9685 using the default address (0x40).
         self.pwm = Adafruit_PCA9685.PCA9685()
 
@@ -20,4 +23,3 @@ class PCA9685_Controller:
 
     def set_pulse(self, pulse):
         self.pwm.set_pwm(self.channel, 0, pulse)
-

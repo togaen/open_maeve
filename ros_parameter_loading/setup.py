@@ -5,8 +5,8 @@ from catkin_pkg.python_setup import generate_distutils_setup
 
 # fetch values from package.xml
 setup_args = generate_distutils_setup(
-            packages=['ros_parameter_loading'],
+    packages=['ros_parameter_loading'],
                 package_dir={'': 'src'},
-                )
+)
 
 setup(**setup_args)

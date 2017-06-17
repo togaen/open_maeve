@@ -20,6 +20,8 @@ from controller_interface_msgs.msg import LatLonCommand
 # @param lon_cmd_axis The axis index for longitudinal commands.
 #
 # @return The equivalent LatLonCommand message.
+
+
 def JoyMsg2LatLonCommand(m, lat_cmd_axis=1, lon_cmd_axis=3):
     ll_msg = LatLonCommand()
     ll_msg.lazy_publishing = True

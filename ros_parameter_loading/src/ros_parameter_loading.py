@@ -11,7 +11,10 @@ import rospy
 #  The constructed object has an attribute (member) for each parameter in the
 #  given list. The list of passed parameter names is assumed to be relative  to
 #  the node name.
+
+
 class NodeParams:
+
     def __init__(self, param_list):
         d = {}
         node_name = rospy.get_name()
@@ -19,4 +22,3 @@ class NodeParams:
             d[param] = rospy.get_param(node_name + '/' + param)
 
         self.__dict__.update(d)
-
