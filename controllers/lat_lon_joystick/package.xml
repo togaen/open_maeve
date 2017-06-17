@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>human_interface</name>
+  <name>lat_lon_joystick</name>
   <version>0.0.0</version>
-  <description>Package for human interface devices</description>
+  <description>Package for generating lat/lon commands with a joystick</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
