@@ -1,0 +1,5 @@
+<launch>
+  <node name="donkey_vehicle_controller" pkg="donkey_vehicle_controller" type="node.py" output="screen"> 
+    <rosparam command="load" file="$(find donkey_vehicle_controller)/params/actuator_params.yaml"/>
+  </node>
+</launch>
