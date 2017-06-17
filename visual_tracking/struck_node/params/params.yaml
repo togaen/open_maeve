@@ -2,13 +2,15 @@
 # Node parameters.
 #
 
-# If a topic name for camera images is given, tracking will be performed on it
-camera_topic: '/cv_camera_node/image_raw'
-#camera_topic: '/raspicam_node/image'
-camera_topic_queue_size: 1 # if this is larger than 1, lagging can occur
+# Camera image stream topic. The raspicam_node publishes a compressed image;
+# uncomment image_transport hint if using that topic. Otherwise, leave it
+# commented out.
+#camera_topic: '/cv_camera_node/image_raw'
+camera_topic: '/raspicam_node/image'
+image_transport: 'compressed'
 
-# Set this if using a compressed image topic.
-#image_transport: 'compressed'
+# If this is larger than 1, lagging can occur.
+camera_topic_queue_size: 1 
 
 # This topic is a bool signal that is user-fired when ready to start tracking
 init_tracker_topic: 'init_tracker'
