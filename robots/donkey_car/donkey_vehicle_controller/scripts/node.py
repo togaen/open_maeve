@@ -40,7 +40,7 @@ class Controller:
                 self.RANGE_MAX,
                 self.params['zero_pulse'],
                 self.params['max_pulse'])
- 
+
         if self.params['debug_only']:
             print '[debug] set ' + str(pulse) + ' to channel ' + str(self.params['channel'])
         else:
