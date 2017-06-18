@@ -10,8 +10,8 @@ Header header
 # If false, the listener should messages to be published at a regular interval.
 bool lazy_publishing
 
-# Lateral command \in [0, 1].
+# Lateral command \in [-1, 1].
 float64 lat_cmd
 
-# Longitudinal command \in [0, 1].
+# Longitudinal command \in [-1, 1].
 float64 lon_cmd
