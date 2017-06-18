@@ -5,21 +5,16 @@
 namespace maeve_automation_core {
 
 struct DonkeyVehicleControllerParams : public ParamsBase {
-  struct ThrottleActuatorParams {
+  struct ActuatorParams {
     int channel;
     int max_pulse;
     int zero_pulse;
     int min_pulse;
   };
 
-  struct SteeringActuatorParams {
-    int channel;
-    int left_pulse;
-    int right_pulse;
-  };
-
-  ThrottleActuatorParams throttle_actuator;
-  SteeringActuatorParams steering_actuator;
+  std::string lat_lon_command_topic;
+  ActuatorParams throttle_actuator;
+  ActuatorParams steering_actuator;
 
   /**
    * @copydoc ParamsBase::ParamsBase()

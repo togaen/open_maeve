@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   adafruit_pca9685
   ros_parameter_loading
+  controller_interface_msgs
 )
 
 ## System dependencies are found with CMake's conventions
