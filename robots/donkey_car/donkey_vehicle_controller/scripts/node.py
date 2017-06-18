@@ -40,10 +40,11 @@ class Controller:
                 self.RANGE_MAX,
                 self.params['zero_pulse'],
                 self.params['max_pulse'])
-
-        self.controller.set_pulse(pulse)
-        # print 'set ' + str(pulse) + ' to channel ' +
-        # str(self.params['channel'])
+ 
+        if self.params['debug_only']:
+            print '[debug] set ' + str(pulse) + ' to channel ' + str(self.params['channel'])
+        else:
+            self.controller.set_pulse(pulse)
 
 
 class Handler:
@@ -53,8 +54,8 @@ class Handler:
         self.steering_controller = Controller(p.steering_actuator)
 
     def callback(self, msg):
-        self.throttle_controller.update(msg.lon_cmd)
-        self.steering_controller.update(msg.lat_cmd)
+        self.throttle_controller.update(msg.x)
+        self.steering_controller.update(msg.y)
 
 if __name__ == '__main__':
     rospy.init_node('donkey_vehicle_controller')
