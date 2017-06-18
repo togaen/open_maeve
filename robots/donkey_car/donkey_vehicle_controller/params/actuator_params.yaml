@@ -1,12 +1,15 @@
-#  Channel and PWM settings for the throttle actuator.
+# Listen to LatLonCommand messages on this topic. The incoming commands are
+# scaled to the pulse ranges [min, max] of the actuators.
 lat_lon_command_topic: '/lat_lon_joystick/command'
+
+#  Channel and PWM settings for the throttle (longitudinal) actuator.
 throttle_actuator:
   channel:    0
   max_pulse:  500
   zero_pulse: 370
   min_pulse:  220
 
-# Channel and PWM settings for the steering actuator.
+# Channel and PWM settings for the steering (lateral) actuator.
 steering_actuator:
   channel:     1
   max_pulse:  460 # left

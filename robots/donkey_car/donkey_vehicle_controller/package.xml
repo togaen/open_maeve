@@ -2,7 +2,7 @@
 <package>
   <name>donkey_vehicle_controller</name>
   <version>0.0.0</version>
-  <description>The donkey_vehicle_controller package</description>
+  <description>Vehicle controller node for the donkey car</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -26,7 +26,6 @@
   <!-- Authors do not have to be maintainers, but could be -->
   <!-- Example: -->
   <author email="contact@maeveautomation.com">Jeffrey Kane Johnson</author>
-  <author email="wroscoe@gmail.com">Will Roscoe</author>
 
 
   <!-- The *_depend tags are used to specify dependencies -->
