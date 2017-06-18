@@ -45,7 +45,7 @@ find_package(catkin REQUIRED rospy message_generation std_msgs)
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  LatLonCommand.msg
+  Command2D.msg
 )
 
 ## Generate services in the 'srv' folder

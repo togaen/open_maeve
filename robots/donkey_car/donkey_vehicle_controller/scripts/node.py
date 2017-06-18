@@ -5,7 +5,7 @@
 import rospy
 import ros_parameter_loading
 import adafruit_pca9685
-from controller_interface_msgs.msg import LatLonCommand
+from controller_interface_msgs.msg import Command2D
 
 ## @package donkey_vehicle_controller
 # Vehicle controller for the donkey car.
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
     handler = Handler(node_params)
     rospy.Subscriber(
-        node_params.lat_lon_command_topic,
-        LatLonCommand,
+        node_params.command2D_topic,
+        Command2D,
      handler.callback)
     rospy.spin()

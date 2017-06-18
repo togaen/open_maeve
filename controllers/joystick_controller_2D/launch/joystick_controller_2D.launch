@@ -1,0 +1,20 @@
+<launch>
+
+  <!-- System joystick interface. For details on setting this parameter, see:
+         http://wiki.ros.org/joy/Tutorials/ConfiguringALinuxJoystick -->
+  <param name="/joy_node/dev" type="string" value="/dev/input/js0" />
+
+  <!-- Joystick interface node. -->
+  <node name="joy" pkg="joy" type="joy_node" output="screen"/>
+
+  <!-- Name of output topic. -->
+  <arg name="output_topic" value="/joystick_controller_2D/command"/>
+
+  <!-- Topic transform that maps raw joystick data to 2D control command message. -->
+  <node
+    name="joystick_msg_transform"
+    pkg="topic_tools"
+    type="transform"
+    args="/joy $(arg output_topic) controller_interface_msgs/Command2D 'joystick_controller_2D.JoyMsgToCommand2DMsg(m)' --import joystick_controller_2D"
+    output="screen"/>
+</launch>

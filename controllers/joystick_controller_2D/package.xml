@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>lat_lon_joystick</name>
+  <name>joystick_controller_2D</name>
   <version>0.0.0</version>
-  <description>Package for generating lat/lon commands with a joystick</description>
+  <description>Package for generating 2D control commands with a joystick</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
