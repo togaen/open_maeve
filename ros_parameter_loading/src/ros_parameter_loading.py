@@ -15,10 +15,7 @@ import rospy
 
 class NodeParams:
 
-    def __init__(self, param_list):
-        d = {}
+    def __init__(self):
         node_name = rospy.get_name()
-        for param in param_list:
-            d[param] = rospy.get_param(node_name + '/' + param)
-
-        self.__dict__.update(d)
+        node_params = rospy.get_param(node_name)
+        self.__dict__.update(node_params)
