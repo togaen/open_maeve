@@ -1,6 +1,6 @@
 # Listen to Command2D messages on this topic. The incoming commands are
 # scaled to the pulse ranges [min, max] of the actuators.
-command2D_topic: '/joystick_controller_2D/command'
+command2D_topic: '/joystick_controller_2d/command'
 
 #  Channel and PWM settings for the throttle (x control axis) actuator.
 throttle_actuator:

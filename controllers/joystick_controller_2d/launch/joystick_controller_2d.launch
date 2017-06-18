@@ -8,13 +8,13 @@
   <node name="joy" pkg="joy" type="joy_node" output="screen"/>
 
   <!-- Name of output topic. -->
-  <arg name="output_topic" value="/joystick_controller_2D/command"/>
+  <arg name="output_topic" value="/joystick_controller_2d/command"/>
 
   <!-- Topic transform that maps raw joystick data to 2D control command message. -->
   <node
     name="joystick_msg_transform"
     pkg="topic_tools"
     type="transform"
-    args="/joy $(arg output_topic) controller_interface_msgs/Command2D 'joystick_controller_2D.JoyMsgToCommand2DMsg(m)' --import joystick_controller_2D"
+    args="/joy $(arg output_topic) controller_interface_msgs/Command2D 'joystick_controller_2d.JoyMsgToCommand2DMsg(m)' --import joystick_controller_2d"
     output="screen"/>
 </launch>

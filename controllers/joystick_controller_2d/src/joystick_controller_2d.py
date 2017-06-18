@@ -4,7 +4,7 @@
 import rospy
 from controller_interface_msgs.msg import Command2D
 
-## @package joystick_controller_2D
+## @package joystick_controller_2d
 # Mapping functionality from joystick message to Command2D message
 
 ##
