@@ -48,7 +48,7 @@
  * @param var2 Second argument to comparison.
  */
 #define CHECK_LE(var1, var2)                                                   \
-  if (!(var1 <= var2)) {                                                        \
+  if (!(var1 <= var2)) {                                                       \
     ROS_ERROR_STREAM(#var1 << " > " << #var2 << ": check failed for " << #var1 \
                            << " = " << var1 << ", " << #var2 << " = "          \
                            << var2);                                           \
@@ -76,7 +76,7 @@
  * @param var2 Second argument to comparison.
  */
 #define CHECK_GE(var1, var2)                                                   \
-  if (!(var1 >= var2)) {                                                        \
+  if (!(var1 >= var2)) {                                                       \
     ROS_ERROR_STREAM(#var1 << " > " << #var2 << ": check failed for " << #var1 \
                            << " = " << var1 << ", " << #var2 << " = "          \
                            << var2);                                           \
