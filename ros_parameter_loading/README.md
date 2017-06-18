@@ -29,20 +29,21 @@ scoped_params:
 A node that reads in params might look like:
 
 ```python
+import rospy
 import ros_parameter_loading
 
 if __name__ == '__main__':
     rospy.init_node('my_node')
-    node_params = ros_parameter_loading.NodeParams(['string_param', 'float_param', 'scoped_params'])
+    node_params = ros_parameter_loading.NodeParams()
     print node_params.string_param
     print node_params.float_param
     print node_params.scoped_params
     print node_params.scoped_params[inner_int_param]
 ```
-
-Note that top-level params (e.g. `string_param` and `float_param`) are loaded
-as attributes, and that nested params (e.g. `inner_int_param`) are loaded as
-dictionary entries.
+The call to `rospy.init_node()` must come before the call to
+`ros_parameter_loading.NodeParams()`. Note that top-level params (e.g.
+`string_param` and `float_param`) are loaded as attributes, and that nested
+params (e.g. `inner_int_param`) are loaded as dictionary entries.
 
 If the class attempts to load a non-existent paramter, a `KeyError` exception
 is thrown.
