@@ -42,7 +42,8 @@ class Controller:
                 self.params['max_pulse'])
 
         self.controller.set_pulse(pulse)
-        #print 'set ' + str(pulse) + ' to channel ' + str(self.params['channel'])
+        # print 'set ' + str(pulse) + ' to channel ' +
+        # str(self.params['channel'])
 
 
 class Handler:
