@@ -1,0 +1,12 @@
+<launch>
+
+  <!-- RViz won't display raspicam_node output directly; it needs to be republished in raw format. -->
+  <include file="$(find maeve_cameras)/raspicam_republish_raw.launch"/>
+
+  <node
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    output="screen"
+    args="-d $(find struck_node)/rviz_configs/raspicam_republish_raw.rviz"/>
+</launch>
