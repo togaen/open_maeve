@@ -1,7 +1,5 @@
 #
-# This message describes a generic 2D control command. By convention, command
-# values are confined to the range [-1, 1]. The consumer of the message is
-# expected to perform any scaling of the values that may be necessary.
+# This message describes a generic 2D control command.
 #
 
 # Message header.
@@ -12,8 +10,8 @@ Header header
 # If false, the listener should messages to be published at a regular interval.
 bool lazy_publishing
 
-# X axis command \in [-1, 1].
+# X axis command. 
 float64 x
 
-# Y axis command \in [-1, 1].
+# Y axis command.
 float64 y
