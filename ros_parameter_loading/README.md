@@ -96,7 +96,9 @@ bool MyParams::load(const ros::NodeHandle& nh) {
   // Below are a few convenience macros defined by this package. If any
   // check fails, the function immediately returns false.
   CHECK_GT(float_param, 0.f);
-  CHECK_GT(scoped_params.inner_int_param, 2);
+  CHECK_GE(scoped_params.inner_int_param, 3);
+  CHECK_LT(scoped_params.inner_int_param, 9);
+  CHECK_LE(float_param, 1234.5f);
   CHECK_STRICTLY_POSITIVE(float_param);
   CHECK_NONEMPTY(string_param);
 
