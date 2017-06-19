@@ -24,6 +24,7 @@ from controller_interface_msgs.msg import Command2D
 
 def JoyMsgToCommand2DMsg(m, x_axis=3, y_axis=1):
     cmd_msg = Command2D()
+    cmd_msg.header = m.header
     cmd_msg.lazy_publishing = True
     cmd_msg.x = m.axes[x_axis]
     cmd_msg.y = m.axes[y_axis]
