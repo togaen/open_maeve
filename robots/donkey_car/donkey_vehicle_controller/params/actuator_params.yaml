@@ -1,5 +1,3 @@
-
-
 # Listen to Command2D messages on this topic. The incoming commands are
 # scaled to the pulse ranges [min, max] of the actuators.
 command2D_topic: '/joystick_controller_2d/command'
