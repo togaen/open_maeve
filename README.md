@@ -15,3 +15,13 @@ and tested.
 
 Revisions of the codebase between releases may include new functionality and
 fixes but may also include incomplete or broken code, so caveat emptor.
+
+## Collaboration and the Ubuntu Mate Platform ##
+
+Collaboration is welcome and encouraged :-).
+
+Anyone with a Bitbucket account may contribute, but users of the Maeve
+Automation Ubuntu Mate platform for Raspberry Pi get built-in team member
+access to this repository under the "maeve-pi" user. That means they can
+immediately create and push feature branches. After review, branches are merged
+onto default.
