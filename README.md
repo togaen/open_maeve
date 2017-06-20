@@ -16,4 +16,10 @@ and tested.
 Revisions of the codebase between releases may include new functionality and
 fixes but may also include incomplete or broken code, so caveat emptor.
 
+## Collaboration and the Ubuntu Mate Platform ##
+
+Users of the Maeve Automation Ubuntu Mate platform for Raspberry Pi get team
+member access to this repository. That means they can create and push branches
+so long as the branch name matches the pattern `feature-request-*`. After
+review, branches are merged onto default. Collaboration is encouraged.
 
