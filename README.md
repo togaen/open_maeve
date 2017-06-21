@@ -25,9 +25,10 @@ fixes but may also include incomplete or broken code, so caveat emptor.
 
 ## The Ubuntu MATE platform ##
 
-Maeve Automation maintains a release of Ubuntu MATE 16.04.2 LTS specifically
-for use on Raspberry Pi 3 and intended for use on mobile autonomous robots. For
-details and download, see [https://maeveautomation.com/development](https://maeveautomation.com/development).
+Maeve Automation maintains a release of Ubuntu MATE 16.04.2 LTS for Raspberry
+Pi 3 that is intended for use on mobile autonomous robots in conjunction with
+the packages in this repository. For details and download, see
+[https://maeveautomation.com/development](https://maeveautomation.com/development).
 
 ## Collaboration ##
 
