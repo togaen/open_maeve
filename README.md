@@ -7,21 +7,33 @@ details about its contents.
 All packages are released under open source licenses, however, not all code is
 under the same license.
 
+## Cloning ##
+
+See the [Overview](https://bitbucket.org/maeveautomation/maeve_automation_core/overview)
+page for links to clone this repository.
+
 ## Releases ##
 
 Each release of the codebase is tagged with `release-X` where 'X' is the
 release number. Releases represent functionality that is in some sense complete
-and tested.
+and tested. To get a release 'X', clone the repo, then:
+
+    hg pull && hg up release-X
 
 Revisions of the codebase between releases may include new functionality and
 fixes but may also include incomplete or broken code, so caveat emptor.
 
-## Collaboration and the Ubuntu Mate Platform ##
+## The Ubuntu MATE platform ##
 
-Collaboration is welcome and encouraged :-).
+Maeve Automation maintains a release of Ubuntu MATE 16.04.2 LTS specifically
+for use on Raspberry Pi 3 and intended for use on mobile autonomous robots. For
+details and download, see [https://maeveautomation.com/development](https://maeveautomation.com/development).
+
+## Collaboration ##
+
+Collaboration is welcome and encouraged using [feature branches](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow) or [forks](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) :-).
 
 Anyone with a Bitbucket account may contribute, but users of the Maeve
-Automation Ubuntu Mate platform for Raspberry Pi get built-in team member
+Automation Ubuntu MATE platform for Raspberry Pi get built-in team member
 access to this repository under the "maeve-pi" user. That means they can
-immediately create and push feature branches. After review, branches are merged
-onto default.
+immediately create and push feature branches.
