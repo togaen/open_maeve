@@ -12,10 +12,10 @@ for publishing/subscribing can also be changed there.
 
 ## Usage ##
 
-Using the node is straightforward. Below outlines a typical use case: it assumes you are using the included RViz config, and that the enable\_viz parameter is set true.
+Using the node is straightforward. Below outlines a typical use case (it assumes that the enable\_viz parameter is set true).
 
 1. Make sure images are being published to the camera\_topic set in the params.yaml file. (For instance, if you have the cv\_camera package and a webcam, you can use webcam.launch in the maeve\_cameras package to publish images from your webcam.)
-1. Open RViz and add an image topic (or use the included webcam RViz config if you launched webcam.launch). You should see a camera feed in the Webcam window.
+1. Open RViz and add an image topic to listen to struck\_node, or use one of the included RViz launch files to load RViz with a pre-defined RViz config.
 1. Launch the tracker node with the launch.launch launch file.
 1. You now should see tracker output in the Tracker Viz window with a white bounding box.
 1. Center the object you wish to track in the white bounding box.
