@@ -12,3 +12,15 @@ To configure this node:
 * In `joytsick_controller_2d.py` the `x_axis` and `y_axis` default values need to be set to appropriate values for your controller. The current default values `x_axis=3` and `y_axis=1` map up/down left hat motions to +/- x axis, and left/right hat motions to +/- y axis values for a generic USB game controller. 
 
 For more detailed configutation about the joy package, see: http://wiki.ros.org/joy/Tutorials/ConfiguringALinuxJoystick
+
+## Subscribe ##
+
+* /joy: The raw input joystick message.
+
+## Publish ##
+
+* /joystick\_controller\_2d/command: The Command2D message containing joystick commands
+
+## Launch Files ##
+
+* joystick\_controller\_2d.launch: Launch a topic transform process that subscribes to the raw joystick topic and publishes a Command2D message.
