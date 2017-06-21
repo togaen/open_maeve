@@ -28,3 +28,27 @@ motors)
     1. Run `roslaunch joystick_controller_2d joystick_controller_2d.launch`
 
 You should now be able to control the donkey car with the controller.
+
+## Subscribe ##
+
+* \[user-defined Command2D topic\] (default /joystick\_controller\_2d/command): Input commands for the controller.
+
+## Parameters: params/actuator\_params.yaml ##
+
+* command2D\_topic: The topic to listen to for command messages (default '/joystick\_controller\_2d/command')
+* throttle\_actuator: Channel and PWM settings for the throttle (x control axis) actuator (defaults below)
+    * debug\_only: false
+    * channel: 0
+    * max\_pulse: 500
+    * zero\_pulse: 370
+    * min\_pulse: 220
+* steering\_actuator: Channel and PWM settings for the steering (y control axis) actuator (defaults below)
+    * debug\_only: false
+    * channel: 1
+    * max\_pulse: 460
+    * zero\_pulse: 360
+    * min\_pulse: 260
+
+## Launch Files ##
+
+* launch.launch: Launches the control node and listens to the command2D\_topic.
