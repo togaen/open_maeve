@@ -50,7 +50,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /maeve_flow/scaled_image_1_05
+      Image Topic: /maeve_flow/scaled_image_1_01
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -62,7 +62,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /maeve_flow/scaled_image_1_1
+      Image Topic: /maeve_flow/scaled_image_1_015
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -74,7 +74,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /maeve_flow/scaled_image_1_15
+      Image Topic: /maeve_flow/scaled_image_1_03
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -86,7 +86,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /maeve_flow/scaled_image_1_2
+      Image Topic: /maeve_flow/scaled_image_1_07
       Max Value: 1
       Median window: 5
       Min Value: 0
