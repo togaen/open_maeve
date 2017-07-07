@@ -12,7 +12,17 @@ import sys
 import cv2
 import numpy as np
 
+## @package maeve_flow
+# Simple, robust encroachment detection.
 
+
+##
+# @brief Dilate an image by the given scale.
+#
+# @param img The input image for dilation.
+# @param scale The scale by which to dilate.
+#
+# @return An image with the same dimensions as img, dilated by scale.
 def Resize(img, scale):
     res = cv2.resize(
         img,
@@ -29,7 +39,14 @@ def Resize(img, scale):
     return cv2.resize(res[start_y:end_y, start_x:end_x], (img.shape[1], img.shape[0]))
 
 
+##
+# @brief Handler class for containing the message callback.
 class Handler:
+
+    ##
+    # @brief Construct a callback handler.
+    #
+    # @param p Node parameters from ros_parameter_loading.
 
     def __init__(self, p):
         self.p = p
@@ -42,9 +59,19 @@ class Handler:
             self.publishers[topic_name] = rospy.Publisher(
                 topic_name, Image, queue_size=10)
 
+    ##
+    # @brief Compute a standard ROS topic name to publish a scaled image.
+    #
+    # @param scale The image dilation scale.
+    #
+    # @return The string topic name.
     def ScaleTopic(self, scale):
         return rospy.get_name() + '/' + self.p.scaled_image_topic_prefix + str(scale).replace('.', '_')
 
+    ##
+    # @brief The camera message callback. For each message, generate a scale pyramid and perform a matching.
+    #
+    # @param msg The image message.
     def callback(self, msg):
         # Convert ROS image to 8-bit grayscale OpenCV image.
         try:

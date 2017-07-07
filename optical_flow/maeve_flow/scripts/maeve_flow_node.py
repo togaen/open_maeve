@@ -7,6 +7,9 @@ from sensor_msgs.msg import Image
 import ros_parameter_loading
 import maeve_flow
 
+## @package maeve_flow
+# Simple, robust encroachment detection.
+
 if __name__ == '__main__':
     rospy.init_node('maeve_flow')
     node_params = ros_parameter_loading.NodeParams()
