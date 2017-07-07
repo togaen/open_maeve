@@ -1,8 +1,8 @@
 <launch>
 
   <!-- Optionally set via command line -->
-  <arg name="width" default="320"/>
-  <arg name="height" default="240"/>
+  <arg name="width" default="80"/>
+  <arg name="height" default="60"/>
   <arg name="framerate" default="30"/>
   <arg name="camera_frame_id" default="raspicam"/>
 
