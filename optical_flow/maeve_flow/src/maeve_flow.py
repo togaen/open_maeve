@@ -22,107 +22,61 @@ def Resize(img, scale):
     end_x = res.shape[1] - half_width_diff
     return cv2.resize(res[start_y:end_y, start_x:end_x], (img.shape[1], img.shape[0]))
 
-def Norm(frame_prv, frame_nxt, frame):
-    l = []
-    l.append(cv2.norm(frame_prv, frame, cv2.NORM_L1))
-    l.append(cv2.norm(frame_nxt, frame, cv2.NORM_L1))
-    return l
-
 class Handler:
-    def __init__(self, frame_buffer=4):
-        self.l = frame_buffer
-        self.frames = deque([None] * self.l)
-        self.hsv = None
+    def __init__(self, p):
+        self.p = p
+        self.skip_count = 0
+        self.frames = deque([None, None])
         self.bridge = CvBridge()
-        self.pub_gs = rospy.Publisher('/maeve_gs', Image, queue_size=10)
-        self.pub_flow = rospy.Publisher('/maeve_flow', Image, queue_size=10)
-        self.pub_image = rospy.Publisher('/maeve_image', Image, queue_size=10)
-        self.pub_diff = rospy.Publisher('/maeve_diff', Image, queue_size=10)
+        self.publishers = {}
+        for scale in p.scale_pyramid:
+            topic_name = self.ScaleTopic(scale)
+            self.publishers[topic_name] = rospy.Publisher(topic_name, Image, queue_size=10)
+            
 
-    def vizFlow(self, flow):
-        mag, ang = cv2.cartToPolar(flow[...,0], flow[...,1])
-        self.hsv[...,0] = ang*180/np.pi/2
-        self.hsv[...,2] = cv2.normalize(mag,None,0,255,cv2.NORM_MINMAX)
-        return cv2.cvtColor(self.hsv,cv2.COLOR_HSV2BGR)
+    def ScaleTopic(self, scale):
+        return rospy.get_name() + '/' + self.p.scaled_image_topic_prefix + str(scale).replace('.','_')
 
     def callback(self, msg):
+        # Convert ROS image to 8-bit grayscale OpenCV image.
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+            cv_image = self.bridge.imgmsg_to_cv2(msg, "mono8")
         except CvBridgeError as e:
             print(e)
             return
 
-        if self.hsv is None:
-            self.hsv = np.zeros_like(cv_image)
-            self.hsv[...,1] = 255
+        # Set first queue position; this should only execute once.
+        if self.frames[0] is None:
+            self.frames[0] = cv_image
+            return
 
-        cv_image_gs = cv2.cvtColor(cv_image,cv2.COLOR_BGR2GRAY)
+        # Skip any frames?
+        if self.skip_count < self.p.skip_frames:
+            self.skip_count = self.skip_count + 1
+            return
 
-        for i in range(0,self.l-1):
-            if self.frames[i] is None:
-                self.frames[i] = cv_image_gs
-                return
+        # All frames have been skipped, reset counter.
+        self.skip_count = 0
 
-        if self.frames[self.l-1] is not None:
+        # If deque is full, rotate out the first image.
+        if self.frames[1] is not None:
             self.frames.rotate(-1)
 
-        self.frames[self.l-1] = cv_image_gs
+        # Add current frame to end of deque.
+        self.frames[1] = cv_image
 
-        # Averaging
-        frame_prv = cv2.addWeighted(self.frames[0], 0, self.frames[0], 1, 0)
-        frame_nxt = cv2.addWeighted(self.frames[1], 0, self.frames[3], 1, 0)
-
-        # Temporal Diff
-        cv_diff = cv2.subtract(frame_nxt, frame_prv)
-        cv_diff = cv2.normalize(cv_diff, cv_diff, 0, 255, cv2.NORM_MINMAX) 
-
-        # Thresholding
-        ret, cv_diff = cv2.threshold(cv_diff, 0, 255, cv2.THRESH_TOZERO)
-        diff_output = self.bridge.cv2_to_imgmsg(cv_diff, encoding="passthrough")
-
-        # Optical Flow
-        flow = cv2.calcOpticalFlowFarneback(frame_prv, frame_nxt, None, 0.5, 5, 15, 3, 7, 1.5, 0)
-        cv_output = self.vizFlow(flow)
-        flow_output = self.bridge.cv2_to_imgmsg(cv_output, encoding="passthrough")
-
-        # Edges
-        edges = cv2.Canny(frame_nxt,50,200)
-        edge_img = self.bridge.cv2_to_imgmsg(edges, encoding="passthrough")
-
-        # Resize pyramid (generate in terms of time, not frames)
-        res_quarter = Resize(frame_prv, 1.25)
-        r125 = self.bridge.cv2_to_imgmsg(res_quarter, encoding="passthrough")
-        res_half = Resize(frame_prv, 1.5)
-        r15 = self.bridge.cv2_to_imgmsg(res_half, encoding="passthrough")
-        res_three_quarter = Resize(frame_prv, 1.75)
-        r175 = self.bridge.cv2_to_imgmsg(res_three_quarter, encoding="passthrough")
-        res_two = Resize(frame_prv, 2.0)
-        r2 = self.bridge.cv2_to_imgmsg(res_two, encoding="passthrough")
-        diffs = []
-        diffs.append(Norm(frame_prv, frame_nxt, res_quarter))
-        diffs.append(Norm(frame_prv, frame_nxt, res_half))
-        diffs.append(Norm(frame_prv, frame_nxt, res_three_quarter))
-        diffs.append(Norm(frame_prv, frame_nxt, res_two))
-        for d in diffs:
-            print 'delta: ' + str(d[1])
-            #delta = d[1] - d[0]
-            #break
-            #print 'prv: ' + str(d[0]) + ', nxt: ' + str(d[1]) + ', delta: ' + str(delta)
+        # Generate resize pyramid.
+        scaled_images = {}
+        for scale in self.p.scale_pyramid:
+            topic_name = self.ScaleTopic(scale)
+            scaled_image = Resize(self.frames[0], scale)
+            delta = cv2.norm(self.frames[0], scaled_image, cv2.NORM_L1)
+            print topic_name + ' delta: ' + str(delta)
+            scaled_images[topic_name] = self.bridge.cv2_to_imgmsg(scaled_image, encoding="passthrough")
 
         print 'END'
 
-        # Publish
-        #self.pub_flow.publish(flow_output)
-        self.pub_flow.publish(r125)
-        
-        #self.pub_image.publish(msg)
-        #self.pub_image.publish(edge_img)
-        self.pub_image.publish(r15)
-
-        #self.pub_gs.publish(self.bridge.cv2_to_imgmsg(cv_image_gs, encoding="passthrough"))
-        self.pub_gs.publish(r175)
-
-        #self.pub_diff.publish(diff_output)
-        self.pub_diff.publish(self.bridge.cv2_to_imgmsg(cv_image_gs, encoding="passthrough"))
-        #self.pub_diff.publish(r2)
+        # Publish scaled images.
+        for key, value in scaled_images.items():
+            self.publishers[key].publish(value)
 
