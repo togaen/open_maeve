@@ -12,8 +12,14 @@ import sys
 import cv2
 import numpy as np
 
+
 def Resize(img, scale):
-    res = cv2.resize(img,None,fx=scale, fy=scale, interpolation = cv2.INTER_CUBIC)
+    res = cv2.resize(
+        img,
+        None,
+     fx=scale,
+     fy=scale,
+     interpolation=cv2.INTER_CUBIC)
     half_width_diff = (res.shape[1] - img.shape[1]) / 2
     half_height_diff = (res.shape[0] - img.shape[0]) / 2
     start_y = half_height_diff
@@ -22,7 +28,9 @@ def Resize(img, scale):
     end_x = res.shape[1] - half_width_diff
     return cv2.resize(res[start_y:end_y, start_x:end_x], (img.shape[1], img.shape[0]))
 
+
 class Handler:
+
     def __init__(self, p):
         self.p = p
         self.skip_count = 0
@@ -31,11 +39,11 @@ class Handler:
         self.publishers = {}
         for scale in p.scale_pyramid:
             topic_name = self.ScaleTopic(scale)
-            self.publishers[topic_name] = rospy.Publisher(topic_name, Image, queue_size=10)
-            
+            self.publishers[topic_name] = rospy.Publisher(
+                topic_name, Image, queue_size=10)
 
     def ScaleTopic(self, scale):
-        return rospy.get_name() + '/' + self.p.scaled_image_topic_prefix + str(scale).replace('.','_')
+        return rospy.get_name() + '/' + self.p.scaled_image_topic_prefix + str(scale).replace('.', '_')
 
     def callback(self, msg):
         # Convert ROS image to 8-bit grayscale OpenCV image.
@@ -72,11 +80,11 @@ class Handler:
             scaled_image = Resize(self.frames[0], scale)
             delta = cv2.norm(self.frames[0], scaled_image, cv2.NORM_L1)
             print topic_name + ' delta: ' + str(delta)
-            scaled_images[topic_name] = self.bridge.cv2_to_imgmsg(scaled_image, encoding="passthrough")
+            scaled_images[topic_name] = self.bridge.cv2_to_imgmsg(
+                scaled_image, encoding="passthrough")
 
         print 'END'
 
         # Publish scaled images.
         for key, value in scaled_images.items():
             self.publishers[key].publish(value)
-
