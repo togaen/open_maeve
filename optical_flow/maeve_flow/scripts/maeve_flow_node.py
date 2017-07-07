@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     handler = maeve_flow.Handler(node_params)
     rospy.Subscriber(
-        '/raspicam_node/image_republished_raw',
+        node_params.camera_topic,
         Image,
      handler.callback)
     rospy.spin()
