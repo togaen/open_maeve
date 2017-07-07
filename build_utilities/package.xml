@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>build_utilities</name>
   <version>0.0.0</version>
   <description>Collection of scripts that may be of use for build tasks</description>
@@ -42,9 +42,12 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>clang-format</run_depend>
-  <run_depend>python-pep8</run_depend>
-  <run_depend>python-autopep8</run_depend>
+  <exec_depend>clang-format</exec_depend>
+  <exec_depend>python-pep8</exec_depend>
+  <exec_depend>python-autopep8</exec_depend>
+
+  <doc_depend>doxygen</doc_depend>
+  <doc_depend>rosdoc_lite</doc_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

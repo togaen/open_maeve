@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>maeve_cameras</name>
   <version>0.0.0</version>
   <description>Collection of cameras used by Maeve Automation</description>
@@ -40,13 +40,11 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>cv_camera</run_depend>
+  <exec_depend>cv_camera</exec_depend>
 
   <!-- There's currently no rosdep rule for raspicam_node, see:
-       https://github.com/fpasteau/raspicam_node
-       or
        https://github.com/UbiquityRobotics/raspicam_node -->
-  <run_depend>raspicam_node</run_depend>
+  <exec_depend>raspicam_node</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
