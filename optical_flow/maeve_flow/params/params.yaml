@@ -1,0 +1,5 @@
+compound_window_width: 5
+compound_window_height: 5
+compound_window_horizontal_spacing: 3
+compound_windows_vertical_spacing: 3
+initial_flow_vector: [0, 0, 0]
