@@ -8,4 +8,4 @@ skip_frames: 0
 scaled_image_topic_prefix: 'scaled_image_'
 
 # Generate a scaled image at each of these scales.
-scale_pyramid: [1.01,1.015,1.03,1.07] 
+scales: [1.01,1.015,1.03,1.07] 

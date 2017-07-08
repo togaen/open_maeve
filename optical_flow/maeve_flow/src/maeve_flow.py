@@ -1,16 +1,9 @@
 # Copyright (C) 2017 Maeve Automation - All Rights Reserved
 # Permission to copy and modify is granted under the MIT license
 
-import rospy
-import rosbag
-import ros_parameter_loading
-from sensor_msgs.msg import Image
-from cv_bridge import CvBridge, CvBridgeError
 from collections import deque
 
-import sys
 import cv2
-import numpy as np
 
 ## @package maeve_flow
 # Simple, robust encroachment detection.
@@ -23,7 +16,7 @@ import numpy as np
 # @param scale The scale by which to dilate.
 #
 # @return An image with the same dimensions as img, dilated by scale.
-def Resize(img, scale):
+def Dilate(img, scale):
     res = cv2.resize(
         img,
         None,
@@ -40,78 +33,25 @@ def Resize(img, scale):
 
 
 ##
-# @brief Handler class for containing the message callback.
-class Handler:
+# @brief For an image and ordered (ASC) list of scales, build a scale pyramid.
+#
+# @param img The base image of the pyramid.
+# @param scales The ordered list of scales.
+#
+# @return The scale pyramid: a dictionary of scale dialted images with scale values as keys.
+def BuildScalePyramid(img, scales):
+    scale_pyramid = {}
+    for scale in scales:
+        scale_pyramid[scale] = Dilate(img, scale)
 
-    ##
-    # @brief Construct a callback handler.
-    #
-    # @param p Node parameters from ros_parameter_loading.
+    return scale_pyramid
 
-    def __init__(self, p):
-        self.p = p
-        self.skip_count = 0
-        self.frames = deque([None, None])
-        self.bridge = CvBridge()
-        self.publishers = {}
-        for scale in p.scale_pyramid:
-            topic_name = self.ScaleTopic(scale)
-            self.publishers[topic_name] = rospy.Publisher(
-                topic_name, Image, queue_size=10)
-
-    ##
-    # @brief Compute a standard ROS topic name to publish a scaled image.
-    #
-    # @param scale The image dilation scale.
-    #
-    # @return The string topic name.
-    def ScaleTopic(self, scale):
-        return rospy.get_name() + '/' + self.p.scaled_image_topic_prefix + str(scale).replace('.', '_')
-
-    ##
-    # @brief The camera message callback. For each message, generate a scale pyramid and perform a matching.
-    #
-    # @param msg The image message.
-    def callback(self, msg):
-        # Convert ROS image to 8-bit grayscale OpenCV image.
-        try:
-            cv_image = self.bridge.imgmsg_to_cv2(msg, "mono8")
-        except CvBridgeError as e:
-            print(e)
-            return
-
-        # Set first queue position; this should only execute once.
-        if self.frames[0] is None:
-            self.frames[0] = cv_image
-            return
-
-        # Skip any frames?
-        if self.skip_count < self.p.skip_frames:
-            self.skip_count = self.skip_count + 1
-            return
-
-        # All frames have been skipped, reset counter.
-        self.skip_count = 0
-
-        # If deque is full, rotate out the first image.
-        if self.frames[1] is not None:
-            self.frames.rotate(-1)
-
-        # Add current frame to end of deque.
-        self.frames[1] = cv_image
-
-        # Generate resize pyramid.
-        scaled_images = {}
-        for scale in self.p.scale_pyramid:
-            topic_name = self.ScaleTopic(scale)
-            scaled_image = Resize(self.frames[0], scale)
-            delta = cv2.norm(self.frames[0], scaled_image, cv2.NORM_L1)
-            print topic_name + ' delta: ' + str(delta)
-            scaled_images[topic_name] = self.bridge.cv2_to_imgmsg(
-                scaled_image, encoding="passthrough")
-
-        print 'END'
-
-        # Publish scaled images.
-        for key, value in scaled_images.items():
-            self.publishers[key].publish(value)
+##
+# @brief Match an image to a scale pyramid.
+#
+# @param img The image to match.
+# @param scale_pyramid The scale pyramid.
+#
+# @return The interpolated matching index.
+#def MatchScale(img, scale_pyramid):
+    # TODO
