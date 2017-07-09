@@ -16,9 +16,15 @@ import cv2
 # @param img2 The second argument to the metric
 #
 # @return 
-def DilationMetric(img1, img2):
-    # TODO L1 is a placeholder; it's not a good choice here.
-    return cv2.norm(self.frames[0], value, cv2.NORM_L1)
+def DilationMetric(img1, img2, blur_window=3):
+    # Median filter to reduce noise
+    #img1_median = cv2.medianBlur(img1, blur_window)
+    #img2_median = cv2.medianBlur(img2, blur_window)
+    # Blur to smooth the metric function
+    #img1_blur = cv2.blur(img1_median,(blur_window, blur_window))
+    #img2_blur = cv2.blur(img2_median,(blur_window, blur_window))
+    #return cv2.norm(img1_blur, img2_blur, cv2.NORM_L1)
+    return cv2.norm(img1, img2, cv2.NORM_L1)
 
 ##
 # @brief Dilate an image by the given scale.
@@ -64,5 +70,6 @@ def BuildScalePyramid(img, scales):
 # @param scale_pyramid The scale pyramid.
 #
 # @return The interpolated matching index.
-#def MatchScale(img, scale_pyramid):
-    # TODO
+#def MatchImage(img, scale_pyramid):
+
+    # TODO introduce some state here.
