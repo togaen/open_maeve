@@ -20,6 +20,7 @@ class Handler:
     # @brief Instantiate the piezo buzzer control.
     #
     # @param p Buzzer params.
+
     def __init__(self, p):
         self.buzzer = donkey_honk.Buzzer(
             p.buzzer_gpio_pin,
