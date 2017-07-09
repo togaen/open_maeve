@@ -8,7 +8,6 @@ import time
 # Library for activating the piezo buzzer on the Donkey Car.
 
 
-
 ##
 # @brief Set up and maintain necessary interface to GPIO piezo buzzer.
 class Buzzer:
@@ -20,7 +19,13 @@ class Buzzer:
     # @param buzzer_duration The total duration that the buzzer should operate.
     # @param buzzer_on_duration The period of time the buzzer should be 'on' while buzzing.
     # @param buzzer_off_duration The period of time the buzzer should be 'off' while buzzing.
-    def __init__(self, buzzer_pin, buzzer_duration, buzzer_on_duration, buzzer_off_duration):
+
+    def __init__(
+        self,
+        buzzer_pin,
+     buzzer_duration,
+     buzzer_on_duration,
+     buzzer_off_duration):
         GPIO.setmode(GPIO.BCM)
         self.buzzer_pin = buzzer_pin
         self.buzzer_duration = buzzer_duration
@@ -44,4 +49,3 @@ class Buzzer:
             time.sleep(self.buzzer_on_duration)
             GPIO.output(self.buzzer_pin, False)
             time.sleep(self.buzzer_off_duration)
-
