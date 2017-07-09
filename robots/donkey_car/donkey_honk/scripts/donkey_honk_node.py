@@ -4,10 +4,17 @@
 
 import rospy
 
+import ros_parameter_loading
 import donkey_honk
+
+## @package donkey_vehicle_controller
+# Vehicle controller for the donkey car.
+
 
 if __name__ == '__main__':
     rospy.init_node('donkey_honk')
-    buzzer = donkey_honk.Buzzer(27, 0.25)
-    buzzer.beep()
+    node_params = ros_parameter_loading.NodeParams()
+
+    buzzer = donkey_honk.Buzzer(node_params.buzzer_gpio_pin, node_params.buzzer_duration, node_params.buzzer_on_duration, node_params.buzzer_off_duration)
+    buzzer.buzz()
 

@@ -40,7 +40,8 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
-  <depend>python-rpi.gpio</depend>
+  <depend>rpi_gpio</depend>
+  <depend>ros_parameter_loading</depend>
 
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
