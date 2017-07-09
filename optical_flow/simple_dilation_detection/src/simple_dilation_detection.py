@@ -10,6 +10,17 @@ import cv2
 
 
 ##
+# @brief An image space metric specialized for dilation detection.
+#
+# @param img1 The first argument to the metric.
+# @param img2 The second argument to the metric
+#
+# @return 
+def DilationMetric(img1, img2):
+    # TODO L1 is a placeholder; it's not a good choice here.
+    return cv2.norm(self.frames[0], value, cv2.NORM_L1)
+
+##
 # @brief Dilate an image by the given scale.
 #
 # @param img The input image for dilation.
