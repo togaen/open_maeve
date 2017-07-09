@@ -1,3 +1,6 @@
+# Topic to listen to for buzzer activations.
+buzzer_topic: '/donkey_honk/activate'
+
 # GPIO pin that the buzzer is connected to.
 buzzer_gpio_pin: 27
 
