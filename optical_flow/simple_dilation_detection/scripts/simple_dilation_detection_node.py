@@ -11,10 +11,10 @@ from cv_bridge import CvBridge, CvBridgeError
 
 import cv2
 
-import maeve_flow
+import simple_dilation_detection
 
-## @package maeve_flow
-# Simple, robust encroachment detection.
+## @package simple_dilation_detection
+# Simple image dilation detection.
 
 
 ##
@@ -38,13 +38,13 @@ class Handler:
                 topic_name, Image, queue_size=10)
 
     ##
-    # @brief Compute a standard ROS topic name to publish a scaled image.
+    # @brief Compute a standard ROS topic name to publish a dilated image.
     #
     # @param scale The image dilation scale.
     #
     # @return The string topic name.
     def ScaleTopic(self, scale):
-        return rospy.get_name() + '/' + self.p.scaled_image_topic_prefix + str(scale).replace('.', '_')
+        return rospy.get_name() + '/' + self.p.dilated_image_topic_prefix + str(scale).replace('.', '_')
 
     ##
     # @brief The camera message callback. For each message, generate a scale pyramid and perform a matching.
@@ -80,7 +80,7 @@ class Handler:
 
         # Generate resize pyramid.
         scaled_images = {}
-        scale_pyramid = maeve_flow.BuildScalePyramid(
+        scale_pyramid = simple_dilation_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
         for key, value in scale_pyramid.items():
             topic_name = self.ScaleTopic(key)
@@ -97,7 +97,7 @@ class Handler:
 
 
 if __name__ == '__main__':
-    rospy.init_node('maeve_flow')
+    rospy.init_node('simple_dilation_detection')
     node_params = ros_parameter_loading.NodeParams()
 
     handler = Handler(node_params)

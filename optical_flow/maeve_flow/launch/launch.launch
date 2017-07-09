@@ -1,5 +1,0 @@
-<launch>
-  <node name="maeve_flow" pkg="maeve_flow" type="maeve_flow_node.py" output="screen"> 
-    <rosparam command="load" file="$(find maeve_flow)/params/params.yaml"/>
-  </node>
-</launch>

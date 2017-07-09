@@ -5,8 +5,8 @@ from collections import deque
 
 import cv2
 
-## @package maeve_flow
-# Simple, robust encroachment detection.
+## @package simple_dilation_detection
+# Simple image dilation detection.
 
 
 ##

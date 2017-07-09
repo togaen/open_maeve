@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>maeve_flow</name>
+  <name>simple_dilation_detection</name>
   <version>0.0.0</version>
-  <description>Simple, robust encroachment detection.</description>
+  <description>Simple image dilation detection.</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/maeve_flow</url> -->
+  <!-- <url type="website">http://wiki.ros.org/simple_dilation_detection</url> -->
   <url type="repository">https://bitbucket.org/maeveautomation/maeve_automation_core/src</url>
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->

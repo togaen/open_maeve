@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(maeve_flow)
+project(simple_dilation_detection)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
 add_definitions(-std=c++11)
@@ -107,7 +107,7 @@ catkin_python_setup()
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES maeve_flow
+#  LIBRARIES simple_dilation_detection
 #  CATKIN_DEPENDS cv_bridge image_geometry
 #  DEPENDS system_lib
 )
@@ -125,7 +125,7 @@ catkin_package(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/maeve_flow.cpp
+#   src/${PROJECT_NAME}/simple_dilation_detection.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -193,7 +193,7 @@ catkin_package(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_maeve_flow.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_simple_dilation_detection.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

@@ -5,7 +5,7 @@ camera_topic: '/raspicam_node/image_republished_raw'
 skip_frames: 0
 
 # Scaled images are published to a node-relative topic with this prefix (for debugging).
-scaled_image_topic_prefix: 'scaled_image_'
+dilated_image_topic_prefix: 'dilated_image_'
 
 # Generate a scaled image at each of these scales.
 scales: [1.01,1.015,1.03,1.07] 
