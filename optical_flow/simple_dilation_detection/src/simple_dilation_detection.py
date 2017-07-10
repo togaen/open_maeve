@@ -13,17 +13,24 @@ import cv2
 # @brief An image space metric specialized for dilation detection.
 #
 # @param img1 The first argument to the metric.
-# @param img2 The second argument to the metric
+# @param img2 The second argument to the metric.
+# @param enable_median_filter Whether to preprocess img1 and img2 with a median filter.
+# @param median_filter_window If preprocessing with a median filter, use this window size (square).
+# @param enable_blur_filter Whether to preprocess img1 and img2 with a blur filter.
+# @param blur_filter_window If preprocessing with a blur filter, use this window size (square).
 #
 # @return 
-def DilationMetric(img1, img2, blur_window=3):
+def DilationMetric(img1, img2, enable_median_filter, median_filter_window, enable_blur_filter, blur_filter_window):
     # Median filter to reduce noise
-    #img1_median = cv2.medianBlur(img1, blur_window)
-    #img2_median = cv2.medianBlur(img2, blur_window)
+    if enable_median_filter:
+        img1 = cv2.medianBlur(img1, median_filter_window)
+        img2 = cv2.medianBlur(img2, median_filter_window)
+
     # Blur to smooth the metric function
-    #img1_blur = cv2.blur(img1_median,(blur_window, blur_window))
-    #img2_blur = cv2.blur(img2_median,(blur_window, blur_window))
-    #return cv2.norm(img1_blur, img2_blur, cv2.NORM_L1)
+    if enable_blur_filter:
+        img1 = cv2.blur(img1, (blur_filter_window, blur_filter_window))
+        img2 = cv2.blur(img2, (blur_filter_window, blur_filter_window))
+
     return cv2.norm(img1, img2, cv2.NORM_L1)
 
 ##

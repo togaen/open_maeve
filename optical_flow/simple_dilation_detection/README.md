@@ -13,10 +13,22 @@ lightweight as is reasonable.
 
 * \[user-defined camera topic\] (see 'camera\_topic' param): The camera image stream over which to perform dilation detection.
 
+## Publish ##
+
+* \[user-defined output topic\] (see 'output\_topic' param): Publish an estimate of the dilation scale to this topic.
+
 ## Parameters ##
 
+* output\_topic: Publish dilation scale estimate to this topic: this will be relative to the node name (default '~/dilation\_scale\_estimate')
 * camera\_topic: The topic to listen to for camera images (default '/raspicam\_node/image\_republished\_raw')
 * skip\_frames: Number of frames to skip between previous and current frames for dilation computation (default 0)
 * dilated\_image\_topic\_prefix: Scaled images are published to a node-relative topic with this prefix (default 'dilated\_image\_')
-* scales: The set of dilation scales to use for detection (default [1.01,1.015,1.03,1.07])
+* scales: The set of dilation scales to use for detection (default [1.01,1.015,1.03,1.07]) 
+* enable\_median\_filter: Whether to pre-process images with a median filter before computing dilation metric (default false)
+* median\_filter\_window: Window size for median filter (default 3)
+* enable\_blur\_filter: Whether to pre-process iamges with a blur filter before computing dilation metric (default false)
+* blur\_filter\_window: Window size for blue filter (default 3)
 
+## Launch Files ##
+
+* launch.launch: Load parameters to ROS parameter server and launch the node.
