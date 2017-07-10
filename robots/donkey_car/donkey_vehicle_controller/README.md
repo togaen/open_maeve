@@ -31,7 +31,7 @@ You should now be able to control the donkey car with the controller.
 
 ## Subscribe ##
 
-* \[user-defined Command2D topic\] (default /joystick\_controller\_2d/command): Input commands for the controller.
+* \[user-defined Command2D topic\] (see 'command2D\_topic' param): Input commands for the controller.
 
 ## Parameters: params/actuator\_params.yaml ##
 
