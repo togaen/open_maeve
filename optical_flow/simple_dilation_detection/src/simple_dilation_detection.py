@@ -19,8 +19,14 @@ import cv2
 # @param enable_blur_filter Whether to preprocess img1 and img2 with a blur filter.
 # @param blur_filter_window If preprocessing with a blur filter, use this window size (square).
 #
-# @return 
-def DilationMetric(img1, img2, enable_median_filter, median_filter_window, enable_blur_filter, blur_filter_window):
+# @return
+def DilationMetric(
+    img1,
+     img2,
+     enable_median_filter,
+     median_filter_window,
+     enable_blur_filter,
+     blur_filter_window):
     # Median filter to reduce noise
     if enable_median_filter:
         img1 = cv2.medianBlur(img1, median_filter_window)
@@ -40,6 +46,8 @@ def DilationMetric(img1, img2, enable_median_filter, median_filter_window, enabl
 # @param scale The scale by which to dilate.
 #
 # @return An image with the same dimensions as img, dilated by scale.
+
+
 def Dilate(img, scale):
     res = cv2.resize(
         img,

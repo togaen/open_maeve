@@ -84,7 +84,13 @@ class Handler:
             self.frames[0], self.p.scales)
         for key, value in scale_pyramid.items():
             topic_name = self.ScaleTopic(key)
-            delta = simple_dilation_detection.DilationMetric(self.frames[0], value, self.p.enable_median_filter, self.p.median_filter_window, self.p.enable_blur_filter, self.p.blur_filter_window)
+            delta = simple_dilation_detection.DilationMetric(
+                self.frames[0],
+                value,
+                self.p.enable_median_filter,
+                self.p.median_filter_window,
+                self.p.enable_blur_filter,
+                self.p.blur_filter_window)
             print topic_name + ' delta: ' + str(delta)
             scaled_images[topic_name] = self.bridge.cv2_to_imgmsg(
                 value, encoding="passthrough")
