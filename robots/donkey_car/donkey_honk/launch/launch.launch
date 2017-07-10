@@ -1,5 +1,0 @@
-<launch>
-  <node name="donkey_honk" pkg="donkey_honk" type="donkey_honk_node.py" output="screen"> 
-    <rosparam command="load" file="$(find donkey_honk)/params/params.yaml"/>
-  </node>
-</launch>

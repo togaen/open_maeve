@@ -1,0 +1,5 @@
+<launch>
+  <node name="rpi_piezo_buzzer" pkg="rpi_piezo_buzzer" type="rpi_piezo_buzzer_node.py" output="screen"> 
+    <rosparam command="load" file="$(find rpi_piezo_buzzer)/params/params.yaml"/>
+  </node>
+</launch>

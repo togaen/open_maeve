@@ -11,7 +11,7 @@ it cycles between 'on' and 'off' states.
 
 ## Parameters ##
 
-* buzzer\_topic: The topic to listent to for buzzer activations (default '/donkey\_honk/activate')
+* buzzer\_topic: The topic to listent to for buzzer activations (default '/rpi\_piezo\_buzzer/activate')
 * buzzer\_gpio\_pin: The GPIO pin that the Piezo buzzer is connected to (default 27)
 * buzzer\_duration: The length of time in seconds the buzzer should be active (default 0.5)
 * buzzer\_on\_duration: The period of time in seconds that the buzzer should be 'on' while it is active (default 0.05)

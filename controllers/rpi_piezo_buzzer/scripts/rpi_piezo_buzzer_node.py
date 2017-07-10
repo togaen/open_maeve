@@ -6,14 +6,14 @@ import rospy
 from std_msgs.msg import Bool
 
 import ros_parameter_loading
-import donkey_honk
+import rpi_piezo_buzzer
 
 ## @package donkey_vehicle_controller
 # Vehicle controller for the donkey car.
 
 
 ##
-# @brief Handler class for donkey honk callback.
+# @brief Handler class for Piezo buzzer callback.
 class Handler:
 
     ##
@@ -22,7 +22,7 @@ class Handler:
     # @param p Buzzer params.
 
     def __init__(self, p):
-        self.buzzer = donkey_honk.Buzzer(
+        self.buzzer = rpi_piezo_buzzer.Buzzer(
             p.buzzer_gpio_pin,
             p.buzzer_duration,
             p.buzzer_on_duration,
@@ -39,7 +39,7 @@ class Handler:
         self.buzzer.buzz()
 
 if __name__ == '__main__':
-    rospy.init_node('donkey_honk')
+    rospy.init_node('rpi_piezo_buzzer')
     node_params = ros_parameter_loading.NodeParams()
 
     handler = Handler(node_params)

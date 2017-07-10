@@ -1,5 +1,5 @@
 # Topic to listen to for buzzer activations.
-buzzer_topic: '/donkey_honk/activate'
+buzzer_topic: '/rpi_piezo_buzzer/activate'
 
 # GPIO pin that the buzzer is connected to.
 buzzer_gpio_pin: 27
