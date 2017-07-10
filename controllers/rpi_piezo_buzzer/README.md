@@ -16,3 +16,7 @@ it cycles between 'on' and 'off' states.
 * buzzer\_duration: The length of time in seconds the buzzer should be active (default 0.5)
 * buzzer\_on\_duration: The period of time in seconds that the buzzer should be 'on' while it is active (default 0.05)
 * buzzer\_off\_duration: The period of time in seconds that the buzzer should be 'off' while it is active (default 0.05)
+
+## Launch Files ##
+
+* launch.launch: Load parameters onto ROS parameter server and start the node.
