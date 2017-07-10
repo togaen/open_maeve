@@ -1,10 +1,13 @@
 # README #
 
 This package provides a thin abstraction layer and utility macros for
-implementing structs to contain parameters for ROS packages. The idea is that
-the package maintainer defines a struct to contain all parameters for the node
-and then uses the utilities in this package to initialize the struct. An
-example below.
+data structures that retrieve and contain parameters for ROS packages. In
+C++ the intent is that the package maintainer defines a struct to contain all
+parameters for the node and then uses the utilities in this package to
+initialize the struct. In Python the NodeParams object is a dictionary that
+automatically loads all node relative parameters into a dictionary.
+
+Examples below.
 
 ## Assumptions ##
 
