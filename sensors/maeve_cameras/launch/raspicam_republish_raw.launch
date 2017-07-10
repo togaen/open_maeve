@@ -1,7 +1,0 @@
-<launch>
-	<node
-		pkg="image_transport"
-		type="republish"
-		name="republish"
-    args="compressed in:=/raspicam_node/image out:=/raspicam_node/image_republished_raw"/>
-</launch>
