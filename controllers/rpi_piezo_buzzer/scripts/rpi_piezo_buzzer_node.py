@@ -9,7 +9,7 @@ import ros_parameter_loading
 import rpi_piezo_buzzer
 
 ## @package rpi_piezo_buzzer
-# ROS node for activating the Raspberry Pi Piezo buzzer.
+# ROS node for activating a Piezo buzzer on a Raspberry Pi.
 
 
 ##
