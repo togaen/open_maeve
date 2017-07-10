@@ -8,8 +8,8 @@ from std_msgs.msg import Bool
 import ros_parameter_loading
 import rpi_piezo_buzzer
 
-## @package donkey_vehicle_controller
-# Vehicle controller for the donkey car.
+## @package rpi_piezo_buzzer
+# ROS node for activating the Raspberry Pi Piezo buzzer.
 
 
 ##

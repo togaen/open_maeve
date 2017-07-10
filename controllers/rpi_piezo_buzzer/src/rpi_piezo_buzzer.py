@@ -4,8 +4,8 @@
 import RPi.GPIO as GPIO
 import time
 
-## @package donkey_honk
-# Library for activating the piezo buzzer on the Donkey Car.
+## @package rpi_piezo_buzzer
+# Library for activating a piezo buzzer on a Raspberry Pi.
 
 
 ##
