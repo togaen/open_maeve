@@ -70,7 +70,6 @@ class Handler:
         scale_pyramid = encroachment_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
         for key, value in scale_pyramid.items():
-            topic_name = self.ScaleTopic(key)
             bg_m = encroachment_detection.DilationMetric(
                 self.frames[0],
                 self.frames[1],
@@ -85,7 +84,7 @@ class Handler:
                 self.p.median_filter_window,
                 self.p.enable_blur_filter,
                 self.p.blur_filter_window)
-            # print topic_name + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + '
+            # print str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + '
             # delta: ' + str(m-bg_m)
             if (m - bg_m) < 0:
                 encroachment_detected = True

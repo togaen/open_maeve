@@ -10,9 +10,6 @@ skip_frames: 3
 # Detect dilation for this many frames before firing indicator.
 low_pass_filter: 2
 
-# Scaled images are published to a node-relative topic with this prefix (for debugging).
-dilated_image_topic_prefix: 'dilated_image_'
-
 # Generate a scaled image at each of these scales.
 scales: [1.00625,1.0125,1.025,1.0375,1.05,1.0625,1.075]
 

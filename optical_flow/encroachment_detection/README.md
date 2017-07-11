@@ -1,13 +1,14 @@
 # README #
 
-This package implements simple image dilation detection in a streaming sequence
-of camera images. The detection works by comparing a current frame to dilations
-of the previous frame at various scales.
+This package implements encroachment detection using a very simple image
+dilation detection technique in a streaming sequence of camera images. The
+detection works by comparing a current frame to dilations of the previous frame
+at various scales and looking for below-expected image space distance.
 
-This kind of detection can provide a coarse estimate of motion flow in a scene
-that is directed either toward or away from the camera. The emphasis is on
-reactivity rather than accuracy, so the library is designed to be as fast and
-lightweight as is reasonable.
+This kind of detection can provide a coarse estimate of motion flow that is
+directed either toward or away from the camera. The emphasis is on reactivity
+rather than accuracy, so the library is designed to be as fast and lightweight
+as is reasonable.
 
 ## Subscribe ##
 
@@ -15,15 +16,14 @@ lightweight as is reasonable.
 
 ## Publish ##
 
-* \[user-defined output topic\] (see 'output\_topic' param): Publish an estimate of the dilation scale to this topic.
+* \[user-defined output topic\] (see 'output\_topic' param): Publish detection signals to this topic.
 
 ## Parameters ##
 
-* output\_topic: Publish dilation scale estimate to this topic: this will be relative to the node name (default '~/dilation\_scale\_estimate')
-* camera\_topic: The topic to listen to for camera images (default '/raspicam\_node/image\_republished\_raw')
-* skip\_frames: Number of frames to skip between previous and current frames for dilation computation (default 0)
+* output\_topic: Publish detection signals to this topic: this will be relative to the node name (default '~/detection')
+* camera\_topic: The topic to listen to for camera images (default '/raspicam\_node/image\_rect')
+* skip\_frames: Number of frames to skip between previous and current frames for dilation computation (default 3 assuming 90fps)
 * low\_pass\_filter: Require this many sequential frames with encroachment detection before indicating a positive (default 2)
-* dilated\_image\_topic\_prefix: Scaled images are published to a node-relative topic with this prefix (default 'dilated\_image\_')
 * scales: The set of dilation scales to use for detection 
 * enable\_median\_filter: Whether to pre-process images with a median filter before computing dilation metric (default false)
 * median\_filter\_window: Window size for median filter (default 15)
