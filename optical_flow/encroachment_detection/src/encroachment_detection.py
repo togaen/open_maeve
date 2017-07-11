@@ -54,7 +54,7 @@ def Dilate(img, scale):
         None,
      fx=scale,
      fy=scale,
-     interpolation=cv2.INTER_CUBIC)
+     interpolation=cv2.INTER_LINEAR)
     half_width_diff = (res.shape[1] - img.shape[1]) / 2
     half_height_diff = (res.shape[0] - img.shape[0]) / 2
     start_y = half_height_diff
