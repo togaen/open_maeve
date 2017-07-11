@@ -1,0 +1,5 @@
+<launch>
+  <node name="encroachment_detection" pkg="encroachment_detection" type="encroachment_detection_node.py" output="screen"> 
+    <rosparam command="load" file="$(find encroachment_detection)/params/params.yaml"/>
+  </node>
+</launch>

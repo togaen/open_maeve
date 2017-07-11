@@ -1,5 +1,0 @@
-<launch>
-  <node name="simple_dilation_detection" pkg="simple_dilation_detection" type="simple_dilation_detection_node.py" output="screen"> 
-    <rosparam command="load" file="$(find simple_dilation_detection)/params/params.yaml"/>
-  </node>
-</launch>

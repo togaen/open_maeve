@@ -5,7 +5,7 @@ from collections import deque
 
 import cv2
 
-## @package simple_dilation_detection
+## @package encroachment_detection
 # Simple image dilation detection.
 
 

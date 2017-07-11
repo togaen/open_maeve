@@ -11,10 +11,10 @@ from cv_bridge import CvBridge, CvBridgeError
 
 import cv2
 
-import simple_dilation_detection
+import encroachment_detection
 
-## @package simple_dilation_detection
-# Simple image dilation detection.
+## @package encroachment_detection
+# Encroachment detection using simple image dilation detection.
 
 
 ##
@@ -82,18 +82,18 @@ class Handler:
         # Generate resize pyramid.
         encroachment_detected = False
         scaled_images = {}
-        scale_pyramid = simple_dilation_detection.BuildScalePyramid(
+        scale_pyramid = encroachment_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
         for key, value in scale_pyramid.items():
             topic_name = self.ScaleTopic(key)
-            bg_m = simple_dilation_detection.DilationMetric(
+            bg_m = encroachment_detection.DilationMetric(
                 self.frames[0],
                 self.frames[1],
                 self.p.enable_median_filter,
                 self.p.median_filter_window,
                 self.p.enable_blur_filter,
                 self.p.blur_filter_window)
-            m = simple_dilation_detection.DilationMetric(
+            m = encroachment_detection.DilationMetric(
                 self.frames[1],
                 value,
                 self.p.enable_median_filter,
@@ -121,7 +121,7 @@ class Handler:
 
 
 if __name__ == '__main__':
-    rospy.init_node('simple_dilation_detection')
+    rospy.init_node('encroachment_detection')
     node_params = ros_parameter_loading.NodeParams()
 
     handler = Handler(node_params)
