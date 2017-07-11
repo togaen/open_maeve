@@ -68,8 +68,7 @@ class Handler:
                 # Could return here, but let's keep run times deterministic.
                 encroachment_detected = True
 
-            # rospy.loginfo(str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + ',
-            # delta: ' + str(m-bg_m) + ', E: ' + str(encroachment_detected))
+            #rospy.loginfo(str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + ', delta: ' + str(m-bg_m) + ', E: ' + str(encroachment_detected))
 
         return encroachment_detected
 
@@ -128,6 +127,9 @@ class Handler:
         except CvBridgeError as e:
             rospy.logerr(e)
             return
+
+        # Resize the incoming image.
+        cv_image = cv2.resize(cv_image,None,fx=self.p.scale_input, fy=self.p.scale_input, interpolation = cv2.INTER_AREA)
 
         # Set up image queue.
         if not self.imageQueueReady(cv_image):

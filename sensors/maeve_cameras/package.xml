@@ -41,6 +41,7 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>cv_camera</exec_depend>
+  <exec_depend>image_proc</exec_depend>
 
   <!-- There's currently no rosdep rule for raspicam_node, see:
        https://github.com/UbiquityRobotics/raspicam_node -->
