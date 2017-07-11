@@ -10,6 +10,13 @@ directed either toward or away from the camera. The emphasis is on reactivity
 rather than accuracy, so the library is designed to be as fast and lightweight
 as is reasonable.
 
+The parameter default values are tuned for camera output from:
+
+    roslaunch maeve\_cameras raspicam\_republish\_rectify.launch
+
+If running from different camera input, you'll probably need to make
+adjustments, especially to the scales and filter windows.
+
 ## Subscribe ##
 
 * \[user-defined camera topic\] (see 'camera\_topic' param): The camera image stream over which to perform dilation detection.
