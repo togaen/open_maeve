@@ -28,6 +28,7 @@ class Handler:
 
     def __init__(self, p):
         self.p = p
+        self.low_pass_filter = 0
         self.skip_count = 0
         self.frames = deque([None, None])
         self.bridge = CvBridge()
@@ -79,23 +80,40 @@ class Handler:
         self.frames[1] = cv_image
 
         # Generate resize pyramid.
+        encroachment_detected = False
         scaled_images = {}
         scale_pyramid = simple_dilation_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
         for key, value in scale_pyramid.items():
             topic_name = self.ScaleTopic(key)
-            delta = simple_dilation_detection.DilationMetric(
+            bg_m = simple_dilation_detection.DilationMetric(
+                self.frames[0],
+                self.frames[1],
+                self.p.enable_median_filter,
+                self.p.median_filter_window,
+                self.p.enable_blur_filter,
+                self.p.blur_filter_window)
+            m = simple_dilation_detection.DilationMetric(
                 self.frames[1],
                 value,
                 self.p.enable_median_filter,
                 self.p.median_filter_window,
                 self.p.enable_blur_filter,
                 self.p.blur_filter_window)
-            print topic_name + ' delta: ' + str(delta)
+            #print topic_name + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + ' delta: ' + str(m-bg_m)
+            if (m-bg_m) < 0:
+                encroachment_detected = True
+                #print 'ENCROACHMENT AT ' + str(key)
+
             scaled_images[topic_name] = self.bridge.cv2_to_imgmsg(
                 value, encoding="passthrough")
 
-        print 'END'
+        #print 'END'
+        if encroachment_detected:
+            self.low_pass_filter = self.low_pass_filter + 1
+            if self.low_pass_filter >= self.p.low_pass_filter:
+                print 'ENCROACHMENT DETECTED'
+                self.low_pass_filter = 0
 
         # Publish scaled images.
         for key, value in scaled_images.items():
