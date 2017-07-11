@@ -8,4 +8,4 @@ Currently supported supported are:
 
 In addition, utility launch files include:
 
-* raspicam\_republish\_raw.launch: This launch file republishes compressed images from the raspicam process as uncompressed images.
+* raspicam\_republish\_rectify.launch: This launch file republishes compressed images from the raspicam process as uncompressed images and well as publishing rectified versions.
