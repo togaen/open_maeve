@@ -85,7 +85,7 @@ class Handler:
         for key, value in scale_pyramid.items():
             topic_name = self.ScaleTopic(key)
             delta = simple_dilation_detection.DilationMetric(
-                self.frames[0],
+                self.frames[1],
                 value,
                 self.p.enable_median_filter,
                 self.p.median_filter_window,
