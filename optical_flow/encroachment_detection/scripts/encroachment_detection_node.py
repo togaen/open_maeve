@@ -68,8 +68,8 @@ class Handler:
                 # Could return here, but let's keep run times deterministic.
                 encroachment_detected = True
 
-            # print str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + ',
-            # delta: ' + str(m-bg_m) + ', E: ' + str(encroachment_detected)
+            # rospy.loginfo(str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + ',
+            # delta: ' + str(m-bg_m) + ', E: ' + str(encroachment_detected))
 
         return encroachment_detected
 
@@ -126,7 +126,7 @@ class Handler:
         try:
             cv_image = self.bridge.imgmsg_to_cv2(msg, "mono8")
         except CvBridgeError as e:
-            print(e)
+            rospy.logerr(e)
             return
 
         # Set up image queue.
@@ -140,7 +140,7 @@ class Handler:
         detection = self.filterDetection(detection)
 
         if self.p.verbose and detection:
-            print 'ENCROACHMENT DETECTED'
+            rospy.loginfo('ENCROACHMENT DETECTED')
 
         # Publish findings.
         msg = Bool()
@@ -157,5 +157,5 @@ if __name__ == '__main__':
         node_params.camera_topic,
         Image,
      handler.callback)
-    print 'Running encroachment detection...'
+    rospy.loginfo('Running encroachment detection...')
     rospy.spin()
