@@ -1,0 +1,5 @@
+<launch>
+  <arg name="in_topic" default="/encroachment_detection/detection"/>
+  <arg name="out_topic" default="/rpi_piezo_buzzer/activate"/>
+  <node name="encroachment_topic_relay" pkg="topic_tools" type="relay" args="$(arg in_topic) $(arg out_topic)" output="screen"/> 
+</launch>
