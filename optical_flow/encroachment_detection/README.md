@@ -12,7 +12,7 @@ as is reasonable.
 
 The parameter default values are tuned for camera output from:
 
-    roslaunch maeve\_cameras raspicam\_republish\_rectify.launch
+    roslaunch maeve_cameras raspicam_republish_rectify.launch
 
 If running from different camera input, you'll probably need to make
 adjustments, especially to the scales and filter windows.
