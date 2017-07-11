@@ -32,20 +32,6 @@ class Handler:
         self.skip_count = 0
         self.frames = deque([None, None])
         self.bridge = CvBridge()
-        self.publishers = {}
-        for scale in p.scales:
-            topic_name = self.ScaleTopic(scale)
-            self.publishers[topic_name] = rospy.Publisher(
-                topic_name, Image, queue_size=10)
-
-    ##
-    # @brief Compute a standard ROS topic name to publish a dilated image.
-    #
-    # @param scale The image dilation scale.
-    #
-    # @return The string topic name.
-    def ScaleTopic(self, scale):
-        return rospy.get_name() + '/' + self.p.dilated_image_topic_prefix + str(scale).replace('.', '_')
 
     ##
     # @brief The camera message callback. For each message, generate a scale pyramid and perform a matching.
@@ -81,7 +67,6 @@ class Handler:
 
         # Generate resize pyramid.
         encroachment_detected = False
-        scaled_images = {}
         scale_pyramid = encroachment_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
         for key, value in scale_pyramid.items():
@@ -100,13 +85,11 @@ class Handler:
                 self.p.median_filter_window,
                 self.p.enable_blur_filter,
                 self.p.blur_filter_window)
-            #print topic_name + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + ' delta: ' + str(m-bg_m)
-            if (m-bg_m) < 0:
+            # print topic_name + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + '
+            # delta: ' + str(m-bg_m)
+            if (m - bg_m) < 0:
                 encroachment_detected = True
                 #print 'ENCROACHMENT AT ' + str(key)
-
-            scaled_images[topic_name] = self.bridge.cv2_to_imgmsg(
-                value, encoding="passthrough")
 
         #print 'END'
         if encroachment_detected:
@@ -114,11 +97,6 @@ class Handler:
             if self.low_pass_filter >= self.p.low_pass_filter:
                 print 'ENCROACHMENT DETECTED'
                 self.low_pass_filter = 0
-
-        # Publish scaled images.
-        for key, value in scaled_images.items():
-            self.publishers[key].publish(value)
-
 
 if __name__ == '__main__':
     rospy.init_node('encroachment_detection')
