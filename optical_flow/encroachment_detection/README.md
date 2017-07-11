@@ -29,6 +29,7 @@ adjustments, especially to the scales and filter windows.
 
 * output\_topic: Publish detection signals to this topic: this will be relative to the node name (default '~/detection')
 * camera\_topic: The topic to listen to for camera images (default '/raspicam\_node/image\_rect')
+* verbose: Print information to console during node run time (default true)
 * skip\_frames: Number of frames to skip between previous and current frames for dilation computation (default 3 assuming 90fps)
 * low\_pass\_filter: Require this many sequential frames with encroachment detection before indicating a positive (default 2)
 * scales: The set of dilation scales to use for detection 

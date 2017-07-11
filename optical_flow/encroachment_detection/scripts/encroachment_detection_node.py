@@ -7,6 +7,7 @@ from collections import deque
 import rospy
 import ros_parameter_loading
 from sensor_msgs.msg import Image
+from std_msgs.msg import Bool
 from cv_bridge import CvBridge, CvBridgeError
 
 import cv2
@@ -32,6 +33,89 @@ class Handler:
         self.skip_count = 0
         self.frames = deque([None, None])
         self.bridge = CvBridge()
+        self.pub = rospy.Publisher(
+            rospy.get_name() + '/' + self.p.output_topic,
+            Bool,
+            queue_size=10)
+
+    ##
+    # @brief Convenience method for invoking the dilation metric.
+    #
+    # @param img1 The first argument to the metric.
+    # @param img2 The second argument to the metric.
+    #
+    # @return The measure.
+    def getMetric(self, img1, img2):
+        return encroachment_detection.DilationMetric(
+            img1, img2,
+                self.p.enable_median_filter,
+                self.p.median_filter_window,
+                self.p.enable_blur_filter,
+                self.p.blur_filter_window)
+
+    ##
+    # @brief Detect encroachment by performing a match to a scale pyramid
+    #
+    # @return True if encroachment detected; otherwise false.
+    def detectEncroachment(self):
+        encroachment_detected = False
+        scale_pyramid = encroachment_detection.BuildScalePyramid(
+            self.frames[0], self.p.scales)
+        for key, value in scale_pyramid.items():
+            bg_m = self.getMetric(self.frames[0], self.frames[1])
+            m = self.getMetric(self.frames[1], value)
+            if (m - bg_m) < 0:
+                # Could return here, but let's keep run times deterministic.
+                encroachment_detected = True
+
+            # print str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + ',
+            # delta: ' + str(m-bg_m) + ', E: ' + str(encroachment_detected)
+
+        return encroachment_detected
+
+    ##
+    # @brief Perform a low-pass filter on a detection signal.
+    #
+    # @param detection The detection signal (True|False)
+    #
+    # @return True if the detection
+    def filterDetection(self, detection):
+        if detection:
+            self.low_pass_filter = self.low_pass_filter + 1
+            if self.low_pass_filter >= self.p.low_pass_filter:
+                self.low_pass_filter = 0
+                return True
+
+        return False
+
+    ##
+    # @brief Set up the image queue for detection processing.
+    #
+    # @param cv_image The input image.
+    #
+    # @return True if the queue has exactly two images; otherwise False.
+    def imageQueueReady(self, cv_image):
+        # Set first queue position; this should only execute once.
+        if self.frames[0] is None:
+            self.frames[0] = cv_image
+            return False
+
+        # Skip any frames?
+        if self.skip_count < self.p.skip_frames:
+            self.skip_count = self.skip_count + 1
+            return False
+
+        # All frames have been skipped, reset counter.
+        self.skip_count = 0
+
+        # If deque is full, rotate out the first image.
+        if self.frames[1] is not None:
+            self.frames.rotate(-1)
+
+        # Add current frame to end of deque.
+        self.frames[1] = cv_image
+
+        return True
 
     ##
     # @brief The camera message callback. For each message, generate a scale pyramid and perform a matching.
@@ -45,57 +129,24 @@ class Handler:
             print(e)
             return
 
-        # Set first queue position; this should only execute once.
-        if self.frames[0] is None:
-            self.frames[0] = cv_image
+        # Set up image queue.
+        if not self.imageQueueReady(cv_image):
             return
 
-        # Skip any frames?
-        if self.skip_count < self.p.skip_frames:
-            self.skip_count = self.skip_count + 1
-            return
+        # Perform detection.
+        detection = self.detectEncroachment()
 
-        # All frames have been skipped, reset counter.
-        self.skip_count = 0
+        # Filter detection.
+        detection = self.filterDetection(detection)
 
-        # If deque is full, rotate out the first image.
-        if self.frames[1] is not None:
-            self.frames.rotate(-1)
+        if self.p.verbose and detection:
+            print 'ENCROACHMENT DETECTED'
 
-        # Add current frame to end of deque.
-        self.frames[1] = cv_image
+        # Publish findings.
+        msg = Bool()
+        msg.data = detection
+        self.pub.publish(msg)
 
-        # Generate resize pyramid.
-        encroachment_detected = False
-        scale_pyramid = encroachment_detection.BuildScalePyramid(
-            self.frames[0], self.p.scales)
-        for key, value in scale_pyramid.items():
-            bg_m = encroachment_detection.DilationMetric(
-                self.frames[0],
-                self.frames[1],
-                self.p.enable_median_filter,
-                self.p.median_filter_window,
-                self.p.enable_blur_filter,
-                self.p.blur_filter_window)
-            m = encroachment_detection.DilationMetric(
-                self.frames[1],
-                value,
-                self.p.enable_median_filter,
-                self.p.median_filter_window,
-                self.p.enable_blur_filter,
-                self.p.blur_filter_window)
-            # print str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + '
-            # delta: ' + str(m-bg_m)
-            if (m - bg_m) < 0:
-                encroachment_detected = True
-                #print 'ENCROACHMENT AT ' + str(key)
-
-        #print 'END'
-        if encroachment_detected:
-            self.low_pass_filter = self.low_pass_filter + 1
-            if self.low_pass_filter >= self.p.low_pass_filter:
-                print 'ENCROACHMENT DETECTED'
-                self.low_pass_filter = 0
 
 if __name__ == '__main__':
     rospy.init_node('encroachment_detection')
@@ -106,4 +157,5 @@ if __name__ == '__main__':
         node_params.camera_topic,
         Image,
      handler.callback)
+    print 'Running encroachment detection...'
     rospy.spin()

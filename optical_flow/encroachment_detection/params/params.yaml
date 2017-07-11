@@ -4,6 +4,9 @@ output_topic: 'detection'
 # Listen for camera images on this topic.
 camera_topic: '/raspicam_node/image_rect'
 
+# Print information to console during node run time.
+verbose: false
+
 # Skip this number of frames when computing pyramid matching (for testing).
 skip_frames: 3
 
