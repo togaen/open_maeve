@@ -1,5 +1,5 @@
 # Publish dilation scale estimate to this topic: this will be relative to the node name.
-output_topic: 'dilation_scale_estimate'
+output_topic: 'detection'
 
 # Listen for camera images on this topic.
 camera_topic: '/raspicam_node/image_rect'
