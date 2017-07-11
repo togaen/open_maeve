@@ -1,4 +1,4 @@
-# Publish dilation scale estimate to this topic: this will be relative to the node name.
+# Publish encroachment detected signal to this topic: this will be relative to the node name.
 output_topic: 'detection'
 
 # Listen for camera images on this topic.
