@@ -68,7 +68,9 @@ class Handler:
                 # Could return here, but let's keep run times deterministic.
                 encroachment_detected = True
 
-            #rospy.loginfo(str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + ', delta: ' + str(m-bg_m) + ', E: ' + str(encroachment_detected))
+            # rospy.loginfo(str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m)
+            # + ', delta: ' + str(m-bg_m) + ', E: ' +
+            # str(encroachment_detected))
 
         return encroachment_detected
 
@@ -116,6 +118,28 @@ class Handler:
 
         return True
 
+    def preprocessImage(self, cv_image):
+        # Resize the incoming image.
+        cv_image = cv2.resize(
+            cv_image,
+            None,
+            fx=self.p.scale_input,
+            fy=self.p.scale_input,
+            interpolation=cv2.INTER_AREA)
+
+        # Median filter to reduce noise
+        if self.p.enable_median_filter:
+            cv_image = cv2.medianBlur(cv_image, self.p.median_filter_window)
+
+        # Blur to smooth the metric function
+        if self.p.enable_blur_filter:
+            cv_image = cv2.blur(
+                cv_image,
+                (self.p.blur_filter_window,
+                 self.p.blur_filter_window))
+
+        return cv_image
+
     ##
     # @brief The camera message callback. For each message, generate a scale pyramid and perform a matching.
     #
@@ -128,8 +152,8 @@ class Handler:
             rospy.logerr(e)
             return
 
-        # Resize the incoming image.
-        cv_image = cv2.resize(cv_image,None,fx=self.p.scale_input, fy=self.p.scale_input, interpolation = cv2.INTER_AREA)
+        # Do any pre-processing.
+        cv_image = self.preprocessImage(cv_image)
 
         # Set up image queue.
         if not self.imageQueueReady(cv_image):

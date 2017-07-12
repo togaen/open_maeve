@@ -10,33 +10,13 @@ import cv2
 
 
 ##
-# @brief An image space metric specialized for dilation detection.
+# @brief An image space metric for dilation detection.
 #
 # @param img1 The first argument to the metric.
 # @param img2 The second argument to the metric.
-# @param enable_median_filter Whether to preprocess img1 and img2 with a median filter.
-# @param median_filter_window If preprocessing with a median filter, use this window size (square).
-# @param enable_blur_filter Whether to preprocess img1 and img2 with a blur filter.
-# @param blur_filter_window If preprocessing with a blur filter, use this window size (square).
 #
 # @return
-def DilationMetric(
-    img1,
-     img2,
-     enable_median_filter,
-     median_filter_window,
-     enable_blur_filter,
-     blur_filter_window):
-    # Median filter to reduce noise
-    if enable_median_filter:
-        img1 = cv2.medianBlur(img1, median_filter_window)
-        img2 = cv2.medianBlur(img2, median_filter_window)
-
-    # Blur to smooth the metric function
-    if enable_blur_filter:
-        img1 = cv2.blur(img1, (blur_filter_window, blur_filter_window))
-        img2 = cv2.blur(img2, (blur_filter_window, blur_filter_window))
-
+def DilationMetric(img1, img2):
     return cv2.norm(img1, img2, cv2.NORM_L1)
 
 ##
@@ -77,14 +57,3 @@ def BuildScalePyramid(img, scales):
         scale_pyramid[scale] = Dilate(img, scale)
 
     return scale_pyramid
-
-##
-# @brief Match an image to a scale pyramid.
-#
-# @param img The image to match.
-# @param scale_pyramid The scale pyramid.
-#
-# @return The interpolated matching index.
-#def MatchImage(img, scale_pyramid):
-
-    # TODO introduce some state here.
