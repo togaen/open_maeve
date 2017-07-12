@@ -1,14 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(encroachment_detection)
 
-## Set build type
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
-#set(CMAKE_BUILD_TYPE Debug)
-#set(CMAKE_BUILD_TYPE Release)
-
-## Useful for YCM vim extension
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 ## Add support for C++11, supported in ROS Kinetic and newer
 add_definitions(-std=c++11)
 
@@ -114,9 +106,9 @@ catkin_python_setup()
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES simple_dilation_detection
-  CATKIN_DEPENDS cv_bridge image_geometry
+#  INCLUDE_DIRS include
+#  LIBRARIES encroachment_detection
+#  CATKIN_DEPENDS cv_bridge image_geometry
 #  DEPENDS system_lib
 )
 
@@ -127,16 +119,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-  include
-  src
-  ${catkin_INCLUDE_DIRS}
-)
+#include_directories(
+#  ${catkin_INCLUDE_DIRS}
+#)
 
 ## Declare a C++ library
-add_library(simple_dilation_detection
-  src/simple_dilation_detection.cpp
-)
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/encroachment_detection.cpp
+# )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -146,7 +136,7 @@ add_library(simple_dilation_detection
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-#add_executable(${PROJECT_NAME}_node src/encroachment_detection_node.cpp)
+#add_executable(${PROJECT_NAME}_node src/test.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -160,8 +150,7 @@ add_library(simple_dilation_detection
 
 ## Specify libraries to link a library or executable target against
 #target_link_libraries(${PROJECT_NAME}_node
-#  simple_dilation_detection
-#  ${catkin_LIBRARIES}
+#   ${catkin_LIBRARIES}
 #)
 
 #############
