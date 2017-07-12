@@ -4,13 +4,12 @@
 
 from collections import deque
 
+import cv2
 import rospy
 import ros_parameter_loading
 from sensor_msgs.msg import Image
 from std_msgs.msg import Bool
 from cv_bridge import CvBridge, CvBridgeError
-
-import cv2
 
 import encroachment_detection
 
@@ -46,21 +45,27 @@ class Handler:
         encroachment_detected = False
         scale_pyramid = encroachment_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
-        bg_m = encroachment_detection.DilationMetric(self.frames[0], self.frames[1])
-        if bg_m > self.p.noise_filter:
-            #print 'too much noise, skipping'
+        bg_m = encroachment_detection.DilationMetric(
+            self.frames[0], self.frames[1])
+
+        # The method doesn't work well when changes are large between frames.
+        if bg_m > self.p.bg_noise_threshold:
+            # Reset low pass filter.
+            if self.p.verbose:
+                rospy.loginfo(
+                    'Too much background noise (' + str(
+                        bg_m) + ' > ' + str(
+                            self.p.bg_noise_threshold) + '); skipping frame.')
             return False
 
+        # Compute metric for each scale in pyramid.
         for key, value in scale_pyramid.items():
             m = encroachment_detection.DilationMetric(self.frames[1], value)
-            #print 'key: ' + str(key) + ', m: ' + str(m) + ', bg_m: ' + str(bg_m) + ', del: ' + str(m - bg_m)
-            if (m - bg_m) < 0:
+            # print str(key) + ', m: ' + str(m) + ', bg: ' + str(bg_m) + ',
+            # del: ' + str(m - bg_m)
+            if m < bg_m:
                 # Could return here, but let's keep run times deterministic.
-                encroachment_detected = True 
-
-            # rospy.loginfo(str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m)
-            # + ', delta: ' + str(m-bg_m) + ', E: ' +
-            # str(encroachment_detected))
+                encroachment_detected = True
 
         return encroachment_detected
 

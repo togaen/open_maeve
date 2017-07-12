@@ -28,12 +28,20 @@ def DilationMetric(img1, img2):
 # @return An image with the same dimensions as img, dilated by scale.
 
 
-def Dilate(img, scale):
+def Dilate(img, scale, x=0, y=0):
+    scale_x = scale
+    if x != 0:
+        scale_x = x
+
+    scale_y = scale
+    if y != 0:
+        scale_y = y
+
     res = cv2.resize(
         img,
         None,
-     fx=scale,
-     fy=scale,
+     fx=scale_x,
+     fy=scale_y,
      interpolation=cv2.INTER_LINEAR)
     start_row = (res.shape[0] - img.shape[0]) // 2
     start_col = (res.shape[1] - img.shape[1]) // 2
@@ -47,9 +55,9 @@ def Dilate(img, scale):
 # @param scales The ordered list of scales.
 #
 # @return The scale pyramid: a dictionary of scale dialted images with scale values as keys.
-def BuildScalePyramid(img, scales):
+def BuildScalePyramid(img, scales, x=0, y=0):
     scale_pyramid = {}
     for scale in scales:
-        scale_pyramid[scale] = Dilate(img, scale)
+        scale_pyramid[scale] = Dilate(img, scale, x, y)
 
     return scale_pyramid

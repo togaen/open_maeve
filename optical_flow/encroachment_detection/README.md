@@ -32,6 +32,7 @@ adjustments, especially to the scales and filter windows.
 * verbose: Print information to console during node run time (default true)
 * skip\_frames: Number of frames to skip between previous and current frames for dilation computation (default 3 assuming 90fps)
 * low\_pass\_filter: Require this many sequential frames with encroachment detection before indicating a positive (default 2)
+* bg\_noise\_threshold: Assume frames with greater than this distance between them have too much noise for meaningful results (default 45000)
 * scales: The set of dilation scales to use for detection 
 * enable\_median\_filter: Whether to pre-process images with a median filter before computing dilation metric (default false)
 * median\_filter\_window: Window size for median filter (default 15)
