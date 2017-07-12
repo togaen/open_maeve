@@ -47,11 +47,16 @@ class Handler:
         scale_pyramid = encroachment_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
         bg_m = encroachment_detection.DilationMetric(self.frames[0], self.frames[1])
+        if bg_m > self.p.noise_filter:
+            #print 'too much noise, skipping'
+            return False
+
         for key, value in scale_pyramid.items():
             m = encroachment_detection.DilationMetric(self.frames[1], value)
+            #print 'key: ' + str(key) + ', m: ' + str(m) + ', bg_m: ' + str(bg_m) + ', del: ' + str(m - bg_m)
             if (m - bg_m) < 0:
                 # Could return here, but let's keep run times deterministic.
-                encroachment_detected = True
+                encroachment_detected = True 
 
             # rospy.loginfo(str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m)
             # + ', delta: ' + str(m-bg_m) + ', E: ' +
@@ -104,14 +109,6 @@ class Handler:
         return True
 
     def preprocessImage(self, cv_image):
-        # Resize the incoming image.
-        cv_image = cv2.resize(
-            cv_image,
-            None,
-            fx=self.p.scale_input,
-            fy=self.p.scale_input,
-            interpolation=cv2.INTER_AREA)
-
         # Median filter to reduce noise
         if self.p.enable_median_filter:
             cv_image = cv2.medianBlur(cv_image, self.p.median_filter_window)
