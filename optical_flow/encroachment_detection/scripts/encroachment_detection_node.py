@@ -65,6 +65,7 @@ class Handler:
             # del: ' + str(m - bg_m)
             if m < bg_m:
                 # Could return here, but let's keep run times deterministic.
+                #print str(key) + ' : ' + str(m) + ' : ' + str(bg_m)
                 encroachment_detected = True
 
         return encroachment_detected
