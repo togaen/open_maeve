@@ -65,7 +65,8 @@ class Controller:
                 self.params['max_pulse'])
 
         if self.params['debug_only']:
-            rospy.loginfo('set ' + str(pulse) + ' to channel ' + str(self.params['channel']))
+            rospy.loginfo(
+                'set ' + str(pulse) + ' to channel ' + str(self.params['channel']))
         else:
             self.controller.set_pulse(pulse)
 
