@@ -5,10 +5,10 @@ buzzer_topic: '/rpi_piezo_buzzer/activate'
 buzzer_gpio_pin: 27
 
 # Duration of time (s) that the buzzer should operate.
-buzzer_duration: 0.5
+buzzer_duration: 0.1
 
 # Duration of time during operation that the buzzer should be 'on'.
-buzzer_on_duration: 0.05
+buzzer_on_duration: 0.005
 
 # Duration of time during operation that the buzzer should be 'off'.
-buzzer_off_duration: 0.05
+buzzer_off_duration: 0.005
