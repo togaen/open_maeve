@@ -39,21 +39,6 @@ class Handler:
             queue_size=10)
 
     ##
-    # @brief Convenience method for invoking the dilation metric.
-    #
-    # @param img1 The first argument to the metric.
-    # @param img2 The second argument to the metric.
-    #
-    # @return The measure.
-    def getMetric(self, img1, img2):
-        return encroachment_detection.DilationMetric(
-            img1, img2,
-                self.p.enable_median_filter,
-                self.p.median_filter_window,
-                self.p.enable_blur_filter,
-                self.p.blur_filter_window)
-
-    ##
     # @brief Detect encroachment by performing a match to a scale pyramid
     #
     # @return True if encroachment detected; otherwise false.
@@ -62,8 +47,9 @@ class Handler:
         scale_pyramid = encroachment_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
         for key, value in scale_pyramid.items():
-            bg_m = self.getMetric(self.frames[0], self.frames[1])
-            m = self.getMetric(self.frames[1], value)
+            bg_m = encroachment_detection.DilationMetric(
+                self.frames[0], self.frames[1])
+            m = encroachment_detection.DilationMetric(self.frames[1], value)
             if (m - bg_m) < 0:
                 # Could return here, but let's keep run times deterministic.
                 encroachment_detected = True
