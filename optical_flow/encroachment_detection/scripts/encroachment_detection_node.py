@@ -114,6 +114,14 @@ class Handler:
         return True
 
     def preprocessImage(self, cv_image):
+        # Resize input.
+        cv_image = cv2.resize(
+            cv_image,
+            None,
+            fx=self.p.input_scale,
+            fy=self.p.input_scale,
+            interpolation=cv2.INTER_LINEAR)
+
         # Median filter to reduce noise
         if self.p.enable_median_filter:
             cv_image = cv2.medianBlur(cv_image, self.p.median_filter_window)
