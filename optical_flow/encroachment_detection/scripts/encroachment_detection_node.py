@@ -46,9 +46,8 @@ class Handler:
         encroachment_detected = False
         scale_pyramid = encroachment_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
+        bg_m = encroachment_detection.DilationMetric(self.frames[0], self.frames[1])
         for key, value in scale_pyramid.items():
-            bg_m = encroachment_detection.DilationMetric(
-                self.frames[0], self.frames[1])
             m = encroachment_detection.DilationMetric(self.frames[1], value)
             if (m - bg_m) < 0:
                 # Could return here, but let's keep run times deterministic.
