@@ -35,13 +35,9 @@ def Dilate(img, scale):
      fx=scale,
      fy=scale,
      interpolation=cv2.INTER_LINEAR)
-    half_width_diff = (res.shape[1] - img.shape[1]) / 2
-    half_height_diff = (res.shape[0] - img.shape[0]) / 2
-    start_y = half_height_diff
-    end_y = res.shape[0] - half_height_diff
-    start_x = half_width_diff
-    end_x = res.shape[1] - half_width_diff
-    return cv2.resize(res[start_y:end_y, start_x:end_x], (img.shape[1], img.shape[0]))
+    start_row = (res.shape[0] - img.shape[0]) // 2
+    start_col = (res.shape[1] - img.shape[1]) // 2
+    return cv2.resize(res[start_row:img.shape[0], start_col:img.shape[1]], (img.shape[1], img.shape[0]))
 
 
 ##
