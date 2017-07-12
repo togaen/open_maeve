@@ -12,17 +12,19 @@ verbose: true
 skip_frames: 0
 
 # Detect dilation for this many frames before firing indicator.
-low_pass_filter: 3
+low_pass_filter: 2
 
 # Skip frames where the metric between them is large.
-bg_noise_threshold: 45000
+bg_noise_threshold: 30000
+#bg_noise_threshold: 15000
 
 # Resize the input image by this scale factor.
 input_scale: 1.0
+#input_scale: 0.5
 
 # Generate a scaled image at each of these scales.
 #scales: [1.00625,1.0125,1.025,1.0375,1.05,1.0625,1.075]
-scales: [1.0125, 1.025, 1.075]
+scales: [1.0175, 1.025]
 
 # Whether to pre-process images with a median filter before computing dilation metric.
 enable_median_filter: true

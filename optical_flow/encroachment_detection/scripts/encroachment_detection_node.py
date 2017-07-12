@@ -61,10 +61,10 @@ class Handler:
         # Compute metric for each scale in pyramid.
         for key, value in scale_pyramid.items():
             m = encroachment_detection.DilationMetric(self.frames[1], value)
-            # print str(key) + ', m: ' + str(m) + ', bg: ' + str(bg_m) + ',
-            # del: ' + str(m - bg_m)
+            #print str(key) + ', m: ' + str(m) + ', bg: ' + str(bg_m) + ', del: ' + str(m - bg_m)
             if m < bg_m:
                 # Could return here, but let's keep run times deterministic.
+                #print str(key) + ' : ' + str(m) + ' : ' + str(bg_m)
                 encroachment_detected = True
 
         return encroachment_detected
