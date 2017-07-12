@@ -4,13 +4,12 @@
 
 from collections import deque
 
+import cv2
 import rospy
 import ros_parameter_loading
 from sensor_msgs.msg import Image
 from std_msgs.msg import Bool
 from cv_bridge import CvBridge, CvBridgeError
-
-import cv2
 
 import encroachment_detection
 
@@ -39,21 +38,6 @@ class Handler:
             queue_size=10)
 
     ##
-    # @brief Convenience method for invoking the dilation metric.
-    #
-    # @param img1 The first argument to the metric.
-    # @param img2 The second argument to the metric.
-    #
-    # @return The measure.
-    def getMetric(self, img1, img2):
-        return encroachment_detection.DilationMetric(
-            img1, img2,
-                self.p.enable_median_filter,
-                self.p.median_filter_window,
-                self.p.enable_blur_filter,
-                self.p.blur_filter_window)
-
-    ##
     # @brief Detect encroachment by performing a match to a scale pyramid
     #
     # @return True if encroachment detected; otherwise false.
@@ -61,15 +45,27 @@ class Handler:
         encroachment_detected = False
         scale_pyramid = encroachment_detection.BuildScalePyramid(
             self.frames[0], self.p.scales)
+        bg_m = encroachment_detection.DilationMetric(
+            self.frames[0], self.frames[1])
+
+        # The method doesn't work well when changes are large between frames.
+        if bg_m > self.p.bg_noise_threshold:
+            # Reset low pass filter.
+            if self.p.verbose:
+                rospy.loginfo(
+                    'Too much background noise (' + str(
+                        bg_m) + ' > ' + str(
+                            self.p.bg_noise_threshold) + '); skipping frame.')
+            return False
+
+        # Compute metric for each scale in pyramid.
         for key, value in scale_pyramid.items():
-            bg_m = self.getMetric(self.frames[0], self.frames[1])
-            m = self.getMetric(self.frames[1], value)
-            if (m - bg_m) < 0:
+            m = encroachment_detection.DilationMetric(self.frames[1], value)
+            # print str(key) + ', m: ' + str(m) + ', bg: ' + str(bg_m) + ',
+            # del: ' + str(m - bg_m)
+            if m < bg_m:
                 # Could return here, but let's keep run times deterministic.
                 encroachment_detected = True
-
-            # rospy.loginfo(str(key) + ' bg_m: ' + str(bg_m) + ', m: ' + str(m) + ',
-            # delta: ' + str(m-bg_m) + ', E: ' + str(encroachment_detected))
 
         return encroachment_detected
 
@@ -117,6 +113,20 @@ class Handler:
 
         return True
 
+    def preprocessImage(self, cv_image):
+        # Median filter to reduce noise
+        if self.p.enable_median_filter:
+            cv_image = cv2.medianBlur(cv_image, self.p.median_filter_window)
+
+        # Blur to smooth the metric function
+        if self.p.enable_blur_filter:
+            cv_image = cv2.blur(
+                cv_image,
+                (self.p.blur_filter_window,
+                 self.p.blur_filter_window))
+
+        return cv_image
+
     ##
     # @brief The camera message callback. For each message, generate a scale pyramid and perform a matching.
     #
@@ -128,6 +138,9 @@ class Handler:
         except CvBridgeError as e:
             rospy.logerr(e)
             return
+
+        # Do any pre-processing.
+        cv_image = self.preprocessImage(cv_image)
 
         # Set up image queue.
         if not self.imageQueueReady(cv_image):

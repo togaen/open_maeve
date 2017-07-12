@@ -9,22 +9,26 @@ camera_topic: '/raspicam_node/image_rect'
 verbose: true
 
 # Skip this number of frames when computing pyramid matching (for testing).
-skip_frames: 3
+skip_frames: 0
 
 # Detect dilation for this many frames before firing indicator.
-low_pass_filter: 2
+low_pass_filter: 3
+
+# Skip frames where the metric between them is large.
+bg_noise_threshold: 45000
 
 # Generate a scaled image at each of these scales.
-scales: [1.00625,1.0125,1.025,1.0375,1.05,1.0625,1.075]
+#scales: [1.00625,1.0125,1.025,1.0375,1.05,1.0625,1.075]
+scales: [1.0125, 1.025, 1.075]
 
 # Whether to pre-process images with a median filter before computing dilation metric.
 enable_median_filter: true
 
-# Window size for median filter.
+# Window size for median filter (positive, odd integer).
 median_filter_window: 15
 
 # Whether to pre-process iamges with a blur filter before computing dilation metric.
-enable_blur_filter: true
+enable_blur_filter: false
 
-# Window size for blur filter.
+# Window size for blur filter (positive, odd integer).
 blur_filter_window: 15
