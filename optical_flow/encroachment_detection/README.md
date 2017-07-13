@@ -6,9 +6,9 @@ detection works by comparing a current frame to dilations of the previous frame
 at various scales and looking for below-expected image space distance.
 
 This kind of detection can provide a coarse estimate of motion flow that is
-directed either toward or away from the camera. The emphasis is on reactivity
-rather than accuracy, so the library is designed to be as fast and lightweight
-as is reasonable.
+directed either toward or away from the camera. The library is intended to
+serve as a baseline for use in the development of more sophisticated
+algorithms.
 
 The parameter default values assume camera output from:
 
