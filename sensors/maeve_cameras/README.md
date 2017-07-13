@@ -4,8 +4,7 @@ This package contains convenience launch files for starting various cameras.
 Currently supported supported are:
 
 * webcam.launch: A web camera launch file that uses the [cv\_camera](http://wiki.ros.org/cv_camera) package.
-* raspicam.launch: A Raspberry Pi camera launch file that uses the [raspicam\_node](https://github.com/fpasteau/raspicam_node) package.
+* raspicam\_node.launch: A Raspberry Pi camera launch file that launches a pre-configured [raspicam\_node](https://github.com/fpasteau/raspicam_node).
+* raspicam\_rectify.launch: Loads the image\_proc packages and rectifies the uncompressed output from the raspicam.launch configured camera
+* raspicam.launch: A convenience launch file that loads raspicam\_node.launch, republishes the output as uncompressed, and then runs raspicam\_rectify.launch
 
-In addition, utility launch files include:
-
-* raspicam\_republish\_rectify.launch: This launch file republishes compressed images from the raspicam process as uncompressed images and well as publishing rectified versions.
