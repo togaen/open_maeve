@@ -10,9 +10,9 @@ directed either toward or away from the camera. The emphasis is on reactivity
 rather than accuracy, so the library is designed to be as fast and lightweight
 as is reasonable.
 
-The parameter default values are tuned for camera output from:
+The parameter default values assume camera output from:
 
-    roslaunch maeve_cameras raspicam_republish_rectify.launch
+    roslaunch maeve_cameras raspicam.launch
 
 If running from different camera input, you'll probably need to make
 adjustments, especially to the scales and filter windows.
