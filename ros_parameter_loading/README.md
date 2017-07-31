@@ -102,6 +102,8 @@ bool MyParams::load(const ros::NodeHandle& nh) {
   CHECK_GE(scoped_params.inner_int_param, 3);
   CHECK_LT(scoped_params.inner_int_param, 9);
   CHECK_LE(float_param, 1234.5f);
+  CHECK_CONTAINS_CLOSED(float_param, 0.0f, 1234.5f);
+  CHECK_CONTAINS_OPEN(float_param, 0.0f, 1234.6f);
   CHECK_STRICTLY_POSITIVE(float_param);
   CHECK_NONEMPTY(string_param);
 

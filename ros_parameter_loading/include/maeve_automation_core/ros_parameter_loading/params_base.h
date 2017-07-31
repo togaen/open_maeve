@@ -84,6 +84,26 @@
   }
 
 /**
+ * @brief Check that var \in [r1, r2]; return false immediately if check fails.
+ * @param var The value being checked.
+ * @param r1 The initial point in the range.
+ * @param r2 The terminal point in the range.
+ */
+#define CHECK_CONTAINS_CLOSED(var, r1, r2) \
+  CHECK_GE(var, r1);                       \
+  CHECK_LE(var, r2);
+
+/**
+ * @brief Check that var \in (r1, r2); return false immediately if check fails.
+ * @param var The value being checked.
+ * @param r1 The initial point in the range.
+ * @param r2 The terminal point in the range.
+ */
+#define CHECK_CONTAINS_OPEN(var, r1, r2) \
+  CHECK_GT(var, r1);                     \
+  CHECK_LT(var, r2);
+
+/**
  * @brief Check that var > 0; return false immediately if check fails.
  *
  * @param var The value to check.
