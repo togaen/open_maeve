@@ -1,0 +1,7 @@
+#
+# Parameters for BRISK feature detection
+#
+
+threshold_level: 60
+octaves: 4
+pattern_scales: 1.0
