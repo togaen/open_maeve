@@ -19,13 +19,13 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "./params.h"
-
 #include "maeve_automation_core/feature_flow/feature_flow.h"
 
 #include <ros/ros.h>
 
 #include <string>
+
+#include "feature_flow/params.h"
 
 int main(int argc, char* argv[]) {
   const auto node_name = std::string("feature_flow");
@@ -41,6 +41,12 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
   ROS_INFO_STREAM("Loaded:\n" << params);
+
+  // Construct tracker.
+  auto tracker = maeve_automation_core::FeatureFlow(
+      params.threshold_level, params.octaves, params.pattern_scales);
+
+  // TODO(jeffrey.kane.johnson): do stuff.
 
   // Kick it off.
   ros::spin();

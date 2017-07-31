@@ -39,6 +39,15 @@ namespace maeve_automation_core {
 class FeatureFlow {
  public:
   /**
+   * @brief Constructor: set parameters at construction time.
+   *
+   * @param _threshold_level BRISK threshold level.
+   * @param _octaves BRISK octaves.
+   * @param _pattern_scales BRISK pattern scales.
+   */
+  FeatureFlow(int _threshold_level, int _octaves, double _pattern_scales);
+
+  /**
    * @brief Callback for image frame processing.
    *
    * @param msg The ROS image message.
@@ -46,6 +55,17 @@ class FeatureFlow {
   void callback(const sensor_msgs::Image::ConstPtr& msg);
 
  private:
+  /** @name BRISK feature detection parameters
+   * @{
+   */
+  /** @brief Threshold level. */
+  int threshold_level;
+  /** @brief Octaves. */
+  int octaves;
+  /** @brief Pattern scales. */
+  double pattern_scales;
+  /** @} */
+
   /** @name Segmentation and Track Information
    * These array are indexed aligned and contain object information.
    * @{

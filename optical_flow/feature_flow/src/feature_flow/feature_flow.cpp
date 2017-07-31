@@ -22,4 +22,10 @@
 #include "maeve_automation_core/feature_flow/feature_flow.h"
 
 namespace maeve_automation_core {
+
+  FeatureFlow::FeatureFlow(int _threshold_level, int _octaves, double _pattern_scales)
+      : threshold_level(_threshold_level),
+        octaves(_octaves),
+        pattern_scales(_pattern_scales) {}
+
 }  // namespace maeve_automation_core
