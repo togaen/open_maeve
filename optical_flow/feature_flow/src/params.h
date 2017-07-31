@@ -19,32 +19,29 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "./params.h"
+#pragma once
 
-#include "maeve_automation_core/feature_flow/feature_flow.h"
+#include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
-#include <ros/ros.h>
+namespace maeve_automation_core {
 
-#include <string>
+/** @brief Parameter object to load ROS params.*/
+struct FeatureFlowParams : public ParamsBase {
+  /** @brief BRISK threshold level. */
+  int threshold_level;
 
-int main(int argc, char* argv[]) {
-  const auto node_name = std::string("feature_flow");
+  /** @brief BRISK pyramid. */
+  int octaves;
 
-  // Initialize ROS node.
-  ros::init(argc, argv, node_name);
-  ros::NodeHandle nh(node_name);
+  /** @brief BRISK pattern scales. */
+  double pattern_scales;
 
-  // Load params.
-  auto params = maeve_automation_core::FeatureFlowParams();
-  if (!params.load(nh)) {
-    ROS_ERROR_STREAM("Failed to load params.");
-    return EXIT_FAILURE;
-  }
-  ROS_INFO_STREAM("Loaded:\n" << params);
+  /**
+   * @copydoc ParamsBase::ParamsBase()
+   */
+  __attribute__((warn_unused_result)) bool load(
+      const ros::NodeHandle& nh) override;
 
-  // Kick it off.
-  ros::spin();
+};  // struct FeatureFlowParams
 
-  // Done.
-  return EXIT_SUCCESS;
-}
+}  // namespace maeve_automation_core
