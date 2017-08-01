@@ -19,32 +19,27 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/feature_flow/feature_flow.h"
+#include "feature_flow/feature_flow_node_handler.h"
+
+#include <cv_bridge/cv_bridge.h>
 
 namespace maeve_automation_core {
+FeatureFlowNodeHandler::FeatureFlowNodeHandler(const FeatureFlowParams& params,
+                                               const ros::NodeHandle& nh)
+    : feature_flow(params.threshold_level, params.octaves,
+                   params.pattern_scales) {}
 
-FeatureFlow::FeatureFlow(int _threshold_level, int _octaves,
-                         double _pattern_scales)
-    : threshold_level(_threshold_level),
-      octaves(_octaves),
-      pattern_scales(_pattern_scales) {}
-
-bool FeatureFlow::addFrame(const cv::Mat& frame) {
-  if (prv_frame.empty()) {
-    prv_frame = frame;
-    return true;
+void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
+  // Convert to OpenCV.
+  cv_bridge::CvImagePtr cv_ptr;
+  try {
+    cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+  } catch (cv_bridge::Exception& e) {
+    ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
+    return;
   }
 
-  if (cur_frame.empty()) {
-    cur_frame = frame;
-  } else {
-    prv_frame = cur_frame;
-    cur_frame = frame;
-  }
-
-  // Compute features.
-  // Compute homographies.
-  return false;
+  // Add to feature flow instance.
+  feature_flow.addFrame(cv_ptr->image);
 }
-
 }  // namespace maeve_automation_core

@@ -23,6 +23,8 @@
 
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
+#include <string>
+
 namespace maeve_automation_core {
 
 /** @brief Parameter object to load ROS params.*/
@@ -36,12 +38,14 @@ struct FeatureFlowParams : public ParamsBase {
   /** @brief BRISK pattern scales. */
   double pattern_scales;
 
+  /** @brief The camera image topic. */
+  std::string camera_topic;
+
   /**
    * @copydoc ParamsBase::ParamsBase()
    */
   __attribute__((warn_unused_result)) bool load(
       const ros::NodeHandle& nh) override;
-
 };  // struct FeatureFlowParams
 
 }  // namespace maeve_automation_core

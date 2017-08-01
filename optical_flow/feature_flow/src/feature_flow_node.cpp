@@ -19,9 +19,13 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
+#include "feature_flow/feature_flow_node_handler.h"
 #include "maeve_automation_core/feature_flow/feature_flow.h"
 
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
 #include <ros/ros.h>
+#include <sensor_msgs/Image.h>
 
 #include <string>
 
@@ -32,7 +36,7 @@ int main(int argc, char* argv[]) {
 
   // Initialize ROS node.
   ros::init(argc, argv, node_name);
-  ros::NodeHandle nh(node_name);
+  auto nh = ros::NodeHandle(node_name);
 
   // Load params.
   auto params = maeve_automation_core::FeatureFlowParams();
@@ -42,11 +46,14 @@ int main(int argc, char* argv[]) {
   }
   ROS_INFO_STREAM("Loaded:\n" << params);
 
-  // Construct tracker.
-  auto tracker = maeve_automation_core::FeatureFlow(
-      params.threshold_level, params.octaves, params.pattern_scales);
+  // Create handler.
+  auto handler = maeve_automation_core::FeatureFlowNodeHandler(params, nh);
 
-  // TODO(jeffrey.kane.johnson): do stuff.
+  // Listen to message stream.
+  auto it = image_transport::ImageTransport(nh);
+  const auto sub = it.subscribe(
+      params.camera_topic, 1,
+      &maeve_automation_core::FeatureFlowNodeHandler::callback, &handler);
 
   // Kick it off.
   ros::spin();

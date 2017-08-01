@@ -19,32 +19,42 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
+#pragma once
 #include "maeve_automation_core/feature_flow/feature_flow.h"
 
+#include <image_transport/image_transport.h>
+#include <ros/ros.h>
+#include <sensor_msgs/Image.h>
+
+#include <string>
+
+#include "feature_flow/params.h"
+
 namespace maeve_automation_core {
+/**
+ * @brief Interface between ROS node and Feature Flow class.
+ */
+class FeatureFlowNodeHandler {
+ public:
+  /**
+   * @brief Construct the ROS interface.
+   *
+   * @param params The ROS node params.
+   * @param nh The ROS node handle.
+   */
+  FeatureFlowNodeHandler(const FeatureFlowParams& params,
+                         const ros::NodeHandle& nh);
 
-FeatureFlow::FeatureFlow(int _threshold_level, int _octaves,
-                         double _pattern_scales)
-    : threshold_level(_threshold_level),
-      octaves(_octaves),
-      pattern_scales(_pattern_scales) {}
+  /**
+   * @brief Callback to convert ROS image message to OpenCV and feed it to
+   * Feature Flow instance.
+   *
+   * @param msg The ROS image message.
+   */
+  void callback(const sensor_msgs::Image::ConstPtr& msg);
 
-bool FeatureFlow::addFrame(const cv::Mat& frame) {
-  if (prv_frame.empty()) {
-    prv_frame = frame;
-    return true;
-  }
-
-  if (cur_frame.empty()) {
-    cur_frame = frame;
-  } else {
-    prv_frame = cur_frame;
-    cur_frame = frame;
-  }
-
-  // Compute features.
-  // Compute homographies.
-  return false;
-}
-
+ private:
+  /** @brief The Feature Flow object segmentation and tracker. */
+  maeve_automation_core::FeatureFlow feature_flow;
+};  // class FeatureFlowNodeHandler
 }  // namespace maeve_automation_core

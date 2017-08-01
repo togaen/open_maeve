@@ -21,13 +21,9 @@
  */
 #pragma once
 
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-#include <ros/ros.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
-#include <tuple>
 #include <vector>
 
 namespace maeve_automation_core {
@@ -50,11 +46,18 @@ class FeatureFlow {
   /**
    * @brief Callback for image frame processing.
    *
-   * @param msg The ROS image message.
+   * @param frame The next frame to add for processing.
+   * @return True if successful; otherwise false.
    */
-  void callback(const sensor_msgs::Image::ConstPtr& msg);
+  bool addFrame(const cv::Mat& frame);
 
  private:
+  /** @brief Previous image stream frame. */
+  cv::Mat prv_frame;
+
+  /** @brief Current image stream frame. */
+  cv::Mat cur_frame;
+
   /** @name BRISK feature detection parameters
    * @{
    */
