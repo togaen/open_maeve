@@ -21,38 +21,18 @@
  */
 #pragma once
 
-#include "maeve_automation_core/ros_parameter_loading/params_base.h"
-
 #include <string>
+
+#include "maeve_automation_core/feature_flow/feature_flow.h"
+
+#include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
 namespace maeve_automation_core {
 
 /** @brief Parameter object to load ROS params.*/
 struct FeatureFlowParams : public ParamsBase {
-  /** @brief Threshold for what constitutes a "good" match. */
-  float good_match_portion;
-
-  /** @name BRISK feature detection parameters
-   * @{
-   */
-  /** @brief Threshold level. */
-  int threshold_level;
-  /** @brief Octaves. */
-  int octaves;
-  /** @brief Pattern scales. */
-  float pattern_scales;
-  /** @} */
-
-  /** @name Locally Sensitive Hashing parameters
-   * @{
-   */
-  /** @brief Number of hash tables to use. */
-  int lsh_table_number;
-  /** @brief Key bits to use. */
-  int lsh_key_size;
-  /** @brief Typically set to 2. */
-  int lsh_multi_probe_level;
-  /** @} */
+  /** @brief Feature Flow parameters. */
+  FeatureFlow::Params ff;
 
   /** @brief The camera image topic. */
   std::string camera_topic;

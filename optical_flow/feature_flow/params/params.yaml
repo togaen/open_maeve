@@ -26,3 +26,4 @@ lsh_multi_probe_level: 2
 #
 
 good_match_portion: 0.1
+ransac_reprojection_error_threshold: 1 # pixels

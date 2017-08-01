@@ -35,19 +35,44 @@ namespace maeve_automation_core {
 class FeatureFlow {
  public:
   /**
+   * @brief Parameter container for Feature Flow objects.
+   */
+  struct Params {
+    /** @brief Threshold for what constitutes a "good" match. */
+    float good_match_portion;
+
+    /** @brief Error threshold for determining inliner/outlier status. */
+    int ransac_reprojection_error_threshold;
+
+    /** @name BRISK feature detection parameters
+     * @{
+     */
+    /** @brief Threshold level. */
+    int threshold_level;
+    /** @brief Octaves. */
+    int octaves;
+    /** @brief Pattern scales. */
+    float pattern_scales;
+    /** @} */
+
+    /** @name Locally Sensitive Hashing parameters
+     * @{
+     */
+    /** @brief Number of hash tables to use. */
+    int lsh_table_number;
+    /** @brief Key bits to use. */
+    int lsh_key_size;
+    /** @brief Typically set to 2. */
+    int lsh_multi_probe_level;
+    /** @} */
+  };  // struct Params
+
+  /**
    * @brief Constructor: set parameters at construction time.
    *
-   * @param lsh_table_number Number of tables to use for descriptor matching
-   * @param lsh_key_size Key bits to use for descriptor matching
-   * @param lsh_multi_probe_level This is typically 2.
-   * @param threshold_level BRISK threshold level.
-   * @param octaves BRISK octaves.
-   * @param pattern_scales BRISK pattern scales.
-   * @param _good_match_portion Heuristic threshold for a "good" match.
+   * @param _params A filled params struct.
    */
-  FeatureFlow(int lsh_table_number, int lsh_key_size, int lsh_multi_probe_level,
-              int threshold_level, int octaves, float pattern_scales,
-              float _good_match_portion);
+  FeatureFlow(const Params& _params);
 
   /**
    * @brief Callback for image frame processing.
@@ -90,19 +115,8 @@ class FeatureFlow {
   /** @brief Current image stream frame. */
   cv::Mat cur_frame;
 
-  /** @brief Descriptor matches within this portion of range are "good". */
-  float good_match_portion;
-
-  /** @name BRISK feature detection parameters
-   * @{
-   */
-  /** @brief Threshold level. */
-  int threshold_level;
-  /** @brief Octaves. */
-  int octaves;
-  /** @brief Pattern scales. */
-  float pattern_scales;
-  /** @} */
+  /** @brief Algorithm parameters. */
+  Params params;
 
   /** @name Segmentation and Track Information
    * These array are indexed aligned and contain object information.

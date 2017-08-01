@@ -21,19 +21,22 @@
  */
 #include "maeve_automation_core/feature_flow/feature_flow.h"
 
+#include <opencv2/calib3d/calib3d.hpp>
+
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <vector>
 
 namespace maeve_automation_core {
 
-FeatureFlow::FeatureFlow(int lsh_table_number, int lsh_key_size,
-                         int lsh_multi_probe_level, int threshold_level,
-                         int octaves, float pattern_scales,
-                         float _good_match_portion)
-    : matcher(new cv::flann::LshIndexParams(20, 10, 2)),
-      good_match_portion(_good_match_portion) {
-  brisk_detector = cv::BRISK::create(threshold_level, octaves, pattern_scales);
+FeatureFlow::FeatureFlow(const Params& _params)
+    : params(_params),
+      matcher(new cv::flann::LshIndexParams(params.lsh_table_number,
+                                            params.lsh_key_size,
+                                            params.lsh_multi_probe_level)) {
+  brisk_detector = cv::BRISK::create(params.threshold_level, params.octaves,
+                                     params.pattern_scales);
 }
 
 void FeatureFlow::runDetector(const cv::Mat& image,
@@ -62,7 +65,7 @@ std::vector<cv::DMatch> FeatureFlow::computeGoodMatches(
     const auto min_distance = result.first->distance;
     const auto max_distance = result.second->distance;
     const auto range = max_distance - min_distance;
-    threshold = min_distance + good_match_portion * range;
+    threshold = min_distance + params.good_match_portion * range;
   }
 
   // Fill "good" matches.
@@ -101,7 +104,21 @@ bool FeatureFlow::addFrame(const cv::Mat& frame) {
   // Heuristic to determine a "good" matches.
   const auto good_matches = computeGoodMatches(all_matches);
 
+  // Extract keypoints.
+  std::vector<cv::Point2f> prv_points;
+  std::vector<cv::Point2f> cur_points;
+  std::for_each(good_matches.begin(), good_matches.end(),
+                [&](const cv::DMatch& match) {
+                  prv_points.push_back(keypoints_prv[match.queryIdx].pt);
+                  cur_points.push_back(keypoints_cur[match.trainIdx].pt);
+                });
+
   // Compute homography describing largest set of matching keypoints.
+  cv::Mat mask;
+  cv::Mat H =
+      cv::findHomography(prv_points, cur_points, CV_RANSAC,
+                         params.ransac_reprojection_error_threshold, mask);
+
   // Remove (or ignore) those previous/current keypoints.
   // Repeat until some threshold is met.
 
