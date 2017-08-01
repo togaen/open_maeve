@@ -1,8 +1,13 @@
 #
-# Parameters for BRISK feature detection
+# Node parameters
 #
 
-camera_topic: "/topic_name"
+camera_topic: '/raspicam_node/image'
+image_transport: 'compressed'
+
+#
+# Parameters for BRISK feature detection
+#
 
 threshold_level: 60
 octaves: 4
