@@ -37,11 +37,17 @@ class FeatureFlow {
   /**
    * @brief Constructor: set parameters at construction time.
    *
-   * @param _threshold_level BRISK threshold level.
-   * @param _octaves BRISK octaves.
-   * @param _pattern_scales BRISK pattern scales.
+   * @param lsh_table_number Number of tables to use for descriptor matching
+   * @param lsh_key_size Key bits to use for descriptor matching
+   * @param lsh_multi_probe_level This is typically 2.
+   * @param threshold_level BRISK threshold level.
+   * @param octaves BRISK octaves.
+   * @param pattern_scales BRISK pattern scales.
+   * @param _good_match_portion Heuristic threshold for a "good" match.
    */
-  FeatureFlow(int _threshold_level, int _octaves, double _pattern_scales);
+  FeatureFlow(int lsh_table_number, int lsh_key_size, int lsh_multi_probe_level,
+              int threshold_level, int octaves, float pattern_scales,
+              float _good_match_portion);
 
   /**
    * @brief Callback for image frame processing.
@@ -52,11 +58,40 @@ class FeatureFlow {
   bool addFrame(const cv::Mat& frame);
 
  private:
+  /**
+   * @brief Heuristically determine "good" descriptor matches.
+   *
+   * @param matches The set of descriptor matches.
+   *
+   * @return The matches that satisfy the hueristic.
+   */
+  std::vector<cv::DMatch> computeGoodMatches(
+      const std::vector<cv::DMatch>& matches);
+
+  /**
+   * @brief Convenience method for running the BRISK detector.
+   *
+   * @param image The image to compute features for.
+   * @param keypoints Storage for keypoints.
+   * @param descriptors Storage for descriptors.
+   */
+  void runDetector(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints,
+                   cv::Mat& descriptors);
+
+  /** @brief The BRISK feature detector. */
+  cv::Ptr<cv::BRISK> brisk_detector;
+
+  /** @brief Matcher used to correlated keypoint descriptors. */
+  cv::FlannBasedMatcher matcher;
+
   /** @brief Previous image stream frame. */
   cv::Mat prv_frame;
 
   /** @brief Current image stream frame. */
   cv::Mat cur_frame;
+
+  /** @brief Descriptor matches within this portion of range are "good". */
+  float good_match_portion;
 
   /** @name BRISK feature detection parameters
    * @{
@@ -66,7 +101,7 @@ class FeatureFlow {
   /** @brief Octaves. */
   int octaves;
   /** @brief Pattern scales. */
-  double pattern_scales;
+  float pattern_scales;
   /** @} */
 
   /** @name Segmentation and Track Information

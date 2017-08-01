@@ -26,8 +26,10 @@
 namespace maeve_automation_core {
 FeatureFlowNodeHandler::FeatureFlowNodeHandler(const FeatureFlowParams& params,
                                                const ros::NodeHandle& nh)
-    : feature_flow(params.threshold_level, params.octaves,
-                   params.pattern_scales) {}
+    : feature_flow(params.lsh_table_number, params.lsh_key_size,
+                   params.lsh_multi_probe_level, params.threshold_level,
+                   params.octaves, params.pattern_scales,
+                   params.good_match_portion) {}
 
 void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
   // Convert to OpenCV.

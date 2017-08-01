@@ -9,6 +9,20 @@ image_transport: 'compressed'
 # Parameters for BRISK feature detection
 #
 
-threshold_level: 60
-octaves: 4
+threshold_level: 30 # AGAST detection threshold score
+octaves: 3 # use 0 for single scale
 pattern_scales: 1.0
+
+#
+# Parameters for Locally Sensitive Hash matching of descriptors
+#
+
+lsh_table_number: 20
+lsh_key_size: 10
+lsh_multi_probe_level: 2
+
+#
+# Parameters for descriptor matching between frames
+#
+
+good_match_portion: 0.1
