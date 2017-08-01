@@ -24,6 +24,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
+#include <tuple>
 #include <vector>
 
 namespace maeve_automation_core {
@@ -43,6 +44,12 @@ class FeatureFlow {
 
     /** @brief Error threshold for determining inliner/outlier status. */
     int ransac_reprojection_error_threshold;
+
+    /** @brief Minimum number of keypoints to perform detection on. */
+    int min_keypoints;
+
+    /** @brief Limit the unique homographies to compute (-1 = no limit). */
+    int max_homographies;
 
     /** @name BRISK feature detection parameters
      * @{
@@ -103,6 +110,9 @@ class FeatureFlow {
   void runDetector(const cv::Mat& image, std::vector<cv::KeyPoint>& keypoints,
                    cv::Mat& descriptors);
 
+  /** @brief Algorithm parameters. */
+  Params params;
+
   /** @brief The BRISK feature detector. */
   cv::Ptr<cv::BRISK> brisk_detector;
 
@@ -115,15 +125,12 @@ class FeatureFlow {
   /** @brief Current image stream frame. */
   cv::Mat cur_frame;
 
-  /** @brief Algorithm parameters. */
-  Params params;
-
   /** @name Segmentation and Track Information
    * These array are indexed aligned and contain object information.
    * @{
    */
   /** @brief List of homographies between previous and current frames. */
-  std::vector<cv::Mat> homographies;
+  std::vector<std::tuple<cv::Mat, std::vector<cv::DMatch>>> homographies;
   /** @brief List of keypoints of previous frame. */
   std::vector<cv::KeyPoint> keypoints_prv;
   /** @brief List of keypoints of current frame. */

@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
   auto nh = ros::NodeHandle(node_name);
 
   // Load params.
-  auto params = maeve_automation_core::FeatureFlowParams();
+  maeve_automation_core::FeatureFlowParams params;
   if (!params.load(nh)) {
     ROS_ERROR_STREAM("Failed to load params.");
     return EXIT_FAILURE;
@@ -47,10 +47,10 @@ int main(int argc, char* argv[]) {
   ROS_INFO_STREAM("Loaded:\n" << params);
 
   // Create handler.
-  auto handler = maeve_automation_core::FeatureFlowNodeHandler(params, nh);
+  maeve_automation_core::FeatureFlowNodeHandler handler(params, nh);
 
   // Listen to message stream.
-  auto it = image_transport::ImageTransport(nh);
+  image_transport::ImageTransport it(nh);
   const auto sub = it.subscribe(
       params.camera_topic, 1,
       &maeve_automation_core::FeatureFlowNodeHandler::callback, &handler);

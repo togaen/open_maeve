@@ -27,3 +27,6 @@ lsh_multi_probe_level: 2
 
 good_match_portion: 0.1
 ransac_reprojection_error_threshold: 1 # pixels
+min_keypoints: 8
+max_homographies: -1 # limit number of individual detections, -1 for no limit
+

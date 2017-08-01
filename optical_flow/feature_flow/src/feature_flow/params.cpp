@@ -4,6 +4,8 @@ namespace maeve_automation_core {
 
 bool FeatureFlowParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
+  LOAD_STRUCT_PARAM(ff, max_homographies);
+  LOAD_STRUCT_PARAM(ff, min_keypoints);
   LOAD_STRUCT_PARAM(ff, ransac_reprojection_error_threshold);
   LOAD_STRUCT_PARAM(ff, good_match_portion);
   LOAD_STRUCT_PARAM(ff, lsh_table_number);
@@ -15,6 +17,7 @@ bool FeatureFlowParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(camera_topic);
 
   // Sanity check parameters.
+  CHECK_STRICTLY_POSITIVE(ff.min_keypoints);
   CHECK_GE(ff.ransac_reprojection_error_threshold, 0);
   CHECK_CONTAINS_CLOSED(ff.good_match_portion, 0.0f, 1.0f);
   CHECK_STRICTLY_POSITIVE(ff.lsh_table_number);

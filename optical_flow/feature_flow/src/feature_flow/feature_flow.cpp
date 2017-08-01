@@ -102,25 +102,55 @@ bool FeatureFlow::addFrame(const cv::Mat& frame) {
   matcher.match(descriptors_prv, descriptors_cur, all_matches);
 
   // Heuristic to determine a "good" matches.
-  const auto good_matches = computeGoodMatches(all_matches);
+  auto good_matches = computeGoodMatches(all_matches);
 
-  // Extract keypoints.
-  std::vector<cv::Point2f> prv_points;
-  std::vector<cv::Point2f> cur_points;
-  std::for_each(good_matches.begin(), good_matches.end(),
-                [&](const cv::DMatch& match) {
-                  prv_points.push_back(keypoints_prv[match.queryIdx].pt);
-                  cur_points.push_back(keypoints_cur[match.trainIdx].pt);
-                });
+  // Find homographies.
+  const auto unlimited_homographies = params.max_homographies < 0;
+  auto homographies_left = unlimited_homographies ||
+                           (homographies.size() <= params.max_homographies);
+  auto keypoints_left = good_matches.size() >= params.min_keypoints;
+  while (keypoints_left && homographies_left) {
+    // Extract keypoints.
+    std::vector<cv::Point2f> prv_points;
+    prv_points.reserve(good_matches.size());
+    std::vector<cv::Point2f> cur_points;
+    cur_points.reserve(good_matches.size());
+    std::for_each(good_matches.begin(), good_matches.end(),
+                  [&](const cv::DMatch& match) {
+                    prv_points.push_back(keypoints_prv[match.queryIdx].pt);
+                    cur_points.push_back(keypoints_cur[match.trainIdx].pt);
+                  });
 
-  // Compute homography describing largest set of matching keypoints.
-  cv::Mat mask;
-  cv::Mat H =
-      cv::findHomography(prv_points, cur_points, CV_RANSAC,
-                         params.ransac_reprojection_error_threshold, mask);
+    // Compute homography describing largest set of matching keypoints.
+    cv::Mat mask;
+    const auto H =
+        cv::findHomography(prv_points, cur_points, CV_RANSAC,
+                           params.ransac_reprojection_error_threshold, mask);
 
-  // Remove (or ignore) those previous/current keypoints.
-  // Repeat until some threshold is met.
+    // Separate inliers and outliers.
+    std::vector<cv::DMatch> inliers;
+    inliers.reserve(good_matches.size());
+    std::vector<cv::DMatch> outliers;
+    outliers.reserve(good_matches.size());
+    for (auto i = 0; i < mask.rows; ++i) {
+      if (mask.at<uchar>(i) == 0) {
+        outliers.push_back(good_matches[i]);
+      } else {
+        inliers.push_back(good_matches[i]);
+      }
+    }
+
+    // Collect homography with its inliers.
+    homographies.push_back(std::make_tuple(H, std::move(inliers)));
+
+    // Reset "good" matches.
+    good_matches = std::move(outliers);
+
+    // Still going?
+    keypoints_left = good_matches.size() >= params.min_keypoints;
+    homographies_left = unlimited_homographies ||
+                        (homographies.size() <= params.max_homographies);
+  }
 
   return false;
 }
