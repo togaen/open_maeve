@@ -45,13 +45,41 @@ FeatureFlowNodeHandler::FeatureFlowNodeHandler(const ros::NodeHandle& nh)
   }
 }
 
-void FeatureFlowNodeHandler::visualize() const {
+void FeatureFlowNodeHandler::visualize(const std_msgs::Header& header) const {
   // If visualizations disabled, done.
   if (params.viz_topic.empty()) {
     return;
   }
 
-  // do stuff.
+  // Get the set of matches.
+  const auto& H = feature_flow_ptr->homographyMatches();
+
+  // Draw matched keypoints in current frame.
+  cv::Mat out_image;
+  feature_flow_ptr->curFrame().copyTo(out_image);
+  std::for_each(
+      H.begin(), H.end(), [&](const FeatureFlow::HomographyMatches& matches) {
+        // Get the keypoints corresponding to these matches.
+        const auto& dmatches = std::get<1>(matches);
+        std::vector<cv::KeyPoint> keypoints;
+        keypoints.reserve(dmatches.size());
+        std::for_each(dmatches.begin(), dmatches.end(),
+                      [&](const cv::DMatch& dmatch) {
+                        keypoints.push_back(
+                            feature_flow_ptr->curKeypoints()[dmatch.trainIdx]);
+                      });
+
+        // Draw the keypoints on the output image.
+        const cv::Scalar rnd_clr(rand() % 255, rand() % 255, rand() % 255);
+        cv::drawKeypoints(feature_flow_ptr->curFrame(), keypoints, out_image,
+                          rnd_clr, cv::DrawMatchesFlags::DRAW_OVER_OUTIMG);
+      });
+
+  // Convert out_image to ROS image.
+  auto viz_msg = cv_bridge::CvImage(header, "bgr8", out_image).toImageMsg();
+
+  // Publish.
+  viz_pub.publish(viz_msg);
 }
 
 void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
@@ -73,6 +101,6 @@ void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
   feature_flow_ptr->addFrame(cv_ptr->image);
 
   // Publish visualization.
-  visualize();
+  visualize(msg->header);
 }
 }  // namespace maeve_automation_core

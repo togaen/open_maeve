@@ -56,8 +56,10 @@ class FeatureFlowNodeHandler {
 
   /**
    * @brief Visualize the current state of the Feature Flow object.
+   *
+   * @param header The ROS header to use for the published message.
    */
-  void visualize() const;
+  void visualize(const std_msgs::Header& header) const;
 
  private:
   /** @brief Camera image subscriber. */

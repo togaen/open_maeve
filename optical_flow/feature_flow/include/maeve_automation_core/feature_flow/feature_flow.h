@@ -35,6 +35,9 @@ namespace maeve_automation_core {
   */
 class FeatureFlow {
  public:
+  /** @brief Homography with corresponding matches. */
+  typedef std::tuple<cv::Mat, std::vector<cv::DMatch>> HomographyMatches;
+
   /**
    * @brief Parameter container for Feature Flow objects.
    */
@@ -89,6 +92,24 @@ class FeatureFlow {
    */
   bool addFrame(const cv::Mat& frame);
 
+  /** @name Member accessors
+   * @{
+   */
+  const cv::Mat& prvFrame() const { return prv_frame; }
+  const cv::Mat& prvDescriptors() const { return descriptors_prv; }
+  const std::vector<cv::KeyPoint>& prvKeypoints() const {
+    return keypoints_prv;
+  }
+  const cv::Mat& curFrame() const { return cur_frame; }
+  const cv::Mat& curDescriptors() const { return descriptors_cur; }
+  const std::vector<cv::KeyPoint>& curKeypoints() const {
+    return keypoints_cur;
+  }
+  const std::vector<HomographyMatches>& homographyMatches() const {
+    return homographies;
+  }
+  /** @} */
+
  private:
   /**
    * @brief Heuristically determine "good" descriptor matches.
@@ -130,7 +151,7 @@ class FeatureFlow {
    * @{
    */
   /** @brief List of homographies between previous and current frames. */
-  std::vector<std::tuple<cv::Mat, std::vector<cv::DMatch>>> homographies;
+  std::vector<HomographyMatches> homographies;
   /** @brief List of keypoints of previous frame. */
   std::vector<cv::KeyPoint> keypoints_prv;
   /** @brief List of keypoints of current frame. */
