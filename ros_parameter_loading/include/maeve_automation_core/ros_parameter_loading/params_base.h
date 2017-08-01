@@ -149,6 +149,30 @@
   }
 
 /**
+ * @brief Convenience macro for loading params into a ParamsBase object.
+ *
+ * 'var' is a member variable of a struct named 'struct_name', which belongs to
+ * the ParamsBase object. 'var' must have 'exactly' the same name as the ROS
+ * parameter. Return false immediately if loading fails. Otherwise, append the
+ * name and value of var to the loaded_param_set string in the ParamsBase
+ * object.
+ *
+ * @param struct_name The name of the struct that 'var' belongs to.
+ * @param var The name of the parameter and of the variable that holds it.
+ */
+#define LOAD_STRUCT_PARAM(struct_name, var)                               \
+  if (!nh.getParam(#var, struct_name.var)) {                              \
+    ROS_ERROR_STREAM("Failed to load parameter '" << #struct_name << "."  \
+                                                  << #var << "'");        \
+    return false;                                                         \
+  }                                                                       \
+  {                                                                       \
+    std::stringstream ss;                                                 \
+    ss << #struct_name << "." << #var << ": " << struct_name.var << "\n"; \
+    loaded_param_set += ss.str();                                         \
+  }
+
+/**
  * @brief Convenience macro for loading scoped params into a ParamsBase object.
  *
  * 'var' is a member of an object 'ns' in the ParamsBase object, where 'var'
