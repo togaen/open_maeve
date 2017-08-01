@@ -2,16 +2,18 @@
 # Node parameters
 #
 
-camera_topic: '/raspicam_node/image'
-image_transport: 'compressed'
+camera_topic: '/raspicam_node/image_rect'
+#camera_topic: '/raspicam_node/image'
+#image_transport: 'compressed' # uncomment this to listen to raspicam_node
+
 viz_topic: 'visualization' # this will be a node-relative topic (leave empty to disable visualization)
 
 #
 # Parameters for BRISK feature detection
 #
 
-threshold_level: 30 # AGAST detection threshold score
-octaves: 3 # use 0 for single scale
+threshold_level: 15 # AGAST detection threshold score
+octaves: 4 # use 0 for single scale
 pattern_scales: 1.0
 
 #
@@ -26,8 +28,8 @@ lsh_multi_probe_level: 2
 # Parameters for descriptor matching between frames
 #
 
-good_match_portion: 0.1
-ransac_reprojection_error_threshold: 1 # pixels
+good_match_portion: 1.0 # \in [0, 1]
+ransac_reprojection_error_threshold: 0 # pixels
 min_keypoints: 8
 max_homographies: -1 # limit number of individual detections, -1 for no limit
 

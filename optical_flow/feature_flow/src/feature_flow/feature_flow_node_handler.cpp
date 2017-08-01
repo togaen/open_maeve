@@ -83,6 +83,7 @@ void FeatureFlowNodeHandler::visualize(const std_msgs::Header& header) const {
 }
 
 void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
+  // ROS_INFO_STREAM("entered callback");
   // Error guard.
   if (!feature_flow_ptr) {
     return;
@@ -99,6 +100,10 @@ void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
 
   // Add to feature flow instance, compute.
   feature_flow_ptr->addFrame(cv_ptr->image);
+  ROS_INFO_STREAM(feature_flow_ptr->curKeypoints().size()
+                  << " keypoints : "
+                  << feature_flow_ptr->homographyMatches().size()
+                  << " homography matches");
 
   // Publish visualization.
   visualize(msg->header);

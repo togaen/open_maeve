@@ -105,6 +105,7 @@ bool FeatureFlow::addFrame(const cv::Mat& frame) {
   auto good_matches = computeGoodMatches(all_matches);
 
   // Find homographies.
+  homographies.clear();
   const auto unlimited_homographies = params.max_homographies < 0;
   auto homographies_left = unlimited_homographies ||
                            (homographies.size() <= params.max_homographies);
@@ -144,7 +145,7 @@ bool FeatureFlow::addFrame(const cv::Mat& frame) {
     homographies.push_back(std::make_tuple(H, std::move(inliers)));
 
     // Reset "good" matches.
-    good_matches = std::move(outliers);
+    good_matches.swap(outliers);
 
     // Still going?
     keypoints_left = good_matches.size() >= params.min_keypoints;

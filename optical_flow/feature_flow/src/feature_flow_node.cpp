@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 
   // Initialize ROS node.
   ros::init(argc, argv, node_name);
-  auto nh = ros::NodeHandle(node_name);
+  ros::NodeHandle nh(node_name);
 
   // Create handler.
   maeve_automation_core::FeatureFlowNodeHandler handler(nh);
