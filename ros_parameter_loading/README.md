@@ -80,7 +80,12 @@ struct MyParams : public ParamsBase {
 
   std::string string_param;
   float float_param;
+
+  // The parameters in this struct correspond to the parameters in the
+  // 'scoped_params' parameter namespace.
   ScopedParams scoped_params;
+
+  // This struct is simply a container for parameters.
   StructParams struct_params;
 
   __attribute__((warn_unused_result)) bool load(const ros::NodeHandle& nh) override;
