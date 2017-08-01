@@ -4,6 +4,7 @@
 
 camera_topic: '/raspicam_node/image'
 image_transport: 'compressed'
+viz_topic: 'visualization' # this will be a node-relative topic (leave empty to disable visualization)
 
 #
 # Parameters for BRISK feature detection

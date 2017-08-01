@@ -22,10 +22,12 @@
 #pragma once
 #include "maeve_automation_core/feature_flow/feature_flow.h"
 
+#include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 
+#include <memory>
 #include <string>
 
 #include "feature_flow/params.h"
@@ -42,8 +44,7 @@ class FeatureFlowNodeHandler {
    * @param params The ROS node params.
    * @param nh The ROS node handle.
    */
-  FeatureFlowNodeHandler(const FeatureFlowParams& params,
-                         const ros::NodeHandle& nh);
+  FeatureFlowNodeHandler(const ros::NodeHandle& nh);
 
   /**
    * @brief Callback to convert ROS image message to OpenCV and feed it to
@@ -53,8 +54,19 @@ class FeatureFlowNodeHandler {
    */
   void callback(const sensor_msgs::Image::ConstPtr& msg);
 
+  /**
+   * @brief Visualize the current state of the Feature Flow object.
+   */
+  void visualize() const;
+
  private:
+  /** @brief Camera image subscriber. */
+  image_transport::Subscriber camera_sub;
+  /** @brief Visualization publisher. */
+  image_transport::Publisher viz_pub;
+  /** @brief The Feature Flow object parameters. */
+  FeatureFlowParams params;
   /** @brief The Feature Flow object segmentation and tracker. */
-  maeve_automation_core::FeatureFlow feature_flow;
+  std::unique_ptr<maeve_automation_core::FeatureFlow> feature_flow_ptr;
 };  // class FeatureFlowNodeHandler
 }  // namespace maeve_automation_core

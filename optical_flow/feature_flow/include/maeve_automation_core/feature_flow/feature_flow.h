@@ -79,7 +79,7 @@ class FeatureFlow {
    *
    * @param _params A filled params struct.
    */
-  FeatureFlow(const Params& _params);
+  explicit FeatureFlow(const Params& _params);
 
   /**
    * @brief Callback for image frame processing.

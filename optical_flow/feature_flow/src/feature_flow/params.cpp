@@ -15,6 +15,7 @@ bool FeatureFlowParams::load(const ros::NodeHandle& nh) {
   LOAD_STRUCT_PARAM(ff, octaves);
   LOAD_STRUCT_PARAM(ff, pattern_scales);
   LOAD_PARAM(camera_topic);
+  LOAD_PARAM(viz_topic);
 
   // Sanity check parameters.
   CHECK_STRICTLY_POSITIVE(ff.min_keypoints);

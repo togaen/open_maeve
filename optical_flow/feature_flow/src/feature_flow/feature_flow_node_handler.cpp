@@ -24,11 +24,42 @@
 #include <cv_bridge/cv_bridge.h>
 
 namespace maeve_automation_core {
-FeatureFlowNodeHandler::FeatureFlowNodeHandler(const FeatureFlowParams& params,
-                                               const ros::NodeHandle& nh)
-    : feature_flow(params.ff) {}
+FeatureFlowNodeHandler::FeatureFlowNodeHandler(const ros::NodeHandle& nh)
+    : feature_flow_ptr(nullptr) {
+  if (!params.load(nh)) {
+    ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
+    return;
+  }
+  ROS_INFO_STREAM("Loaded:\n" << params);
+
+  // Instantiate feature flow object.
+  feature_flow_ptr = std::unique_ptr<FeatureFlow>(new FeatureFlow(params.ff));
+
+  // Set up ROS graph interactions.
+  image_transport::ImageTransport it(nh);
+  camera_sub = it.subscribe(params.camera_topic, 1,
+                            &FeatureFlowNodeHandler::callback, this);
+
+  if (!params.viz_topic.empty()) {
+    viz_pub = it.advertise(params.viz_topic, 1);
+  }
+}
+
+void FeatureFlowNodeHandler::visualize() const {
+  // If visualizations disabled, done.
+  if (params.viz_topic.empty()) {
+    return;
+  }
+
+  // do stuff.
+}
 
 void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
+  // Error guard.
+  if (!feature_flow_ptr) {
+    return;
+  }
+
   // Convert to OpenCV.
   cv_bridge::CvImagePtr cv_ptr;
   try {
@@ -38,7 +69,10 @@ void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
     return;
   }
 
-  // Add to feature flow instance.
-  feature_flow.addFrame(cv_ptr->image);
+  // Add to feature flow instance, compute.
+  feature_flow_ptr->addFrame(cv_ptr->image);
+
+  // Publish visualization.
+  visualize();
 }
 }  // namespace maeve_automation_core

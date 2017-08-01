@@ -20,16 +20,10 @@
  * IN THE SOFTWARE.
  */
 #include "feature_flow/feature_flow_node_handler.h"
-#include "maeve_automation_core/feature_flow/feature_flow.h"
 
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
 #include <ros/ros.h>
-#include <sensor_msgs/Image.h>
 
 #include <string>
-
-#include "feature_flow/params.h"
 
 int main(int argc, char* argv[]) {
   const auto node_name = std::string("feature_flow");
@@ -38,22 +32,8 @@ int main(int argc, char* argv[]) {
   ros::init(argc, argv, node_name);
   auto nh = ros::NodeHandle(node_name);
 
-  // Load params.
-  maeve_automation_core::FeatureFlowParams params;
-  if (!params.load(nh)) {
-    ROS_ERROR_STREAM("Failed to load params.");
-    return EXIT_FAILURE;
-  }
-  ROS_INFO_STREAM("Loaded:\n" << params);
-
   // Create handler.
-  maeve_automation_core::FeatureFlowNodeHandler handler(params, nh);
-
-  // Listen to message stream.
-  image_transport::ImageTransport it(nh);
-  const auto sub = it.subscribe(
-      params.camera_topic, 1,
-      &maeve_automation_core::FeatureFlowNodeHandler::callback, &handler);
+  maeve_automation_core::FeatureFlowNodeHandler handler(nh);
 
   // Kick it off.
   ros::spin();

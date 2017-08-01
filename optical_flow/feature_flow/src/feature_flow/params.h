@@ -37,6 +37,9 @@ struct FeatureFlowParams : public ParamsBase {
   /** @brief The camera image topic. */
   std::string camera_topic;
 
+  /** @brief The visualization topic. */
+  std::string viz_topic;
+
   /**
    * @copydoc ParamsBase::ParamsBase()
    */
