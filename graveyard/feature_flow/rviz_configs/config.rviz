@@ -51,7 +51,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /raspicam_node/image_rect
+      Image Topic: /maeve_video_file/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -136,5 +136,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 989
-  X: 436
-  Y: 60
+  X: 479
+  Y: 24
