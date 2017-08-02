@@ -25,7 +25,7 @@
 
 namespace maeve_automation_core {
 FeatureFlowNodeHandler::FeatureFlowNodeHandler(const ros::NodeHandle& nh)
-    : feature_flow_ptr(nullptr) {
+    : skipped_frames(0), feature_flow_ptr(nullptr) {
   if (!params.load(nh)) {
     ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
     return;
@@ -54,11 +54,42 @@ void FeatureFlowNodeHandler::visualize(const std_msgs::Header& header) const {
   // Get the set of matches.
   const auto& H = feature_flow_ptr->homographyMatches();
 
+  // 2D homogenous identity matrix; used for thresholding.
+  const auto I = cv::Mat::eye(3, 3, CV_64F);
+
   // Draw matched keypoints in current frame.
   cv::Mat out_image;
   feature_flow_ptr->curFrame().copyTo(out_image);
   std::for_each(
       H.begin(), H.end(), [&](const FeatureFlow::HomographyMatches& matches) {
+        // Get homography, check whether to ignore it.
+        const auto T = std::get<0>(matches);
+        const auto scale = FeatureFlow::getScaleComponents(T);
+        const auto scale_mag = std::min(scale.x, scale.y);
+        const auto d = cv::norm(T, I, cv::NORM_L1);
+        const auto t_x = T.at<double>(0, 2);
+        const auto t_y = T.at<double>(1, 2);
+        const auto t_mag = std::sqrt(t_x * t_x + t_y * t_y);
+        std::cout << "t_mag: " << t_mag << ", t_x: " << t_x << ", t_y: " << t_y
+                  << std::endl;
+        std::cout << "d: " << d << ", scale_mag: " << scale_mag
+                  << ", scale.x: " << scale.x << ", scale.y: " << scale.y
+                  << std::endl;
+        std::cout << "===" << std::endl;
+        if ((scale.x < 0) ||
+            (scale.y < 0)) {  // assume reflections are bad matches
+          return;
+        }
+        if (scale_mag < params.scale_threshold) {
+          return;
+        }
+        if (d < params.identity_threshold) {
+          return;
+        }
+        if (t_mag > params.translation_threshold) {
+          return;
+        }
+
         // Get the keypoints corresponding to these matches.
         const auto& dmatches = std::get<1>(matches);
         std::vector<cv::KeyPoint> keypoints;
@@ -88,6 +119,13 @@ void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
   if (!feature_flow_ptr) {
     return;
   }
+
+  // Skip frames, if desired.
+  if (skipped_frames < params.skip_frames) {
+    ++skipped_frames;
+    return;
+  }
+  skipped_frames = 0;
 
   // Convert to OpenCV.
   cv_bridge::CvImagePtr cv_ptr;

@@ -68,6 +68,8 @@ class FeatureFlowNodeHandler {
   image_transport::Publisher viz_pub;
   /** @brief The Feature Flow object parameters. */
   FeatureFlowParams params;
+  /** @brief Keep track of frames if skipping is enabled. */
+  int skipped_frames;
   /** @brief The Feature Flow object segmentation and tracker. */
   std::unique_ptr<maeve_automation_core::FeatureFlow> feature_flow_ptr;
 };  // class FeatureFlowNodeHandler

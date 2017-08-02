@@ -34,6 +34,18 @@ struct FeatureFlowParams : public ParamsBase {
   /** @brief Feature Flow parameters. */
   FeatureFlow::Params ff;
 
+  /** @brief Artificially reduce the frame rate of incoming video. */
+  int skip_frames;
+
+  /** @brief Ignore homographies within this distance of identity. */
+  double identity_threshold;
+
+  /** @brief Ignore homographies within this magnitude of scaling. */
+  double scale_threshold;
+
+  /** @brief Ignore homographies within this magnitude of translation. */
+  double translation_threshold;
+
   /** @brief The camera image topic. */
   std::string camera_topic;
 

@@ -2,9 +2,11 @@
 # Node parameters
 #
 
-camera_topic: '/raspicam_node/image_rect'
+skip_frames: 1 # artificially reduce frame rate
+camera_topic: '/maeve_video_file/image_raw'
+#camera_topic: '/raspicam_node/image_rect'
 #camera_topic: '/raspicam_node/image'
-#image_transport: 'compressed' # uncomment this to listen to raspicam_node
+image_transport: 'compressed' # uncomment this to listen to raspicam_node
 
 viz_topic: 'visualization' # this will be a node-relative topic (leave empty to disable visualization)
 
@@ -12,7 +14,7 @@ viz_topic: 'visualization' # this will be a node-relative topic (leave empty to 
 # Parameters for BRISK feature detection
 #
 
-threshold_level: 15 # AGAST detection threshold score
+threshold_level: 60 # AGAST detection threshold score
 octaves: 4 # use 0 for single scale
 pattern_scales: 1.0
 
@@ -28,8 +30,11 @@ lsh_multi_probe_level: 2
 # Parameters for descriptor matching between frames
 #
 
+translation_threshold: 50 # ignore homographies with translation greater than this (-1 - disable threshold)
+scale_threshold: 0 # ignore homographies with less that this scaling (0 - disable threshold)
+identity_threshold: 0 # ignore homographies within this distance of the identity matrix (0 - disable threshold)
 good_match_portion: 1.0 # \in [0, 1]
-ransac_reprojection_error_threshold: 0 # pixels
-min_keypoints: 8
-max_homographies: -1 # limit number of individual detections, -1 for no limit
+ransac_reprojection_error_threshold: 1 # pixels
+min_keypoints: 16
+max_homographies: 1 # limit number of individual detections, -1 for no limit
 

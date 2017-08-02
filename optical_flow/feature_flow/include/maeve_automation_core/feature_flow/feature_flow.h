@@ -24,6 +24,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
+#include <limits>
 #include <tuple>
 #include <vector>
 
@@ -78,6 +79,24 @@ class FeatureFlow {
   };  // struct Params
 
   /**
+   * @brief Used to encapsulate the scale components of a homography.
+   */
+  struct ScaleComponents {
+    double x;
+    double y;
+    ScaleComponents();
+  };  // struct ScaleComponents
+
+  /**
+   * @brief Get the scale components of a homography matrix.
+   *
+   * @param H The 2D homography matrix.
+   *
+   * @return The scale components. Components are NaN if operation fails.
+   */
+  static ScaleComponents getScaleComponents(const cv::Mat& H);
+
+  /**
    * @brief Constructor: set parameters at construction time.
    *
    * @param _params A filled params struct.
@@ -88,9 +107,8 @@ class FeatureFlow {
    * @brief Callback for image frame processing.
    *
    * @param frame The next frame to add for processing.
-   * @return True if successful; otherwise false.
    */
-  bool addFrame(const cv::Mat& frame);
+  void addFrame(const cv::Mat& frame);
 
   /** @name Member accessors
    * @{

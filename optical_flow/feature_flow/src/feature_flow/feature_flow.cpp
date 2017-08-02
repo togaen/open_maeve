@@ -30,6 +30,27 @@
 
 namespace maeve_automation_core {
 
+FeatureFlow::ScaleComponents::ScaleComponents()
+    : x(std::numeric_limits<double>::quiet_NaN()),
+      y(std::numeric_limits<double>::quiet_NaN()) {}
+
+// https://math.stackexchange.com/questions/78137/decomposition-of-a-nonsquare-affine-matrix
+FeatureFlow::ScaleComponents FeatureFlow::getScaleComponents(const cv::Mat& H) {
+  ScaleComponents scale;
+  const auto a = H.at<double>(0, 0);
+  const auto b = H.at<double>(0, 1);
+  const auto d = H.at<double>(1, 0);
+  const auto e = H.at<double>(1, 1);
+
+  const auto theta = std::atan2(d, a);
+
+  scale.x = std::sqrt(a * a + d * d);
+  scale.y = (a * e - b * d) / scale.x;
+  // scale.y = e * std::cos(theta) - b * std::sin(theta);
+
+  return scale;
+}
+
 FeatureFlow::FeatureFlow(const Params& _params)
     : params(_params),
       matcher(new cv::flann::LshIndexParams(params.lsh_table_number,
@@ -80,10 +101,9 @@ std::vector<cv::DMatch> FeatureFlow::computeGoodMatches(
   return good_matches;
 }
 
-bool FeatureFlow::addFrame(const cv::Mat& frame) {
+void FeatureFlow::addFrame(const cv::Mat& frame) {
   if (prv_frame.empty()) {
     prv_frame = frame;
-    return true;
   }
 
   if (cur_frame.empty()) {
@@ -152,8 +172,6 @@ bool FeatureFlow::addFrame(const cv::Mat& frame) {
     homographies_left = unlimited_homographies ||
                         (homographies.size() <= params.max_homographies);
   }
-
-  return false;
 }
 
 }  // namespace maeve_automation_core
