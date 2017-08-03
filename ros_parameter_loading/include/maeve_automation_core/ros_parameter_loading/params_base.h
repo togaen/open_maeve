@@ -28,6 +28,32 @@
 #include <string>
 
 /**
+ * @brief Check whether the given variable value is even; return false
+ * immediately if check fails.
+ *
+ * @param var The variable to check.
+ */
+#define CHECK_EVEN(var)                                                      \
+  if ((var % 2) != 0) {                                                      \
+    ROS_ERROR_STREAM(#var << " % 2 == 0: check failed for " << #var << " = " \
+                          << var);                                           \
+    return false;                                                            \
+  }
+
+/**
+ * @brief Check whether the given variable value is odd; return false
+ * immediately if check fails.
+ *
+ * @param var The variable to check.
+ */
+#define CHECK_ODD(var)                                                       \
+  if ((var % 2) == 0) {                                                      \
+    ROS_ERROR_STREAM(#var << " % 2 != 0: check failed for " << #var << " = " \
+                          << var);                                           \
+    return false;                                                            \
+  }
+
+/**
  * @brief Check that var1 < var2; return false immediately if check fails.
  *
  * @param var1 First argument to comparison.
@@ -49,8 +75,8 @@
  */
 #define CHECK_LE(var1, var2)                                                   \
   if (!(var1 <= var2)) {                                                       \
-    ROS_ERROR_STREAM(#var1 << " <= " << #var2 << ": check failed for " << #var1 \
-                           << " = " << var1 << ", " << #var2 << " = "          \
+    ROS_ERROR_STREAM(#var1 << " <= " << #var2 << ": check failed for "         \
+                           << #var1 << " = " << var1 << ", " << #var2 << " = " \
                            << var2);                                           \
     return false;                                                              \
   }
@@ -77,8 +103,8 @@
  */
 #define CHECK_GE(var1, var2)                                                   \
   if (!(var1 >= var2)) {                                                       \
-    ROS_ERROR_STREAM(#var1 << " >= " << #var2 << ": check failed for " << #var1 \
-                           << " = " << var1 << ", " << #var2 << " = "          \
+    ROS_ERROR_STREAM(#var1 << " >= " << #var2 << ": check failed for "         \
+                           << #var1 << " = " << var1 << ", " << #var2 << " = " \
                            << var2);                                           \
     return false;                                                              \
   }
