@@ -21,7 +21,6 @@
  */
 #include "maeve_expansion_segmentation/node_handler.h"
 
-#include <cv_bridge/cv_bridge.h>
 #include <ros/ros.h>
 
 namespace maeve_automation_core {
@@ -40,14 +39,46 @@ MaeveExpansionSegmentationNodeHandler::MaeveExpansionSegmentationNodeHandler(
       it.subscribe(params_.camera_topic, 1,
                    &MaeveExpansionSegmentationNodeHandler::callback, this);
 
+  // Visualize?
   if (params_.enable_viz) {
     viz_te_pub = it.advertise(params_.viz_te_topic, 1);
     viz_se_pub = it.advertise(params_.viz_se_topic, 1);
   }
 }
 
+void MaeveExpansionSegmentationNodeHandler::visualize(
+    const std_msgs::Header& header, const cv::Mat& te_image,
+    const cv::Mat& se_image) {
+  if (!params_.enable_viz) {
+    return;
+  }
+
+  const auto te_msg = cv_bridge::CvImage(header, "bgr8", te_image).toImageMsg();
+  const auto se_msg = cv_bridge::CvImage(header, "bgr8", se_image).toImageMsg();
+  viz_te_pub.publish(te_msg);
+  viz_se_pub.publish(se_msg);
+}
+
 void MaeveExpansionSegmentationNodeHandler::callback(
     const sensor_msgs::Image::ConstPtr& msg) {
-  ROS_INFO_STREAM("entered callback");
+  // ROS_INFO_STREAM("entered callback");
+
+  // Convert to OpenCV.
+  cv_bridge::CvImagePtr cv_ptr;
+  try {
+    cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+  } catch (cv_bridge::Exception& e) {
+    ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
+    return;
+  }
+
+  // Generate temporal edge image.
+  const auto se_image = cv_ptr->image;
+
+  // Generate spatial edge image.
+  const auto te_image = cv_ptr->image;
+
+  // Publish images.
+  visualize(msg->header, te_image, se_image);
 }
 }  // namespace maeve_automation_core

@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
@@ -48,6 +49,16 @@ class MaeveExpansionSegmentationNodeHandler {
   void callback(const sensor_msgs::Image::ConstPtr& msg);
 
  private:
+  /**
+   * @brief Publish visualizations of edge detections with given header.
+   *
+   * @param header The ROS message header to publish with.
+   * @param te_image The OpenCV temporal image detection.
+   * @param se_image The OpenCV spatial image detection.
+   */
+  void visualize(const std_msgs::Header& header, const cv::Mat& te_image,
+                 const cv::Mat& se_image);
+
   /** @brief Camera image subscriber. */
   image_transport::Subscriber camera_sub;
   /** @brief Temporal edge visualization publisher. */
