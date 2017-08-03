@@ -136,7 +136,7 @@
  */
 #define CHECK_STRICTLY_POSITIVE(var)                                     \
   if (var <= 0) {                                                        \
-    ROS_ERROR_STREAM(#var << " <= 0: check failed for " << #var << " = " \
+    ROS_ERROR_STREAM(#var << " >= 0: check failed for " << #var << " = " \
                           << var);                                       \
     return false;                                                        \
   }
