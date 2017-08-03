@@ -31,5 +31,18 @@ MaeveExpansionSegmentationNodeHandler::MaeveExpansionSegmentationNodeHandler(
     ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
     return;
   }
+
+  // Image transport interface.
+  image_transport::ImageTransport it(nh);
+
+  // Register callback.
+  camera_sub =
+      it.subscribe(params_.camera_topic, 1,
+                   &MaeveExpansionSegmentationNodeHandler::callback, this);
+}
+
+void MaeveExpansionSegmentationNodeHandler::callback(
+    const sensor_msgs::Image::ConstPtr& msg) {
+  ROS_INFO_STREAM("entered callback");
 }
 }  // namespace maeve_automation_core

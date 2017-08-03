@@ -21,16 +21,38 @@
  */
 #pragma once
 
+#include <image_transport/image_transport.h>
 #include <ros/ros.h>
+#include <sensor_msgs/Image.h>
 
 #include "maeve_expansion_segmentation/params.h"
 
 namespace maeve_automation_core {
+/**
+ * @brief Interface between ROS and the expansion segmentation libraries.
+ */
 class MaeveExpansionSegmentationNodeHandler {
  public:
+  /**
+   * @brief Construct handler instance and register callbacks/subscribers.
+   *
+   * @param nh The ROS node handle.
+   */
   explicit MaeveExpansionSegmentationNodeHandler(const ros::NodeHandle& nh);
 
+  /**
+   * @brief Callback for the image message stream.
+   *
+   * @param msg The ROS image message.
+   */
+  void callback(const sensor_msgs::Image::ConstPtr& msg);
+
  private:
+  /** @brief Camera image subscriber. */
+  image_transport::Subscriber camera_sub;
+  /** @brief Visualization publisher. */
+  // image_transport::Publisher viz_pub;
+  /** @brief Node parameters. */
   MaeveExpansionSegmentationParams params_;
 };  // class MaeveExpansionSegmentationNodeHandler
 }  // namespace maeve_automation_core

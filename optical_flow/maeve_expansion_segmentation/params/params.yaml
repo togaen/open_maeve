@@ -1,3 +1,8 @@
 #
 # Node parameters.
 #
+
+camera_topic: '/maeve_video_file/image_raw'
+#camera_topic: '/raspicam_node/image_rect'
+#camera_topic: '/raspicam_node/image'
+image_transport: 'compressed' # uncomment this to listen to image_transport topics

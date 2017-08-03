@@ -29,6 +29,9 @@ namespace maeve_automation_core {
 
 /** @brief Parameter object to load ROS params.*/
 struct MaeveExpansionSegmentationParams : public ParamsBase {
+  /** @brief The image sequence topic. */
+  std::string camera_topic;
+
   /**
    * @copydoc ParamsBase::ParamsBase()
    */
