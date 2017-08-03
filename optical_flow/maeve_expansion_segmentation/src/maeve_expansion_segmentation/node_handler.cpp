@@ -39,6 +39,11 @@ MaeveExpansionSegmentationNodeHandler::MaeveExpansionSegmentationNodeHandler(
   camera_sub =
       it.subscribe(params_.camera_topic, 1,
                    &MaeveExpansionSegmentationNodeHandler::callback, this);
+
+  if (params_.enable_viz) {
+    viz_te_pub = it.advertise(params_.viz_te_topic, 1);
+    viz_se_pub = it.advertise(params_.viz_se_topic, 1);
+  }
 }
 
 void MaeveExpansionSegmentationNodeHandler::callback(

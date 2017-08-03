@@ -32,6 +32,15 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
   /** @brief The image sequence topic. */
   std::string camera_topic;
 
+  /** @brief Whether to enable vizualization of intermediate results. */
+  bool enable_viz;
+
+  /** @brief Output topic of temporal edge detection. */
+  std::string viz_te_topic;
+
+  /** @brief Output topic of spatial edge detection. */
+  std::string viz_se_topic;
+
   /**
    * @copydoc ParamsBase::ParamsBase()
    */

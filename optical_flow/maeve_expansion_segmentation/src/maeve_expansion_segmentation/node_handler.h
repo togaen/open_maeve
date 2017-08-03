@@ -50,8 +50,10 @@ class MaeveExpansionSegmentationNodeHandler {
  private:
   /** @brief Camera image subscriber. */
   image_transport::Subscriber camera_sub;
-  /** @brief Visualization publisher. */
-  // image_transport::Publisher viz_pub;
+  /** @brief Temporal edge visualization publisher. */
+  image_transport::Publisher viz_te_pub;
+  /** @brief Spatial edge visualization publisher. */
+  image_transport::Publisher viz_se_pub;
   /** @brief Node parameters. */
   MaeveExpansionSegmentationParams params_;
 };  // class MaeveExpansionSegmentationNodeHandler

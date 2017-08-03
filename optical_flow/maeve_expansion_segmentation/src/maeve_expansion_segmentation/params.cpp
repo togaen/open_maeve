@@ -26,9 +26,16 @@ namespace maeve_automation_core {
 bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
   LOAD_PARAM(camera_topic);
+  LOAD_PARAM(enable_viz);
+  LOAD_PARAM(viz_te_topic);
+  LOAD_PARAM(viz_se_topic);
 
   // Sanity check parameters.
   CHECK_NONEMPTY(camera_topic);
+  if (enable_viz) {
+    CHECK_NONEMPTY(viz_te_topic);
+    CHECK_NONEMPTY(viz_se_topic);
+  }
 
   // All (probably) good.
   return true;
