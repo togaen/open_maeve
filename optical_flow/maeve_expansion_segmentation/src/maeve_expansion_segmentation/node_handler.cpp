@@ -53,8 +53,10 @@ void MaeveExpansionSegmentationNodeHandler::visualize(
     return;
   }
 
-  const auto te_msg = cv_bridge::CvImage(header, "bgr8", te_image).toImageMsg();
-  const auto se_msg = cv_bridge::CvImage(header, "bgr8", se_image).toImageMsg();
+  const auto te_msg =
+      cv_bridge::CvImage(header, "mono8", te_image).toImageMsg();
+  const auto se_msg =
+      cv_bridge::CvImage(header, "mono8", se_image).toImageMsg();
   viz_te_pub.publish(te_msg);
   viz_se_pub.publish(se_msg);
 }
@@ -66,14 +68,17 @@ void MaeveExpansionSegmentationNodeHandler::callback(
   // Convert to OpenCV.
   cv_bridge::CvImagePtr cv_ptr;
   try {
-    cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+    cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);
   } catch (cv_bridge::Exception& e) {
     ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
     return;
   }
 
   // Generate temporal edge image.
-  const auto se_image = cv_ptr->image;
+  cv::Mat se_image;
+  cv::Canny(cv_ptr->image, se_image, params_.spatial_edge_params.min,
+            params_.spatial_edge_params.max,
+            params_.spatial_edge_params.aperture);
 
   // Generate spatial edge image.
   const auto te_image = cv_ptr->image;
