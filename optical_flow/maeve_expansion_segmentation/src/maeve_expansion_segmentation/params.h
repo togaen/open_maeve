@@ -37,6 +37,8 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
     int min;
     /** @brief The max pixel value threshold. */
     int max;
+    /** @brief The aperture size for Sobel operator. */
+    int aperture;
   };  // struct SpatialEdgeParams
 
   /**

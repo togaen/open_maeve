@@ -17,7 +17,8 @@ viz_se_topic: 'viz_spatial_edges' # node-relative topic
 spatial_edge_params:
   min: 100
   max: 200
+  aperture: 3
 
 temporal_edge_params:
-  min: 200
-  max: 100
+  min: 100
+  max: 200

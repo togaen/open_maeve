@@ -31,10 +31,13 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(viz_se_topic);
   LOAD_NS_PARAM(spatial_edge_params, min);
   LOAD_NS_PARAM(spatial_edge_params, max);
+  LOAD_NS_PARAM(spatial_edge_params, aperture);
   LOAD_NS_PARAM(temporal_edge_params, min);
   LOAD_NS_PARAM(temporal_edge_params, max);
 
   // Sanity check parameters.
+  CHECK_STRICTLY_POSITIVE(spatial_edge_params.aperture);
+  CHECK_ODD(spatial_edge_params.aperture);
   CHECK_CONTAINS_CLOSED(spatial_edge_params.min, 0, 255);
   CHECK_CONTAINS_CLOSED(spatial_edge_params.max, 0, 255);
   CHECK_CONTAINS_CLOSED(temporal_edge_params.min, 0, 255);
