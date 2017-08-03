@@ -29,6 +29,32 @@ namespace maeve_automation_core {
 
 /** @brief Parameter object to load ROS params.*/
 struct MaeveExpansionSegmentationParams : public ParamsBase {
+  /**
+   * @brief Container for parameters used during spatial edge detection.
+   */
+  struct SpatialEdgeParams {
+    /** @brief The min pixel value threshold. */
+    int min;
+    /** @brief The max pixel value threshold. */
+    int max;
+  };  // struct SpatialEdgeParams
+
+  /**
+   * @brief Container for parameter used during temporal edge detection.
+   */
+  struct TemporalEdgeParams {
+    /** @brief The min pixel value threshold. */
+    int min;
+    /** @brief The max pixel value threshold. */
+    int max;
+  };  // struct TemporalEdgeParams
+
+  /** @brief Spatial edge detection parameters. */
+  SpatialEdgeParams spatial_edge_params;
+
+  /** @brief Temporal edge detection parameters. */
+  TemporalEdgeParams temporal_edge_params;
+
   /** @brief The image sequence topic. */
   std::string camera_topic;
 

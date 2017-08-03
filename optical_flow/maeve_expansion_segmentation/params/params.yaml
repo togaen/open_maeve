@@ -10,3 +10,14 @@ image_transport: 'compressed' # uncomment this to listen to image_transport topi
 enable_viz: true # if this is true, the below topics must be set
 viz_te_topic: 'viz_temporal_edges' # node-relative topic
 viz_se_topic: 'viz_spatial_edges' # node-relative topic
+
+#
+# Edge detection parameters
+#
+spatial_edge_params:
+  min: 100
+  max: 200
+
+temporal_edge_params:
+  min: 200
+  max: 100
