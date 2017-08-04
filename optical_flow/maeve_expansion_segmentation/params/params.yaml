@@ -15,16 +15,17 @@ viz_se_topic: 'viz_spatial_edges' # node-relative topic
 # Edge detection parameters
 #
 spatial_params:
-  min: 100
-  max: 200
-  aperture: 3
+  edge_min: 100
+  edge_max: 200
+  edge_aperture: 3
+  blur_aperture: 3 # must be odd and >= 3 or -1 to disable
 
 temporal_params:
-  history: 30
+  history: 1
   threshold: 16
   shadows: false
 
 morpho_params:
   element_type: 0 # -1: disable, 0: rectangle, 1: ellipse
-  window_width: 3 # must be odd and > 0
-  window_height: 3 # must be odd and > 0
+  window_width: 3 # must be odd and >= 3
+  window_height: 3 # must be odd and >= 3

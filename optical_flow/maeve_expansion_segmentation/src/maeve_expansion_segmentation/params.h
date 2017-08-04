@@ -33,12 +33,18 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
    * @brief Container for parameters used during spatial feature detection.
    */
   struct SpatialParams {
-    /** @brief The min pixel value threshold. */
-    int min;
-    /** @brief The max pixel value threshold. */
-    int max;
-    /** @brief The aperture size for Sobel operator. */
-    int aperture;
+    /** @brief The min edge pixel value threshold. */
+    int edge_min;
+    /** @brief The max edge pixel value threshold. */
+    int edge_max;
+    /** @brief The aperture size for edge Sobel operator. */
+    int edge_aperture;
+    /** @brief The aperture size for median blur operator. */
+    int blur_aperture;
+    /**
+     * @brief Constructor. Initialize values to bad values.
+     */
+    SpatialParams();
   };  // struct SpatialEdgeParams
 
   /**
@@ -51,6 +57,10 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
     int threshold;
     /** @brief Whether to detection shadows or not. */
     bool shadows;
+    /**
+     * @brief Constructor. Initialize values to bad values.
+     */
+    TemporalParams();
   };  // struct TemporalEdgeParams
 
   /**
@@ -63,6 +73,10 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
     int window_width;
     /** @brief The height of the window containing the structuring element. */
     int window_height;
+    /**
+     * @brief Constructor. Initialize value to bad values.
+     */
+    MorphologicalParams();
   };  // struct MorphologicalParams
 
   /** @brief Spatial feature detection parameters. */

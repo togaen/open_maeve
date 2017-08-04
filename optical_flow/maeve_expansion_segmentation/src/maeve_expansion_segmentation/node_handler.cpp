@@ -81,8 +81,9 @@ void MaeveExpansionSegmentationNodeHandler::callback(
 
   // Generate temporal edge image.
   cv::Mat se_image;
-  cv::Canny(cv_ptr->image, se_image, params_.spatial_params.min,
-            params_.spatial_params.max, params_.spatial_params.aperture);
+  cv::Canny(cv_ptr->image, se_image, params_.spatial_params.edge_min,
+            params_.spatial_params.edge_max,
+            params_.spatial_params.edge_aperture);
 
   // Generate spatial edge image.
   cv::Mat te_image;
@@ -103,7 +104,15 @@ void MaeveExpansionSegmentationNodeHandler::callback(
     cv::erode(te_image, te_image_eroded, structuring_element);
   }
 
+  cv::Mat te_image_blurred;
+  if (params_.spatial_params.blur_aperture < 0) {
+    te_image_blurred = te_image_eroded;
+  } else {
+    cv::medianBlur(te_image_eroded, te_image_blurred,
+                   params_.spatial_params.blur_aperture);
+  }
+
   // Publish images.
-  visualize(msg->header, te_image_eroded, se_image);
+  visualize(msg->header, te_image_blurred, se_image);
 }
 }  // namespace maeve_automation_core

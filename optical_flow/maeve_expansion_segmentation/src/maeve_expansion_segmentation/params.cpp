@@ -22,6 +22,20 @@
 #include "maeve_expansion_segmentation/params.h"
 
 namespace maeve_automation_core {
+// Aribtrarily chosen bad value.
+static const int BAD_INT = -9;
+
+MaeveExpansionSegmentationParams::SpatialParams::SpatialParams()
+    : edge_min(BAD_INT),
+      edge_max(BAD_INT),
+      edge_aperture(BAD_INT),
+      blur_aperture(BAD_INT) {}
+
+MaeveExpansionSegmentationParams::TemporalParams::TemporalParams()
+    : history(BAD_INT), threshold(BAD_INT) {}
+
+MaeveExpansionSegmentationParams::MorphologicalParams::MorphologicalParams()
+    : element_type(BAD_INT), window_width(BAD_INT), window_height(BAD_INT) {}
 
 bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
@@ -29,9 +43,10 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(enable_viz);
   LOAD_PARAM(viz_te_topic);
   LOAD_PARAM(viz_se_topic);
-  LOAD_NS_PARAM(spatial_params, min);
-  LOAD_NS_PARAM(spatial_params, max);
-  LOAD_NS_PARAM(spatial_params, aperture);
+  LOAD_NS_PARAM(spatial_params, edge_min);
+  LOAD_NS_PARAM(spatial_params, edge_max);
+  LOAD_NS_PARAM(spatial_params, edge_aperture);
+  LOAD_NS_PARAM(spatial_params, blur_aperture);
   LOAD_NS_PARAM(temporal_params, history);
   LOAD_NS_PARAM(temporal_params, threshold);
   LOAD_NS_PARAM(temporal_params, shadows);
@@ -40,6 +55,15 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(morpho_params, window_height);
 
   // Sanity check parameters.
+  CHECK_NE(morpho_params.window_width, BAD_INT);
+  CHECK_NE(morpho_params.window_height, BAD_INT);
+  CHECK_NE(morpho_params.element_type, BAD_INT);
+  CHECK_NE(temporal_params.history, BAD_INT);
+  CHECK_NE(temporal_params.threshold, BAD_INT);
+  CHECK_NE(spatial_params.edge_min, BAD_INT);
+  CHECK_NE(spatial_params.edge_max, BAD_INT);
+  CHECK_NE(spatial_params.edge_aperture, BAD_INT);
+  CHECK_NE(spatial_params.blur_aperture, BAD_INT);
   CHECK_STRICTLY_POSITIVE(morpho_params.window_width);
   CHECK_ODD(morpho_params.window_width);
   CHECK_STRICTLY_POSITIVE(morpho_params.window_height);
@@ -47,13 +71,17 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   CHECK_CONTAINS_CLOSED(morpho_params.element_type, -1, 1);
   CHECK_STRICTLY_POSITIVE(temporal_params.history);
   CHECK_STRICTLY_POSITIVE(temporal_params.threshold);
-  CHECK_STRICTLY_POSITIVE(spatial_params.aperture);
-  CHECK_ODD(spatial_params.aperture);
-  CHECK_CONTAINS_CLOSED(spatial_params.min, 0, 255);
-  CHECK_CONTAINS_CLOSED(spatial_params.max, 0, 255);
+  CHECK_GE(spatial_params.edge_aperture, 3);
+  CHECK_ODD(spatial_params.edge_aperture);
+  if (spatial_params.blur_aperture < 0) {
+    CHECK_ODD(spatial_params.blur_aperture);
+    CHECK_GE(spatial_params.blur_aperture, 3);
+  }
+  CHECK_CONTAINS_CLOSED(spatial_params.edge_min, 0, 255);
+  CHECK_CONTAINS_CLOSED(spatial_params.edge_max, 0, 255);
   CHECK_GE(temporal_params.history, 0);
   CHECK_GE(temporal_params.threshold, 0);
-  CHECK_LE(spatial_params.min, spatial_params.max);
+  CHECK_LE(spatial_params.edge_min, spatial_params.edge_max);
   CHECK_NONEMPTY(camera_topic);
   if (enable_viz) {
     CHECK_NONEMPTY(viz_te_topic);
