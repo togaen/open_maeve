@@ -20,7 +20,7 @@ spatial_params:
   aperture: 3
 
 temporal_params:
-  history: 10
+  history: 30
   threshold: 16
   shadows: false
 
