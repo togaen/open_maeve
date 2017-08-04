@@ -127,6 +127,8 @@ bool MyParams::load(const ros::NodeHandle& nh) {
   CHECK_STRICTLY_POSITIVE(float_param);
   CHECK_NONEMPTY(string_param);
   CHECK_NONEMPTY(struct_params.other_string_param);
+  CHECK_NE(scoped_params.inner_int_param, 5);
+  CHECK_EQ(scoped_params.inner_int_param, 3);
 
   // All params loaded, and all checks passed. Return success.
   return true;

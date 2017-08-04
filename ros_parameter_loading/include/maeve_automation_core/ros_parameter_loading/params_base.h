@@ -28,6 +28,34 @@
 #include <string>
 
 /**
+ * @brief Check that the value of 'var' is not equal to the value of 'val';
+ * return false immediately if check fails.
+ *
+ * @param var The value to be checked.
+ * @param val The value used to check 'var'.
+ */
+#define CHECK_NE(var, val)                                                     \
+  if (var == val) {                                                            \
+    ROS_ERROR_STREAM(#var << " != " << #val << ": check failed for " << #var   \
+                          << " = " << var << " and " << #val << " = " << val); \
+    return false;                                                              \
+  }
+
+/**
+ * @brief Check that the value of 'var' is equal to the value of 'val'; return
+ * false immediately if check fails.
+ *
+ * @param var The value to be checked.
+ * @param val The value used to check 'var'.
+ */
+#define CHECK_EQ(var, val)                                                     \
+  if (var != val) {                                                            \
+    ROS_ERROR_STREAM(#var << " == " << #val << ": check failed for " << #var   \
+                          << " = " << var << " and " << #val << " = " << val); \
+    return false;                                                              \
+  }
+
+/**
  * @brief Check whether the given variable value is even; return false
  * immediately if check fails.
  *
