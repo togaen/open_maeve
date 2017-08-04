@@ -48,12 +48,13 @@ MaeveExpansionSegmentationNodeHandler::MaeveExpansionSegmentationNodeHandler(
   if (params_.enable_viz) {
     viz_te_pub = it.advertise(params_.viz_te_topic, 1);
     viz_se_pub = it.advertise(params_.viz_se_topic, 1);
+    viz_AND_pub = it.advertise(params_.viz_AND_topic, 1);
   }
 }
 
 void MaeveExpansionSegmentationNodeHandler::visualize(
     const std_msgs::Header& header, const cv::Mat& te_image,
-    const cv::Mat& se_image) {
+    const cv::Mat& se_image, const cv::Mat& AND_image) {
   if (!params_.enable_viz) {
     return;
   }
@@ -62,8 +63,11 @@ void MaeveExpansionSegmentationNodeHandler::visualize(
       cv_bridge::CvImage(header, "mono8", te_image).toImageMsg();
   const auto se_msg =
       cv_bridge::CvImage(header, "mono8", se_image).toImageMsg();
+  const auto AND_msg =
+      cv_bridge::CvImage(header, "mono8", AND_image).toImageMsg();
   viz_te_pub.publish(te_msg);
   viz_se_pub.publish(se_msg);
+  viz_AND_pub.publish(AND_msg);
 }
 
 void MaeveExpansionSegmentationNodeHandler::callback(
@@ -112,7 +116,10 @@ void MaeveExpansionSegmentationNodeHandler::callback(
                    params_.spatial_params.blur_aperture);
   }
 
+  cv::Mat AND_image;
+  AND_image = cv_ptr->image;
+
   // Publish images.
-  visualize(msg->header, te_image_blurred, se_image);
+  visualize(msg->header, te_image_blurred, se_image, AND_image);
 }
 }  // namespace maeve_automation_core

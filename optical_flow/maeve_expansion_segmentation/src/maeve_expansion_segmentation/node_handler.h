@@ -56,9 +56,10 @@ class MaeveExpansionSegmentationNodeHandler {
    * @param header The ROS message header to publish with.
    * @param te_image The OpenCV temporal image detection.
    * @param se_image The OpenCV spatial image detection.
+   * @param AND_image The OpenCV AND image.
    */
   void visualize(const std_msgs::Header& header, const cv::Mat& te_image,
-                 const cv::Mat& se_image);
+                 const cv::Mat& se_image, const cv::Mat& AND_image);
 
   /** @brief Pointer to background subtraction operator. */
   cv::Ptr<cv::BackgroundSubtractor> bg_subtractor_ptr_;
@@ -69,6 +70,8 @@ class MaeveExpansionSegmentationNodeHandler {
   image_transport::Publisher viz_te_pub;
   /** @brief Spatial edge visualization publisher. */
   image_transport::Publisher viz_se_pub;
+  /** @brief AND visualization publisher. */
+  image_transport::Publisher viz_AND_pub;
   /** @brief Node parameters. */
   MaeveExpansionSegmentationParams params_;
 };  // class MaeveExpansionSegmentationNodeHandler

@@ -43,6 +43,7 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(enable_viz);
   LOAD_PARAM(viz_te_topic);
   LOAD_PARAM(viz_se_topic);
+  LOAD_PARAM(viz_AND_topic);
   LOAD_NS_PARAM(spatial_params, edge_min);
   LOAD_NS_PARAM(spatial_params, edge_max);
   LOAD_NS_PARAM(spatial_params, edge_aperture);

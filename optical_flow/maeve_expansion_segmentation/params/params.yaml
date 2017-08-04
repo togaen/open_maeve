@@ -10,6 +10,7 @@ image_transport: 'compressed' # uncomment this to listen to image_transport topi
 enable_viz: true # if this is true, the below topics must be set
 viz_te_topic: 'viz_temporal_edges' # node-relative topic
 viz_se_topic: 'viz_spatial_edges' # node-relative topic
+viz_AND_topic: 'viz_AND' # node-relative topic
 
 #
 # Edge detection parameters
@@ -21,7 +22,7 @@ spatial_params:
   blur_aperture: 3 # must be odd and >= 3 or -1 to disable
 
 temporal_params:
-  history: 1
+  history: 10
   threshold: 16
   shadows: false
 

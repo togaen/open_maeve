@@ -100,6 +100,9 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
   /** @brief Output topic of spatial edge detection. */
   std::string viz_se_topic;
 
+  /** @brief Output topic of AND image operation. */
+  std::string viz_AND_topic;
+
   /**
    * @copydoc ParamsBase::ParamsBase()
    */
