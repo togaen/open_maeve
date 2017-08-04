@@ -31,6 +31,11 @@ MaeveExpansionSegmentationNodeHandler::MaeveExpansionSegmentationNodeHandler(
     return;
   }
 
+  // Create background subtractor.
+  bg_subtractor_ptr_ = cv::createBackgroundSubtractorMOG2(
+      params_.temporal_params.history, params_.temporal_params.threshold,
+      params_.temporal_params.shadows);
+
   // Image transport interface.
   image_transport::ImageTransport it(nh);
 
@@ -76,14 +81,29 @@ void MaeveExpansionSegmentationNodeHandler::callback(
 
   // Generate temporal edge image.
   cv::Mat se_image;
-  cv::Canny(cv_ptr->image, se_image, params_.spatial_edge_params.min,
-            params_.spatial_edge_params.max,
-            params_.spatial_edge_params.aperture);
+  cv::Canny(cv_ptr->image, se_image, params_.spatial_params.min,
+            params_.spatial_params.max, params_.spatial_params.aperture);
 
   // Generate spatial edge image.
-  const auto te_image = cv_ptr->image;
+  cv::Mat te_image;
+  bg_subtractor_ptr_->apply(cv_ptr->image, te_image);
+  cv::Mat te_image_eroded;
+
+  if (params_.morpho_params.element_type < 0) {
+    te_image = te_image_eroded;
+  } else {
+    const auto element_type = params_.morpho_params.element_type == 0
+                                  ? cv::MORPH_RECT
+                                  : cv::MORPH_ELLIPSE;
+    const auto window_size = cv::Size(params_.morpho_params.window_width,
+                                      params_.morpho_params.window_height);
+    const auto anchor_point = cv::Point(-1, -1);  // centered
+    cv::Mat structuring_element =
+        cv::getStructuringElement(element_type, window_size, anchor_point);
+    cv::erode(te_image, te_image_eroded, structuring_element);
+  }
 
   // Publish images.
-  visualize(msg->header, te_image, se_image);
+  visualize(msg->header, te_image_eroded, se_image);
 }
 }  // namespace maeve_automation_core

@@ -25,6 +25,7 @@
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
+#include <opencv2/opencv.hpp>
 
 #include "maeve_expansion_segmentation/params.h"
 
@@ -58,6 +59,9 @@ class MaeveExpansionSegmentationNodeHandler {
    */
   void visualize(const std_msgs::Header& header, const cv::Mat& te_image,
                  const cv::Mat& se_image);
+
+  /** @brief Pointer to background subtraction operator. */
+  cv::Ptr<cv::BackgroundSubtractor> bg_subtractor_ptr_;
 
   /** @brief Camera image subscriber. */
   image_transport::Subscriber camera_sub;

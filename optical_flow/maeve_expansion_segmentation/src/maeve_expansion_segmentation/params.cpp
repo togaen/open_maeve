@@ -29,21 +29,31 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(enable_viz);
   LOAD_PARAM(viz_te_topic);
   LOAD_PARAM(viz_se_topic);
-  LOAD_NS_PARAM(spatial_edge_params, min);
-  LOAD_NS_PARAM(spatial_edge_params, max);
-  LOAD_NS_PARAM(spatial_edge_params, aperture);
-  LOAD_NS_PARAM(temporal_edge_params, min);
-  LOAD_NS_PARAM(temporal_edge_params, max);
+  LOAD_NS_PARAM(spatial_params, min);
+  LOAD_NS_PARAM(spatial_params, max);
+  LOAD_NS_PARAM(spatial_params, aperture);
+  LOAD_NS_PARAM(temporal_params, history);
+  LOAD_NS_PARAM(temporal_params, threshold);
+  LOAD_NS_PARAM(temporal_params, shadows);
+  LOAD_NS_PARAM(morpho_params, element_type);
+  LOAD_NS_PARAM(morpho_params, window_width);
+  LOAD_NS_PARAM(morpho_params, window_height);
 
   // Sanity check parameters.
-  CHECK_STRICTLY_POSITIVE(spatial_edge_params.aperture);
-  CHECK_ODD(spatial_edge_params.aperture);
-  CHECK_CONTAINS_CLOSED(spatial_edge_params.min, 0, 255);
-  CHECK_CONTAINS_CLOSED(spatial_edge_params.max, 0, 255);
-  CHECK_CONTAINS_CLOSED(temporal_edge_params.min, 0, 255);
-  CHECK_CONTAINS_CLOSED(temporal_edge_params.max, 0, 255);
-  CHECK_LE(spatial_edge_params.min, spatial_edge_params.max);
-  CHECK_LE(temporal_edge_params.min, temporal_edge_params.max);
+  CHECK_STRICTLY_POSITIVE(morpho_params.window_width);
+  CHECK_ODD(morpho_params.window_width);
+  CHECK_STRICTLY_POSITIVE(morpho_params.window_height);
+  CHECK_ODD(morpho_params.window_height);
+  CHECK_CONTAINS_CLOSED(morpho_params.element_type, -1, 1);
+  CHECK_STRICTLY_POSITIVE(temporal_params.history);
+  CHECK_STRICTLY_POSITIVE(temporal_params.threshold);
+  CHECK_STRICTLY_POSITIVE(spatial_params.aperture);
+  CHECK_ODD(spatial_params.aperture);
+  CHECK_CONTAINS_CLOSED(spatial_params.min, 0, 255);
+  CHECK_CONTAINS_CLOSED(spatial_params.max, 0, 255);
+  CHECK_GE(temporal_params.history, 0);
+  CHECK_GE(temporal_params.threshold, 0);
+  CHECK_LE(spatial_params.min, spatial_params.max);
   CHECK_NONEMPTY(camera_topic);
   if (enable_viz) {
     CHECK_NONEMPTY(viz_te_topic);

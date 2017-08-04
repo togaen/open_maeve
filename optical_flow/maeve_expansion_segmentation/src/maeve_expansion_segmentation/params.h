@@ -30,9 +30,9 @@ namespace maeve_automation_core {
 /** @brief Parameter object to load ROS params.*/
 struct MaeveExpansionSegmentationParams : public ParamsBase {
   /**
-   * @brief Container for parameters used during spatial edge detection.
+   * @brief Container for parameters used during spatial feature detection.
    */
-  struct SpatialEdgeParams {
+  struct SpatialParams {
     /** @brief The min pixel value threshold. */
     int min;
     /** @brief The max pixel value threshold. */
@@ -42,20 +42,37 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
   };  // struct SpatialEdgeParams
 
   /**
-   * @brief Container for parameter used during temporal edge detection.
+   * @brief Container for parameter used during temporal feature detection.
    */
-  struct TemporalEdgeParams {
-    /** @brief The min pixel value threshold. */
-    int min;
-    /** @brief The max pixel value threshold. */
-    int max;
+  struct TemporalParams {
+    /** @brief History length to use for background subtraction. */
+    int history;
+    /** @brief Distance threshold to use for background subtraction. */
+    int threshold;
+    /** @brief Whether to detection shadows or not. */
+    bool shadows;
   };  // struct TemporalEdgeParams
 
-  /** @brief Spatial edge detection parameters. */
-  SpatialEdgeParams spatial_edge_params;
+  /**
+   * @brief Parameters for applying morphological operations.
+   */
+  struct MorphologicalParams {
+    /** @brief The structuring element to use (0 - rectangle, 1 - ellipse). */
+    int element_type;
+    /** @brief The width of the window containing the structuring element. */
+    int window_width;
+    /** @brief The height of the window containing the structuring element. */
+    int window_height;
+  };  // struct MorphologicalParams
 
-  /** @brief Temporal edge detection parameters. */
-  TemporalEdgeParams temporal_edge_params;
+  /** @brief Spatial feature detection parameters. */
+  SpatialParams spatial_params;
+
+  /** @brief Temporal feature detection parameters. */
+  TemporalParams temporal_params;
+
+  /** @brief Morphological operator parameters. */
+  MorphologicalParams morpho_params;
 
   /** @brief The image sequence topic. */
   std::string camera_topic;
