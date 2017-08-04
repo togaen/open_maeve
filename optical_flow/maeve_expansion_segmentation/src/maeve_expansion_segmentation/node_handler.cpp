@@ -90,7 +90,7 @@ void MaeveExpansionSegmentationNodeHandler::callback(
   cv::Mat te_image_eroded;
 
   if (params_.morpho_params.element_type < 0) {
-    te_image = te_image_eroded;
+    te_image_eroded = te_image;
   } else {
     const auto element_type = params_.morpho_params.element_type == 0
                                   ? cv::MORPH_RECT
