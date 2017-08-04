@@ -35,7 +35,10 @@ MaeveExpansionSegmentationParams::TemporalParams::TemporalParams()
     : history(BAD_INT), threshold(BAD_INT) {}
 
 MaeveExpansionSegmentationParams::MorphologicalParams::MorphologicalParams()
-    : element_type(BAD_INT), window_width(BAD_INT), window_height(BAD_INT) {}
+    : operation(BAD_INT),
+      element_type(BAD_INT),
+      window_width(BAD_INT),
+      window_height(BAD_INT) {}
 
 bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
@@ -51,11 +54,13 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(temporal_params, history);
   LOAD_NS_PARAM(temporal_params, threshold);
   LOAD_NS_PARAM(temporal_params, shadows);
+  LOAD_NS_PARAM(morpho_params, operation);
   LOAD_NS_PARAM(morpho_params, element_type);
   LOAD_NS_PARAM(morpho_params, window_width);
   LOAD_NS_PARAM(morpho_params, window_height);
 
   // Sanity check parameters.
+  CHECK_NE(morpho_params.operation, BAD_INT);
   CHECK_NE(morpho_params.window_width, BAD_INT);
   CHECK_NE(morpho_params.window_height, BAD_INT);
   CHECK_NE(morpho_params.element_type, BAD_INT);
@@ -69,7 +74,8 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   CHECK_ODD(morpho_params.window_width);
   CHECK_STRICTLY_POSITIVE(morpho_params.window_height);
   CHECK_ODD(morpho_params.window_height);
-  CHECK_CONTAINS_CLOSED(morpho_params.element_type, -1, 1);
+  CHECK_CONTAINS_CLOSED(morpho_params.element_type, 0, 1);
+  CHECK_CONTAINS_CLOSED(morpho_params.operation, -1, 1);
   CHECK_STRICTLY_POSITIVE(temporal_params.history);
   CHECK_STRICTLY_POSITIVE(temporal_params.threshold);
   CHECK_GE(spatial_params.edge_aperture, 3);

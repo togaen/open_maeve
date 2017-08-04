@@ -67,6 +67,8 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
    * @brief Parameters for applying morphological operations.
    */
   struct MorphologicalParams {
+    /** @brief The type of morphological operation to use. */
+    int operation;
     /** @brief The structuring element to use (0 - rectangle, 1 - ellipse). */
     int element_type;
     /** @brief The width of the window containing the structuring element. */

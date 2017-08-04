@@ -83,19 +83,20 @@ void MaeveExpansionSegmentationNodeHandler::callback(
     return;
   }
 
-  // Generate temporal edge image.
+  // Generate spatial feature image.
   cv::Mat se_image;
   cv::Canny(cv_ptr->image, se_image, params_.spatial_params.edge_min,
             params_.spatial_params.edge_max,
             params_.spatial_params.edge_aperture);
 
-  // Generate spatial edge image.
+  // Generate temporal feature image.
   cv::Mat te_image;
   bg_subtractor_ptr_->apply(cv_ptr->image, te_image);
-  cv::Mat te_image_eroded;
 
-  if (params_.morpho_params.element_type < 0) {
-    te_image_eroded = te_image;
+  // Apply morphological operator?
+  cv::Mat te_image_morph;
+  if (params_.morpho_params.operation < 0) {
+    te_image_morph = te_image;
   } else {
     const auto element_type = params_.morpho_params.element_type == 0
                                   ? cv::MORPH_RECT
@@ -105,19 +106,28 @@ void MaeveExpansionSegmentationNodeHandler::callback(
     const auto anchor_point = cv::Point(-1, -1);  // centered
     cv::Mat structuring_element =
         cv::getStructuringElement(element_type, window_size, anchor_point);
-    cv::erode(te_image, te_image_eroded, structuring_element);
+
+    if (params_.morpho_params.operation == 0) {
+      cv::erode(te_image, te_image_morph, structuring_element);
+    } else if (params_.morpho_params.operation == 1) {
+      cv::dilate(te_image, te_image_morph, structuring_element);
+    }
   }
 
+  // Apply spatial blurring to temporal features?
   cv::Mat te_image_blurred;
   if (params_.spatial_params.blur_aperture < 0) {
-    te_image_blurred = te_image_eroded;
+    te_image_blurred = te_image_morph;
   } else {
-    cv::medianBlur(te_image_eroded, te_image_blurred,
+    cv::medianBlur(te_image_morph, te_image_blurred,
                    params_.spatial_params.blur_aperture);
   }
 
+  // Just curious...
+  cv::Mat AND_se;
+  cv::bitwise_and(cv_ptr->image, se_image, AND_se);
   cv::Mat AND_image;
-  AND_image = cv_ptr->image;
+  cv::bitwise_and(AND_se, te_image_blurred, AND_image);
 
   // Publish images.
   visualize(msg->header, te_image_blurred, se_image, AND_image);

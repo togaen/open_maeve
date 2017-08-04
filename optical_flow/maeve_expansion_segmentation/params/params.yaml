@@ -27,6 +27,7 @@ temporal_params:
   shadows: false
 
 morpho_params:
-  element_type: 0 # -1: disable, 0: rectangle, 1: ellipse
-  window_width: 3 # must be odd and >= 3
-  window_height: 3 # must be odd and >= 3
+  operation: 1 # -1: disable, 0: erosion, 1: dilation
+  element_type: 0 # 0: rectangle, 1: ellipse
+  window_width: 7 # must be odd and >= 3
+  window_height: 7 # must be odd and >= 3
