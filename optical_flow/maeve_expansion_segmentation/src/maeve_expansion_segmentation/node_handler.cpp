@@ -32,9 +32,11 @@ MaeveExpansionSegmentationNodeHandler::MaeveExpansionSegmentationNodeHandler(
   }
 
   // Create background subtractor.
-  bg_subtractor_ptr_ = cv::createBackgroundSubtractorMOG2(
-      params_.temporal_params.history, params_.temporal_params.threshold,
-      params_.temporal_params.shadows);
+  if (params_.temporal_params.history > 0) {
+    bg_subtractor_ptr_ = cv::createBackgroundSubtractorMOG2(
+        params_.temporal_params.history, params_.temporal_params.threshold,
+        params_.temporal_params.shadows);
+  }
 
   // Image transport interface.
   image_transport::ImageTransport it(nh);
@@ -91,12 +93,16 @@ void MaeveExpansionSegmentationNodeHandler::callback(
 
   // Generate temporal feature image.
   cv::Mat te_image;
-  bg_subtractor_ptr_->apply(cv_ptr->image, te_image);
+  if (bg_subtractor_ptr_) {
+    bg_subtractor_ptr_->apply(cv_ptr->image, te_image);
+  } else {
+    se_image.copyTo(te_image);
+  }
 
   // Apply morphological operator?
   cv::Mat te_image_morph;
   if (params_.morpho_params.operation < 0) {
-    te_image_morph = te_image;
+    te_image.copyTo(te_image_morph);
   } else {
     const auto element_type = params_.morpho_params.element_type == 0
                                   ? cv::MORPH_RECT

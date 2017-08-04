@@ -19,15 +19,15 @@ spatial_params:
   edge_min: 100
   edge_max: 200
   edge_aperture: 3
-  blur_aperture: 3 # must be odd and >= 3 or -1 to disable
+  blur_aperture: -1 # must be odd and >= 3 or -1 to disable
 
 temporal_params:
-  history: 10
+  history: -1 # must be > 0 or -1 to disable
   threshold: 16
   shadows: false
 
 morpho_params:
-  operation: 1 # -1: disable, 0: erosion, 1: dilation
+  operation: -1 # -1: disable, 0: erosion, 1: dilation
   element_type: 0 # 0: rectangle, 1: ellipse
   window_width: 7 # must be odd and >= 3
   window_height: 7 # must be odd and >= 3
