@@ -195,11 +195,6 @@
   if (!nh.getParam(#var, var)) {                                   \
     ROS_ERROR_STREAM("Failed to load parameter '" << #var << "'"); \
     return false;                                                  \
-  }                                                                \
-  {                                                                \
-    std::stringstream ss;                                          \
-    ss << #var << ": " << var << "\n";                             \
-    loaded_param_set += ss.str();                                  \
   }
 
 /**
@@ -214,16 +209,11 @@
  * @param struct_name The name of the struct that 'var' belongs to.
  * @param var The name of the parameter and of the variable that holds it.
  */
-#define LOAD_STRUCT_PARAM(struct_name, var)                               \
-  if (!nh.getParam(#var, struct_name.var)) {                              \
-    ROS_ERROR_STREAM("Failed to load parameter '" << #struct_name << "."  \
-                                                  << #var << "'");        \
-    return false;                                                         \
-  }                                                                       \
-  {                                                                       \
-    std::stringstream ss;                                                 \
-    ss << #struct_name << "." << #var << ": " << struct_name.var << "\n"; \
-    loaded_param_set += ss.str();                                         \
+#define LOAD_STRUCT_PARAM(struct_name, var)                              \
+  if (!nh.getParam(#var, struct_name.var)) {                             \
+    ROS_ERROR_STREAM("Failed to load parameter '" << #struct_name << "." \
+                                                  << #var << "'");       \
+    return false;                                                        \
   }
 
 /**
@@ -244,11 +234,6 @@
     ROS_ERROR_STREAM("Failed to load parameter '" << #ns << "/" << #var     \
                                                   << "'");                  \
     return false;                                                           \
-  }                                                                         \
-  {                                                                         \
-    std::stringstream ss;                                                   \
-    ss << #ns << "." << #var << ": " << ns.var << "\n";                     \
-    loaded_param_set += ss.str();                                           \
   }
 
 namespace maeve_automation_core {
@@ -264,7 +249,8 @@ struct ParamsBase {
    * @return The stream with the serialized parameter object.
    */
   friend std::ostream& operator<<(std::ostream& os, const ParamsBase& params) {
-    return os << params.loaded_param_set;
+    return os << "[stream overload is ParamsBase is deprecated; please define "
+                 "class-specific overloads]";
   }
 
   /**
@@ -275,15 +261,6 @@ struct ParamsBase {
    * @return True if loading passed sanity check; otherwise false.
    */
   virtual bool load(const ros::NodeHandle& nh) = 0;
-
- protected:
-  /**
-   * @brief Human-readable string of parameters loaded by load() function.
-   *
-   * @note This is for informational use only, it is not guaranteed to be in
-   * sync with the member values.
-   */
-  std::string loaded_param_set;
 };  // struct StruckVisualTrackingParams
 
 }  // namespace maeve_automation_core
