@@ -45,6 +45,12 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
      * @brief Constructor. Initialize values to bad values.
      */
     SpatialParams();
+    /**
+     * @brief Run sanity checks on the parameters loaded into this object.
+     *
+     * @return True if sanity checks pass; otherwise false.
+     */
+    bool valid() const;
   };  // struct SpatialEdgeParams
 
   /**
@@ -61,14 +67,18 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
      * @brief Constructor. Initialize values to bad values.
      */
     TemporalParams();
+    /**
+     * @brief Run sanity checks on the parameters loaded into this object.
+     *
+     * @return True if sanity checks pass; otherwise false.
+     */
+    bool valid() const;
   };  // struct TemporalEdgeParams
 
   /**
    * @brief Parameters for applying morphological operations.
    */
   struct MorphologicalParams {
-    /** @brief The type of morphological operation to use. */
-    int operation;
     /** @brief The structuring element to use (0 - rectangle, 1 - ellipse). */
     int element_type;
     /** @brief The width of the window containing the structuring element. */
@@ -79,6 +89,12 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
      * @brief Constructor. Initialize value to bad values.
      */
     MorphologicalParams();
+    /**
+     * @brief Run sanity checks on the parameters loaded into this object.
+     *
+     * @return True if sanity checks pass; otherwise false.
+     */
+    bool valid() const;
   };  // struct MorphologicalParams
 
   /** @brief Spatial feature detection parameters. */
@@ -87,8 +103,14 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
   /** @brief Temporal feature detection parameters. */
   TemporalParams temporal_params;
 
-  /** @brief Morphological operator parameters. */
-  MorphologicalParams morpho_params;
+  /** @brief Dilation operator parameters. */
+  MorphologicalParams dilation_params;
+
+  /** @brief Erosion operator parameters. */
+  MorphologicalParams erosion_params;
+
+  /** @brief The list of morphological operation to apply in order. */
+  std::vector<int> morpho_operations;
 
   /** @brief The image sequence topic. */
   std::string camera_topic;

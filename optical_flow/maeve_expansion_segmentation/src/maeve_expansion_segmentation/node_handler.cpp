@@ -72,6 +72,18 @@ void MaeveExpansionSegmentationNodeHandler::visualize(
   viz_AND_pub.publish(AND_msg);
 }
 
+namespace {
+cv::Mat buildStructuringElement(
+    const MaeveExpansionSegmentationParams::MorphologicalParams morpho_params) {
+  const auto element_type =
+      morpho_params.element_type == 0 ? cv::MORPH_RECT : cv::MORPH_ELLIPSE;
+  const auto window_size =
+      cv::Size(morpho_params.window_width, morpho_params.window_height);
+  const auto anchor_point = cv::Point(-1, -1);  // centered
+  return cv::getStructuringElement(element_type, window_size, anchor_point);
+}
+}  // namespace
+
 void MaeveExpansionSegmentationNodeHandler::callback(
     const sensor_msgs::Image::ConstPtr& msg) {
   // ROS_INFO_STREAM("entered callback");
@@ -99,26 +111,33 @@ void MaeveExpansionSegmentationNodeHandler::callback(
     se_image.copyTo(te_image);
   }
 
-  // Apply morphological operator?
-  cv::Mat te_image_morph;
-  if (params_.morpho_params.operation < 0) {
-    te_image.copyTo(te_image_morph);
-  } else {
-    const auto element_type = params_.morpho_params.element_type == 0
-                                  ? cv::MORPH_RECT
-                                  : cv::MORPH_ELLIPSE;
-    const auto window_size = cv::Size(params_.morpho_params.window_width,
-                                      params_.morpho_params.window_height);
-    const auto anchor_point = cv::Point(-1, -1);  // centered
-    cv::Mat structuring_element =
-        cv::getStructuringElement(element_type, window_size, anchor_point);
+  // Build structuring elements for morphological operations.
+  const auto erosion_structuring_element =
+      buildStructuringElement(params_.erosion_params);
+  const auto dilation_structuring_element =
+      buildStructuringElement(params_.dilation_params);
 
-    if (params_.morpho_params.operation == 0) {
-      cv::erode(te_image, te_image_morph, structuring_element);
-    } else if (params_.morpho_params.operation == 1) {
-      cv::dilate(te_image, te_image_morph, structuring_element);
-    }
-  }
+  // Apply morphological operators?
+  cv::Mat te_image_morph;
+  cv::Mat te_image_accum;
+  te_image.copyTo(te_image_accum);
+  std::for_each(params_.morpho_operations.begin(),
+                params_.morpho_operations.end(), [&](const int op) {
+                  switch (op) {
+                    case 0:
+                      cv::erode(te_image_accum, te_image_morph,
+                                erosion_structuring_element);
+                      te_image_morph.copyTo(te_image_accum);
+                      break;
+                    case 1:
+                      cv::dilate(te_image_accum, te_image_morph,
+                                 dilation_structuring_element);
+                      te_image_morph.copyTo(te_image_accum);
+                      break;
+                    default:
+                      break;
+                  }
+                });
 
   // Apply spatial blurring to temporal features?
   cv::Mat te_image_blurred;
