@@ -67,12 +67,43 @@ ConnectedComponentTracker::computeFrameInfo(const cv::Mat& edges) const {
                 });
 
   // Return.
-  return frame_info;
+  return filterFrame(frame_info);
+}
+
+ConnectedComponentTracker::FrameInfo ConnectedComponentTracker::filterFrame(
+    const FrameInfo& frame_info) const {
+  // The filtered frame.
+  FrameInfo filtered_frame;
+
+  // Preserve edge information.
+  frame_info.frame.copyTo(filtered_frame.frame);
+
+  // Destroy hierarchy information.
+  filtered_frame.hierarchy.clear();
+
+  // Perform filtering.
+  const auto& h = frame_info.hierarchy;
+  for (auto i = 0; i < h.size(); ++i) {
+    // Only draw leaves in contour hierarchy?
+    auto child_idx = i;
+    while (params_.only_leaves && (h[child_idx][2] >= 0)) {
+      child_idx = h[child_idx][2];
+    }
+
+    // Keep or ignore?
+    const auto& contour_info = frame_info.contours[child_idx];
+    if (!contour_info.ignore) {
+      filtered_frame.contours.push_back(frame_info.contours[child_idx]);
+    }
+  }
+
+  // Done.
+  return filtered_frame;
 }
 
 bool ConnectedComponentTracker::addEdgeFrame(const cv::Mat& edges) {
   frame_info_buffer_.push_back(std::move(computeFrameInfo(edges)));
-  if (frame_info_buffer_.size() < 2) {
+  if (frame_info_buffer_.size() < params_.buffer_size) {
     return false;
   }
 

@@ -44,6 +44,6 @@ erosion_params:
 connected_component_params:
   only_leaves: true # only consider leaves in connected component hierarchy
   buffer_size: 1 # must be > 0
-  min_component_size: 500 # must be >= 0
-  max_component_size: 100000 # must be >= min_component_size
+  min_component_size: 500 # must be >= 0; maybe make this a percentage?
+  max_component_size: 5000 # must be >= min_component_size; maybe make this a percentage?
   IOU_threshold: 0.75 # must be \in [0, 1]

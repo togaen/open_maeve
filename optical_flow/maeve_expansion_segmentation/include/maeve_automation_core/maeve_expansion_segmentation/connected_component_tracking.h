@@ -113,6 +113,16 @@ class ConnectedComponentTracker {
 
  private:
   /**
+   * @brief Find contours to focus on based on hueristics. This operation does
+   * not preserve hierarchy information.
+   *
+   * @param frame_info The raw frame info.
+   *
+   * @return The frame info satisfying filter heuristics.
+   */
+  FrameInfo filterFrame(const FrameInfo& frame_info) const;
+
+  /**
    * @brief Compute the next available unique id.
    *
    * @return The unique id.
