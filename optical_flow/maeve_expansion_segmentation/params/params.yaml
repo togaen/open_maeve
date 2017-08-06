@@ -42,6 +42,7 @@ erosion_params:
 # Connected component tracking parameters
 #
 connected_component_params:
+  only_leaves: true # only consider leaves in connected component hierarchy
   buffer_size: 1 # must be > 0
   min_component_size: 500 # must be >= 0
   max_component_size: 100000 # must be >= min_component_size

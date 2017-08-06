@@ -161,17 +161,25 @@ void MaeveExpansionSegmentationNodeHandler::callback(
     AND_image = cv::Mat::zeros(te_image_blurred.rows, te_image_blurred.cols,
                                te_image_blurred.type());
     const auto& cc = cc_tracker_ptr_->getFrameInfoBuffer();
-    std::for_each(
-        cc.begin(), cc.end(),
-        [&](const ConnectedComponentTracker::FrameInfo& frame_info) {
-          std::for_each(
-              frame_info.contours.begin(), frame_info.contours.end(),
-              [&](const ConnectedComponentTracker::ContourInfo& contour) {
-                if (!contour.ignore) {
-                  cv::bitwise_or(contour.component, AND_image, AND_image);
-                }
-              });
-        });
+    std::for_each(cc.begin(), cc.end(),
+                  [&](const ConnectedComponentTracker::FrameInfo& frame_info) {
+                    const auto& h = frame_info.hierarchy;
+                    for (auto i = 0; i < h.size(); ++i) {
+                      // Only draw leaves in contour hierarchy.
+                      auto child_idx = i;
+                      while (params_.connected_component_params.only_leaves &&
+                             (h[child_idx][2] >= 0)) {
+                        child_idx = h[child_idx][2];
+                      }
+
+                      // Keep or ignore?
+                      const auto& contour_info = frame_info.contours[child_idx];
+                      if (!contour_info.ignore) {
+                        cv::bitwise_or(contour_info.component, AND_image,
+                                       AND_image);
+                      }
+                    }
+                  });
   } else {
     // Just curious...
     cv::Mat AND_se;

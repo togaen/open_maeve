@@ -101,6 +101,7 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(erosion_params, window_width);
   LOAD_NS_PARAM(erosion_params, window_height);
 
+  LOAD_NS_PARAM(connected_component_params, only_leaves);
   LOAD_NS_PARAM(connected_component_params, buffer_size);
   LOAD_NS_PARAM(connected_component_params, min_component_size);
   LOAD_NS_PARAM(connected_component_params, max_component_size);

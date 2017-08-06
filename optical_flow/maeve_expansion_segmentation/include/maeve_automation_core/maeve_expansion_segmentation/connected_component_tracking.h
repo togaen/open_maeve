@@ -44,6 +44,8 @@ class ConnectedComponentTracker {
    * @brief Parameter for the tracker.
    */
   struct Params {
+    /** @brief Only consider leaves in the connected component hierarchy. */
+    bool only_leaves;
     /** @brief Size of the circular buffer used to store image frames. */
     int buffer_size;
     /** @brief Minimum size for a connected component to be considered. */
