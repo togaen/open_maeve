@@ -28,14 +28,14 @@
 
 namespace maeve_automation_core {
 
-  /**
-   * @brief Tracker class to perform simple connected component tracking.
-   */
+/**
+ * @brief Tracker class to perform simple connected component tracking.
+ */
 class ConnectedComponentTracker {
  public:
-   /** @name Convenience typedefs */
-   /*@{
-    */
+  /** @name Convenience typedefs */
+  /*@{
+   */
   typedef std::vector<cv::Point> Contour;
   typedef std::vector<cv::Vec4i> ContourHierarchy;
   /** @} */
@@ -64,8 +64,10 @@ class ConnectedComponentTracker {
     cv::Mat component;
     /** @brief The computed pixel area of the component. */
     double area;
+    /** @brief Whether to ignore this contour during tracking. */
+    bool ignore;
     /**
-     * @brief Constructor: initialize area to NaN.
+     * @brief Constructor: initialize ignore to false and area to NaN.
      */
     ContourInfo();
   };  // struct ContourInfo
@@ -97,7 +99,6 @@ class ConnectedComponentTracker {
    * @return True if frame buffer has reached size; otherwise false.
    */
   bool addEdgeFrame(const cv::Mat& edges);
-
 
   /**
    * @brief Get a const reference to the frame info buffer.

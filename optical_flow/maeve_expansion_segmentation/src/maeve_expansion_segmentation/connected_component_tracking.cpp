@@ -29,7 +29,7 @@ ConnectedComponentTracker::ConnectedComponentTracker(const Params& params)
     : next_id(0), params_(params), frame_info_buffer_(params_.buffer_size) {}
 
 ConnectedComponentTracker::ContourInfo::ContourInfo()
-    : area(std::numeric_limits<double>::quiet_NaN()) {}
+    : area(std::numeric_limits<double>::quiet_NaN()), ignore(false) {}
 
 size_t ConnectedComponentTracker::getNextId() { return next_id++; }
 
@@ -45,17 +45,15 @@ ConnectedComponentTracker::computeFrameInfo(const cv::Mat& edges) const {
   cv::findContours(frame_info.frame, contours, frame_info.hierarchy,
                    CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
-  // Compute contour info and perform area filtering.
+  // Compute contour info.
   frame_info.contours.reserve(contours.size());
   std::for_each(contours.begin(), contours.end(), [&](Contour& contour) {
     const auto area = cv::contourArea(contour);
-    const auto keep = (area >= params_.min_component_size) &&
-                      (area <= params_.max_component_size);
-    if (keep) {
-      frame_info.contours.push_back(std::move(ContourInfo()));
-      frame_info.contours.back().area = area;
-      frame_info.contours.back().contour.swap(contour);
-    }
+    frame_info.contours.push_back(std::move(ContourInfo()));
+    frame_info.contours.back().area = area;
+    frame_info.contours.back().contour.swap(contour);
+    frame_info.contours.back().ignore = (area < params_.min_component_size) ||
+                                        (area > params_.max_component_size);
   });
 
   // Compute components.

@@ -167,7 +167,9 @@ void MaeveExpansionSegmentationNodeHandler::callback(
           std::for_each(
               frame_info.contours.begin(), frame_info.contours.end(),
               [&](const ConnectedComponentTracker::ContourInfo& contour) {
-                cv::bitwise_or(contour.component, AND_image, AND_image);
+                if (!contour.ignore) {
+                  cv::bitwise_or(contour.component, AND_image, AND_image);
+                }
               });
         });
   } else {
