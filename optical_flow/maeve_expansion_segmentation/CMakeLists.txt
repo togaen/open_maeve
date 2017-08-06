@@ -114,9 +114,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES maeve_expansion_segmentation
-#  CATKIN_DEPENDS cv_bridge image_geometry ros_parameter_loading std_msgs
+  INCLUDE_DIRS include
+  LIBRARIES maeve_expansion_segmentation
+  CATKIN_DEPENDS cv_bridge image_geometry ros_parameter_loading std_msgs sensor_msgs
 #  DEPENDS system_lib
 )
 
@@ -133,9 +133,9 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/maeve_expansion_segmentation.cpp
-# )
+add_library(${PROJECT_NAME}
+  src/${PROJECT_NAME}/connected_component_tracking.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -163,6 +163,7 @@ add_executable(${PROJECT_NAME}_node
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
+   ${PROJECT_NAME}
    ${catkin_LIBRARIES}
 )
 

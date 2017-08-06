@@ -27,7 +27,10 @@
 #include <sensor_msgs/Image.h>
 #include <opencv2/opencv.hpp>
 
+#include <memory>
+
 #include "maeve_expansion_segmentation/params.h"
+#include "maeve_automation_core/maeve_expansion_segmentation/connected_component_tracking.h"
 
 namespace maeve_automation_core {
 /**
@@ -61,8 +64,14 @@ class MaeveExpansionSegmentationNodeHandler {
   void visualize(const std_msgs::Header& header, const cv::Mat& te_image,
                  const cv::Mat& se_image, const cv::Mat& AND_image);
 
+  /** @brief Node parameters. */
+  MaeveExpansionSegmentationParams params_;
+
   /** @brief Pointer to background subtraction operator. */
   cv::Ptr<cv::BackgroundSubtractor> bg_subtractor_ptr_;
+
+  /** @brief Connected component tracker. */
+  std::unique_ptr<ConnectedComponentTracker> cc_tracker_ptr_;
 
   /** @brief Camera image subscriber. */
   image_transport::Subscriber camera_sub;
@@ -72,7 +81,5 @@ class MaeveExpansionSegmentationNodeHandler {
   image_transport::Publisher viz_se_pub;
   /** @brief AND visualization publisher. */
   image_transport::Publisher viz_AND_pub;
-  /** @brief Node parameters. */
-  MaeveExpansionSegmentationParams params_;
 };  // class MaeveExpansionSegmentationNodeHandler
 }  // namespace maeve_automation_core

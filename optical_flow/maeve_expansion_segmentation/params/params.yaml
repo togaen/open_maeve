@@ -37,3 +37,12 @@ erosion_params:
   element_type: 0 # 0: rectangle, 1: ellipse
   window_width: 3 # must be odd and >= 3
   window_height: 3 # must be odd and >= 3
+
+#
+# Connected component tracking parameters
+#
+connected_component_params:
+  buffer_size: 1 # must be > 0
+  min_component_size: 500 # must be >= 0
+  max_component_size: 100000 # must be >= min_component_size
+  IOU_threshold: 0.75 # must be \in [0, 1]

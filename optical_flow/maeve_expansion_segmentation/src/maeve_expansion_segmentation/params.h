@@ -24,6 +24,7 @@
 #include <string>
 
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
+#include "maeve_automation_core/maeve_expansion_segmentation/connected_component_tracking.h"
 
 namespace maeve_automation_core {
 
@@ -96,6 +97,9 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
      */
     bool valid() const;
   };  // struct MorphologicalParams
+
+  /** @brief Connected component tracking parameters. */
+  ConnectedComponentTracker::Params connected_component_params;
 
   /** @brief Spatial feature detection parameters. */
   SpatialParams spatial_params;

@@ -83,19 +83,28 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(viz_se_topic);
   LOAD_PARAM(viz_AND_topic);
   LOAD_PARAM(morpho_operations);
+
   LOAD_NS_PARAM(spatial_params, edge_min);
   LOAD_NS_PARAM(spatial_params, edge_max);
   LOAD_NS_PARAM(spatial_params, edge_aperture);
   LOAD_NS_PARAM(spatial_params, blur_aperture);
+
   LOAD_NS_PARAM(temporal_params, history);
   LOAD_NS_PARAM(temporal_params, threshold);
   LOAD_NS_PARAM(temporal_params, shadows);
+
   LOAD_NS_PARAM(dilation_params, element_type);
   LOAD_NS_PARAM(dilation_params, window_width);
   LOAD_NS_PARAM(dilation_params, window_height);
+
   LOAD_NS_PARAM(erosion_params, element_type);
   LOAD_NS_PARAM(erosion_params, window_width);
   LOAD_NS_PARAM(erosion_params, window_height);
+
+  LOAD_NS_PARAM(connected_component_params, buffer_size);
+  LOAD_NS_PARAM(connected_component_params, min_component_size);
+  LOAD_NS_PARAM(connected_component_params, max_component_size);
+  LOAD_NS_PARAM(connected_component_params, IOU_threshold);
 
   // Sanity check parameters.
   for (const auto& op : morpho_operations) {

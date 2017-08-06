@@ -25,11 +25,16 @@
 
 namespace maeve_automation_core {
 MaeveExpansionSegmentationNodeHandler::MaeveExpansionSegmentationNodeHandler(
-    const ros::NodeHandle& nh) {
+    const ros::NodeHandle& nh)
+    : cc_tracker_ptr_(nullptr) {
   if (!params_.load(nh)) {
     ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
     return;
   }
+
+  // Create tracker.
+  cc_tracker_ptr_ = std::unique_ptr<ConnectedComponentTracker>(
+      new ConnectedComponentTracker(params_.connected_component_params));
 
   // Create background subtractor.
   if (params_.temporal_params.history > 0) {
@@ -148,11 +153,29 @@ void MaeveExpansionSegmentationNodeHandler::callback(
                    params_.spatial_params.blur_aperture);
   }
 
-  // Just curious...
-  cv::Mat AND_se;
-  cv::bitwise_and(cv_ptr->image, se_image, AND_se);
+  // Do tracking.
   cv::Mat AND_image;
-  cv::bitwise_and(AND_se, te_image_blurred, AND_image);
+  if (cc_tracker_ptr_) {
+    cc_tracker_ptr_->addEdgeFrame(te_image_blurred);
+    // Draw connected components.
+    AND_image = cv::Mat::zeros(te_image_blurred.rows, te_image_blurred.cols,
+                               te_image_blurred.type());
+    const auto& cc = cc_tracker_ptr_->getFrameInfoBuffer();
+    std::for_each(
+        cc.begin(), cc.end(),
+        [&](const ConnectedComponentTracker::FrameInfo& frame_info) {
+          std::for_each(
+              frame_info.contours.begin(), frame_info.contours.end(),
+              [&](const ConnectedComponentTracker::ContourInfo& contour) {
+                cv::bitwise_or(contour.component, AND_image, AND_image);
+              });
+        });
+  } else {
+    // Just curious...
+    cv::Mat AND_se;
+    cv::bitwise_and(cv_ptr->image, se_image, AND_se);
+    cv::bitwise_and(AND_se, te_image_blurred, AND_image);
+  }
 
   // Publish images.
   visualize(msg->header, te_image_blurred, se_image, AND_image);
