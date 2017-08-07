@@ -143,8 +143,8 @@ class ConnectedComponentTracker {
   /**
    * @brief Compute the IOU for two sets represented by binary images.
    *
-   * @param c1 The first set.
-   * @param c2 The second set.
+   * @param binary_image1 The first set.
+   * @param binary_image2 The second set.
    *
    * @return The intersection over union of the set sizes.
    */
@@ -176,6 +176,11 @@ class ConnectedComponentTracker {
    */
   Id getNextId();
 
+  /**
+   * @brief Randomly assign colors to tracks for visualization.
+   *
+   * @return An integer corresponding to a color.
+   */
   int getNextColor();
 
   /**
