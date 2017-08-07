@@ -23,15 +23,92 @@
 
 #include <algorithm>
 #include <limits>
+#include <utility>
+#include <vector>
 
 namespace maeve_automation_core {
 ConnectedComponentTracker::ConnectedComponentTracker(const Params& params)
-    : next_id(0), params_(params), frame_info_buffer_(params_.buffer_size) {}
+    : next_color_(0),
+      next_id_(0),
+      params_(params),
+      frame_info_buffer_(params_.buffer_size) {}
 
 ConnectedComponentTracker::ContourInfo::ContourInfo()
-    : area(std::numeric_limits<double>::quiet_NaN()), ignore(false) {}
+    : area(std::numeric_limits<double>::quiet_NaN()),
+      ignore(false),
+      consumed(false) {}
 
-size_t ConnectedComponentTracker::getNextId() { return next_id++; }
+ConnectedComponentTracker::Track::Track() : current(false) {}
+
+ConnectedComponentTracker::Id ConnectedComponentTracker::getNextId() {
+  return next_id_++;
+}
+
+int ConnectedComponentTracker::getNextColor() { return next_color_++; }
+
+const boost::circular_buffer<ConnectedComponentTracker::FrameInfo>&
+ConnectedComponentTracker::getFrameInfoBuffer() const {
+  return frame_info_buffer_;
+}
+
+const ConnectedComponentTracker::Tracks& ConnectedComponentTracker::getTracks()
+    const {
+  return tracks_;
+}
+
+double ConnectedComponentTracker::IOU(const cv::Mat& binary_image1,
+                                      const cv::Mat& binary_image2) {
+  // Initialize containers.
+  cv::Mat set_intersection = cv::Mat::zeros(
+      binary_image1.rows, binary_image1.cols, binary_image1.type());
+  cv::Mat set_union = cv::Mat::zeros(binary_image1.rows, binary_image1.cols,
+                                     binary_image1.type());
+
+  // Compute sets.
+  cv::bitwise_and(binary_image1, binary_image2, set_intersection);
+  cv::bitwise_or(binary_image1, binary_image2, set_union);
+
+  // Compute area.
+  const auto intersection_area = cv::countNonZero(set_intersection);
+  const auto union_area = cv::countNonZero(set_union);
+
+  // Compute IOU and done; operation undefined when union is empty.
+  return (union_area == 0.0) ? std::numeric_limits<double>::quiet_NaN()
+                             : (intersection_area / union_area);
+}
+
+void ConnectedComponentTracker::updateTrack(Track& track,
+                                            ContourInfo& contour_info) {
+  std::swap(track.contour_info, contour_info);
+  track.current = true;
+  contour_info.consumed = true;
+}
+
+ConnectedComponentTracker::Id
+ConnectedComponentTracker::associateContourToTrack(
+    const ContourInfo& contour_info) const {
+  auto found_id = INVALID_ID;
+
+  // std::max_element would be more elegant, but IOU is non-trivial to compute.
+  auto max_id = INVALID_ID;
+  auto max_iou = -std::numeric_limits<double>::quiet_NaN();
+  std::for_each(std::begin(tracks_), std::end(tracks_),
+                [&](const Tracks::value_type& pair) {
+                  // Compute IOU.
+                  const auto iou = ConnectedComponentTracker::IOU(
+                      pair.second.contour_info.component,
+                      contour_info.component);
+
+                  // Track 'best' match.
+                  if (iou >= max_iou) {
+                    max_iou = iou;
+                    max_id = pair.first;
+                  }
+                });
+
+  // Return the found id iff the IOU is above the threshold.
+  return (max_iou > params_.IOU_threshold) ? found_id : INVALID_ID;
+}
 
 ConnectedComponentTracker::FrameInfo
 ConnectedComponentTracker::computeFrameInfo(const cv::Mat& edges) const {
@@ -47,17 +124,19 @@ ConnectedComponentTracker::computeFrameInfo(const cv::Mat& edges) const {
 
   // Compute contour info.
   frame_info.contours.reserve(contours.size());
-  std::for_each(contours.begin(), contours.end(), [&](Contour& contour) {
-    const auto area = cv::contourArea(contour);
-    frame_info.contours.push_back(std::move(ContourInfo()));
-    frame_info.contours.back().area = area;
-    frame_info.contours.back().contour.swap(contour);
-    frame_info.contours.back().ignore = (area < params_.min_component_size) ||
-                                        (area > params_.max_component_size);
-  });
+  std::for_each(std::begin(contours), std::end(contours),
+                [&](Contour& contour) {
+                  const auto area = cv::contourArea(contour);
+                  frame_info.contours.push_back(std::move(ContourInfo()));
+                  frame_info.contours.back().area = area;
+                  frame_info.contours.back().contour.swap(contour);
+                  frame_info.contours.back().ignore =
+                      (area < params_.min_component_size) ||
+                      (area > params_.max_component_size);
+                });
 
   // Compute components.
-  std::for_each(frame_info.contours.begin(), frame_info.contours.end(),
+  std::for_each(std::begin(frame_info.contours), std::end(frame_info.contours),
                 [&](ContourInfo& contour) {
                   const auto& f = frame_info.frame;
                   contour.component = cv::Mat::zeros(f.rows, f.cols, f.type());
@@ -67,7 +146,7 @@ ConnectedComponentTracker::computeFrameInfo(const cv::Mat& edges) const {
                 });
 
   // Return.
-  return filterFrame(frame_info);
+  return frame_info;
 }
 
 ConnectedComponentTracker::FrameInfo ConnectedComponentTracker::filterFrame(
@@ -107,14 +186,43 @@ bool ConnectedComponentTracker::addEdgeFrame(const cv::Mat& edges) {
     return false;
   }
 
-  // Store track candidates here.
-  std::unordered_map<int, cv::Mat> candidate_tracks;
+  // Apply filters.
+  auto filtered_frame = filterFrame(frame_info_buffer_.back());
 
-  // Do tracking:
-  // * Find contours
-  // * Compute contour components
-  // * Add each component that satisfies size bounds to candidate_tracks_
-  // * Perform IOU association
+  // Set all tracks to need updating.
+  std::for_each(std::begin(tracks_), std::end(tracks_),
+                [](Tracks::value_type& pair) { pair.second.current = false; });
+
+  // Perform association.
+  std::for_each(
+      std::begin(filtered_frame.contours), std::end(filtered_frame.contours),
+      [&](ContourInfo& contour_info) {
+        const auto id = associateContourToTrack(contour_info);
+        if (id != INVALID_ID) {
+          ConnectedComponentTracker::updateTrack(tracks_[id], contour_info);
+        }
+      });
+
+  // Prune tracks that were not updated.
+  for (auto it = std::begin(tracks_); it != std::end(tracks_);) {
+    if (!it->second.current) {
+      it = tracks_.erase(it);
+    } else {
+      ++it;
+    }
+  }
+
+  // Add new tracks.
+  std::for_each(std::begin(filtered_frame.contours),
+                std::end(filtered_frame.contours),
+                [&](ContourInfo& contour_info) {
+                  if (contour_info.consumed) {
+                    return;
+                  }
+                  const auto id = getNextId();
+                  tracks_[id].contour_info = std::move(contour_info);
+                  tracks_[id].color = getNextColor();
+                });
 
   return true;
 }

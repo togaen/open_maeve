@@ -126,8 +126,8 @@ void MaeveExpansionSegmentationNodeHandler::callback(
   cv::Mat te_image_morph;
   cv::Mat te_image_accum;
   te_image.copyTo(te_image_accum);
-  std::for_each(params_.morpho_operations.begin(),
-                params_.morpho_operations.end(), [&](const int op) {
+  std::for_each(std::begin(params_.morpho_operations),
+                std::end(params_.morpho_operations), [&](const int op) {
                   switch (op) {
                     case 0:
                       cv::erode(te_image_accum, te_image_morph,
@@ -160,16 +160,12 @@ void MaeveExpansionSegmentationNodeHandler::callback(
     // Draw connected components.
     AND_image = cv::Mat::zeros(te_image_blurred.rows, te_image_blurred.cols,
                                te_image_blurred.type());
-    const auto& cc = cc_tracker_ptr_->getFrameInfoBuffer();
+    const auto& tracks = cc_tracker_ptr_->getTracks();
     std::for_each(
-        cc.begin(), cc.end(),
-        [&](const ConnectedComponentTracker::FrameInfo& frame_info) {
-          std::for_each(
-              frame_info.contours.begin(), frame_info.contours.end(),
-              [&](const ConnectedComponentTracker::ContourInfo& contour_info) {
-
-                cv::bitwise_or(contour_info.component, AND_image, AND_image);
-              });
+        std::begin(tracks), std::end(tracks),
+        [&](const ConnectedComponentTracker::Tracks::value_type& pair) {
+          cv::bitwise_or(pair.second.contour_info.component, AND_image,
+                         AND_image);
         });
   } else {
     // Just curious...

@@ -25,6 +25,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <unordered_map>
+#include <vector>
 
 namespace maeve_automation_core {
 
@@ -36,8 +37,11 @@ class ConnectedComponentTracker {
   /** @name Convenience typedefs */
   /*@{
    */
+  typedef int Id;
   typedef std::vector<cv::Point> Contour;
   typedef std::vector<cv::Vec4i> ContourHierarchy;
+  struct Track;
+  typedef std::unordered_map<Id, Track> Tracks;
   /** @} */
 
   /**
@@ -68,11 +72,29 @@ class ConnectedComponentTracker {
     double area;
     /** @brief Whether to ignore this contour during tracking. */
     bool ignore;
+    /** @brief Whether this contour object has been consumed by the tracker. */
+    bool consumed;
     /**
-     * @brief Constructor: initialize ignore to false and area to NaN.
+     * @brief Constructor: initialize ignore/consumed to false and area to NaN.
      */
     ContourInfo();
   };  // struct ContourInfo
+
+  /**
+   * @brief Store track information.
+   */
+  struct Track {
+    /** @brief Single color index [r, g, b] -> [0, 1, 2] */
+    int color;
+    /** @brief The contour information associated with this track. */
+    ContourInfo contour_info;
+    /** @brief Whether this track is 'current' (i.e., has been updated). */
+    bool current;
+    /**
+     * @brief Constructor: initialize current to false.
+     */
+    Track();
+  };  // struct Track
 
   /**
    * @brief Store information about a given edge detection frame.
@@ -107,11 +129,36 @@ class ConnectedComponentTracker {
    *
    * @return A const ref to the frame info buffer.
    */
-  const boost::circular_buffer<FrameInfo>& getFrameInfoBuffer() const {
-    return frame_info_buffer_;
-  }
+  const boost::circular_buffer<FrameInfo>& getFrameInfoBuffer() const;
+
+  /**
+   * @brief Get a const reference to the set of tracks.
+   *
+   * @return A const ref to the set of tracks.
+   */
+  const Tracks& getTracks() const;
 
  private:
+  static void updateTrack(Track& track, ContourInfo& contour_info);
+  /**
+   * @brief Compute the IOU for two sets represented by binary images.
+   *
+   * @param c1 The first set.
+   * @param c2 The second set.
+   *
+   * @return The intersection over union of the set sizes.
+   */
+  static double IOU(const cv::Mat& binary_image1, const cv::Mat& binary_image2);
+
+  /**
+   * @brief Find the nearest matching track to the given contour.
+   *
+   * @param contour_info The contour information to match.
+   *
+   * @return The nearest matching id, or INVALID_ID if none is found.
+   */
+  Id associateContourToTrack(const ContourInfo& contour_info) const;
+
   /**
    * @brief Find contours to focus on based on hueristics. This operation does
    * not preserve hierarchy information.
@@ -127,7 +174,9 @@ class ConnectedComponentTracker {
    *
    * @return The unique id.
    */
-  size_t getNextId();
+  Id getNextId();
+
+  int getNextColor();
 
   /**
    * @brief Compute all contour info from the given edge detection.
@@ -138,12 +187,16 @@ class ConnectedComponentTracker {
    */
   FrameInfo computeFrameInfo(const cv::Mat& edges) const;
 
+  /** @brief Invalid value for track id. */
+  static const Id INVALID_ID = -1;
+  /** @brief Get the next color index. */
+  int next_color_;
   /** @brief Storage for next available unique id. */
-  size_t next_id;
+  Id next_id_;
   /** @brief The tracker parameters. */
   Params params_;
   /** @brief Associative container of id to tracks. */
-  std::unordered_map<int, cv::Mat> tracks_;
+  Tracks tracks_;
   /** @brief Buffer for storing a frame history. */
   boost::circular_buffer<FrameInfo> frame_info_buffer_;
 };  // class ConnectedComponentTracker

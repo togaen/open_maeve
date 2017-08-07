@@ -29,8 +29,8 @@
 
 #include <memory>
 
-#include "maeve_expansion_segmentation/params.h"
 #include "maeve_automation_core/maeve_expansion_segmentation/connected_component_tracking.h"
+#include "maeve_expansion_segmentation/params.h"
 
 namespace maeve_automation_core {
 /**
