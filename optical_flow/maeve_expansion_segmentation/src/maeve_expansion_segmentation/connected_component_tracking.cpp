@@ -27,6 +27,11 @@
 #include <vector>
 
 namespace maeve_automation_core {
+namespace {
+static const auto INF = std::numeric_limits<double>::infinity();
+static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+}  // namespace
+
 ConnectedComponentTracker::ConnectedComponentTracker(const Params& params)
     : next_color_(0),
       next_id_(0),
@@ -34,15 +39,20 @@ ConnectedComponentTracker::ConnectedComponentTracker(const Params& params)
       frame_info_buffer_(params_.buffer_size) {}
 
 ConnectedComponentTracker::ContourInfo::ContourInfo()
-    : area(std::numeric_limits<double>::quiet_NaN()),
-      ignore(false),
-      consumed(false) {}
+    : area(NaN), ignore(false), consumed(false) {}
 
-ConnectedComponentTracker::Track::Track()
-    : current(false), timestamp(-std::numeric_limits<double>::infinity()) {}
+ConnectedComponentTracker::Track::Track() : current(false), timestamp(-INF) {}
 
 ConnectedComponentTracker::FrameInfo::FrameInfo(const double ts)
     : timestamp(ts) {}
+
+ConnectedComponentTracker::IOUVal::IOUVal(const int rows, const int cols,
+                                          const int type)
+    : intersection_size(NaN),
+      union_size(NaN),
+      iou(NaN),
+      intersection_set(cv::Mat::zeros(rows, cols, type)),
+      union_set(cv::Mat::zeros(rows, cols, type)) {}
 
 ConnectedComponentTracker::Id ConnectedComponentTracker::getNextId() {
   return next_id_++;
@@ -60,26 +70,27 @@ const ConnectedComponentTracker::Tracks& ConnectedComponentTracker::getTracks()
   return tracks_;
 }
 
-double ConnectedComponentTracker::IOU(const cv::Mat& binary_image1,
-                                      const cv::Mat& binary_image2) {
+ConnectedComponentTracker::IOUVal ConnectedComponentTracker::IOU(
+    const cv::Mat& binary_image1, const cv::Mat& binary_image2) {
   // Initialize containers.
-  cv::Mat set_intersection = cv::Mat::zeros(
-      binary_image1.rows, binary_image1.cols, binary_image1.type());
-  cv::Mat set_union = cv::Mat::zeros(binary_image1.rows, binary_image1.cols,
-                                     binary_image1.type());
+  IOUVal iou_val(binary_image1.rows, binary_image1.cols, binary_image1.type());
 
   // Compute sets.
-  cv::bitwise_and(binary_image1, binary_image2, set_intersection);
-  cv::bitwise_or(binary_image1, binary_image2, set_union);
+  cv::bitwise_and(binary_image1, binary_image2, iou_val.intersection_set);
+  cv::bitwise_or(binary_image1, binary_image2, iou_val.union_set);
 
   // Compute area.
-  const auto intersection_area =
-      static_cast<double>(cv::countNonZero(set_intersection));
-  const auto union_area = static_cast<double>(cv::countNonZero(set_union));
+  iou_val.intersection_size =
+      static_cast<double>(cv::countNonZero(iou_val.intersection_set));
+  iou_val.union_size = static_cast<double>(cv::countNonZero(iou_val.union_set));
 
   // Compute IOU and done; operation undefined when union is empty.
-  return (union_area == 0.0) ? std::numeric_limits<double>::quiet_NaN()
-                             : (intersection_area / union_area);
+  iou_val.iou = (iou_val.union_size == 0.0)
+                    ? NaN
+                    : (iou_val.intersection_size / iou_val.union_size);
+
+  // Done.
+  return iou_val;
 }
 
 void ConnectedComponentTracker::updateTrack(const double timestamp,
@@ -91,26 +102,35 @@ void ConnectedComponentTracker::updateTrack(const double timestamp,
 }
 
 ConnectedComponentTracker::Id
-ConnectedComponentTracker::associateContourToTrack(
-    const ContourInfo& contour_info) const {
+ConnectedComponentTracker::computeTrackAssociation(const double timestamp,
+                                                   ContourInfo& contour_info) {
   auto max_id = INVALID_ID;
-  auto max_iou = -std::numeric_limits<double>::infinity();
+  auto max_iou = -INF;
   std::for_each(std::begin(tracks_), std::end(tracks_),
                 [&](const Tracks::value_type& pair) {
                   // Compute IOU.
-                  const auto iou = ConnectedComponentTracker::IOU(
+                  const auto iou_val = ConnectedComponentTracker::IOU(
                       pair.second.contour_info.component,
                       contour_info.component);
 
                   // Track 'best' match.
-                  if (iou >= max_iou) {
-                    max_iou = iou;
+                  if (iou_val.iou >= max_iou) {
+                    max_iou = iou_val.iou;
                     max_id = pair.first;
                   }
                 });
 
+  // Any association?
+  max_id = (max_iou > params_.IOU_threshold) ? max_id : INVALID_ID;
+  if (max_id == INVALID_ID) {
+    return max_id;
+  }
+
   // Return the found id iff the IOU is above the threshold.
-  return (max_iou > params_.IOU_threshold) ? max_id : INVALID_ID;
+  ConnectedComponentTracker::updateTrack(timestamp, tracks_[max_id],
+                                         contour_info);
+
+  return max_id;
 }
 
 ConnectedComponentTracker::FrameInfo
@@ -199,15 +219,12 @@ bool ConnectedComponentTracker::addEdgeFrame(const double timestamp,
                 [](Tracks::value_type& pair) { pair.second.current = false; });
 
   // Perform association.
-  std::for_each(std::begin(filtered_frame.contours),
-                std::end(filtered_frame.contours),
-                [&](ContourInfo& contour_info) {
-                  const auto id = associateContourToTrack(contour_info);
-                  if (id != INVALID_ID) {
-                    ConnectedComponentTracker::updateTrack(
-                        filtered_frame.timestamp, tracks_[id], contour_info);
-                  }
-                });
+  std::for_each(
+      std::begin(filtered_frame.contours), std::end(filtered_frame.contours),
+      [&](ContourInfo& contour_info) {
+        const auto id =
+            computeTrackAssociation(filtered_frame.timestamp, contour_info);
+      });
 
   // Prune expired tracks.
   const auto pre_size = tracks_.size();

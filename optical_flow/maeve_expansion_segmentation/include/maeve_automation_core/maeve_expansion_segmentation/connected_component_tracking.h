@@ -153,6 +153,40 @@ class ConnectedComponentTracker {
 
  private:
   /**
+   * @brief Container to cache intermediate results from IOU operation.
+   */
+  struct IOUVal {
+    /** @brief The binary image representing the intersection. */
+    cv::Mat intersection_set;
+    /** @brief The binary image representing the union. */
+    cv::Mat union_set;
+    /** @brief The size of the intersection set (nonzero element count). */
+    double intersection_size;
+    /** @brief The size of the union set (nonzero element count). */
+    double union_size;
+    /** @brief The IOU measure. */
+    double iou;
+    /**
+     * @brief Initialize sets to a defined size, and values to NaN.
+     *
+     * @param rows The row count of the set.
+     * @param cols The column count of the set.
+     * @param type The data type of the set.
+     */
+    IOUVal(const int rows, const int cols, const int type);
+  };  // struct IOUVal
+
+  /**
+   * @brief Compute the IOU for two sets represented by binary images.
+   *
+   * @param binary_image1 The first set.
+   * @param binary_image2 The second set.
+   *
+   * @return The intersection and union sets as well as their IOU.
+   */
+  static IOUVal IOU(const cv::Mat& binary_image1, const cv::Mat& binary_image2);
+
+  /**
    * @brief Update track information with given timestamp and contour.
    *
    * @param timestamp The measurement time to record for the track.
@@ -161,24 +195,17 @@ class ConnectedComponentTracker {
    */
   static void updateTrack(const double timestamp, Track& track,
                           ContourInfo& contour_info);
-  /**
-   * @brief Compute the IOU for two sets represented by binary images.
-   *
-   * @param binary_image1 The first set.
-   * @param binary_image2 The second set.
-   *
-   * @return The intersection over union of the set sizes.
-   */
-  static double IOU(const cv::Mat& binary_image1, const cv::Mat& binary_image2);
 
   /**
-   * @brief Find the nearest matching track to the given contour.
+   * @brief Find the nearest matching track to the given contour and compute
+   * track information, including image plane dynamics.
    *
+   * @param timestamp The timestamp at which the association is performed.
    * @param contour_info The contour information to match.
    *
    * @return The nearest matching id, or INVALID_ID if none is found.
    */
-  Id associateContourToTrack(const ContourInfo& contour_info) const;
+  Id computeTrackAssociation(const double timestamp, ContourInfo& contour_info);
 
   /**
    * @brief Find contours to focus on based on hueristics. This operation does
