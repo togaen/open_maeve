@@ -108,6 +108,7 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(connected_component_params, max_component_size);
   LOAD_NS_PARAM(connected_component_params, IOU_threshold);
   LOAD_NS_PARAM(connected_component_params, max_age);
+  LOAD_NS_PARAM(connected_component_params, min_measurement_confirmations);
 
   // Sanity check parameters.
   for (const auto& op : morpho_operations) {

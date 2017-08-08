@@ -26,12 +26,12 @@ temporal_params:
   threshold: 16
   shadows: false
 
-morpho_operations: [1] # applied in order where 0 = erosion and 1 = dilation
+morpho_operations: [1, 0] # applied in order where 0 = erosion and 1 = dilation
 
 dilation_params:
   element_type: 0 # 0: rectangle, 1: ellipse
-  window_width: 3 # must be odd and >= 3
-  window_height: 3 # must be odd and >= 3
+  window_width: 5 # must be odd and >= 3
+  window_height: 5 # must be odd and >= 3
 
 erosion_params:
   element_type: 0 # 0: rectangle, 1: ellipse
@@ -42,9 +42,10 @@ erosion_params:
 # Connected component tracking parameters
 #
 connected_component_params:
+  min_measurement_confirmations: 0 # Track must have this many associated measurements before being considered 'alive'
   max_age: 0.1 # maximum time (seconds) to maintain a track without a measurement update
   only_leaves: true # only consider leaves in connected component hierarchy
   buffer_size: 1 # must be > 0
   min_component_size: 500 # must be >= 0; maybe make this a percentage?
-  max_component_size: 9999999 # must be >= min_component_size; maybe make this a percentage?
-  IOU_threshold: 0.4 # must be \in [0, 1]
+  max_component_size: 10000 # must be >= min_component_size; maybe make this a percentage?
+  IOU_threshold: 0.5 # must be \in [0, 1]

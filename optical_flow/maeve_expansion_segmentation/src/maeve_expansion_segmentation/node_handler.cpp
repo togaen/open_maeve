@@ -165,8 +165,10 @@ void MaeveExpansionSegmentationNodeHandler::callback(
     std::for_each(
         std::begin(tracks), std::end(tracks),
         [&](const ConnectedComponentTracker::Tracks::value_type& pair) {
-          cv::bitwise_or(pair.second.contour_info.component, AND_image,
-                         AND_image);
+          const auto& component = pair.second.contour_info.component;
+          if (cc_tracker_ptr_->trackIsLive(pair.second)) {
+            cv::bitwise_or(component, AND_image, AND_image);
+          }
         });
   } else {
     // Just curious...

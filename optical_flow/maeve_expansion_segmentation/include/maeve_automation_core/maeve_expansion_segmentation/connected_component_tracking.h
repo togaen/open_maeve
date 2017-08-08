@@ -50,6 +50,9 @@ class ConnectedComponentTracker {
   struct Params {
     /** @brief Only consider leaves in the connected component hierarchy. */
     bool only_leaves;
+    /** @brief Minimum measurement confirmations required for track to become
+     * live. */
+    int min_measurement_confirmations;
     /** @brief Size of the circular buffer used to store image frames. */
     int buffer_size;
     /** @brief Minimum size for a connected component to be considered. */
@@ -88,10 +91,10 @@ class ConnectedComponentTracker {
   struct Track {
     /** @brief Single color index [r, g, b] -> [0, 1, 2] */
     int color;
+    /** @brief Count of measurement confirmations for this track. */
+    int measurement_confirmations;
     /** @brief The contour information associated with this track. */
     ContourInfo contour_info;
-    /** @brief Whether this track is 'current' (i.e., has been updated). */
-    bool current;
     /** @brief Time of the last measurement update for this track. */
     double timestamp;
     /**
@@ -150,6 +153,8 @@ class ConnectedComponentTracker {
    * @return A const ref to the set of tracks.
    */
   const Tracks& getTracks() const;
+
+  bool trackIsLive(const Track& track) const;
 
  private:
   /**

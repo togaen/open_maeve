@@ -41,7 +41,8 @@ ConnectedComponentTracker::ConnectedComponentTracker(const Params& params)
 ConnectedComponentTracker::ContourInfo::ContourInfo()
     : area(NaN), ignore(false), consumed(false) {}
 
-ConnectedComponentTracker::Track::Track() : current(false), timestamp(-INF) {}
+ConnectedComponentTracker::Track::Track()
+    : color(INVALID_ID), timestamp(-INF), measurement_confirmations(0) {}
 
 ConnectedComponentTracker::FrameInfo::FrameInfo(const double ts)
     : timestamp(ts) {}
@@ -99,6 +100,12 @@ void ConnectedComponentTracker::updateTrack(const double timestamp,
   std::swap(track.contour_info, contour_info);
   contour_info.consumed = true;
   track.timestamp = timestamp;
+  ++track.measurement_confirmations;
+}
+
+bool ConnectedComponentTracker::trackIsLive(const Track& track) const {
+  return track.measurement_confirmations >=
+         params_.min_measurement_confirmations;
 }
 
 ConnectedComponentTracker::Id
@@ -213,10 +220,6 @@ bool ConnectedComponentTracker::addEdgeFrame(const double timestamp,
 
   // Apply filters.
   auto filtered_frame = filterFrame(frame_info_buffer_.back());
-
-  // Set all tracks to need updating.
-  std::for_each(std::begin(tracks_), std::end(tracks_),
-                [](Tracks::value_type& pair) { pair.second.current = false; });
 
   // Perform association.
   std::for_each(
