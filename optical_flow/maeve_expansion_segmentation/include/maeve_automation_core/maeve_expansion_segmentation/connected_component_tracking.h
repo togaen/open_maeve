@@ -89,8 +89,6 @@ class ConnectedComponentTracker {
    * @brief Store track information.
    */
   struct Track {
-    /** @brief Single color index [r, g, b] -> [0, 1, 2] */
-    int color;
     /** @brief Count of measurement confirmations for this track. */
     int measurement_confirmations;
     /** @brief The contour information associated with this track. */
@@ -230,13 +228,6 @@ class ConnectedComponentTracker {
   Id getNextId();
 
   /**
-   * @brief Randomly assign colors to tracks for visualization.
-   *
-   * @return An integer corresponding to a color.
-   */
-  int getNextColor();
-
-  /**
    * @brief Compute all contour info from the given edge detection.
    *
    * @param timestamp The absolute timestamp of the frame info.
@@ -249,8 +240,6 @@ class ConnectedComponentTracker {
 
   /** @brief Invalid value for track id. */
   static const Id INVALID_ID = -1;
-  /** @brief Get the next color index. */
-  int next_color_;
   /** @brief Storage for next available unique id. */
   Id next_id_;
   /** @brief The tracker parameters. */

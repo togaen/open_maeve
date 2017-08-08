@@ -33,16 +33,13 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 ConnectedComponentTracker::ConnectedComponentTracker(const Params& params)
-    : next_color_(0),
-      next_id_(0),
-      params_(params),
-      frame_info_buffer_(params_.buffer_size) {}
+    : next_id_(0), params_(params), frame_info_buffer_(params_.buffer_size) {}
 
 ConnectedComponentTracker::ContourInfo::ContourInfo()
     : area(NaN), ignore(false), consumed(false) {}
 
 ConnectedComponentTracker::Track::Track()
-    : color(INVALID_ID), timestamp(-INF), measurement_confirmations(0) {}
+    : timestamp(-INF), measurement_confirmations(0) {}
 
 ConnectedComponentTracker::FrameInfo::FrameInfo(const double ts)
     : timestamp(ts) {}
@@ -58,8 +55,6 @@ ConnectedComponentTracker::IOUVal::IOUVal(const int rows, const int cols,
 ConnectedComponentTracker::Id ConnectedComponentTracker::getNextId() {
   return next_id_++;
 }
-
-int ConnectedComponentTracker::getNextColor() { return next_color_++; }
 
 const boost::circular_buffer<ConnectedComponentTracker::FrameInfo>&
 ConnectedComponentTracker::getFrameInfoBuffer() const {
@@ -250,7 +245,6 @@ bool ConnectedComponentTracker::addEdgeFrame(const double timestamp,
                   }
                   const auto id = getNextId();
                   tracks_[id].contour_info = std::move(contour_info);
-                  tracks_[id].color = getNextColor();
                 });
 
   return true;
