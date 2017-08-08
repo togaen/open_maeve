@@ -1,0 +1,11 @@
+<launch>
+  <node
+    name="maeve_expansion_segmentation"
+    pkg="maeve_expansion_segmentation"
+    type="maeve_expansion_segmentation_node"
+    output="screen"> 
+    <rosparam
+      command="load"
+      file="$(find maeve_expansion_segmentation)/params/params.yaml"/>
+  </node>
+</launch>
