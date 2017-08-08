@@ -42,6 +42,10 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
 
+  <!-- This is to add a dependency on OpenCV:
+       http://wiki.ros.org/opencv3#package.xml -->
+  <depend>cv_bridge</depend>
+
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
 

@@ -16,6 +16,7 @@ add_definitions(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
   roscpp
 )
 
@@ -109,9 +110,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES cisp_field
-#  CATKIN_DEPENDS roscpp
+ INCLUDE_DIRS include
+ LIBRARIES cisp_field
+ CATKIN_DEPENDS roscpp cv_bridge
 #  DEPENDS system_lib
 )
 
@@ -122,14 +123,15 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
+ include
+ ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/cisp_field.cpp
-# )
+add_library(${PROJECT_NAME}
+  src/${PROJECT_NAME}/isp.cpp
+  src/${PROJECT_NAME}/cisp.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
