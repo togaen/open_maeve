@@ -30,8 +30,8 @@ morpho_operations: [1, 0] # applied in order where 0 = erosion and 1 = dilation
 
 dilation_params:
   element_type: 0 # 0: rectangle, 1: ellipse
-  window_width: 5 # must be odd and >= 3
-  window_height: 5 # must be odd and >= 3
+  window_width: 7 # must be odd and >= 3
+  window_height: 7 # must be odd and >= 3
 
 erosion_params:
   element_type: 0 # 0: rectangle, 1: ellipse

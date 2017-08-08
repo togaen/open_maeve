@@ -108,19 +108,24 @@ void MaeveExpansionSegmentationNodeHandler::callback(
             params_.spatial_params.edge_max,
             params_.spatial_params.edge_aperture);
 
-  // Generate temporal feature image.
-  cv::Mat te_image;
-  if (bg_subtractor_ptr_) {
-    bg_subtractor_ptr_->apply(cv_ptr->image, te_image);
-  } else {
-    se_image.copyTo(te_image);
-  }
-
   // Build structuring elements for morphological operations.
   const auto erosion_structuring_element =
       buildStructuringElement(params_.erosion_params);
   const auto dilation_structuring_element =
       buildStructuringElement(params_.dilation_params);
+
+  // Generate temporal feature image.
+  cv::Mat te_image;
+  if (bg_subtractor_ptr_) {
+    cv::Mat fg_image;
+    bg_subtractor_ptr_->apply(cv_ptr->image, fg_image);
+    cv::bitwise_and(fg_image, se_image, te_image);
+    cv::Mat te_image_dilate;
+    te_image.copyTo(te_image_dilate);
+    cv::dilate(te_image_dilate, te_image, dilation_structuring_element);
+  } else {
+    se_image.copyTo(te_image);
+  }
 
   // Apply morphological operators?
   cv::Mat te_image_morph;
