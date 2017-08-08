@@ -42,8 +42,9 @@ erosion_params:
 # Connected component tracking parameters
 #
 connected_component_params:
+  max_age: 0.1 # maximum time (seconds) to maintain a track without a measurement update
   only_leaves: true # only consider leaves in connected component hierarchy
   buffer_size: 1 # must be > 0
   min_component_size: 500 # must be >= 0; maybe make this a percentage?
   max_component_size: 9999999 # must be >= min_component_size; maybe make this a percentage?
-  IOU_threshold: 0.75 # must be \in [0, 1]
+  IOU_threshold: 0.4 # must be \in [0, 1]

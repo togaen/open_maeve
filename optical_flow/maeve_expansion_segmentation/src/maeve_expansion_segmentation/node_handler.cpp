@@ -156,7 +156,8 @@ void MaeveExpansionSegmentationNodeHandler::callback(
   // Do tracking.
   cv::Mat AND_image;
   if (cc_tracker_ptr_) {
-    cc_tracker_ptr_->addEdgeFrame(te_image_blurred);
+    cc_tracker_ptr_->addEdgeFrame(ros::Time(msg->header.stamp).toSec(),
+                                  te_image_blurred);
     // Draw connected components.
     AND_image = cv::Mat::zeros(te_image_blurred.rows, te_image_blurred.cols,
                                te_image_blurred.type());

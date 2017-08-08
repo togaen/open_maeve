@@ -38,7 +38,11 @@ ConnectedComponentTracker::ContourInfo::ContourInfo()
       ignore(false),
       consumed(false) {}
 
-ConnectedComponentTracker::Track::Track() : current(false) {}
+ConnectedComponentTracker::Track::Track()
+    : current(false), timestamp(-std::numeric_limits<double>::infinity()) {}
+
+ConnectedComponentTracker::FrameInfo::FrameInfo(const double ts)
+    : timestamp(ts) {}
 
 ConnectedComponentTracker::Id ConnectedComponentTracker::getNextId() {
   return next_id_++;
@@ -69,29 +73,28 @@ double ConnectedComponentTracker::IOU(const cv::Mat& binary_image1,
   cv::bitwise_or(binary_image1, binary_image2, set_union);
 
   // Compute area.
-  const auto intersection_area = cv::countNonZero(set_intersection);
-  const auto union_area = cv::countNonZero(set_union);
+  const auto intersection_area =
+      static_cast<double>(cv::countNonZero(set_intersection));
+  const auto union_area = static_cast<double>(cv::countNonZero(set_union));
 
   // Compute IOU and done; operation undefined when union is empty.
   return (union_area == 0.0) ? std::numeric_limits<double>::quiet_NaN()
                              : (intersection_area / union_area);
 }
 
-void ConnectedComponentTracker::updateTrack(Track& track,
+void ConnectedComponentTracker::updateTrack(const double timestamp,
+                                            Track& track,
                                             ContourInfo& contour_info) {
   std::swap(track.contour_info, contour_info);
-  track.current = true;
   contour_info.consumed = true;
+  track.timestamp = timestamp;
 }
 
 ConnectedComponentTracker::Id
 ConnectedComponentTracker::associateContourToTrack(
     const ContourInfo& contour_info) const {
-  auto found_id = INVALID_ID;
-
-  // std::max_element would be more elegant, but IOU is non-trivial to compute.
   auto max_id = INVALID_ID;
-  auto max_iou = -std::numeric_limits<double>::quiet_NaN();
+  auto max_iou = -std::numeric_limits<double>::infinity();
   std::for_each(std::begin(tracks_), std::end(tracks_),
                 [&](const Tracks::value_type& pair) {
                   // Compute IOU.
@@ -107,12 +110,13 @@ ConnectedComponentTracker::associateContourToTrack(
                 });
 
   // Return the found id iff the IOU is above the threshold.
-  return (max_iou > params_.IOU_threshold) ? found_id : INVALID_ID;
+  return (max_iou > params_.IOU_threshold) ? max_id : INVALID_ID;
 }
 
 ConnectedComponentTracker::FrameInfo
-ConnectedComponentTracker::computeFrameInfo(const cv::Mat& edges) const {
-  FrameInfo frame_info;
+ConnectedComponentTracker::computeFrameInfo(const double timestamp,
+                                            const cv::Mat& edges) const {
+  FrameInfo frame_info(timestamp);
 
   // Copy information.
   edges.copyTo(frame_info.frame);
@@ -152,7 +156,7 @@ ConnectedComponentTracker::computeFrameInfo(const cv::Mat& edges) const {
 ConnectedComponentTracker::FrameInfo ConnectedComponentTracker::filterFrame(
     const FrameInfo& frame_info) const {
   // The filtered frame.
-  FrameInfo filtered_frame;
+  FrameInfo filtered_frame(frame_info.timestamp);
 
   // Preserve edge information.
   frame_info.frame.copyTo(filtered_frame.frame);
@@ -180,8 +184,9 @@ ConnectedComponentTracker::FrameInfo ConnectedComponentTracker::filterFrame(
   return filtered_frame;
 }
 
-bool ConnectedComponentTracker::addEdgeFrame(const cv::Mat& edges) {
-  frame_info_buffer_.push_back(std::move(computeFrameInfo(edges)));
+bool ConnectedComponentTracker::addEdgeFrame(const double timestamp,
+                                             const cv::Mat& edges) {
+  frame_info_buffer_.push_back(std::move(computeFrameInfo(timestamp, edges)));
   if (frame_info_buffer_.size() < params_.buffer_size) {
     return false;
   }
@@ -194,18 +199,22 @@ bool ConnectedComponentTracker::addEdgeFrame(const cv::Mat& edges) {
                 [](Tracks::value_type& pair) { pair.second.current = false; });
 
   // Perform association.
-  std::for_each(
-      std::begin(filtered_frame.contours), std::end(filtered_frame.contours),
-      [&](ContourInfo& contour_info) {
-        const auto id = associateContourToTrack(contour_info);
-        if (id != INVALID_ID) {
-          ConnectedComponentTracker::updateTrack(tracks_[id], contour_info);
-        }
-      });
+  std::for_each(std::begin(filtered_frame.contours),
+                std::end(filtered_frame.contours),
+                [&](ContourInfo& contour_info) {
+                  const auto id = associateContourToTrack(contour_info);
+                  if (id != INVALID_ID) {
+                    ConnectedComponentTracker::updateTrack(
+                        filtered_frame.timestamp, tracks_[id], contour_info);
+                  }
+                });
 
-  // Prune tracks that were not updated.
+  // Prune expired tracks.
+  const auto pre_size = tracks_.size();
   for (auto it = std::begin(tracks_); it != std::end(tracks_);) {
-    if (!it->second.current) {
+    const auto age = (filtered_frame.timestamp - it->second.timestamp);
+    const auto carousel = (age >= params_.max_age);
+    if (carousel) {
       it = tracks_.erase(it);
     } else {
       ++it;

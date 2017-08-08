@@ -57,7 +57,9 @@ class ConnectedComponentTracker {
     /** @brief Maximum size for a connected component to be considered. */
     int max_component_size;
     /** @brief IOU threshold for determining temporal association. */
-    int IOU_threshold;
+    double IOU_threshold;
+    /** @brief Maximum length of time before a track is killed. */
+    double max_age;
   };  // struct Params
 
   /**
@@ -90,8 +92,10 @@ class ConnectedComponentTracker {
     ContourInfo contour_info;
     /** @brief Whether this track is 'current' (i.e., has been updated). */
     bool current;
+    /** @brief Time of the last measurement update for this track. */
+    double timestamp;
     /**
-     * @brief Constructor: initialize current to false.
+     * @brief Constructor: initialize current to false and timestamp to -inf.
      */
     Track();
   };  // struct Track
@@ -106,6 +110,14 @@ class ConnectedComponentTracker {
     std::vector<ContourInfo> contours;
     /** @brief The contour hierarchy. */
     ContourHierarchy hierarchy;
+    /** @brief Measurement time of this frame. */
+    double timestamp;
+    /**
+     * @brief Constructor: Initialize timestamp.
+     *
+     * @param ts The measurement timestamp for this frame.
+     */
+    explicit FrameInfo(const double ts);
   };  // struct FrameInfo
 
   /**
@@ -118,11 +130,12 @@ class ConnectedComponentTracker {
   /**
    * @brief Add a frame to the frame buffer; compute associated information.
    *
+   * @param timestamp The absolute timestamp of the frame.
    * @param edges The edge detection.
    *
    * @return True if frame buffer has reached size; otherwise false.
    */
-  bool addEdgeFrame(const cv::Mat& edges);
+  bool addEdgeFrame(const double timestamp, const cv::Mat& edges);
 
   /**
    * @brief Get a const reference to the frame info buffer.
@@ -139,7 +152,15 @@ class ConnectedComponentTracker {
   const Tracks& getTracks() const;
 
  private:
-  static void updateTrack(Track& track, ContourInfo& contour_info);
+  /**
+   * @brief Update track information with given timestamp and contour.
+   *
+   * @param timestamp The measurement time to record for the track.
+   * @param track The track to updated.
+   * @param contour_info The contour information for the updated track.
+   */
+  static void updateTrack(const double timestamp, Track& track,
+                          ContourInfo& contour_info);
   /**
    * @brief Compute the IOU for two sets represented by binary images.
    *
@@ -186,11 +207,13 @@ class ConnectedComponentTracker {
   /**
    * @brief Compute all contour info from the given edge detection.
    *
+   * @param timestamp The absolute timestamp of the frame info.
    * @param edges The image edge detections.
    *
    * @return A frame info object.
    */
-  FrameInfo computeFrameInfo(const cv::Mat& edges) const;
+  FrameInfo computeFrameInfo(const double timestamp,
+                             const cv::Mat& edges) const;
 
   /** @brief Invalid value for track id. */
   static const Id INVALID_ID = -1;
