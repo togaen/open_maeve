@@ -19,40 +19,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#pragma once
 
-#include <opencv2/opencv.hpp>
-
-namespace maeve_automation_core {
-/**
- * @brief The Image Space Potential field class.
- *
- * @tparam T_PTx Type of class that defines static potential field transform
- * functions.
- */
 template <typename T_PTx>
-class ImageSpacePotentialField {
- public:
-  /**
-   * @brief Constructor: allocate the field and zero fill.
-   *
-   * @param rows The pixel height of the field.
-   * @param cols The pixel width of the field.
-   */
-  ImageSpacePotentialField(const int rows, const int cols);
+ImageSpacePotentialField<T_PTx>::ImageSpacePotentialField(const int rows,
+                                                          const int cols)
+    : field_(rows, cols, CV_64F, 0.0) {}
 
-  /**
-   * @brief Constructor: Create an ISP by transforming the given ttc field.
-   *
-   * @param ttc_field The ttc field.
-   */
-  explicit ImageSpacePotentialField(const cv::Mat& ttc_field);
-
- private:
-  /** @brief Storage for the ISP. */
-  cv::Mat field_;
-};  // class ImageSpacePotentialField
-
-#include "impl/isp.impl.h"
-
-}  // namespace maeve_automation_core
+template <typename T_PTx>
+ImageSpacePotentialField<T_PTx>::ImageSpacePotentialField(
+    const cv::Mat& ttc_field)
+    : ImageSpacePotentialField<T_PTx>(ttc_field.rows, ttc_field.cols) {
+  // Transform ttc_field into ISP.
+}
