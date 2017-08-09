@@ -131,6 +131,7 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/isp.cpp
   src/${PROJECT_NAME}/cisp.cpp
+  src/${PROJECT_NAME}/potential_transforms.cpp
 )
 
 ## Add cmake target dependencies of the library
