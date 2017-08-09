@@ -22,4 +22,17 @@
 #include "maeve_automation_core/cisp_field/potential_transforms.h"
 
 namespace maeve_automation_core {
+
+template <>
+cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
+    const cv::Scalar& pixel_value) const {
+  return pixel_value;
+}
+
+template <>
+cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
+    const cv::Scalar& pixel_value) const {
+  return pixel_value;
+}
+
 }  // namespace maeve_automation_core

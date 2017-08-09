@@ -21,11 +21,53 @@
  */
 #pragma once
 
+#include <opencv2/opencv.hpp>
+
+#include <tuple>
+
 namespace maeve_automation_core {
+/** @brief Typedef the constraint range type for convenience. */
+typedef std::tuple<double, double> CRange;
+
+/** @brief Types of constraint transforms. */
+enum class ConstraintType { HARD, SOFT };  // enum class ConstraintType
+
 /**
- * @brief A class to hold static methods that define potential field transforms.
+ * @brief Template class for constrained potential value transforms.
+ *
+ * @tparam T The constraint type that the potential transform is modeling.
  */
-class TTCPotentialTransform {
- public:
-};  // class TTCPotentialTransform
+template <ConstraintType T>
+struct PotentialTransform {
+  /** @brief The closed interval contraint range. */
+  CRange c_range;
+
+  /**
+   * @brief Constructor: Assign the interval constraint range.
+   *
+   * @param c_r The interval constraint range.
+   */
+  PotentialTransform(const CRange& c_r);
+
+  /**
+   * @brief Function definition for 0th order potential value transform.
+   *
+   * @param p The input pixel value.
+   *
+   * @return The potential value (index 0) and its time derivative (index 1).
+   */
+  cv::Scalar operator()(const cv::Scalar& p) const;
+};  // struct ConstraintTransform
+
+template <ConstraintType T>
+PotentialTransform<T>::PotentialTransform(const CRange& c_r) : c_range(c_r) {}
+
+template <>
+cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
+    const cv::Scalar& p) const;
+
+template <>
+cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
+    const cv::Scalar& p) const;
+
 }  // namespace maeve_automation_core

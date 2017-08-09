@@ -21,35 +21,81 @@
  */
 #pragma once
 
+#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <exception>
 
 namespace maeve_automation_core {
 /**
  * @brief The Image Space Potential field class.
  *
- * @tparam T_PTx Type of class that defines static potential field transform
- * functions.
+ * @tparam T_Tx Functor type defining the potential transform.
  */
-template <typename T_PTx>
+template <typename T_TxK0>
 class ImageSpacePotentialField {
  public:
   /**
-   * @brief Constructor: allocate the field and zero fill.
-   *
-   * @param rows The pixel height of the field.
-   * @param cols The pixel width of the field.
+   * @brief Exception to throw if initialization fails.
    */
-  ImageSpacePotentialField(const int rows, const int cols);
+  class ISPInvalidInputTypeExcpetion : public std::exception {
+    /**
+     * @brief Explain the input error the caused initialization failure.
+     *
+     * @return The error string.
+     */
+    const char* what() const override noexcept;
+  };  // class ISPInvalidInputTypeException
 
   /**
-   * @brief Constructor: Create an ISP by transforming the given ttc field.
+   * @brief Constructor: Create an Image Space Potential field by transforming
+   * the given ttc field.
    *
    * @param ttc_field The ttc field.
+   * @param tx The pixel value -> potential value transform.
    */
-  explicit ImageSpacePotentialField(const cv::Mat& ttc_field);
+  explicit ImageSpacePotentialField(const cv::Mat& ttc_field, const T_Tx& tx);
+
+  /**
+   * @brief Accessor for the Image Space Potential field.
+   *
+   * @return A const ref to the potential field. This is a 2-channel
+   * double-valued matrix where the first channel is potential value and second
+   * channel is its time derivative.
+   */
+  const cv::Mat& field() const;
 
  private:
-  /** @brief Storage for the ISP. */
+  /**
+   * @brief Apply a potential transform to a scalar field.
+   */
+  class ApplyTransform : public cv::ParallelLoopBody {
+   public:
+    /**
+     * @brief Constructor: Set field and transform references.
+     *
+     * @param field Reference to the field being transformed.
+     * @param tx Reference to the transform functor.
+     */
+    ApplyTransform(cv::Mat& field, const T_Tx& tx);
+
+    /**
+     * @brief Apply transform to pixels in range r.
+     *
+     * @param r The range of pixels to apply transform to.
+     */
+    void operator()(const cv::Range& r) const override;
+
+   private:
+    /** @brief Reference to the scalar field being transformed. */
+    cv::Mat& field_ref_;
+    /** @brief Reference to the transform. */
+    const T_Tx& tx_;
+  };  // class ApplyTransform
+
+  /** @brief The potential transform. */
+  const T_Tx tx_;
+  /** @brief Storage for the Image Space Potential field. */
   cv::Mat field_;
 };  // class ImageSpacePotentialField
 
