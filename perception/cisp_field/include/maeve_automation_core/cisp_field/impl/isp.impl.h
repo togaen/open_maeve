@@ -23,20 +23,30 @@
 template <typename T_TxK0>
 ImageSpacePotentialField<T_TxK0>::ImageSpacePotentialField(
     const cv::Mat& ttc_field, const T_Tx& tx)
-    : field_(ttc_field.rows, ttc_field.cols, CV_64FC2, cv::Scalar(0.0, 0.0)),
-      tx_(tx) {
-  // Transform ttc_field into ISP.
+    : tx_(tx) {
+  // Copy ttc_field.
   switch (ttc_field.type()) {
     case CV_64FC2:
-    // Perform C1 transform, fall through to perform C0.
+      ttc_field.copyTo(field_);
+      break;
     case CV_64F:
     case CV_64FC1:
-      // Perform C0 transform.
+      // If no derivative information is included, assume 0.
+      std::vector<cv::Mat> channels(2);
+      channels[0] = ttc_field;
+      channels[1] = cv::Mat::zeros(ttc_field.rows, ttc_field.cols, CV_64F,
+                                   cv::Scalar(0.0));
+
+      cv::merge(channels, field_);
       break;
     default:
       // Unhandled input type. Cannot initialize.
       throw ISPInvalidInputTypeExcpetion();
   }
+
+  // Perform transform.
+  ApplyTransform transform(field_, tx_);
+  cv::parallel_for_(cv::Range(0, field_.rows * field_.cols), transform);
 }
 
 template <typename T_Tx>
@@ -61,15 +71,16 @@ void ImageSpacePotentialField<T_Tx>::ApplyTransform::operator()(
     const cv::Range& r) const override {
   for (auto r = r.start; r != r.end; r++) {
     // Compute pixel indices.
-    const auto i = r / field_ref_.cols;
-    const auto j = r % field_ref_.cols;
+    const auto row = r / field_ref_.cols;
+    const auto col = r % field_ref_.cols;
 
     // Compute pixel -> potential transform.
-    const auto p = field_ref_.ptr<double>(i)[j];
-    const auto p_dot = field_ref_.ptr<double>(i)[j + 1];
+    const auto p = field_ref_.ptr<double>(row)[2 * col];
+    const auto p_dot = field_ref_.ptr<double>(row)[2 * col + 1];
     const auto potential_value = tx_(cv::Scalar(p, p_dot));
 
     // Set value.
-    field_ref_.ptr<double>(i)[j] = potential_value;
+    field_ref_.ptr<double>(row)[2 * col] = potential_value[0];
+    field_ref_.ptr<double>(row)[2 * col + 1] = potential_value[1];
   }
 }
