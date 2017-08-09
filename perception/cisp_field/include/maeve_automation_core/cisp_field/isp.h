@@ -24,4 +24,24 @@
 #include <opencv2/opencv.hpp>
 
 namespace maeve_automation_core {
+template <typename T_PotentialTransform>
+class ImageSpacePotentialField {
+ public:
+  /**
+   * @brief Constructor: allocate the field and zero fill.
+   *
+   * @param rows The pixel height of the field.
+   * @param cols The pixel width of the field.
+   */
+  ImageSpacePotentialField(const int rows, const int cols);
+
+ private:
+  typedef T_PotentialTransform P_Tx;
+  cv::Mat field_;
+};  // class ImageSpacePotentialField
+
+template <typename T_PotentialTransform>
+ImageSpacePotentialField<T_PotentialTransform>::ImageSpacePotentialField(
+    const int rows, const int cols)
+    : field_(rows, cols, CV_64F) {}
 }  // namespace maeve_automation_core

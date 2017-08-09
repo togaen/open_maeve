@@ -22,4 +22,10 @@
 #pragma once
 
 namespace maeve_automation_core {
+/**
+ * @brief A class to hold static methods that define potential field transforms.
+ */
+class TTCPotentialTransform {
+ public:
+};  // class TTCPotentialTransform
 }  // namespace maeve_automation_core
