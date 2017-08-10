@@ -19,20 +19,25 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/cisp_field/potential_transforms.h"
+#include "ar_cisp_field/node_handler.h"
 
-namespace maeve_automation_core {
+#include <ros/ros.h>
 
-template <>
-cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
-    const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
+#include <string>
+
+int main(int argc, char* argv[]) {
+  const auto node_name = std::string("ar_cisp_field");
+
+  // Initialize ROS node.
+  ros::init(argc, argv, node_name);
+  ros::NodeHandle nh(node_name);
+
+  // Create handler.
+  maeve_automation_core::AR_CISPFieldNodeHandler handler(nh);
+
+  // Kick it off.
+  ros::spin();
+
+  // Done.
+  return EXIT_SUCCESS;
 }
-
-template <>
-cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
-    const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
-}
-
-}  // namespace maeve_automation_core

@@ -19,20 +19,44 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/cisp_field/potential_transforms.h"
+#pragma once
+
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+#include <ros/ros.h>
+#include <sensor_msgs/Image.h>
+#include <opencv2/opencv.hpp>
+
+#include "ar_cisp_field/params.h"
 
 namespace maeve_automation_core {
+/**
+ * @brief Interface between ROS and the expansion segmentation libraries.
+ */
+class AR_CISPFieldNodeHandler {
+ public:
+  /**
+   * @brief Construct handler instance and register callbacks/subscribers.
+   *
+   * @param nh The ROS node handle.
+   */
+  explicit AR_CISPFieldNodeHandler(const ros::NodeHandle& nh);
 
-template <>
-cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
-    const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
-}
+  /**
+   * @brief Callback for the image message stream.
+   *
+   * @param msg The ROS image message.
+   */
+  void callback(const sensor_msgs::Image::ConstPtr& msg);
 
-template <>
-cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
-    const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
-}
+ private:
 
+  /** @brief Node parameters. */
+  AR_CISPFieldParams params_;
+
+  /** @brief Camera image subscriber. */
+  image_transport::Subscriber camera_sub;
+  /** @brief CISP field visualization publisher. */
+  image_transport::Publisher viz_cisp_field_pub;
+};  // class AR_CISPFieldNodeHandler
 }  // namespace maeve_automation_core

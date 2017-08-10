@@ -19,20 +19,20 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/cisp_field/potential_transforms.h"
+#include "ar_cisp_field/params.h"
 
 namespace maeve_automation_core {
 
-template <>
-cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
-    const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
-}
+bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
+  // Load parameters.
+  LOAD_PARAM(camera_topic);
+  LOAD_PARAM(viz_cisp_field_topic);
 
-template <>
-cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
-    const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
+  // Sanity check params.
+  CHECK_NONEMPTY(camera_topic);
+
+  // All (probably) good.
+  return true;
 }
 
 }  // namespace maeve_automation_core

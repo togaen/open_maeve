@@ -19,20 +19,47 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/cisp_field/potential_transforms.h"
+#include "ar_cisp_field/node_handler.h"
+
+#include <ros/ros.h>
 
 namespace maeve_automation_core {
+AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const ros::NodeHandle& nh) {
+  if (!params_.load(nh)) {
+    ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
+    return;
+  }
 
-template <>
-cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
-    const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
+  // Image transport interface.
+  image_transport::ImageTransport it(nh);
+
+  // Register callback.
+  camera_sub =
+      it.subscribe(params_.camera_topic, 1,
+                   &AR_CISPFieldNodeHandler::callback, this);
+
+  // Visualize?
+  if (!params_.viz_cisp_field_topic.empty()) {
+    viz_cisp_field_pub = it.advertise(params_.viz_cisp_field_topic, 1);
+  }
 }
 
-template <>
-cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
-    const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
-}
+void AR_CISPFieldNodeHandler::callback(
+    const sensor_msgs::Image::ConstPtr& msg) {
+  ROS_INFO_STREAM("entered callback");
 
+  // Convert to OpenCV.
+  cv_bridge::CvImagePtr cv_ptr;
+  try {
+    cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);
+  } catch (cv_bridge::Exception& e) {
+    ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
+    return;
+  }
+
+  // Publish images.
+  if (!params_.viz_cisp_field_topic.empty()) {
+    // re-publish
+  }
+}
 }  // namespace maeve_automation_core
