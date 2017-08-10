@@ -25,6 +25,7 @@
 
 #include "maeve_automation_core/cisp_field/isp.h"
 #include "maeve_automation_core/cisp_field/potential_transforms.h"
+#include "maeve_automation_core/cisp_field/visualize.h"
 
 namespace maeve_automation_core {
 AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const ros::NodeHandle& nh) {
@@ -70,15 +71,12 @@ void AR_CISPFieldNodeHandler::callback(
   ImageSpacePotentialField<PotentialTransform<ConstraintType::HARD>> ISP(
       ttc_field, tx);
 
-  // Convert ISP to graysacle.
-  cv::Mat scaled_isp;
-  ISP.field().convertTo(scaled_isp, CV_8UC2, 255);
+  // Visualize ISP.
+  const auto visual = computeISPFieldVisualization(ISP, 1.0, 1.0);
 
-  // Convert to ROS message.
-  cv::Mat channel[2];
-  cv::split(scaled_isp, channel);
+  // Convert visualiation to ROS message.
   const auto viz_msg =
-      cv_bridge::CvImage(msg->header, "mono8", channel[0]).toImageMsg();
+      cv_bridge::CvImage(msg->header, "bgr8", visual).toImageMsg();
 
   // Convert to ROS message and publish
   if (!params_.viz_cisp_field_topic.empty()) {
