@@ -64,8 +64,9 @@ void AR_CISPFieldNodeHandler::callback(
   cv_ptr->image.convertTo(ttc_field, CV_64F, 1.0 / 255.0);
 
   // Compute ISP.
-  const auto tx =
-      PotentialTransform<ConstraintType::HARD>(std::make_tuple(0.0, 1.0));
+  const auto& hc = params_.hard_constraint_transform;
+  const auto tx = PotentialTransform<ConstraintType::HARD>(
+      std::make_tuple(hc.range_min, hc.range_max), hc.alpha, hc.beta);
   ImageSpacePotentialField<PotentialTransform<ConstraintType::HARD>> ISP(
       ttc_field, tx);
 

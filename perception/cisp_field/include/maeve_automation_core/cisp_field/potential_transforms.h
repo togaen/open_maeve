@@ -41,13 +41,19 @@ template <ConstraintType T>
 struct PotentialTransform {
   /** @brief The closed interval contraint range. */
   CRange c_range;
+  /** @brief The alpha shape parameter. */
+  double alpha;
+  /** @brief The beta shape parameter. */
+  double beta;
 
   /**
    * @brief Constructor: Assign the interval constraint range.
    *
    * @param c_r The interval constraint range.
+   * @param a The alpha shape parameter.
+   * @param b The beta shape parameter.
    */
-  explicit PotentialTransform(const CRange& c_r);
+  PotentialTransform(const CRange& c_r, const double a, const double b);
 
   /**
    * @brief Function definition for 0th order potential value transform.
@@ -60,7 +66,9 @@ struct PotentialTransform {
 };  // struct ConstraintTransform
 
 template <ConstraintType T>
-PotentialTransform<T>::PotentialTransform(const CRange& c_r) : c_range(c_r) {}
+PotentialTransform<T>::PotentialTransform(const CRange& c_r, const double a,
+                                          const double b)
+    : c_range(c_r), alpha(a), beta(b) {}
 
 template <>
 cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(

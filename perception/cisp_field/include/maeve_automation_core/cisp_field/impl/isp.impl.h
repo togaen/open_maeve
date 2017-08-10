@@ -43,9 +43,10 @@ ImageSpacePotentialField<T_Tx>::ImageSpacePotentialField(
       cv::merge(channels, field_);
       break;
     }
-    default:
+    default: {
       // Unhandled input type. Cannot initialize.
       throw ISPInvalidInputTypeExcpetion();
+    }
   }
 
   // Perform transform.

@@ -8,3 +8,18 @@ camera_topic: '/maeve_video_file/image_raw'
 image_transport: 'compressed' # uncomment this to listen to image_transport topics
 
 viz_cisp_field_topic: 'viz_cisp_field' # node-relative topic, leave empty to disable visualization
+
+#
+# Image Space Potential field parameters
+#
+hard_constraint_transform:
+  alpha: 1.0
+  beta: 1.0
+  range_min: 0.0
+  range_max: 1.0
+
+soft_constraint_transform:
+  alpha: 1.0
+  beta: 1.0
+  range_min: 0.0
+  range_max: 1.0

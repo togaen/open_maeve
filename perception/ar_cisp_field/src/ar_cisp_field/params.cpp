@@ -21,18 +21,41 @@
  */
 #include "ar_cisp_field/params.h"
 
+#include <limits>
+
 namespace maeve_automation_core {
+namespace {
+static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+}  // namespace
+
+AR_CISPFieldParams::PotentialTransform::PotentialTransform()
+    : alpha(NaN), beta(NaN), range_min(NaN), range_max(NaN) {}
+
+bool AR_CISPFieldParams::PotentialTransform::valid() const {
+  CHECK_CONTAINS_CLOSED(alpha, 0.0, 1.0);
+  CHECK_CONTAINS_CLOSED(beta, 0.0, 1.0);
+  CHECK_LE(range_min, range_max);
+  return true;
+}
 
 bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
   LOAD_PARAM(camera_topic);
   LOAD_PARAM(viz_cisp_field_topic);
+  LOAD_NS_PARAM(hard_constraint_transform, alpha);
+  LOAD_NS_PARAM(hard_constraint_transform, beta);
+  LOAD_NS_PARAM(hard_constraint_transform, range_min);
+  LOAD_NS_PARAM(hard_constraint_transform, range_max);
+  LOAD_NS_PARAM(soft_constraint_transform, alpha);
+  LOAD_NS_PARAM(soft_constraint_transform, beta);
+  LOAD_NS_PARAM(soft_constraint_transform, range_min);
+  LOAD_NS_PARAM(soft_constraint_transform, range_max);
 
   // Sanity check params.
   CHECK_NONEMPTY(camera_topic);
 
-  // All (probably) good.
-  return true;
+  // All good?
+  return hard_constraint_transform.valid() && soft_constraint_transform.valid();
 }
 
 }  // namespace maeve_automation_core
