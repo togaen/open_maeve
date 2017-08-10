@@ -20,6 +20,10 @@
  * IN THE SOFTWARE.
  */
 
+//
+// DO NOT INCLUDE THIS FILE DIRECTLY. INCLUDE isp.h INSTEAD.
+//
+
 #include <algorithm>
 #include <vector>
 
