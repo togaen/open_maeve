@@ -48,7 +48,7 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const ros::NodeHandle& nh) {
 
 void AR_CISPFieldNodeHandler::callback(
     const sensor_msgs::Image::ConstPtr& msg) {
-  ROS_INFO_STREAM("entered callback");
+  // ROS_INFO_STREAM("entered callback");
 
   // Convert to OpenCV.
   cv_bridge::CvImagePtr cv_ptr;
@@ -59,22 +59,29 @@ void AR_CISPFieldNodeHandler::callback(
     return;
   }
 
-  // Convert incoming image to CV_64F
+  // Convert incoming image to CV_64F.
   cv::Mat ttc_field;
   cv_ptr->image.convertTo(ttc_field, CV_64F, 1.0 / 255.0);
 
-  // Compute ISP
+  // Compute ISP.
   const auto tx =
       PotentialTransform<ConstraintType::HARD>(std::make_tuple(0.0, 1.0));
   ImageSpacePotentialField<PotentialTransform<ConstraintType::HARD>> ISP(
       ttc_field, tx);
 
-  // Convert ISP to graysacle
-  ISP.field().convertTo(cv_ptr->image, CV_8U, 255);
+  // Convert ISP to graysacle.
+  cv::Mat scaled_isp;
+  ISP.field().convertTo(scaled_isp, CV_8UC2, 255);
+
+  // Convert to ROS message.
+  cv::Mat channel[2];
+  cv::split(scaled_isp, channel);
+  const auto viz_msg =
+      cv_bridge::CvImage(msg->header, "mono8", channel[0]).toImageMsg();
 
   // Convert to ROS message and publish
   if (!params_.viz_cisp_field_topic.empty()) {
-    viz_cisp_field_pub.publish(cv_ptr->toImageMsg());
+    viz_cisp_field_pub.publish(viz_msg);
   }
 }
 }  // namespace maeve_automation_core

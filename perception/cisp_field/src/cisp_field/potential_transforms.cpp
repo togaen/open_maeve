@@ -26,13 +26,13 @@ namespace maeve_automation_core {
 template <>
 cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
     const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
+  return 0.15 * pixel_value;
 }
 
 template <>
 cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
     const cv::Scalar& pixel_value) const {
-  return 0.5 * pixel_value;
+  return 0.15 * pixel_value;
 }
 
 }  // namespace maeve_automation_core
