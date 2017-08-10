@@ -47,7 +47,7 @@ struct PotentialTransform {
    *
    * @param c_r The interval constraint range.
    */
-  PotentialTransform(const CRange& c_r);
+  explicit PotentialTransform(const CRange& c_r);
 
   /**
    * @brief Function definition for 0th order potential value transform.

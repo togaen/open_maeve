@@ -23,6 +23,9 @@
 
 #include <ros/ros.h>
 
+#include "maeve_automation_core/cisp_field/isp.h"
+#include "maeve_automation_core/cisp_field/potential_transforms.h"
+
 namespace maeve_automation_core {
 AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const ros::NodeHandle& nh) {
   if (!params_.load(nh)) {
@@ -34,9 +37,8 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const ros::NodeHandle& nh) {
   image_transport::ImageTransport it(nh);
 
   // Register callback.
-  camera_sub =
-      it.subscribe(params_.camera_topic, 1,
-                   &AR_CISPFieldNodeHandler::callback, this);
+  camera_sub = it.subscribe(params_.camera_topic, 1,
+                            &AR_CISPFieldNodeHandler::callback, this);
 
   // Visualize?
   if (!params_.viz_cisp_field_topic.empty()) {
@@ -57,9 +59,22 @@ void AR_CISPFieldNodeHandler::callback(
     return;
   }
 
-  // Publish images.
+  // Convert incoming image to CV_64F
+  cv::Mat ttc_field;
+  cv_ptr->image.convertTo(ttc_field, CV_64F, 1.0 / 255.0);
+
+  // Compute ISP
+  const auto tx =
+      PotentialTransform<ConstraintType::HARD>(std::make_tuple(0.0, 1.0));
+  ImageSpacePotentialField<PotentialTransform<ConstraintType::HARD>> ISP(
+      ttc_field, tx);
+
+  // Convert ISP to graysacle
+  ISP.field().convertTo(cv_ptr->image, CV_8U, 255);
+
+  // Convert to ROS message and publish
   if (!params_.viz_cisp_field_topic.empty()) {
-    // re-publish
+    viz_cisp_field_pub.publish(cv_ptr->toImageMsg());
   }
 }
 }  // namespace maeve_automation_core

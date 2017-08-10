@@ -32,7 +32,7 @@ namespace maeve_automation_core {
  *
  * @tparam T_Tx Functor type defining the potential transform.
  */
-template <typename T_TxK0>
+template <typename T_Tx>
 class ImageSpacePotentialField {
  public:
   /**
@@ -44,7 +44,7 @@ class ImageSpacePotentialField {
      *
      * @return The error string.
      */
-    const char* what() const override noexcept;
+    const char* what() const noexcept override;
   };  // class ISPInvalidInputTypeException
 
   /**
@@ -54,7 +54,7 @@ class ImageSpacePotentialField {
    * @param ttc_field The ttc field.
    * @param tx The pixel value -> potential value transform.
    */
-  explicit ImageSpacePotentialField(const cv::Mat& ttc_field, const T_Tx& tx);
+  ImageSpacePotentialField(const cv::Mat& ttc_field, const T_Tx& tx);
 
   /**
    * @brief Accessor for the Image Space Potential field.

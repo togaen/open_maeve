@@ -20,25 +20,29 @@
  * IN THE SOFTWARE.
  */
 
-template <typename T_TxK0>
-ImageSpacePotentialField<T_TxK0>::ImageSpacePotentialField(
+#include <algorithm>
+#include <vector>
+
+template <typename T_Tx>
+ImageSpacePotentialField<T_Tx>::ImageSpacePotentialField(
     const cv::Mat& ttc_field, const T_Tx& tx)
     : tx_(tx) {
   // Copy ttc_field.
   switch (ttc_field.type()) {
-    case CV_64FC2:
+    case CV_64FC2: {
       ttc_field.copyTo(field_);
       break;
-    case CV_64F:
-    case CV_64FC1:
+    }
+    // case CV_64F: // This resolves to CV_64FC1
+    case CV_64FC1: {
       // If no derivative information is included, assume 0.
       std::vector<cv::Mat> channels(2);
       channels[0] = ttc_field;
-      channels[1] = cv::Mat::zeros(ttc_field.rows, ttc_field.cols, CV_64F,
-                                   cv::Scalar(0.0));
+      channels[1] = cv::Mat::zeros(ttc_field.rows, ttc_field.cols, CV_64F);
 
       cv::merge(channels, field_);
       break;
+    }
     default:
       // Unhandled input type. Cannot initialize.
       throw ISPInvalidInputTypeExcpetion();
@@ -51,13 +55,14 @@ ImageSpacePotentialField<T_TxK0>::ImageSpacePotentialField(
 
 template <typename T_Tx>
 const char* ImageSpacePotentialField<T_Tx>::ISPInvalidInputTypeExcpetion::what()
-    const {
+    const noexcept {
   return "Image Space Potential initialization failed: Invalid input type. "
          "Must be CV_64F or CV_64FC2";
 }
 
 template <typename T_Tx>
-ImageSpacePotentialField<T_Tx>::ImageSpacePotentialField::field() const {
+const cv::Mat& ImageSpacePotentialField<T_Tx>::ImageSpacePotentialField::field()
+    const {
   return field_;
 }
 
@@ -68,8 +73,8 @@ ImageSpacePotentialField<T_Tx>::ApplyTransform::ApplyTransform(cv::Mat& field,
 
 template <typename T_Tx>
 void ImageSpacePotentialField<T_Tx>::ApplyTransform::operator()(
-    const cv::Range& r) const override {
-  for (auto r = r.start; r != r.end; r++) {
+    const cv::Range& range) const {
+  for (auto r = range.start; r != range.end; r++) {
     // Compute pixel indices.
     const auto row = r / field_ref_.cols;
     const auto col = r % field_ref_.cols;

@@ -50,7 +50,6 @@ class AR_CISPFieldNodeHandler {
   void callback(const sensor_msgs::Image::ConstPtr& msg);
 
  private:
-
   /** @brief Node parameters. */
   AR_CISPFieldParams params_;
 

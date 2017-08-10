@@ -19,11 +19,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "ar_cisp_field/node_handler.h"
-
 #include <ros/ros.h>
 
 #include <string>
+
+#include "ar_cisp_field/node_handler.h"
 
 int main(int argc, char* argv[]) {
   const auto node_name = std::string("ar_cisp_field");
