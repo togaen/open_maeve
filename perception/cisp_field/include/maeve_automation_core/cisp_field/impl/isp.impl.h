@@ -29,8 +29,7 @@
 
 template <typename T_Tx>
 ImageSpacePotentialField<T_Tx>::ImageSpacePotentialField(
-    const cv::Mat& ttc_field, const T_Tx& tx)
-    : tx_(tx) {
+    const cv::Mat& ttc_field, const T_Tx& tx) {
   // Copy ttc_field.
   switch (ttc_field.type()) {
     case CV_64FC2: {
@@ -54,7 +53,7 @@ ImageSpacePotentialField<T_Tx>::ImageSpacePotentialField(
   }
 
   // Perform transform.
-  ApplyTransform transform(field_, tx_);
+  ApplyTransform transform(field_, tx);
   cv::parallel_for_(cv::Range(0, field_.rows * field_.cols), transform);
 }
 

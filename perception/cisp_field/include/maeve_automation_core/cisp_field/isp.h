@@ -93,8 +93,6 @@ class ImageSpacePotentialField {
     const T_Tx& tx_;
   };  // class ApplyTransform
 
-  /** @brief The potential transform. */
-  const T_Tx tx_;
   /** @brief Storage for the Image Space Potential field. */
   cv::Mat field_;
 };  // class ImageSpacePotentialField
