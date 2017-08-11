@@ -24,59 +24,27 @@
 // DO NOT INCLUDE THIS FILE DIRECTLY. INCLUDE isp.h INSTEAD.
 //
 
-#include <algorithm>
-#include <vector>
-
 template <typename T_Tx>
-ImageSpacePotentialField<T_Tx>::ImageSpacePotentialField(
+ImageSpacePotentialField ImageSpacePotentialField::build(
     const cv::Mat& ttc_field, const T_Tx& tx) {
-  // Copy ttc_field.
-  switch (ttc_field.type()) {
-    case CV_64FC2: {
-      ttc_field.copyTo(field_);
-      break;
-    }
-    // case CV_64F: // This resolves to CV_64FC1
-    case CV_64FC1: {
-      // If no derivative information is included, assume 0.
-      std::vector<cv::Mat> channels(2);
-      channels[0] = ttc_field;
-      channels[1] = cv::Mat::zeros(ttc_field.rows, ttc_field.cols, CV_64F);
-
-      cv::merge(channels, field_);
-      break;
-    }
-    default: {
-      // Unhandled input type. Cannot initialize.
-      throw ISPInvalidInputTypeExcpetion();
-    }
-  }
+  // Construct ISP.
+  ImageSpacePotentialField isp(ttc_field);
 
   // Perform transform.
-  ApplyTransform transform(field_, tx);
-  cv::parallel_for_(cv::Range(0, field_.rows * field_.cols), transform);
+  ImageSpacePotentialField::ApplyTransform<T_Tx> apply(isp.field_, tx);
+  cv::parallel_for_(cv::Range(0, isp.field_.rows * isp.field_.cols), apply);
+
+  // Done.
+  return isp;
 }
 
-template <typename T_Tx>
-const char* ImageSpacePotentialField<T_Tx>::ISPInvalidInputTypeExcpetion::what()
-    const noexcept {
-  return "Image Space Potential initialization failed: Invalid input type. "
-         "Must be CV_64F or CV_64FC2";
-}
-
-template <typename T_Tx>
-const cv::Mat& ImageSpacePotentialField<T_Tx>::ImageSpacePotentialField::field()
-    const {
-  return field_;
-}
-
-template <typename T_Tx>
-ImageSpacePotentialField<T_Tx>::ApplyTransform::ApplyTransform(cv::Mat& field,
-                                                               const T_Tx& tx)
+template <typename A_Tx>
+ImageSpacePotentialField::ApplyTransform<A_Tx>::ApplyTransform(cv::Mat& field,
+                                                               const A_Tx& tx)
     : field_ref_(field), tx_(tx) {}
 
-template <typename T_Tx>
-void ImageSpacePotentialField<T_Tx>::ApplyTransform::operator()(
+template <typename A_Tx>
+void ImageSpacePotentialField::ApplyTransform<A_Tx>::operator()(
     const cv::Range& range) const {
   for (auto r = range.start; r != range.end; r++) {
     // Compute pixel indices.

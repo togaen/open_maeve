@@ -29,10 +29,7 @@
 namespace maeve_automation_core {
 /**
  * @brief The Image Space Potential field class.
- *
- * @tparam T_Tx Functor type defining the potential transform.
  */
-template <typename T_Tx>
 class ImageSpacePotentialField {
  public:
   /**
@@ -48,13 +45,15 @@ class ImageSpacePotentialField {
   };  // class ISPInvalidInputTypeException
 
   /**
-   * @brief Constructor: Create an Image Space Potential field by transforming
-   * the given ttc field.
+   * @brief
    *
-   * @param ttc_field The ttc field.
+   * @tparam T_Tx T_Tx Functor type defining the potential transform.
+   * @param ttc_field
    * @param tx The pixel value -> potential value transform.
    */
-  ImageSpacePotentialField(const cv::Mat& ttc_field, const T_Tx& tx);
+  template <typename T_Tx>
+  static ImageSpacePotentialField build(const cv::Mat& ttc_field,
+                                        const T_Tx& tx);
 
   /**
    * @brief Accessor for the Image Space Potential field.
@@ -67,8 +66,19 @@ class ImageSpacePotentialField {
 
  private:
   /**
-   * @brief Apply a potential transform to a scalar field.
+   * @brief Constructor: Create an Image Space Potential field by transforming
+   * the given ttc field.
+   *
+   * @param ttc_field The ttc field.
    */
+  explicit ImageSpacePotentialField(const cv::Mat& ttc_field);
+
+  /**
+   * @brief Apply a potential transform to a scalar field.
+   *
+   * @tparam T_Tx Functor type defining the potential transform.
+   */
+  template <typename A_Tx>
   class ApplyTransform : public cv::ParallelLoopBody {
    public:
     /**
@@ -77,7 +87,7 @@ class ImageSpacePotentialField {
      * @param field Reference to the field being transformed.
      * @param tx Reference to the transform functor.
      */
-    ApplyTransform(cv::Mat& field, const T_Tx& tx);
+    ApplyTransform(cv::Mat& field, const A_Tx& tx);
 
     /**
      * @brief Apply transform to pixels in range r.
@@ -90,7 +100,7 @@ class ImageSpacePotentialField {
     /** @brief Reference to the scalar field being transformed. */
     cv::Mat& field_ref_;
     /** @brief Reference to the transform. */
-    const T_Tx& tx_;
+    const A_Tx& tx_;
   };  // class ApplyTransform
 
   /** @brief Storage for the Image Space Potential field. */
