@@ -31,16 +31,16 @@ namespace maeve_automation_core {
 class ImageSpacePotentialField {
  public:
   /**
-   * @brief Perform a potential transform on a TTC field.
+   * @brief Perform a potential transform on a well-formed measurement field.
    *
-   * The input field is assumed to be an OpenCV matrix of type CV_64F or
-   * CV_64FC2, where the first channel is the TTC value per pixel, and the
-   * second (optional) channel is the time derivative of the per pixel TTC. If
-   * no second channel is provided, time derivative is assumed to be zero for
-   * all pixels.
+   * The measurement field is properly formed if it is an OpenCV matrix of type
+   * CV_64F or CV_64FC2, where the first channel is the measurement value per
+   * pixel, and the second (optional) channel is the time derivative of the
+   * measurement value per pixel. If no second channel is provided, time
+   * derivative is assumed to be zero for all pixels.
    *
    * @tparam T_Tx T_Tx Functor type defining the potential transform.
-   * @param ttc_field The input TTC field.
+   * @param measurement_field The input measurement field.
    * @param tx The pixel value -> potential value transform.
    *
    * @return The image space potential field, which is an OpenCV matrix of type
@@ -49,7 +49,7 @@ class ImageSpacePotentialField {
    * empty matrix is returned.
    */
   template <typename T_Tx>
-  static cv::Mat build(const cv::Mat& ttc_field, const T_Tx& tx);
+  static cv::Mat build(const cv::Mat& measurement_field, const T_Tx& tx);
 
  private:
   /**

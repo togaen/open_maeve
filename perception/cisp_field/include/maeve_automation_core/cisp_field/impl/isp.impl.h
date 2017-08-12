@@ -25,24 +25,27 @@
 //
 
 template <typename T_Tx>
-cv::Mat ImageSpacePotentialField::build(const cv::Mat& ttc_field,
+cv::Mat ImageSpacePotentialField::build(const cv::Mat& measurement_field,
                                         const T_Tx& tx) {
   // Construct ISP.
-  cv::Mat field;
-  field = cv::Mat::zeros(0, 0, CV_64FC2);
-  switch (ttc_field.type()) {
+  cv::Mat potential_field;
+  potential_field = cv::Mat::zeros(0, 0, CV_64FC2);
+  switch (measurement_field.type()) {
     case CV_64FC2: {
-      ttc_field.copyTo(field);
+      measurement_field.copyTo(potential_field);
       break;
     }
     // case CV_64F: // This resolves to CV_64FC1
     case CV_64FC1: {
       // If no derivative information is included, assume 0.
       std::vector<cv::Mat> channels(2);
-      channels[0] = ttc_field;
-      channels[1] = cv::Mat::zeros(ttc_field.rows, ttc_field.cols, CV_64F);
+      channels[0] = potential_field;
+      channels[1] = cv::Mat::zeros(measurement_field.rows,
+                                   measurement_field.cols, CV_64F);
 
-      cv::merge(channels, field);
+      cv::Mat tmp;
+      cv::merge(channels, tmp);
+      potential_field = tmp;
       break;
     }
     default: {
@@ -51,13 +54,14 @@ cv::Mat ImageSpacePotentialField::build(const cv::Mat& ttc_field,
   }
 
   // Perform transform.
-  if (!field.empty()) {
-    ImageSpacePotentialField::ApplyTransform<T_Tx> apply(field, tx);
-    cv::parallel_for_(cv::Range(0, field.rows * field.cols), apply);
+  if (!potential_field.empty()) {
+    ImageSpacePotentialField::ApplyTransform<T_Tx> apply(potential_field, tx);
+    cv::parallel_for_(cv::Range(0, potential_field.rows * potential_field.cols),
+                      apply);
   }
 
   // Done.
-  return field;
+  return potential_field;
 }
 
 template <typename A_Tx>
