@@ -21,10 +21,10 @@
  */
 #pragma once
 
-#include "maeve_automation_core/cisp_field/isp.h"
+#include <opencv2/opencv.hpp>
 
 namespace maeve_automation_core {
-cv::Mat computeISPFieldVisualization(const ImageSpacePotentialField& isp,
+cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
                                      const double hard_constraint_scale,
                                      const double soft_constraint_scale);
 }  // namespace maeve_automation_core

@@ -19,20 +19,18 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include <opencv2/opencv.hpp>
-
 #include <limits>
 #include <vector>
 
 #include "maeve_automation_core/cisp_field/visualize.h"
 
 namespace maeve_automation_core {
-cv::Mat computeISPFieldVisualization(const ImageSpacePotentialField& isp,
+cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
                                      const double hard_constraint_scale,
                                      const double soft_constraint_scale) {
   // Split out 0th and 1st order channels.
   cv::Mat channel[2];
-  cv::split(isp.field(), channel);
+  cv::split(isp, channel);
 
   // Map (0, \infty] to red: threshold everything \in [-\infty, 0] to 0.
   cv::Mat repulsive_forces;

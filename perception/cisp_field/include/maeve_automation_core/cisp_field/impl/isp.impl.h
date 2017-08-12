@@ -25,17 +25,39 @@
 //
 
 template <typename T_Tx>
-ImageSpacePotentialField ImageSpacePotentialField::build(
-    const cv::Mat& ttc_field, const T_Tx& tx) {
+cv::Mat ImageSpacePotentialField::build(const cv::Mat& ttc_field,
+                                        const T_Tx& tx) {
   // Construct ISP.
-  ImageSpacePotentialField isp(ttc_field);
+  cv::Mat field;
+  field = cv::Mat::zeros(0, 0, CV_64FC2);
+  switch (ttc_field.type()) {
+    case CV_64FC2: {
+      ttc_field.copyTo(field);
+      break;
+    }
+    // case CV_64F: // This resolves to CV_64FC1
+    case CV_64FC1: {
+      // If no derivative information is included, assume 0.
+      std::vector<cv::Mat> channels(2);
+      channels[0] = ttc_field;
+      channels[1] = cv::Mat::zeros(ttc_field.rows, ttc_field.cols, CV_64F);
+
+      cv::merge(channels, field);
+      break;
+    }
+    default: {
+      // Unhandled input type. Cannot initialize. Leave field empty.
+    }
+  }
 
   // Perform transform.
-  ImageSpacePotentialField::ApplyTransform<T_Tx> apply(isp.field_, tx);
-  cv::parallel_for_(cv::Range(0, isp.field_.rows * isp.field_.cols), apply);
+  if (!field.empty()) {
+    ImageSpacePotentialField::ApplyTransform<T_Tx> apply(field, tx);
+    cv::parallel_for_(cv::Range(0, field.rows * field.cols), apply);
+  }
 
   // Done.
-  return isp;
+  return field;
 }
 
 template <typename A_Tx>

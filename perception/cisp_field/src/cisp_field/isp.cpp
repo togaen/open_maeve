@@ -24,39 +24,5 @@
 #include <vector>
 
 namespace maeve_automation_core {
-ImageSpacePotentialField::ImageSpacePotentialField(const cv::Mat& ttc_field) {
-  // Copy ttc_field.
-  switch (ttc_field.type()) {
-    case CV_64FC2: {
-      ttc_field.copyTo(field_);
-      break;
-    }
-    // case CV_64F: // This resolves to CV_64FC1
-    case CV_64FC1: {
-      // If no derivative information is included, assume 0.
-      std::vector<cv::Mat> channels(2);
-      channels[0] = ttc_field;
-      channels[1] = cv::Mat::zeros(ttc_field.rows, ttc_field.cols, CV_64F);
-
-      cv::merge(channels, field_);
-      break;
-    }
-    default: {
-      // Unhandled input type. Cannot initialize.
-      throw ISPInvalidInputTypeExcpetion();
-    }
-  }
-}
-
-const char* ImageSpacePotentialField::ISPInvalidInputTypeExcpetion::what() const
-    noexcept {
-  return "Image Space Potential initialization failed: Invalid input type. "
-         "Must be CV_64F or CV_64FC2";
-}
-
-const cv::Mat& ImageSpacePotentialField::ImageSpacePotentialField::field()
-    const {
-  return field_;
-}
 
 }  // namespace maeve_automation_core

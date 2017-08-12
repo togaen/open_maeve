@@ -24,8 +24,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
 
-#include <exception>
-
 namespace maeve_automation_core {
 /**
  * @brief The Image Space Potential field class.
@@ -33,48 +31,30 @@ namespace maeve_automation_core {
 class ImageSpacePotentialField {
  public:
   /**
-   * @brief Exception to throw if initialization fails.
-   */
-  class ISPInvalidInputTypeExcpetion : public std::exception {
-    /**
-     * @brief Explain the input error the caused initialization failure.
-     *
-     * @return The error string.
-     */
-    const char* what() const noexcept override;
-  };  // class ISPInvalidInputTypeException
-
-  /**
-   * @brief
+   * @brief Perform a potential transform on a TTC field.
+   *
+   * The input field is assumed to be an OpenCV matrix of type CV_64F or
+   * CV_64FC2, where the first channel is the TTC value per pixel, and the
+   * second (optional) channel is the time derivative of the per pixel TTC. If
+   * no second channel is provided, time derivative is assumed to be zero for
+   * all pixels.
    *
    * @tparam T_Tx T_Tx Functor type defining the potential transform.
-   * @param ttc_field
+   * @param ttc_field The input TTC field.
    * @param tx The pixel value -> potential value transform.
+   *
+   * @return The image space potential field, which is an OpenCV matrix of type
+   * CV_64FC2, where the first channel is potential value and the second channel
+   * is the potential time derivative. If the input is somehow malformed, an
+   * empty matrix is returned.
    */
   template <typename T_Tx>
-  static ImageSpacePotentialField build(const cv::Mat& ttc_field,
-                                        const T_Tx& tx);
-
-  /**
-   * @brief Accessor for the Image Space Potential field.
-   *
-   * @return A const ref to the potential field. This is a 2-channel
-   * double-valued matrix where the first channel is potential value and second
-   * channel is its time derivative.
-   */
-  const cv::Mat& field() const;
+  static cv::Mat build(const cv::Mat& ttc_field, const T_Tx& tx);
 
  private:
   /**
-   * @brief Constructor: Create an Image Space Potential field by transforming
-   * the given ttc field.
-   *
-   * @param ttc_field The ttc field.
-   */
-  explicit ImageSpacePotentialField(const cv::Mat& ttc_field);
-
-  /**
-   * @brief Apply a potential transform to a scalar field.
+   * @brief Apply a potential transform to a scalar field using OpenCV parallel
+   * operator.
    *
    * @tparam T_Tx Functor type defining the potential transform.
    */
@@ -103,8 +83,10 @@ class ImageSpacePotentialField {
     const A_Tx& tx_;
   };  // class ApplyTransform
 
-  /** @brief Storage for the Image Space Potential field. */
-  cv::Mat field_;
+  /**
+   * @brief Constructor: This class is not intended to be instantiated.
+   */
+  ImageSpacePotentialField() = delete;
 };  // class ImageSpacePotentialField
 
 #include "impl/isp.impl.h"
