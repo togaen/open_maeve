@@ -42,6 +42,7 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
   LOAD_PARAM(camera_topic);
   LOAD_PARAM(viz_cisp_field_topic);
+  LOAD_PARAM(measurement_field_publish_rate);
   LOAD_NS_PARAM(hard_constraint_transform, alpha);
   LOAD_NS_PARAM(hard_constraint_transform, beta);
   LOAD_NS_PARAM(hard_constraint_transform, range_min);
@@ -53,6 +54,10 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
 
   // Sanity check params.
   CHECK_NONEMPTY(camera_topic);
+  CHECK_GT(measurement_field_publish_rate, 0.0);
+  if (!std::isfinite(measurement_field_publish_rate)) {
+    return false;
+  }
 
   // All good?
   return hard_constraint_transform.valid() && soft_constraint_transform.valid();

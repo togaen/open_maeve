@@ -25,7 +25,9 @@
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
+#include <tf2_ros/transform_listener.h>
 #include <opencv2/opencv.hpp>
+
 #include <string>
 
 #include "ar_cisp_field/params.h"
@@ -49,7 +51,7 @@ class AR_CISPFieldNodeHandler {
    * @param msg The ROS image message.
    */
   void callback(const sensor_msgs::Image::ConstPtr& msg);
-
+  void computePotentialField() const;
  private:
   /** @brief Node parameters. */
   AR_CISPFieldParams params_;
@@ -60,5 +62,9 @@ class AR_CISPFieldNodeHandler {
   image_transport::Publisher viz_cisp_field_pub_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
+  /** @brief Buffer for listening to tf2 transforms. */
+  tf2_ros::Buffer tf2_buffer_;
+  /** @brief Listener for tf2 transforms. */
+  tf2_ros::TransformListener tf2_listener_;
 };  // class AR_CISPFieldNodeHandler
 }  // namespace maeve_automation_core

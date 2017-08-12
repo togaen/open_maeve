@@ -59,6 +59,9 @@ struct AR_CISPFieldParams : public ParamsBase {
   /** @brief Soft constraint transform parameters. */
   PotentialTransform soft_constraint_transform;
 
+  /** @brief Publish rate for transformed measurement field (Hz). */
+  double measurement_field_publish_rate;
+
   /** @brief The image sequence topic. */
   std::string camera_topic;
 

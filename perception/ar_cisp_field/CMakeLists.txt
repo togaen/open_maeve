@@ -16,6 +16,9 @@ add_definitions(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  tf2
+  tf2_ros
   ar_track_alvar
   cisp_field
   ros_parameter_loading

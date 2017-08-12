@@ -21,6 +21,7 @@
  */
 #include "ar_cisp_field/node_handler.h"
 
+#include <geometry_msgs/TransformStamped.h>
 #include <ros/ros.h>
 
 #include "maeve_automation_core/cisp_field/isp.h"
@@ -29,7 +30,7 @@
 
 namespace maeve_automation_core {
 AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
-    : nh_(node_name) {
+    : nh_(node_name), tf2_listener_(tf2_buffer_) {
   if (!params_.load(nh_)) {
     ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
     return;
@@ -40,11 +41,34 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
 
   // Register callback.
   camera_sub_ = it.subscribe(params_.camera_topic, 1,
-                            &AR_CISPFieldNodeHandler::callback, this);
+                             &AR_CISPFieldNodeHandler::callback, this);
 
   // Visualize?
   if (!params_.viz_cisp_field_topic.empty()) {
     viz_cisp_field_pub_ = it.advertise(params_.viz_cisp_field_topic, 1);
+  }
+}
+
+void AR_CISPFieldNodeHandler::computePotentialField() const {
+  ros::Rate rate(params_.measurement_field_publish_rate);
+  while (nh_.ok()) {
+    geometry_msgs::TransformStamped transformStamped;
+    try {
+      transformStamped =
+          tf2_buffer_.lookupTransform("turtle2", "turtle1", ros::Time(0));
+    } catch (tf2::TransformException& ex) {
+      ROS_WARN("%s", ex.what());
+      ros::Duration(1.0).sleep();
+      continue;
+    }
+
+    // Project AR tag onto image plane
+    // Get max extent
+    // Add to time queue
+    // Compute \dot{s} and \ddot{s} from queue
+    // Generate field
+
+    rate.sleep();
   }
 }
 

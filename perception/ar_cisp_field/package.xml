@@ -42,6 +42,9 @@
   <depend>ar_track_alvar</depend>
   <depend>cisp_field</depend>
   <depend>ros_parameter_loading</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
 
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
