@@ -55,9 +55,9 @@ class AR_CISPFieldNodeHandler {
   AR_CISPFieldParams params_;
 
   /** @brief Camera image subscriber. */
-  image_transport::Subscriber camera_sub;
+  image_transport::Subscriber camera_sub_;
   /** @brief CISP field visualization publisher. */
-  image_transport::Publisher viz_cisp_field_pub;
+  image_transport::Publisher viz_cisp_field_pub_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
 };  // class AR_CISPFieldNodeHandler

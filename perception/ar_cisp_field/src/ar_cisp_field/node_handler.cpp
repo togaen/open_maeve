@@ -39,12 +39,12 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   image_transport::ImageTransport it(nh_);
 
   // Register callback.
-  camera_sub = it.subscribe(params_.camera_topic, 1,
+  camera_sub_ = it.subscribe(params_.camera_topic, 1,
                             &AR_CISPFieldNodeHandler::callback, this);
 
   // Visualize?
   if (!params_.viz_cisp_field_topic.empty()) {
-    viz_cisp_field_pub = it.advertise(params_.viz_cisp_field_topic, 1);
+    viz_cisp_field_pub_ = it.advertise(params_.viz_cisp_field_topic, 1);
   }
 }
 
@@ -80,7 +80,7 @@ void AR_CISPFieldNodeHandler::callback(
 
   // Convert to ROS message and publish
   if (!params_.viz_cisp_field_topic.empty()) {
-    viz_cisp_field_pub.publish(viz_msg);
+    viz_cisp_field_pub_.publish(viz_msg);
   }
 }
 }  // namespace maeve_automation_core
