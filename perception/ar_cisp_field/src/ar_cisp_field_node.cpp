@@ -30,10 +30,9 @@ int main(int argc, char* argv[]) {
 
   // Initialize ROS node.
   ros::init(argc, argv, node_name);
-  ros::NodeHandle nh(node_name);
 
   // Create handler.
-  maeve_automation_core::AR_CISPFieldNodeHandler handler(nh);
+  maeve_automation_core::AR_CISPFieldNodeHandler handler(node_name);
 
   // Kick it off.
   ros::spin();

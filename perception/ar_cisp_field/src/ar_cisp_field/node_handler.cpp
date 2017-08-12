@@ -28,14 +28,15 @@
 #include "maeve_automation_core/cisp_field/visualize.h"
 
 namespace maeve_automation_core {
-AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const ros::NodeHandle& nh) {
-  if (!params_.load(nh)) {
+AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
+    : nh_(node_name) {
+  if (!params_.load(nh_)) {
     ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
     return;
   }
 
   // Image transport interface.
-  image_transport::ImageTransport it(nh);
+  image_transport::ImageTransport it(nh_);
 
   // Register callback.
   camera_sub = it.subscribe(params_.camera_topic, 1,

@@ -26,6 +26,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <opencv2/opencv.hpp>
+#include <string>
 
 #include "ar_cisp_field/params.h"
 
@@ -38,9 +39,9 @@ class AR_CISPFieldNodeHandler {
   /**
    * @brief Construct handler instance and register callbacks/subscribers.
    *
-   * @param nh The ROS node handle.
+   * @param node_name The node name used to construct the ROS node handle.
    */
-  explicit AR_CISPFieldNodeHandler(const ros::NodeHandle& nh);
+  explicit AR_CISPFieldNodeHandler(const std::string& node_name);
 
   /**
    * @brief Callback for the image message stream.
@@ -57,5 +58,7 @@ class AR_CISPFieldNodeHandler {
   image_transport::Subscriber camera_sub;
   /** @brief CISP field visualization publisher. */
   image_transport::Publisher viz_cisp_field_pub;
+  /** @brief The ROS node handle. */
+  ros::NodeHandle nh_;
 };  // class AR_CISPFieldNodeHandler
 }  // namespace maeve_automation_core
