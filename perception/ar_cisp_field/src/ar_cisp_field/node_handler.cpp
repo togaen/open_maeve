@@ -68,6 +68,17 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   }
 }
 
+double AR_CISPFieldNodeHandler::computeMaxXY_Extent(const AR_Points& points) {
+  static std::array<double, 6> extents;
+  extents[0] = (points[0] - points[1]).squaredNorm();
+  extents[1] = (points[0] - points[2]).squaredNorm();
+  extents[2] = (points[0] - points[3]).squaredNorm();
+  extents[3] = (points[1] - points[2]).squaredNorm();
+  extents[4] = (points[1] - points[3]).squaredNorm();
+  extents[5] = (points[2] - points[3]).squaredNorm();
+  return *std::max_element(std::begin(extents), std::end(extents));
+}
+
 AR_CISPFieldNodeHandler::AR_Points AR_CISPFieldNodeHandler::arTagCornerPoints(
     const Eigen::Affine3d& camera_T_tag) const {
   AR_Points points;

@@ -76,6 +76,16 @@ class AR_CISPFieldNodeHandler {
   typedef std::unordered_map<std::string, MaeveTimeQueue<double>> AR_TimeQueue;
 
   /**
+   * @brief Compute the maximum extent in the XY projection of the given set of
+   * AR tag points.
+   *
+   * @param points The AR tag corner points.
+   *
+   * @return The maximum extent.
+   */
+  static double computeMaxXY_Extent(const AR_Points& points);
+
+  /**
    * @brief From a given AR tag pose, compute its corner point.
    *
    * This method assumes the pose is centered on the tag.
