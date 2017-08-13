@@ -67,11 +67,10 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
 }
 
 std::array<Eigen::Vector3d, 4> AR_CISPFieldNodeHandler::arTagCornerPoints(
-    const geometry_msgs::TransformStamped& Tx) const {
+    const Eigen::Affine3d& camera_T_tag) const {
   std::array<Eigen::Vector3d, 4> points;
 
   // Transform each of ar_corner_points_ into points.
-  const Eigen::Affine3d camera_T_tag = tf2::transformToEigen(Tx);
   for (auto i = 0; i < 4; ++i) {
     points[i] = camera_T_tag * ar_corner_points_[i];
   }
@@ -79,7 +78,7 @@ std::array<Eigen::Vector3d, 4> AR_CISPFieldNodeHandler::arTagCornerPoints(
   return points;
 }
 
-bool AR_CISPFieldNodeHandler::fillAR_TagTransforms() {
+bool AR_CISPFieldNodeHandler::fillAR_TagTransforms(const ros::Time& timestamp) {
   if (!nh_.ok()) {
     return false;
   }
@@ -88,10 +87,11 @@ bool AR_CISPFieldNodeHandler::fillAR_TagTransforms() {
   std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
                 [&](TxMap::value_type& pair) {
                   try {
-                    pair.second = tf2_buffer_.lookupTransform(
-                        params_.camera_frame_name, pair.first, ros::Time(0));
+                    pair.second =
+                        tf2::transformToEigen(tf2_buffer_.lookupTransform(
+                            params_.camera_frame_name, pair.first, timestamp));
                   } catch (const tf2::TransformException& ex) {
-                    ROS_WARN_STREAM(ex.what());
+                    // ROS_WARN_STREAM(ex.what());
                     pair.second = boost::none;
                   }
                 });
@@ -99,10 +99,11 @@ bool AR_CISPFieldNodeHandler::fillAR_TagTransforms() {
   return true;
 }
 
-void AR_CISPFieldNodeHandler::computePotentialField() {
+void AR_CISPFieldNodeHandler::computePotentialField(
+    const ros::Time& timestamp) {
   ros::Rate rate(params_.measurement_field_publish_rate);
 
-  while (fillAR_TagTransforms()) {
+  while (fillAR_TagTransforms(timestamp)) {
     // Project AR tag onto image plane
     // Get max extent
     // Add to time queue

@@ -60,13 +60,14 @@ class AR_CISPFieldNodeHandler {
 
   /**
    * @brief Stub function to compute potential field.
+   *
+   * @param timestamp The timestamp for which to compute the potential field.
    */
-  void computePotentialField();
+  void computePotentialField(const ros::Time& timestamp);
 
  private:
   /** @brief Convenience typedef for AR frame -> transform map. */
-  typedef std::unordered_map<std::string,
-                             boost::optional<geometry_msgs::TransformStamped>>
+  typedef std::unordered_map<std::string, boost::optional<Eigen::Affine3d>>
       TxMap;
 
   /**
@@ -80,7 +81,7 @@ class AR_CISPFieldNodeHandler {
    * looking down at XY plane).
    */
   std::array<Eigen::Vector3d, 4> arTagCornerPoints(
-      const geometry_msgs::TransformStamped& Tx) const;
+      const Eigen::Affine3d& Tx) const;
 
   /**
    * @brief Fill the AR tag transform map.
@@ -88,10 +89,12 @@ class AR_CISPFieldNodeHandler {
    * For any tag that does not have a transform available, the mapping is set to
    * boost::none.
    *
+   * @param timestamp The timestamp to use for transform queries.
+   *
    * @return True if no errors were encountered during transform lookup;
    * otherwise false.
    */
-  bool fillAR_TagTransforms();
+  bool fillAR_TagTransforms(const ros::Time& timestamp);
 
   /** @brief Node parameters. */
   AR_CISPFieldParams params_;
