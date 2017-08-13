@@ -22,14 +22,17 @@
 #pragma once
 
 #include <cv_bridge/cv_bridge.h>
+#include <geometry_msgs/Point.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <tf2_ros/transform_listener.h>
+#include <Eigen/Dense>
 #include <boost/optional.hpp>
 #include <opencv2/opencv.hpp>
 
+#include <array>
 #include <string>
 #include <unordered_map>
 
@@ -67,6 +70,19 @@ class AR_CISPFieldNodeHandler {
       TxMap;
 
   /**
+   * @brief From a given AR tag pose, compute its corner point.
+   *
+   * This method assumes the pose is centered on the tag.
+   *
+   * @param Tx The AR tag pose.
+   *
+   * @return An array of corner points in CW order (assuming right hand system,
+   * looking down at XY plane).
+   */
+  std::array<Eigen::Vector3d, 4> arTagCornerPoints(
+      const geometry_msgs::TransformStamped& Tx) const;
+
+  /**
    * @brief Fill the AR tag transform map.
    *
    * For any tag that does not have a transform available, the mapping is set to
@@ -92,5 +108,7 @@ class AR_CISPFieldNodeHandler {
   tf2_ros::TransformListener tf2_listener_;
   /** @brief Mapping of AR tag id to transform. */
   TxMap ar_tag_transforms_;
+  /** @brief Tag-relative set of corner points. */
+  std::array<Eigen::Vector3d, 4> ar_corner_points_;
 };  // class AR_CISPFieldNodeHandler
 }  // namespace maeve_automation_core

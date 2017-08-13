@@ -22,6 +22,7 @@
 #include "ar_cisp_field/node_handler.h"
 
 #include <ros/ros.h>
+#include <tf2_eigen/tf2_eigen.h>
 
 #include <string>
 
@@ -45,6 +46,13 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
                   ar_tag_transforms_[ar_frame_name] = boost::none;
                 });
 
+  // Compute raw tag corner points (CW ordering).
+  const auto half_extent = params_.ar_tag_size / 2.0;
+  ar_corner_points_[0] = Eigen::Vector3d(half_extent, -half_extent, 0.0);
+  ar_corner_points_[1] = Eigen::Vector3d(half_extent, half_extent, 0.0);
+  ar_corner_points_[2] = Eigen::Vector3d(-half_extent, half_extent, 0.0);
+  ar_corner_points_[3] = Eigen::Vector3d(-half_extent, -half_extent, 0.0);
+
   // Image transport interface.
   image_transport::ImageTransport it(nh_);
 
@@ -56,6 +64,19 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   if (!params_.viz_cisp_field_topic.empty()) {
     viz_cisp_field_pub_ = it.advertise(params_.viz_cisp_field_topic, 1);
   }
+}
+
+std::array<Eigen::Vector3d, 4> AR_CISPFieldNodeHandler::arTagCornerPoints(
+    const geometry_msgs::TransformStamped& Tx) const {
+  std::array<Eigen::Vector3d, 4> points;
+
+  // Transform each of ar_corner_points_ into points.
+  const Eigen::Affine3d camera_T_tag = tf2::transformToEigen(Tx);
+  for (auto i = 0; i < 4; ++i) {
+    points[i] = camera_T_tag * ar_corner_points_[i];
+  }
+
+  return points;
 }
 
 bool AR_CISPFieldNodeHandler::fillAR_TagTransforms() {
