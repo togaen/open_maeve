@@ -37,6 +37,7 @@
 #include <unordered_map>
 
 #include "ar_cisp_field/params.h"
+#include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
 
 namespace maeve_automation_core {
 /**
@@ -66,9 +67,11 @@ class AR_CISPFieldNodeHandler {
   void computePotentialField(const ros::Time& timestamp);
 
  private:
-  /** @brief Convenience typedef for AR frame -> transform map. */
+  /** @brief AR frame -> transform map. */
   typedef std::unordered_map<std::string, boost::optional<Eigen::Affine3d>>
       TxMap;
+  /** @brief AR frame -> time queue. */
+  typedef std::unordered_map<std::string, MaeveTimeQueue<double>> AR_TimeQueue;
 
   /**
    * @brief From a given AR tag pose, compute its corner point.
@@ -109,8 +112,10 @@ class AR_CISPFieldNodeHandler {
   tf2_ros::Buffer tf2_buffer_;
   /** @brief Listener for tf2 transforms. */
   tf2_ros::TransformListener tf2_listener_;
-  /** @brief Mapping of AR tag id to transform. */
+  /** @brief Mapping of AR tag frame id to transform. */
   TxMap ar_tag_transforms_;
+  /** @brief Mapping of AR tag frame id to time queue of max extents. */
+  AR_TimeQueue ar_max_extent_time_queue_;
   /** @brief Tag-relative set of corner points. */
   std::array<Eigen::Vector3d, 4> ar_corner_points_;
 };  // class AR_CISPFieldNodeHandler

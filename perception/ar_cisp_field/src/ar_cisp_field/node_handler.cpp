@@ -39,12 +39,14 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   }
 
   // Set up transform storage.
-  std::for_each(std::begin(params_.ar_tag_ids), std::end(params_.ar_tag_ids),
-                [&](const int id) {
-                  const auto ar_frame_name =
-                      params_.ar_frame_prefix + std::to_string(id);
-                  ar_tag_transforms_[ar_frame_name] = boost::none;
-                });
+  std::for_each(
+      std::begin(params_.ar_tag_ids), std::end(params_.ar_tag_ids),
+      [&](const int id) {
+        const auto ar_frame_name = params_.ar_frame_prefix + std::to_string(id);
+        ar_tag_transforms_[ar_frame_name] = boost::none;
+        ar_max_extent_time_queue_[ar_frame_name] = MaeveTimeQueue<double>(
+            params_.ar_time_queue_size, params_.ar_time_queue_max_gap);
+      });
 
   // Compute raw tag corner points (CW ordering).
   const auto half_extent = params_.ar_tag_size / 2.0;
