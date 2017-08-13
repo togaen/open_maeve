@@ -112,7 +112,7 @@ catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES maeve_time_queue
   CATKIN_DEPENDS roscpp
-#  DEPENDS system_lib
+  DEPENDS Boost
 )
 
 ###########
@@ -121,10 +121,7 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
- include
-  ${catkin_INCLUDE_DIRS}
-)
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
