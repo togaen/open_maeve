@@ -24,7 +24,6 @@
 #include <boost/circular_buffer.hpp>
 #include <boost/optional.hpp>
 
-#include <exception>
 #include <tuple>
 
 namespace maeve_automation_core {
@@ -35,6 +34,9 @@ template <typename T_Element>
  */
 class MaeveTimeQueue {
  public:
+  /** @brief Convenience typedef for referring to buffer elements. */
+  typedef std::tuple<double, T_Element> ElementType;
+
   /**
    * @brief Constructor: set max time gap and initialize storage.
    *
@@ -60,7 +62,8 @@ class MaeveTimeQueue {
    * @brief Retrieve an element from the queue.
    *
    * If the requested time does not exactly match an existing element, perform
-   * linear interpolation to compute an element to return.
+   * linear interpolation to compute an element to return. Note that this
+   * returns a copy of the element in the queue.
    *
    * @param time The timestamp for which to retrieve an element.
    *
@@ -69,10 +72,14 @@ class MaeveTimeQueue {
    */
   boost::optional<T_Element> get(const double time) const;
 
- private:
-  /** @brief Convenience typedef for referring to buffer elements. */
-  typedef std::tuple<double, T_Element> BufferEl;
+  /**
+   * @brief Return the number of elements in the queue.
+   *
+   * @return The number of elements in the queue.
+   */
+  typename boost::circular_buffer<ElementType>::size_type size() const;
 
+ private:
   /**
    * @brief Check the time and clear the queue if necessary.
    *
@@ -85,7 +92,7 @@ class MaeveTimeQueue {
   /** @brief The maximum time gap to allow between two elements. */
   double max_time_gap_;
   /** @brief The circular buffer that stores queue elements. */
-  boost::circular_buffer<BufferEl> cb_;
+  boost::circular_buffer<ElementType> cb_;
 };  // class MaeveTimeQueue
 
 #include "impl/maeve_time_queue.impl.h"

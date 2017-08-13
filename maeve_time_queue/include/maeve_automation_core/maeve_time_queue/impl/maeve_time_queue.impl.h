@@ -24,6 +24,8 @@
 // DO NOT INCLUDE THIS FILE. INCLUDE maeve_time_queue.h INSTEAD.
 //
 
+#include <stdexcept>
+
 template <typename T_Element>
 MaeveTimeQueue<T_Element>::MaeveTimeQueue(const int buffer_size,
                                           const double max_time_gap)
@@ -34,14 +36,21 @@ MaeveTimeQueue<T_Element>::MaeveTimeQueue(const int buffer_size,
 }
 
 template <typename T_Element>
-bool MaeveTimeQueue::prepareQueueForInsertion(const double time) {
+typename boost::circular_buffer<
+    typename MaeveTimeQueue<T_Element>::ElementType>::size_type
+MaeveTimeQueue<T_Element>::size() const {
+  return cb_.size();
+}
+
+template <typename T_Element>
+bool MaeveTimeQueue<T_Element>::prepareQueueForInsertion(const double time) {
   // If queue is empty consider time valid.
   if (cb_.empty()) {
     return true;
   }
 
   // Compute gap.
-  const auto gap = time - queue_time;
+  const auto gap = time - std::get<0>(cb_.back());
 
   // Not strictly increasing?
   if (gap <= 0.0) {
@@ -75,14 +84,16 @@ boost::optional<T_Element> MaeveTimeQueue<T_Element>::get(
   }
 
   // First element > time.
-  auto it_ub = std::upper_bound(
-      std::begin(cb_), std::end(cb_), time,
-      [&](const double t, const BufferEl& el) { return t < std::get<0>(el); });
+  auto it_ub = std::upper_bound(std::begin(cb_), std::end(cb_), time,
+                                [&](const double t, const ElementType& el) {
+                                  return t < std::get<0>(el);
+                                });
 
   // First element >= time.
-  auto it_lb = std::lower_bound(
-      std::begin(cb_), std::end(cb_), time,
-      [&](const BufferEl& el, const double t) { return std::get<0>(el) < t; });
+  auto it_lb = std::lower_bound(std::begin(cb_), std::end(cb_), time,
+                                [&](const ElementType& el, const double t) {
+                                  return std::get<0>(el) < t;
+                                });
 
   // All queue elements less than time.
   if (it_lb == std::end(cb_)) {
@@ -106,6 +117,7 @@ boost::optional<T_Element> MaeveTimeQueue<T_Element>::get(
   const auto time_prv = std::get<0>(*it_lb);
   const auto time_nxt = std::get<0>(*it_ub);
   const auto s = (time - time_prv) / (time_nxt - time_prv);
-  return std::get<0>(*it_lb) +
-         alpha * (std::get<0>(*it_ub) - std::get<0>(*it_lb));
+  const auto& val_prv = std::get<1>(*it_lb);
+  const auto& val_nxt = std::get<1>(*it_ub);
+  return val_prv + s * (val_nxt - val_prv);
 }
