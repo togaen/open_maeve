@@ -19,9 +19,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
-
 #include <gtest/gtest.h>
+
+#include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
 
 namespace maeve_automation_core {
 TEST(MTQ, tests) {
