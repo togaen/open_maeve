@@ -24,6 +24,33 @@
 #include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
 
 namespace maeve_automation_core {
+TEST(MTQ, testException) {
+  const auto buffer_size = 3;
+
+  try {
+    MaeveTimeQueue<double> mtq(buffer_size, -1.0);
+  } catch (std::domain_error& e) {
+    EXPECT_TRUE(true);
+  } catch (...) {
+    EXPECT_TRUE(false) << "Wrong exception thrown.";
+  }
+
+  try {
+    MaeveTimeQueue<double> mtq(buffer_size, 0.0);
+  } catch (std::domain_error& e) {
+    EXPECT_TRUE(true);
+  } catch (...) {
+    EXPECT_TRUE(false) << "Wrong exception thrown.";
+  }
+
+  try {
+    MaeveTimeQueue<double> mtq(buffer_size, 1.0);
+    EXPECT_TRUE(true);
+  } catch (...) {
+    EXPECT_TRUE(false) << "Unexpected exception thrown.";
+  }
+}
+
 TEST(MTQ, tests) {
   const auto buffer_size = 3;
   const auto max_time_gap = 0.75;
@@ -71,7 +98,7 @@ TEST(MTQ, tests) {
 }
 }  // namespace maeve_automation_core
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
