@@ -68,9 +68,9 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   }
 }
 
-std::array<Eigen::Vector3d, 4> AR_CISPFieldNodeHandler::arTagCornerPoints(
+AR_CISPFieldNodeHandler::AR_Points AR_CISPFieldNodeHandler::arTagCornerPoints(
     const Eigen::Affine3d& camera_T_tag) const {
-  std::array<Eigen::Vector3d, 4> points;
+  AR_Points points;
 
   // Transform each of ar_corner_points_ into points.
   for (auto i = 0; i < 4; ++i) {

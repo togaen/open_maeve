@@ -67,6 +67,8 @@ class AR_CISPFieldNodeHandler {
   void computePotentialField(const ros::Time& timestamp);
 
  private:
+  /** @brief Set of points describing an AR tag. */
+  typedef std::array<Eigen::Vector3d, 4> AR_Points;
   /** @brief AR frame -> transform map. */
   typedef std::unordered_map<std::string, boost::optional<Eigen::Affine3d>>
       TxMap;
@@ -83,8 +85,7 @@ class AR_CISPFieldNodeHandler {
    * @return An array of corner points in CW order (assuming right hand system,
    * looking down at XY plane).
    */
-  std::array<Eigen::Vector3d, 4> arTagCornerPoints(
-      const Eigen::Affine3d& Tx) const;
+  AR_Points arTagCornerPoints(const Eigen::Affine3d& Tx) const;
 
   /**
    * @brief Fill the AR tag transform map.
@@ -117,6 +118,6 @@ class AR_CISPFieldNodeHandler {
   /** @brief Mapping of AR tag frame id to time queue of max extents. */
   AR_TimeQueue ar_max_extent_time_queue_;
   /** @brief Tag-relative set of corner points. */
-  std::array<Eigen::Vector3d, 4> ar_corner_points_;
+  AR_Points ar_corner_points_;
 };  // class AR_CISPFieldNodeHandler
 }  // namespace maeve_automation_core
