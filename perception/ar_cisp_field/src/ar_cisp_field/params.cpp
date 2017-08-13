@@ -43,6 +43,10 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(camera_topic);
   LOAD_PARAM(viz_cisp_field_topic);
   LOAD_PARAM(measurement_field_publish_rate);
+  LOAD_PARAM(ar_tag_ids);
+  LOAD_PARAM(ar_frame_prefix);
+  LOAD_PARAM(output_frame_param_name);
+  LOAD_PARAM(marker_size_param_name);
   LOAD_NS_PARAM(hard_constraint_transform, alpha);
   LOAD_NS_PARAM(hard_constraint_transform, beta);
   LOAD_NS_PARAM(hard_constraint_transform, range_min);
@@ -53,11 +57,25 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(soft_constraint_transform, range_max);
 
   // Sanity check params.
+  CHECK_NONEMPTY(output_frame_param_name);
+  CHECK_NONEMPTY(marker_size_param_name);
   CHECK_NONEMPTY(camera_topic);
+  CHECK_NONEMPTY(ar_frame_prefix);
   CHECK_GT(measurement_field_publish_rate, 0.0);
   if (!std::isfinite(measurement_field_publish_rate)) {
     return false;
   }
+
+  // Load AR tag parameters.
+  if (!nh.getParam(output_frame_param_name, camera_frame_name)) {
+    return false;
+  }
+  if (!nh.getParam(marker_size_param_name, ar_tag_size)) {
+    return false;
+  }
+
+  // Convert cm -> m
+  ar_tag_size /= 100.0;
 
   // All good?
   return hard_constraint_transform.valid() && soft_constraint_transform.valid();

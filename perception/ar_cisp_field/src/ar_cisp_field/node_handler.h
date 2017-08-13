@@ -22,13 +22,16 @@
 #pragma once
 
 #include <cv_bridge/cv_bridge.h>
+#include <geometry_msgs/TransformStamped.h>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <tf2_ros/transform_listener.h>
+#include <boost/optional.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <string>
+#include <unordered_map>
 
 #include "ar_cisp_field/params.h"
 
@@ -51,8 +54,29 @@ class AR_CISPFieldNodeHandler {
    * @param msg The ROS image message.
    */
   void callback(const sensor_msgs::Image::ConstPtr& msg);
-  void computePotentialField() const;
+
+  /**
+   * @brief Stub function to compute potential field.
+   */
+  void computePotentialField();
+
  private:
+  /** @brief Convenience typedef for AR frame -> transform map. */
+  typedef std::unordered_map<std::string,
+                             boost::optional<geometry_msgs::TransformStamped>>
+      TxMap;
+
+  /**
+   * @brief Fill the AR tag transform map.
+   *
+   * For any tag that does not have a transform available, the mapping is set to
+   * boost::none.
+   *
+   * @return True if no errors were encountered during transform lookup;
+   * otherwise false.
+   */
+  bool fillAR_TagTransforms();
+
   /** @brief Node parameters. */
   AR_CISPFieldParams params_;
 
@@ -66,5 +90,7 @@ class AR_CISPFieldNodeHandler {
   tf2_ros::Buffer tf2_buffer_;
   /** @brief Listener for tf2 transforms. */
   tf2_ros::TransformListener tf2_listener_;
+  /** @brief Mapping of AR tag id to transform. */
+  TxMap ar_tag_transforms_;
 };  // class AR_CISPFieldNodeHandler
 }  // namespace maeve_automation_core

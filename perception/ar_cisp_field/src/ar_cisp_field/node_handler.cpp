@@ -21,8 +21,9 @@
  */
 #include "ar_cisp_field/node_handler.h"
 
-#include <geometry_msgs/TransformStamped.h>
 #include <ros/ros.h>
+
+#include <string>
 
 #include "maeve_automation_core/cisp_field/isp.h"
 #include "maeve_automation_core/cisp_field/potential_transforms.h"
@@ -35,6 +36,14 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
     ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
     return;
   }
+
+  // Set up transform storage.
+  std::for_each(std::begin(params_.ar_tag_ids), std::end(params_.ar_tag_ids),
+                [&](const int id) {
+                  const auto ar_frame_name =
+                      params_.ar_frame_prefix + std::to_string(id);
+                  ar_tag_transforms_[ar_frame_name] = boost::none;
+                });
 
   // Image transport interface.
   image_transport::ImageTransport it(nh_);
@@ -49,26 +58,35 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   }
 }
 
-void AR_CISPFieldNodeHandler::computePotentialField() const {
-  ros::Rate rate(params_.measurement_field_publish_rate);
-  while (nh_.ok()) {
-    geometry_msgs::TransformStamped transformStamped;
-    try {
-      transformStamped =
-          tf2_buffer_.lookupTransform("turtle2", "turtle1", ros::Time(0));
-    } catch (tf2::TransformException& ex) {
-      ROS_WARN("%s", ex.what());
-      ros::Duration(1.0).sleep();
-      continue;
-    }
+bool AR_CISPFieldNodeHandler::fillAR_TagTransforms() {
+  if (!nh_.ok()) {
+    return false;
+  }
 
+  // Look up all AR tag transforms.
+  std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
+                [&](TxMap::value_type& pair) {
+                  try {
+                    pair.second = tf2_buffer_.lookupTransform(
+                        params_.camera_frame_name, pair.first, ros::Time(0));
+                  } catch (const tf2::TransformException& ex) {
+                    ROS_WARN_STREAM(ex.what());
+                    pair.second = boost::none;
+                  }
+                });
+
+  return true;
+}
+
+void AR_CISPFieldNodeHandler::computePotentialField() {
+  ros::Rate rate(params_.measurement_field_publish_rate);
+
+  while (fillAR_TagTransforms()) {
     // Project AR tag onto image plane
     // Get max extent
     // Add to time queue
     // Compute \dot{s} and \ddot{s} from queue
     // Generate field
-
-    rate.sleep();
   }
 }
 

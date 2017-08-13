@@ -22,6 +22,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
@@ -61,6 +62,24 @@ struct AR_CISPFieldParams : public ParamsBase {
 
   /** @brief Publish rate for transformed measurement field (Hz). */
   double measurement_field_publish_rate;
+
+  /** @brief Size along one edge of AR tag (meters). */
+  double ar_tag_size;
+
+  /** @brief Name of the parameter specifying the AR tag size. */
+  std::string marker_size_param_name;
+
+  /** @brief Unique IDs for the AR tags */
+  std::vector<int> ar_tag_ids;
+
+  /** @brief Prefix string for AR tag coordinate frames. */
+  std::string ar_frame_prefix;
+
+  /** @brief Name of the camera's coordinate frame. */
+  std::string camera_frame_name;
+
+  /** @brief Name of the parameter specifying the camera's coordinate frame. */
+  std::string output_frame_param_name;
 
   /** @brief The image sequence topic. */
   std::string camera_topic;
