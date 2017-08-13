@@ -47,6 +47,8 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(ar_frame_prefix);
   LOAD_PARAM(output_frame_param_name);
   LOAD_PARAM(marker_size_param_name);
+  LOAD_PARAM(ar_time_queue_size);
+  LOAD_PARAM(ar_time_queue_max_gap);
   LOAD_NS_PARAM(hard_constraint_transform, alpha);
   LOAD_NS_PARAM(hard_constraint_transform, beta);
   LOAD_NS_PARAM(hard_constraint_transform, range_min);
@@ -57,6 +59,8 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(soft_constraint_transform, range_max);
 
   // Sanity check params.
+  CHECK_STRICTLY_POSITIVE(ar_time_queue_size);
+  CHECK_STRICTLY_POSITIVE(ar_time_queue_max_gap);
   CHECK_NONEMPTY(output_frame_param_name);
   CHECK_NONEMPTY(marker_size_param_name);
   CHECK_NONEMPTY(camera_topic);

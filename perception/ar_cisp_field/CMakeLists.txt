@@ -23,6 +23,7 @@ find_package(catkin REQUIRED COMPONENTS
   ar_track_alvar
   cisp_field
   ros_parameter_loading
+  maeve_time_queue
 )
 
 ## System dependencies are found with CMake's conventions

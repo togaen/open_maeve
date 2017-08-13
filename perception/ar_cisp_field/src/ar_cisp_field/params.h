@@ -60,6 +60,12 @@ struct AR_CISPFieldParams : public ParamsBase {
   /** @brief Soft constraint transform parameters. */
   PotentialTransform soft_constraint_transform;
 
+  /** @brief Number of elements to reserve for circular buffer. */
+  int ar_time_queue_size;
+
+  /** @brief Max time gap for elements in the time queue. */
+  double ar_time_queue_max_gap;
+
   /** @brief Publish rate for transformed measurement field (Hz). */
   double measurement_field_publish_rate;
 
