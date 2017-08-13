@@ -28,9 +28,14 @@ TEST(MTQ, testException) {
   const auto buffer_size = 3;
 
   try {
+    MaeveTimeQueue<double> mtq;
+  } catch (...) {
+    EXPECT_TRUE(false) << "Unexpected exception thrown.";
+  }
+
+  try {
     MaeveTimeQueue<double> mtq(buffer_size, -1.0);
   } catch (std::domain_error& e) {
-    EXPECT_TRUE(true);
   } catch (...) {
     EXPECT_TRUE(false) << "Wrong exception thrown.";
   }
@@ -38,17 +43,22 @@ TEST(MTQ, testException) {
   try {
     MaeveTimeQueue<double> mtq(buffer_size, 0.0);
   } catch (std::domain_error& e) {
-    EXPECT_TRUE(true);
   } catch (...) {
     EXPECT_TRUE(false) << "Wrong exception thrown.";
   }
 
   try {
     MaeveTimeQueue<double> mtq(buffer_size, 1.0);
-    EXPECT_TRUE(true);
   } catch (...) {
     EXPECT_TRUE(false) << "Unexpected exception thrown.";
   }
+}
+
+TEST(MTQ, testEmpty) {
+  MaeveTimeQueue<double> mtq;
+  EXPECT_TRUE(mtq.empty());
+  EXPECT_FALSE(mtq.insert(0.0, 1.0));
+  EXPECT_TRUE(mtq.empty());
 }
 
 TEST(MTQ, tests) {

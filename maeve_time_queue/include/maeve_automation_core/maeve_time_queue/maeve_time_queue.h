@@ -40,10 +40,13 @@ class MaeveTimeQueue {
   /**
    * @brief Constructor: set max time gap and initialize storage.
    *
+   * The default version of this constructor builds a zero-capacity queue.
+   *
    * @param buffer_size The number of elements to allocate memory for.
    * @param max_time_gap The maximum time gap before clearing the queue.
    */
-  MaeveTimeQueue(const int buffer_size, const double max_time_gap);
+  explicit MaeveTimeQueue(const int buffer_size = 0,
+                          const double max_time_gap = 1.0);
 
   /**
    * @brief Insert an element into the queue.
@@ -78,6 +81,13 @@ class MaeveTimeQueue {
    * @return The number of elements in the queue.
    */
   typename boost::circular_buffer<ElementType>::size_type size() const;
+
+  /**
+   * @brief Whether the queue is empty or not.
+   *
+   * @return True if the queue is empty; otherwise false.
+   */
+  bool empty() const;
 
  private:
   /**

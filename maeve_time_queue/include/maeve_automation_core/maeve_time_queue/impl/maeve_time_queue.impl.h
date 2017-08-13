@@ -36,6 +36,11 @@ MaeveTimeQueue<T_Element>::MaeveTimeQueue(const int buffer_size,
 }
 
 template <typename T_Element>
+bool MaeveTimeQueue<T_Element>::empty() const {
+  return cb_.empty();
+}
+
+template <typename T_Element>
 typename boost::circular_buffer<
     typename MaeveTimeQueue<T_Element>::ElementType>::size_type
 MaeveTimeQueue<T_Element>::size() const {
@@ -45,7 +50,7 @@ MaeveTimeQueue<T_Element>::size() const {
 template <typename T_Element>
 bool MaeveTimeQueue<T_Element>::prepareQueueForInsertion(const double time) {
   // If queue is empty consider time valid.
-  if (cb_.empty()) {
+  if (empty()) {
     return true;
   }
 
@@ -72,7 +77,7 @@ bool MaeveTimeQueue<T_Element>::insert(const double time, const T_Element& el) {
   if (b) {
     cb_.push_back(std::make_tuple(time, el));
   }
-  return b;
+  return b && !empty();
 }
 
 template <typename T_Element>
