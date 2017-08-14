@@ -7,11 +7,14 @@ This library provides time queue functionality. At its core this is implemented 
 
 ## Example Usage ##
 
-Usage of the queue is straightforward. It is constructed with buffer\_size and max\_time\_gap parameters, which govern the size of the queue and the maximum allowable time gap between elements. The class has three public methods:
+Usage of the queue is straightforward. It is constructed with buffer\_size and max\_time\_gap parameters, which govern the size of the queue and the maximum allowable time gap between elements. The class has the following public methods:
 
 * insert(timestamp, element): An element is inserted into the queue and associated with a timestamp (type double).
 * get(timetamp): An element is retrieved from the queue according to the given timestamp.
 * size(): How many elements are currently in the queue.
+* empty(): Whether the queue is empty or not.
+* dt(timestamp): Approximate the time derivative at timestamp using backward finite differencing.
+
 
 The insertion function requires that timestamps for elements are strictly increasing time (minimum time gap is > 0.0). If that requirement is violated, insertion will fail and it will return false. If the timestamp to be inserted would result in a time gap between elements larger than that specified during construction, the queue is empted before insertion.
 
@@ -36,6 +39,13 @@ mac::MaeveTimeQueue<double> mtq(buffer_size, max_time_gap);
 mtq.insert(0.0, 1.0);
 mtq.insert(0.1, 2.0);
 mtq.insert(0.2, 1.5);
+
+mtq.empty(); // evaluates to false
+mtq.size();  // evaluates to 3
+
+// Compute approximate derivative with backward finite differencing.
+mtq.dt(0.5);  // evaluates to 10 units/second
+mtq.dt(0.15); // evaluates to -5 units/second
 
 // Get some measurements: note the use of boost::optional as a return container.
 if (const auto m = mtq.get(0.0)) {

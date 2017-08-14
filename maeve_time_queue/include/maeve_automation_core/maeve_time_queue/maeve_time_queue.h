@@ -76,6 +76,19 @@ class MaeveTimeQueue {
   boost::optional<T_Element> get(const double time) const;
 
   /**
+   * @brief Approximate the derivative at a time with a backward difference.
+   *
+   * This function computes a backward difference using the given time and
+   * offset 'h', where 'h' is the time to the most recent previous measurement.
+   *
+   * @param time The query time for the finite difference.
+   *
+   * @return The time derivative of the element at 'time', or boost::none if the
+   * operation fails.
+   */
+  boost::optional<T_Element> dt(const double time) const;
+
+  /**
    * @brief Return the number of elements in the queue.
    *
    * @return The number of elements in the queue.
@@ -90,6 +103,21 @@ class MaeveTimeQueue {
   bool empty() const;
 
  private:
+  /**
+   * @brief Retrieve a tuple of bounding iterators for a given time.
+   *
+   * If the given time is found exactly, the iterators will be equal and valid.
+   * If the time is not contained in the buffer, the iterators will be equal and
+   * invalid.
+   *
+   * @param time The time for which to retrieve bounding iterators.
+   *
+   * @return The iterators that bound the given time.
+   */
+  std::tuple<typename boost::circular_buffer<ElementType>::const_iterator,
+             typename boost::circular_buffer<ElementType>::const_iterator>
+  getBoundingIterators(const double time) const;
+
   /**
    * @brief Check the time and clear the queue if necessary.
    *
