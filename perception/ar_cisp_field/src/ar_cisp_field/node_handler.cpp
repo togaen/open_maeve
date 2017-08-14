@@ -24,6 +24,7 @@
 #include <ros/ros.h>
 #include <tf2_eigen/tf2_eigen.h>
 
+#include <algorithm>
 #include <string>
 
 #include "maeve_automation_core/cisp_field/isp.h"
@@ -116,13 +117,29 @@ void AR_CISPFieldNodeHandler::computePotentialField(
     const ros::Time& timestamp) {
   ros::Rate rate(params_.measurement_field_publish_rate);
 
-  while (fillAR_TagTransforms(timestamp)) {
-    // Project AR tag onto image plane
-    // Get max extent
-    // Add to time queue
-    // Compute \dot{s} and \ddot{s} from queue
-    // Generate field
+  // Error check.
+  if (!fillAR_TagTransforms(timestamp)) {
+    ROS_WARN_STREAM("Failed to retrieve AR tag transforms.");
+    return;
   }
+
+  // Compute max extents for each AR tag and add to time queues.
+  std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
+                [&](const TxMap::value_type& pair) {
+                  // Only use valid transforms
+                  if (!pair.second) {
+                    return;
+                  }
+                  // Project AR tag onto image plane
+                  const auto camera_points = arTagCornerPoints(*pair.second);
+                  // Get max extent
+                  const auto max_extent = computeMaxXY_Extent(camera_points);
+                  // Add to time queue
+                  const auto t = timestamp.toSec();
+                  ar_max_extent_time_queue_[pair.first].insert(t, max_extent);
+                });
+
+  // With time queues full, compute \dot{s} and \ddot{s}.
 }
 
 void AR_CISPFieldNodeHandler::callback(
