@@ -24,6 +24,78 @@
 #include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
 
 namespace maeve_automation_core {
+TEST(MTQ, testDifferentiation1) {
+  const auto buffer_size = 5;
+  const auto max_time_gap = 10.0;
+  const auto epsilon = 0.0001;
+
+  MaeveTimeQueue<double> mtq(buffer_size, max_time_gap);
+
+  EXPECT_TRUE(mtq.insert(0.0, 4.0));
+  EXPECT_TRUE(mtq.insert(1.0, 3.0));
+  EXPECT_TRUE(mtq.insert(2.0, 2.0));
+  EXPECT_TRUE(mtq.insert(3.0, 1.0));
+  EXPECT_TRUE(mtq.insert(4.0, 0.0));
+
+  // Should work.
+  if (const auto dt = mtq.dt(0.5)) {
+    EXPECT_NEAR(*dt, -1.0, epsilon);
+  } else {
+    EXPECT_TRUE(false);
+  }
+
+  // Shouldn't work for first element, or outside elements.
+  EXPECT_TRUE(!mtq.dt(0.0));
+  EXPECT_TRUE(!mtq.dt(-1.0));
+  EXPECT_TRUE(!mtq.dt(4.5));
+
+  // Should work.
+  if (const auto dt = mtq.dt(4.0)) {
+    EXPECT_NEAR(*dt, -1.0, epsilon);
+  } else {
+    EXPECT_TRUE(false);
+  }
+}
+
+TEST(MTQ, testDifferentiation2) {
+  const auto buffer_size = 5;
+  const auto max_time_gap = 10.0;
+  const auto epsilon = 0.0001;
+
+  MaeveTimeQueue<double> mtq(buffer_size, max_time_gap);
+
+  EXPECT_TRUE(mtq.insert(0.0, 0.0));
+  EXPECT_TRUE(mtq.insert(1.0, 1.0));
+  EXPECT_TRUE(mtq.insert(2.0, 4.0));
+  EXPECT_TRUE(mtq.insert(3.0, 9.0));
+  EXPECT_TRUE(mtq.insert(4.0, 16.0));
+
+  // Should work.
+  if (const auto dt = mtq.dt(0.5)) {
+    EXPECT_NEAR(*dt, 1.0, epsilon);
+  } else {
+    EXPECT_TRUE(false);
+  }
+
+  if (const auto dt = mtq.dt(2.5)) {
+    EXPECT_NEAR(*dt, 5.0, epsilon);
+  } else {
+    EXPECT_TRUE(false);
+  }
+
+  // Shouldn't work for first element, or outside elements.
+  EXPECT_TRUE(!mtq.dt(0.0));
+  EXPECT_TRUE(!mtq.dt(-1.0));
+  EXPECT_TRUE(!mtq.dt(4.5));
+
+  // Should work.
+  if (const auto dt = mtq.dt(4.0)) {
+    EXPECT_NEAR(*dt, 7.0, epsilon);
+  } else {
+    EXPECT_TRUE(false);
+  }
+}
+
 TEST(MTQ, testException) {
   const auto buffer_size = 3;
 

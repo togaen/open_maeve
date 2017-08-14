@@ -25,6 +25,7 @@
 //
 
 #include <stdexcept>
+#include <tuple>
 
 template <typename T_Element>
 MaeveTimeQueue<T_Element>::MaeveTimeQueue(const int buffer_size,
@@ -81,11 +82,48 @@ bool MaeveTimeQueue<T_Element>::insert(const double time, const T_Element& el) {
 }
 
 template <typename T_Element>
-boost::optional<T_Element> MaeveTimeQueue<T_Element>::get(
+boost::optional<T_Element> MaeveTimeQueue<T_Element>::dt(
     const double time) const {
+  if (size() < 2) {
+    return boost::none;
+  }
+
+  const auto iterators = getBoundingIterators(time);
+  auto it_lb = std::get<0>(iterators);
+  auto it_ub = std::get<1>(iterators);
+
+  // Query time not contained in queue.
+  if (it_lb == cb_.end()) {
+    return boost::none;
+  }
+
+  // Exact match found.
+  if (it_lb == it_ub) {
+    // If we're at the beginning, backward differencing can't work.
+    if (it_lb == cb_.begin()) {
+      return boost::none;
+    }
+
+    // Otherwise, point to previous element.
+    --it_lb;
+  }
+
+  // Approximate derivative with backward difference.
+  const auto h = std::get<0>(*it_ub) - std::get<0>(*it_lb);
+  const auto& val_prv = std::get<1>(*it_lb);
+  const auto& val_nxt = std::get<1>(*it_ub);
+  return (val_nxt - val_prv) / h;
+}
+
+template <typename T_Element>
+std::tuple<typename boost::circular_buffer<
+               typename MaeveTimeQueue<T_Element>::ElementType>::const_iterator,
+           typename boost::circular_buffer<
+               typename MaeveTimeQueue<T_Element>::ElementType>::const_iterator>
+MaeveTimeQueue<T_Element>::getBoundingIterators(const double time) const {
   // Empty queue, nothing to do.
   if (cb_.empty()) {
-    return boost::none;
+    return std::make_tuple(cb_.end(), cb_.end());
   }
 
   // First element > time.
@@ -102,27 +140,46 @@ boost::optional<T_Element> MaeveTimeQueue<T_Element>::get(
 
   // All queue elements less than time.
   if (it_lb == std::end(cb_)) {
-    return boost::none;
+    return std::make_tuple(cb_.end(), cb_.end());
   }
 
   // All queue elements greater than time.
   if (it_ub == std::begin(cb_)) {
-    return boost::none;
+    return std::make_tuple(cb_.end(), cb_.end());
   }
 
   // If now it_ub != it_lb, then it_lb must be an exact match.
   if (it_lb != it_ub) {
-    return std::get<1>(*it_lb);
+    return std::make_tuple(it_lb, it_lb);
   }
 
   // it_ub always points one element ahead, decrement it_lb to get other bound.
   --it_lb;
+  return std::make_tuple(it_lb, it_ub);
+}
+
+template <typename T_Element>
+boost::optional<T_Element> MaeveTimeQueue<T_Element>::get(
+    const double time) const {
+  const auto iterators = getBoundingIterators(time);
+  const auto& it_lb = std::get<0>(iterators);
+  const auto& it_ub = std::get<1>(iterators);
+
+  // Query time not contained in queue.
+  if (it_lb == cb_.end()) {
+    return boost::none;
+  }
+
+  // Exact match found.
+  if (it_lb == it_ub) {
+    return std::get<1>(*it_lb);
+  }
 
   // Interpolate and return.
   const auto time_prv = std::get<0>(*it_lb);
   const auto time_nxt = std::get<0>(*it_ub);
-  const auto s = (time - time_prv) / (time_nxt - time_prv);
   const auto& val_prv = std::get<1>(*it_lb);
   const auto& val_nxt = std::get<1>(*it_ub);
+  const auto s = (time - time_prv) / (time_nxt - time_prv);
   return val_prv + s * (val_nxt - val_prv);
 }
