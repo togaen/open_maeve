@@ -24,6 +24,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/TransformStamped.h>
+#include <image_geometry/pinhole_camera_model.h>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
@@ -35,6 +36,7 @@
 #include <array>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "ar_cisp_field/params.h"
 #include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
@@ -52,12 +54,25 @@ class AR_CISPFieldNodeHandler {
    */
   explicit AR_CISPFieldNodeHandler(const std::string& node_name);
 
+ private:
+  /** @brief Set of points describing an AR tag. */
+  typedef std::array<Eigen::Vector3d, 4> AR_Points;
+  /** @brief AR frame -> transform map. */
+  typedef std::unordered_map<std::string, boost::optional<Eigen::Affine3d>>
+      TxMap;
+  /** @brief AR frame -> time queue. */
+  typedef std::unordered_map<std::string, MaeveTimeQueue<double>>
+      AR_TimeQueueMap;
+  /** @brief AR frame -> measurement map. */
+  typedef std::unordered_map<std::string, cv::Mat> MeasurementMap;
+
   /**
-   * @brief Callback for the image message stream.
+   * @brief Callback for the camera info and image message stream.
    *
    * @param msg The ROS image message.
    */
-  void callback(const sensor_msgs::Image::ConstPtr& msg);
+  void cameraCallback(const sensor_msgs::Image::ConstPtr& msg,
+                      const sensor_msgs::CameraInfoConstPtr& info_msg);
 
   /**
    * @brief Stub function to compute potential field.
@@ -66,14 +81,26 @@ class AR_CISPFieldNodeHandler {
    */
   void computePotentialField(const ros::Time& timestamp);
 
- private:
-  /** @brief Set of points describing an AR tag. */
-  typedef std::array<Eigen::Vector3d, 4> AR_Points;
-  /** @brief AR frame -> transform map. */
-  typedef std::unordered_map<std::string, boost::optional<Eigen::Affine3d>>
-      TxMap;
-  /** @brief AR frame -> time queue. */
-  typedef std::unordered_map<std::string, MaeveTimeQueue<double>> AR_TimeQueue;
+  /**
+   * @brief Convert an array of Eigen::Vector3d points to cv::Point3d points.
+   *
+   * @param points The array of Eigen::Vector3d points.
+   *
+   * @return A vector of projected cv::Point3d objects.
+   */
+  static std::vector<cv::Point3d> arEigenPoints2OpenCV(const AR_Points& points);
+
+  /**
+   * @brief Convenience wrapper for using camera model to project points.
+   *
+   * This function handles translating arguments so that the projection method
+   * of the camera model can be called.
+   *
+   * @param ar_points The set of 3D ar tag corner points in the camera frame.
+   *
+   * @return The set of 2D image plane points.
+   */
+  std::vector<cv::Point2d> projectPoints(const AR_Points& ar_points) const;
 
   /**
    * @brief Compute the maximum extent in the XY projection of the given set of
@@ -114,7 +141,7 @@ class AR_CISPFieldNodeHandler {
   AR_CISPFieldParams params_;
 
   /** @brief Camera image subscriber. */
-  image_transport::Subscriber camera_sub_;
+  image_transport::CameraSubscriber camera_sub_;
   /** @brief CISP field visualization publisher. */
   image_transport::Publisher viz_cisp_field_pub_;
   /** @brief The ROS node handle. */
@@ -126,8 +153,12 @@ class AR_CISPFieldNodeHandler {
   /** @brief Mapping of AR tag frame id to transform. */
   TxMap ar_tag_transforms_;
   /** @brief Mapping of AR tag frame id to time queue of max extents. */
-  AR_TimeQueue ar_max_extent_time_queue_;
+  AR_TimeQueueMap ar_max_extent_time_queue_;
+  /** @brief Mapping of AR tag frame id to measurement field. */
+  MeasurementMap measurement_map_;
   /** @brief Tag-relative set of corner points. */
   AR_Points ar_corner_points_;
+  /** @brief Camera model used for projecting AR tag points into image plane. */
+  image_geometry::PinholeCameraModel camera_model_;
 };  // class AR_CISPFieldNodeHandler
 }  // namespace maeve_automation_core

@@ -24,6 +24,7 @@ find_package(catkin REQUIRED COMPONENTS
   cisp_field
   ros_parameter_loading
   maeve_time_queue
+  image_geometry
 )
 
 ## System dependencies are found with CMake's conventions

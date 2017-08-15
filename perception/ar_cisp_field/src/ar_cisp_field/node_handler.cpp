@@ -21,17 +21,24 @@
  */
 #include "ar_cisp_field/node_handler.h"
 
+#include <image_geometry/pinhole_camera_model.h>
 #include <ros/ros.h>
 #include <tf2_eigen/tf2_eigen.h>
 
 #include <algorithm>
+#include <limits>
 #include <string>
+#include <vector>
 
 #include "maeve_automation_core/cisp_field/isp.h"
 #include "maeve_automation_core/cisp_field/potential_transforms.h"
 #include "maeve_automation_core/cisp_field/visualize.h"
 
 namespace maeve_automation_core {
+namespace {
+static const auto INF = std::numeric_limits<double>::infinity();
+}  // namespace
+
 AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
     : nh_(node_name), tf2_listener_(tf2_buffer_) {
   if (!params_.load(nh_)) {
@@ -60,8 +67,8 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   image_transport::ImageTransport it(nh_);
 
   // Register callback.
-  camera_sub_ = it.subscribe(params_.camera_topic, 1,
-                             &AR_CISPFieldNodeHandler::callback, this);
+  camera_sub_ = it.subscribeCamera(
+      params_.camera_topic, 1, &AR_CISPFieldNodeHandler::cameraCallback, this);
 
   // Visualize?
   if (!params_.viz_cisp_field_topic.empty()) {
@@ -90,6 +97,36 @@ AR_CISPFieldNodeHandler::AR_Points AR_CISPFieldNodeHandler::arTagCornerPoints(
   }
 
   return points;
+}
+
+std::vector<cv::Point3d> AR_CISPFieldNodeHandler::arEigenPoints2OpenCV(
+    const AR_Points& points) {
+  std::vector<cv::Point3d> cv_points;
+  cv_points.reserve(points.size());
+  cv_points.push_back(cv::Point3d(points[0].x(), points[0].y(), points[0].z()));
+  cv_points.push_back(cv::Point3d(points[1].x(), points[1].y(), points[1].z()));
+  cv_points.push_back(cv::Point3d(points[2].x(), points[2].y(), points[2].z()));
+  cv_points.push_back(cv::Point3d(points[3].x(), points[3].y(), points[3].z()));
+  return cv_points;
+}
+
+std::vector<cv::Point2d> AR_CISPFieldNodeHandler::projectPoints(
+    const AR_Points& ar_points) const {
+  std::vector<cv::Point2d> image_points;
+  image_points.reserve(ar_points.size());
+
+  // Convert Eigen -> OpenCV.
+  const auto camera_points =
+      AR_CISPFieldNodeHandler::arEigenPoints2OpenCV(ar_points);
+
+  // Project camera_points into image_points.
+  image_points[0] = camera_model_.project3dToPixel(camera_points[0]);
+  image_points[1] = camera_model_.project3dToPixel(camera_points[1]);
+  image_points[2] = camera_model_.project3dToPixel(camera_points[2]);
+  image_points[3] = camera_model_.project3dToPixel(camera_points[3]);
+
+  // Done.
+  return image_points;
 }
 
 bool AR_CISPFieldNodeHandler::fillAR_TagTransforms(const ros::Time& timestamp) {
@@ -124,27 +161,55 @@ void AR_CISPFieldNodeHandler::computePotentialField(
   }
 
   // Compute max extents for each AR tag and add to time queues.
-  std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
-                [&](const TxMap::value_type& pair) {
-                  // Only use valid transforms
-                  if (!pair.second) {
-                    return;
-                  }
-                  // Project AR tag onto image plane
-                  const auto camera_points = arTagCornerPoints(*pair.second);
-                  // Get max extent
-                  const auto max_extent = computeMaxXY_Extent(camera_points);
-                  // Add to time queue
-                  const auto t = timestamp.toSec();
-                  ar_max_extent_time_queue_[pair.first].insert(t, max_extent);
-                });
-
-  // With time queues full, compute \dot{s} and \ddot{s}.
+  std::for_each(
+      std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
+      [&](const TxMap::value_type& pair) {
+        // Only use valid transforms
+        if (!pair.second) {
+          return;
+        }
+        // Project AR tag onto image plane
+        const auto camera_points = arTagCornerPoints(*pair.second);
+        // Get max extent
+        const auto s = computeMaxXY_Extent(camera_points);
+        // Add to time queue
+        const auto t = timestamp.toSec();
+        ar_max_extent_time_queue_[pair.first].insert(t, s);
+        // With time queue full, compute \tau and \dot{\tau}.
+        const auto s_dot = ar_max_extent_time_queue_[pair.first].dt(t);
+        if (!s_dot) {
+          ROS_WARN_STREAM("Failed to compute dt for AR tag: " << pair.first);
+          return;
+        }
+        const auto tau = (*s_dot == 0.0) ? INF : (s / *s_dot);
+        const auto tau_dot = 0.0;
+        // Compute measurement field, where every pixel corresponding
+        // to box has \tau.
+        auto& measurement_field = measurement_map_[pair.first];
+        const auto image_corner_points = projectPoints(camera_points);
+        cv::fillConvexPoly(measurement_field, image_corner_points,
+                           cv::Scalar(tau, tau_dot));
+      });
 }
 
-void AR_CISPFieldNodeHandler::callback(
-    const sensor_msgs::Image::ConstPtr& msg) {
+void AR_CISPFieldNodeHandler::cameraCallback(
+    const sensor_msgs::Image::ConstPtr& msg,
+    const sensor_msgs::CameraInfoConstPtr& info_msg) {
   // ROS_INFO_STREAM("entered callback");
+
+  // Initialize camera model.
+  camera_model_.fromCameraInfo(info_msg);
+
+  // Set up measurement maps (only do this once after recieving camera info).
+  static bool storage_set = false;
+  if (!storage_set) {
+    std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
+                  [&](const TxMap::value_type& pair) {
+                    measurement_map_[pair.first] = cv::Mat::zeros(
+                        camera_model_.fullResolution(), CV_64FC2);
+                  });
+    storage_set = true;
+  }
 
   // Convert to OpenCV.
   cv_bridge::CvImagePtr cv_ptr;
