@@ -102,11 +102,13 @@ AR_CISPFieldNodeHandler::AR_Points AR_CISPFieldNodeHandler::arTagCornerPoints(
 std::vector<cv::Point3d> AR_CISPFieldNodeHandler::arEigenPoints2OpenCV(
     const AR_Points& points) {
   std::vector<cv::Point3d> cv_points;
+
   cv_points.reserve(points.size());
-  cv_points.push_back(cv::Point3d(points[0].x(), points[0].y(), points[0].z()));
-  cv_points.push_back(cv::Point3d(points[1].x(), points[1].y(), points[1].z()));
-  cv_points.push_back(cv::Point3d(points[2].x(), points[2].y(), points[2].z()));
-  cv_points.push_back(cv::Point3d(points[3].x(), points[3].y(), points[3].z()));
+  for (auto i = 0; i < 4; ++i) {
+    cv_points.push_back(
+        cv::Point3d(points[i].x(), points[i].y(), points[i].z()));
+  }
+
   return cv_points;
 }
 
@@ -120,10 +122,9 @@ std::vector<cv::Point2d> AR_CISPFieldNodeHandler::projectPoints(
       AR_CISPFieldNodeHandler::arEigenPoints2OpenCV(ar_points);
 
   // Project camera_points into image_points.
-  image_points[0] = camera_model_.project3dToPixel(camera_points[0]);
-  image_points[1] = camera_model_.project3dToPixel(camera_points[1]);
-  image_points[2] = camera_model_.project3dToPixel(camera_points[2]);
-  image_points[3] = camera_model_.project3dToPixel(camera_points[3]);
+  for (auto i = 0; i < 4; ++i) {
+    image_points[i] = camera_model_.project3dToPixel(camera_points[i]);
+  }
 
   // Done.
   return image_points;
@@ -172,12 +173,11 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
   std::for_each(
       std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
       [&](const TxMap::value_type& pair) {
-        // The field for this tag.
+        // Initialize the field for this tag by zeroing it out.
         auto& field = field_map_[pair.first];
-        // Only use valid transforms
+        field = cv::Mat::zeros(field.rows, field.cols, CV_64FC2);
+        // Only use valid transforms (do this after field initialization).
         if (!pair.second) {
-          // Zero this out so that it does not affect composition.
-          field = cv::Mat::zeros(field.rows, field.cols, CV_64FC2);
           return;
         }
         // Project AR tag onto image plane
