@@ -129,7 +129,6 @@ include_directories(
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
-  src/${PROJECT_NAME}/isp.cpp
   src/${PROJECT_NAME}/visualize.cpp
   src/${PROJECT_NAME}/potential_transforms.cpp
 )
