@@ -67,6 +67,16 @@ class AR_CISPFieldNodeHandler {
   typedef std::unordered_map<std::string, cv::Mat> FieldMap;
 
   /**
+   * @brief Initialize the field storage map.
+   *
+   * This function only performs the allocation once; subsequent calls are a
+   * no-op.
+   *
+   * @param size The size of the field to allocate.
+   */
+  void initFieldStorage(const cv::Size& size);
+
+  /**
    * @brief Callback for the camera info and image message stream.
    *
    * @param msg The ROS image message.
@@ -79,7 +89,7 @@ class AR_CISPFieldNodeHandler {
    *
    * @param timestamp The timestamp for which to compute the potential field.
    */
-  void computePotentialField(const ros::Time& timestamp);
+  void computePotentialFields(const ros::Time& timestamp);
 
   /**
    * @brief Convert an array of Eigen::Vector3d points to cv::Point3d points.

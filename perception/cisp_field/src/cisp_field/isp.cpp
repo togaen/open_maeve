@@ -21,8 +21,6 @@
  */
 #include "maeve_automation_core/cisp_field/isp.h"
 
-#include <vector>
-
 namespace maeve_automation_core {
 
 }  // namespace maeve_automation_core

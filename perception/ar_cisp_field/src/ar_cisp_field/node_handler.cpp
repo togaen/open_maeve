@@ -150,7 +150,7 @@ bool AR_CISPFieldNodeHandler::fillAR_TagTransforms(const ros::Time& timestamp) {
   return true;
 }
 
-void AR_CISPFieldNodeHandler::computePotentialField(
+void AR_CISPFieldNodeHandler::computePotentialFields(
     const ros::Time& timestamp) {
   // Error check.
   if (!fillAR_TagTransforms(timestamp)) {
@@ -172,8 +172,12 @@ void AR_CISPFieldNodeHandler::computePotentialField(
   std::for_each(
       std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
       [&](const TxMap::value_type& pair) {
+        // The field for this tag.
+        auto& field = field_map_[pair.first];
         // Only use valid transforms
         if (!pair.second) {
+          // Zero this out so that it does not affect composition.
+          field = cv::Mat::zeros(field.rows, field.cols, CV_64FC2);
           return;
         }
         // Project AR tag onto image plane
@@ -194,10 +198,20 @@ void AR_CISPFieldNodeHandler::computePotentialField(
         // Compute potential values.
         const auto p_value = hc(cv::Scalar(tau, tau_dot));
         // Create ISP.
-        auto& field = field_map_[pair.first];
         const auto image_corner_points = projectPoints(camera_points);
         cv::fillConvexPoly(field, image_corner_points, p_value);
       });
+}
+
+void AR_CISPFieldNodeHandler::initFieldStorage(const cv::Size& size) {
+  static bool storage_set = false;
+  if (!storage_set) {
+    std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
+                  [&](const TxMap::value_type& pair) {
+                    field_map_[pair.first] = cv::Mat::zeros(size, CV_64FC2);
+                  });
+    storage_set = true;
+  }
 }
 
 void AR_CISPFieldNodeHandler::cameraCallback(
@@ -208,35 +222,17 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   // Initialize camera model.
   camera_model_.fromCameraInfo(info_msg);
 
-  // Set up field maps (only do this once after recieving camera info).
-  static bool storage_set = false;
-  if (!storage_set) {
-    std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
-                  [&](const TxMap::value_type& pair) {
-                    field_map_[pair.first] = cv::Mat::zeros(
-                        camera_model_.fullResolution(), CV_64FC2);
-                  });
-    storage_set = true;
-  }
+  // Make sure field maps have storage allocated.
+  initFieldStorage(camera_model_.fullResolution());
 
-  // Convert to OpenCV.
-  cv_bridge::CvImagePtr cv_ptr;
-  try {
-    cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);
-  } catch (cv_bridge::Exception& e) {
-    ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
-    return;
-  }
+  // Compute a potential field for each tag.
+  computePotentialFields(msg->header.stamp);
 
-  // Convert incoming image to CV_64F.
-  cv::Mat field;
-  cv_ptr->image.convertTo(field, CV_64F, 1.0 / 255.0);
-
-  // Compute ISP.
-  const auto& hc = params_.hard_constraint_transform;
-  const auto tx = PotentialTransform<ConstraintType::HARD>(
-      hc.range_min, hc.range_max, hc.alpha, hc.beta);
-  auto ISP = ImageSpacePotentialField::build(field, tx);
+  // Compute fields into a composite ISP.
+  cv::Mat ISP = cv::Mat::zeros(camera_model_.fullResolution(), CV_64FC2);
+  std::for_each(
+      std::begin(field_map_), std::end(field_map_),
+      [&](const FieldMap::value_type& pair) { ISP = ISP + pair.second; });
 
   // Visualize ISP.
   const auto visual = computeISPFieldVisualization(ISP, 1.0, 1.0);
