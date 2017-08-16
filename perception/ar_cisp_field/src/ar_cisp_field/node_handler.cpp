@@ -192,12 +192,11 @@ void AR_CISPFieldNodeHandler::computePotentialField(
         const auto tau = (*s_dot == 0.0) ? INF : (s / *s_dot);
         const auto tau_dot = 0.0;
         // Compute potential values.
-
+        const auto p_value = hc(cv::Scalar(tau, tau_dot));
         // Create ISP.
         auto& measurement_field = measurement_map_[pair.first];
         const auto image_corner_points = projectPoints(camera_points);
-        cv::fillConvexPoly(measurement_field, image_corner_points,
-                           cv::Scalar(tau, tau_dot));
+        cv::fillConvexPoly(measurement_field, image_corner_points, p_value);
       });
 }
 
