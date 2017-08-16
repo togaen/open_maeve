@@ -66,9 +66,6 @@ struct AR_CISPFieldParams : public ParamsBase {
   /** @brief Max time gap for elements in the time queue. */
   double ar_time_queue_max_gap;
 
-  /** @brief Publish rate for transformed measurement field (Hz). */
-  double measurement_field_publish_rate;
-
   /** @brief Size along one edge of AR tag (meters). */
   double ar_tag_size;
 

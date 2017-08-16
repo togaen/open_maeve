@@ -152,8 +152,6 @@ bool AR_CISPFieldNodeHandler::fillAR_TagTransforms(const ros::Time& timestamp) {
 
 void AR_CISPFieldNodeHandler::computePotentialField(
     const ros::Time& timestamp) {
-  ros::Rate rate(params_.measurement_field_publish_rate);
-
   // Error check.
   if (!fillAR_TagTransforms(timestamp)) {
     ROS_WARN_STREAM("Failed to retrieve AR tag transforms.");
