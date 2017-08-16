@@ -56,6 +56,12 @@ struct PotentialTransform {
   PotentialTransform(const CRange& c_r, const double a, const double b);
 
   /**
+   * Convenience overload of constructor.
+   */
+  PotentialTransform(const double range_min, const double range_max,
+                     const double a, const double b);
+
+  /**
    * @brief Function definition for 0th order potential value transform.
    *
    * @param p The input pixel value.
@@ -71,6 +77,12 @@ template <ConstraintType T>
 PotentialTransform<T>::PotentialTransform(const CRange& c_r, const double a,
                                           const double b)
     : c_range(c_r), alpha(a), beta(b) {}
+
+template <ConstraintType T>
+PotentialTransform<T>::PotentialTransform(const double range_min,
+                                          const double range_max,
+                                          const double a, const double b)
+    : PotentialTransform(std::make_tuple(range_min, range_max), a, b) {}
 
 template <>
 cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(

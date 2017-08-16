@@ -158,6 +158,16 @@ void AR_CISPFieldNodeHandler::computePotentialField(
     return;
   }
 
+  // Instantiate transforms.
+  const auto& hc_params = params_.hard_constraint_transform;
+  const auto& sc_params = params_.soft_constraint_transform;
+  const PotentialTransform<ConstraintType::HARD> hc(
+      hc_params.range_min, hc_params.range_max, hc_params.alpha,
+      hc_params.beta);
+  const PotentialTransform<ConstraintType::SOFT> sc(
+      sc_params.range_min, sc_params.range_max, sc_params.alpha,
+      sc_params.beta);
+
   // Compute max extents for each AR tag and add to time queues.
   std::for_each(
       std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
@@ -181,8 +191,9 @@ void AR_CISPFieldNodeHandler::computePotentialField(
         }
         const auto tau = (*s_dot == 0.0) ? INF : (s / *s_dot);
         const auto tau_dot = 0.0;
-        // Compute measurement field, where every pixel corresponding
-        // to box has \tau.
+        // Compute potential values.
+
+        // Create ISP.
         auto& measurement_field = measurement_map_[pair.first];
         const auto image_corner_points = projectPoints(camera_points);
         cv::fillConvexPoly(measurement_field, image_corner_points,
@@ -225,7 +236,7 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   // Compute ISP.
   const auto& hc = params_.hard_constraint_transform;
   const auto tx = PotentialTransform<ConstraintType::HARD>(
-      std::make_tuple(hc.range_min, hc.range_max), hc.alpha, hc.beta);
+      hc.range_min, hc.range_max, hc.alpha, hc.beta);
   auto ISP = ImageSpacePotentialField::build(field, tx);
 
   // Visualize ISP.
