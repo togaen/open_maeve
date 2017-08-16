@@ -194,9 +194,9 @@ void AR_CISPFieldNodeHandler::computePotentialField(
         // Compute potential values.
         const auto p_value = hc(cv::Scalar(tau, tau_dot));
         // Create ISP.
-        auto& measurement_field = measurement_map_[pair.first];
+        auto& field = field_map_[pair.first];
         const auto image_corner_points = projectPoints(camera_points);
-        cv::fillConvexPoly(measurement_field, image_corner_points, p_value);
+        cv::fillConvexPoly(field, image_corner_points, p_value);
       });
 }
 
@@ -208,12 +208,12 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   // Initialize camera model.
   camera_model_.fromCameraInfo(info_msg);
 
-  // Set up measurement maps (only do this once after recieving camera info).
+  // Set up field maps (only do this once after recieving camera info).
   static bool storage_set = false;
   if (!storage_set) {
     std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
                   [&](const TxMap::value_type& pair) {
-                    measurement_map_[pair.first] = cv::Mat::zeros(
+                    field_map_[pair.first] = cv::Mat::zeros(
                         camera_model_.fullResolution(), CV_64FC2);
                   });
     storage_set = true;

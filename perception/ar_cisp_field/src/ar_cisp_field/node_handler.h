@@ -63,8 +63,8 @@ class AR_CISPFieldNodeHandler {
   /** @brief AR frame -> time queue. */
   typedef std::unordered_map<std::string, MaeveTimeQueue<double>>
       AR_TimeQueueMap;
-  /** @brief AR frame -> measurement map. */
-  typedef std::unordered_map<std::string, cv::Mat> MeasurementMap;
+  /** @brief AR frame -> scalar field. */
+  typedef std::unordered_map<std::string, cv::Mat> FieldMap;
 
   /**
    * @brief Callback for the camera info and image message stream.
@@ -154,8 +154,8 @@ class AR_CISPFieldNodeHandler {
   TxMap ar_tag_transforms_;
   /** @brief Mapping of AR tag frame id to time queue of max extents. */
   AR_TimeQueueMap ar_max_extent_time_queue_;
-  /** @brief Mapping of AR tag frame id to measurement field. */
-  MeasurementMap measurement_map_;
+  /** @brief Mapping of AR tag frame id to scalar field. */
+  FieldMap field_map_;
   /** @brief Tag-relative set of corner points. */
   AR_Points ar_corner_points_;
   /** @brief Camera model used for projecting AR tag points into image plane. */
