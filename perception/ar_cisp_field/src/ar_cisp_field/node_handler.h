@@ -30,7 +30,6 @@
 #include <sensor_msgs/Image.h>
 #include <tf2_ros/transform_listener.h>
 #include <Eigen/Dense>
-#include <boost/optional.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <array>
@@ -58,9 +57,6 @@ class AR_CISPFieldNodeHandler {
  private:
   /** @brief Set of points describing an AR tag. */
   typedef std::array<Eigen::Vector3d, 4> AR_Points;
-  /** @brief AR frame -> transform map. */
-  typedef std::unordered_map<std::string, boost::optional<Eigen::Affine3d>>
-      TxMap;
   /** @brief AR frame -> time queue. */
   typedef std::unordered_map<std::string, MaeveTimeQueue<double>>
       AR_TimeQueueMap;
@@ -135,19 +131,6 @@ class AR_CISPFieldNodeHandler {
    */
   AR_Points arTagCornerPoints(const Eigen::Affine3d& Tx) const;
 
-  /**
-   * @brief Fill the AR tag transform map.
-   *
-   * For any tag that does not have a transform available, the mapping is set to
-   * boost::none.
-   *
-   * @param timestamp The timestamp to use for transform queries.
-   *
-   * @return True if no errors were encountered during transform lookup;
-   * otherwise false.
-   */
-  bool fillAR_TagTransforms(const ros::Time& timestamp);
-
   /** @brief Node parameters. */
   AR_CISPFieldParams params_;
 
@@ -161,8 +144,8 @@ class AR_CISPFieldNodeHandler {
   tf2_ros::Buffer tf2_buffer_;
   /** @brief Listener for tf2 transforms. */
   tf2_ros::TransformListener tf2_listener_;
-  /** @brief Mapping of AR tag frame id to transform. */
-  TxMap ar_tag_transforms_;
+  /** @brief List of AR tag frame ids. */
+  std::vector<std::string> ar_tag_frames_;
   /** @brief Mapping of AR tag frame id to time queue of max extents. */
   AR_TimeQueueMap ar_max_extent_time_queue_;
   /** @brief Mapping of AR tag frame id to scalar field. */

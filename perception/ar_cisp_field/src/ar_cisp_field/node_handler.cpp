@@ -45,11 +45,12 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   }
 
   // Set up transform storage.
+  ar_tag_frames_.reserve(params_.ar_tag_ids.size());
   std::for_each(
       std::begin(params_.ar_tag_ids), std::end(params_.ar_tag_ids),
       [&](const int id) {
         const auto ar_frame_name = params_.ar_frame_prefix + std::to_string(id);
-        ar_tag_transforms_[ar_frame_name] = boost::none;
+        ar_tag_frames_.push_back(ar_frame_name);
         ar_max_extent_time_queue_[ar_frame_name] = MaeveTimeQueue<double>(
             params_.ar_time_queue_size, params_.ar_time_queue_max_gap);
       });
@@ -138,57 +139,37 @@ std::vector<cv::Point2d> AR_CISPFieldNodeHandler::projectPoints(
   return image_points;
 }
 
-bool AR_CISPFieldNodeHandler::fillAR_TagTransforms(const ros::Time& timestamp) {
-  if (!nh_.ok()) {
-    return false;
-  }
-
-  // Look up all AR tag transforms.
-  std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
-                [&](TxMap::value_type& pair) {
-                  try {
-                    pair.second =
-                        tf2::transformToEigen(tf2_buffer_.lookupTransform(
-                            params_.camera_frame_name, pair.first, timestamp));
-                  } catch (const tf2::TransformException& ex) {
-                    // ROS_WARN_STREAM(ex.what());
-                    pair.second = boost::none;
-                  }
-                });
-
-  return true;
-}
-
 void AR_CISPFieldNodeHandler::computePotentialFields(
     const ros::Time& timestamp) {
-  // Error check.
-  if (!fillAR_TagTransforms(timestamp)) {
-    ROS_WARN_STREAM("Failed to retrieve AR tag transforms.");
-    return;
-  }
-
   // Compute max extents for each AR tag and add to time queues.
   std::for_each(
-      std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
-      [&](const TxMap::value_type& pair) {
+      std::begin(ar_tag_frames_), std::end(ar_tag_frames_),
+      [&](const std::string& frame_name) {
         // Initialize the field for this tag by zeroing it out.
-        auto& field = field_map_[pair.first];
+        auto& field = field_map_[frame_name];
         field = cv::Mat::zeros(field.rows, field.cols, CV_64FC2);
+
         // Only use valid transforms (do this after field initialization).
-        if (!pair.second) {
+        Eigen::Affine3d T;
+        try {
+          T = tf2::transformToEigen(tf2_buffer_.lookupTransform(
+              params_.camera_frame_name, frame_name, timestamp));
+        } catch (const tf2::TransformException& ex) {
+          // ROS_WARN_STREAM(ex.what());
           return;
         }
+
         // Project AR tag onto image plane
-        const auto camera_points = arTagCornerPoints(*pair.second);
+        const auto camera_points = arTagCornerPoints(T);
         // Get max extent
         const auto s = computeMaxXY_Extent(camera_points);
         // Add to time queue
         const auto t = timestamp.toSec();
-        ar_max_extent_time_queue_[pair.first].insert(t, s);
+        ar_max_extent_time_queue_[frame_name].insert(t, s);
         // With time queue full, compute \tau and \dot{\tau}.
-        const auto s_dot = ar_max_extent_time_queue_[pair.first].dt(t);
+        const auto s_dot = ar_max_extent_time_queue_[frame_name].dt(t);
         if (!s_dot) {
-          ROS_WARN_STREAM("Failed to compute dt for AR tag: " << pair.first);
+          ROS_WARN_STREAM("Failed to compute dt for AR tag: " << frame_name);
           return;
         }
         const auto tau = (*s_dot == 0.0) ? INF : (s / *s_dot);
@@ -204,9 +185,9 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
 void AR_CISPFieldNodeHandler::initFieldStorage(const cv::Size& size) {
   static bool storage_set = false;
   if (!storage_set) {
-    std::for_each(std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
-                  [&](const TxMap::value_type& pair) {
-                    field_map_[pair.first] = cv::Mat::zeros(size, CV_64FC2);
+    std::for_each(std::begin(ar_tag_frames_), std::end(ar_tag_frames_),
+                  [&](const std::string& frame_name) {
+                    field_map_[frame_name] = cv::Mat::zeros(size, CV_64FC2);
                   });
     storage_set = true;
   }
@@ -226,7 +207,7 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   // Compute a potential field for each tag.
   computePotentialFields(msg->header.stamp);
 
-  // Compute fields into a composite ISP.
+  // Compose fields into a composite ISP.
   cv::Mat ISP = cv::Mat::zeros(camera_model_.fullResolution(), CV_64FC2);
   std::for_each(
       std::begin(field_map_), std::end(field_map_),
