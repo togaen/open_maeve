@@ -23,6 +23,7 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <limits>
 #include <tuple>
 
 namespace maeve_automation_core {
@@ -45,6 +46,11 @@ struct PotentialTransform {
   double alpha;
   /** @brief The beta shape parameter. */
   double beta;
+
+  /**
+   * @brief Constructor: enable default construction.
+   */
+  PotentialTransform();
 
   /**
    * @brief Constructor: Assign the interval constraint range.
@@ -72,6 +78,13 @@ struct PotentialTransform {
 
   static bool isValidInput(const cv::Mat& field);
 };  // struct ConstraintTransform
+
+template <ConstraintType T>
+PotentialTransform<T>::PotentialTransform()
+    : PotentialTransform(std::numeric_limits<double>::quiet_NaN(),
+                         std::numeric_limits<double>::quiet_NaN(),
+                         std::numeric_limits<double>::quiet_NaN(),
+                         std::numeric_limits<double>::quiet_NaN()) {}
 
 template <ConstraintType T>
 PotentialTransform<T>::PotentialTransform(const CRange& c_r, const double a,
