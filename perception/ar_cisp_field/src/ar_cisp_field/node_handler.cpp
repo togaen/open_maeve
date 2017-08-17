@@ -21,8 +21,7 @@
  */
 #include "ar_cisp_field/node_handler.h"
 
-#include <image_geometry/pinhole_camera_model.h>
-#include <ros/ros.h>
+#include <cv_bridge/cv_bridge.h>
 #include <tf2_eigen/tf2_eigen.h>
 
 #include <algorithm>
