@@ -83,7 +83,7 @@ double AR_CISPFieldNodeHandler::computeMaxXY_Extent(const AR_Points& points) {
   extents[3] = (points[1] - points[2]).squaredNorm();
   extents[4] = (points[1] - points[3]).squaredNorm();
   extents[5] = (points[2] - points[3]).squaredNorm();
-  return *std::max_element(std::begin(extents), std::end(extents));
+  return std::sqrt(*std::max_element(std::begin(extents), std::end(extents)));
 }
 
 AR_CISPFieldNodeHandler::AR_Points AR_CISPFieldNodeHandler::arTagCornerPoints(
