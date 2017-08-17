@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 
-#include "maeve_automation_core/cisp_field/isp.h"
 #include "maeve_automation_core/cisp_field/potential_transforms.h"
 #include "maeve_automation_core/cisp_field/visualize.h"
 
