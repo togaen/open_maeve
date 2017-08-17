@@ -30,7 +30,6 @@
 #include <string>
 #include <vector>
 
-#include "maeve_automation_core/cisp_field/potential_transforms.h"
 #include "maeve_automation_core/cisp_field/visualize.h"
 
 namespace maeve_automation_core {
@@ -61,6 +60,16 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   ar_corner_points_[1] = Eigen::Vector3d(half_extent, half_extent, 0.0);
   ar_corner_points_[2] = Eigen::Vector3d(-half_extent, half_extent, 0.0);
   ar_corner_points_[3] = Eigen::Vector3d(-half_extent, -half_extent, 0.0);
+
+  // Instantiate transforms.
+  const auto& hc_params = params_.hard_constraint_transform;
+  const auto& sc_params = params_.soft_constraint_transform;
+  hc_ = PotentialTransform<ConstraintType::HARD>(
+      hc_params.range_min, hc_params.range_max, hc_params.alpha,
+      hc_params.beta);
+  sc_ = PotentialTransform<ConstraintType::SOFT>(
+      sc_params.range_min, sc_params.range_max, sc_params.alpha,
+      sc_params.beta);
 
   // Image transport interface.
   image_transport::ImageTransport it(nh_);
@@ -158,16 +167,6 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
     return;
   }
 
-  // Instantiate transforms.
-  const auto& hc_params = params_.hard_constraint_transform;
-  const auto& sc_params = params_.soft_constraint_transform;
-  const PotentialTransform<ConstraintType::HARD> hc(
-      hc_params.range_min, hc_params.range_max, hc_params.alpha,
-      hc_params.beta);
-  const PotentialTransform<ConstraintType::SOFT> sc(
-      sc_params.range_min, sc_params.range_max, sc_params.alpha,
-      sc_params.beta);
-
   // Compute max extents for each AR tag and add to time queues.
   std::for_each(
       std::begin(ar_tag_transforms_), std::end(ar_tag_transforms_),
@@ -195,7 +194,7 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
         const auto tau = (*s_dot == 0.0) ? INF : (s / *s_dot);
         const auto tau_dot = 0.0;
         // Compute potential values.
-        const auto p_value = hc(cv::Scalar(tau, tau_dot));
+        const auto p_value = hc_(cv::Scalar(tau, tau_dot));
         // Create ISP.
         const auto image_corner_points = projectPoints(camera_points);
         cv::fillConvexPoly(field, image_corner_points, p_value);

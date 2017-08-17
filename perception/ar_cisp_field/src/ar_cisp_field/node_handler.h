@@ -39,6 +39,7 @@
 #include <vector>
 
 #include "ar_cisp_field/params.h"
+#include "maeve_automation_core/cisp_field/potential_transforms.h"
 #include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
 
 namespace maeve_automation_core {
@@ -170,5 +171,9 @@ class AR_CISPFieldNodeHandler {
   AR_Points ar_corner_points_;
   /** @brief Camera model used for projecting AR tag points into image plane. */
   image_geometry::PinholeCameraModel camera_model_;
+  /** @brief The hard constraint transform. */
+  PotentialTransform<ConstraintType::HARD> hc_;
+  /** @brief The soft constraint transform. */
+  PotentialTransform<ConstraintType::SOFT> sc_;
 };  // class AR_CISPFieldNodeHandler
 }  // namespace maeve_automation_core
