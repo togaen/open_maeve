@@ -110,11 +110,11 @@ class AR_CISPFieldNodeHandler {
    * @brief Compute the maximum extent in the XY projection of the given set of
    * AR tag points.
    *
-   * @param points The AR tag corner points.
+   * @param points The AR tag corner points projected onto the image plane.
    *
    * @return The maximum extent.
    */
-  static double computeMaxXY_Extent(const AR_Points& points);
+  static double computeMaxXY_Extent(const std::vector<cv::Point2d>& points);
 
   /**
    * @brief From a given AR tag pose, compute its corner point.

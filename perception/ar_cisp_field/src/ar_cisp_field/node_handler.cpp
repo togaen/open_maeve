@@ -80,18 +80,26 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
 
   // Visualize?
   if (!params_.viz_cisp_field_topic.empty()) {
+    ROS_INFO_STREAM("publishing visualization");
     viz_cisp_field_pub_ = it.advertise(params_.viz_cisp_field_topic, 1);
   }
 }
 
-double AR_CISPFieldNodeHandler::computeMaxXY_Extent(const AR_Points& points) {
+namespace {
+inline double squaredMag(const cv::Point2d& point) {
+  return point.x * point.x + point.y * point.y;
+}
+}  // namespace
+
+double AR_CISPFieldNodeHandler::computeMaxXY_Extent(
+    const std::vector<cv::Point2d>& points) {
   static std::array<double, 6> extents;
-  extents[0] = (points[0] - points[1]).squaredNorm();
-  extents[1] = (points[0] - points[2]).squaredNorm();
-  extents[2] = (points[0] - points[3]).squaredNorm();
-  extents[3] = (points[1] - points[2]).squaredNorm();
-  extents[4] = (points[1] - points[3]).squaredNorm();
-  extents[5] = (points[2] - points[3]).squaredNorm();
+  extents[0] = squaredMag(points[0] - points[1]);
+  extents[1] = squaredMag(points[0] - points[2]);
+  extents[2] = squaredMag(points[0] - points[3]);
+  extents[3] = squaredMag(points[1] - points[2]);
+  extents[4] = squaredMag(points[1] - points[3]);
+  extents[5] = squaredMag(points[2] - points[3]);
   return std::sqrt(*std::max_element(std::begin(extents), std::end(extents)));
 }
 
@@ -149,10 +157,12 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
         field = cv::Mat::zeros(field.rows, field.cols, CV_64FC2);
 
         // Only use valid transforms (do this after field initialization).
+        // TODO: add parameter for max transform age
         Eigen::Affine3d T;
         try {
-          T = tf2::transformToEigen(tf2_buffer_.lookupTransform(
-              params_.camera_frame_name, frame_name, timestamp));
+          T = tf2::transformToEigen(
+              tf2_buffer_.lookupTransform(params_.camera_frame_name, frame_name,
+                                          ros::Time(0) /*timestamp*/));
         } catch (const tf2::TransformException& ex) {
           // ROS_WARN_STREAM(ex.what());
           return;
@@ -160,24 +170,41 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
 
         // Project AR tag onto image plane
         const auto camera_points = arTagCornerPoints(T);
+        const auto image_corner_points = projectPoints(camera_points);
         // Get max extent
-        const auto s = computeMaxXY_Extent(camera_points);
+        const auto s = computeMaxXY_Extent(image_corner_points);
         // Add to time queue
         const auto t = timestamp.toSec();
         ar_max_extent_time_queue_[frame_name].insert(t, s);
         // With time queue full, compute \tau and \dot{\tau}.
+        // TODO: add damper term to time queue dt function.
         const auto s_dot = ar_max_extent_time_queue_[frame_name].dt(t);
         if (!s_dot) {
           ROS_WARN_STREAM("Failed to compute dt for AR tag: " << frame_name);
           return;
         }
-        const auto tau = (*s_dot == 0.0) ? INF : (s / *s_dot);
+        // TODO: double check this
+        const auto tau = (*s_dot == 0.0) ? INF : 2. * (s / *s_dot);
         const auto tau_dot = 0.0;
+        if (std::isfinite(tau)) {
+          ROS_INFO_STREAM(frame_name << " - tau: " << tau
+                                     << ", tau_dot: " << tau_dot);
+        }
         // Compute potential values.
         const auto p_value = hc_(cv::Scalar(tau, tau_dot));
         // Create ISP.
-        const auto image_corner_points = projectPoints(camera_points);
-        cv::fillConvexPoly(field, image_corner_points, p_value);
+        {
+          std::vector<cv::Point2i> pts;
+          pts.reserve(image_corner_points.size());
+          std::for_each(std::begin(image_corner_points),
+                        std::end(image_corner_points),
+                        [&](const cv::Point2d& pt) {
+                          pts.push_back(cv::Point2i(static_cast<int>(pt.x),
+                                                    static_cast<int>(pt.y)));
+                        });
+          // cv::fillConvexPoly does not work here for some reason.
+          cv::fillPoly(field, pts, p_value);
+        }
       });
 }
 
