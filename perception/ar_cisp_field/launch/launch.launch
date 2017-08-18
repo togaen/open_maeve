@@ -8,4 +8,5 @@
       command="load"
       file="$(find ar_cisp_field)/params/params.yaml"/>
   </node>
+  <include file="$(find ar_cisp_field)/launch/markers.launch"/>
 </launch>
