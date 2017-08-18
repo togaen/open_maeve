@@ -42,6 +42,14 @@ bool MaeveTimeQueue<T_Element>::empty() const {
 }
 
 template <typename T_Element>
+boost::optional<double> MaeveTimeQueue<T_Element>::mostRecentTime() const {
+  if (cb_.empty()) {
+    return boost::none;
+  }
+  return std::get<0>(cb_.back());
+}
+
+template <typename T_Element>
 typename boost::circular_buffer<
     typename MaeveTimeQueue<T_Element>::ElementType>::size_type
 MaeveTimeQueue<T_Element>::size() const {
