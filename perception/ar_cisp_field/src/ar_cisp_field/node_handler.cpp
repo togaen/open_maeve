@@ -139,7 +139,7 @@ std::vector<cv::Point2d> AR_CISPFieldNodeHandler::projectPoints(
 
   // Project camera_points into image_points.
   for (auto i = 0; i < 4; ++i) {
-    image_points[i] = camera_model_.project3dToPixel(camera_points[i]);
+    image_points.push_back(camera_model_.project3dToPixel(camera_points[i]));
   }
 
   // Done.
