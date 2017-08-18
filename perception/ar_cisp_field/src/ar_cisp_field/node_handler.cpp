@@ -202,11 +202,7 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
                           pts.push_back(cv::Point2i(static_cast<int>(pt.x),
                                                     static_cast<int>(pt.y)));
                         });
-          // cv::fillConvexPoly does not work here for some reason.
-          // Array of arrays for cv::fillPoly.
-          std::vector<std::vector<cv::Point2i>> aoa;
-          aoa.push_back(pts);
-          cv::fillPoly(field, aoa, p_value);
+          cv::fillConvexPoly(field, pts, p_value);
         }
       });
 }
