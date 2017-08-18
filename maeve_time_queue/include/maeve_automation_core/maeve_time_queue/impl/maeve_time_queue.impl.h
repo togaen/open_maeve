@@ -154,8 +154,7 @@ MaeveTimeQueue<T_Element>::getBoundingIterators(const double time) const {
   }
 
   // it_ub always points one element ahead, decrement it_lb to get other bound.
-  --it_lb;
-  return std::make_tuple(it_lb, it_ub);
+  return std::make_tuple(--it_lb, it_ub);
 }
 
 template <typename T_Element>
