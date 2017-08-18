@@ -71,28 +71,26 @@ TEST(MTQ, testDifferentiation2) {
   EXPECT_TRUE(mtq.insert(4.0, 16.0));
 
   // Should work.
-  if (const auto dt = mtq.dt(0.5)) {
+  {
+    const auto dt = mtq.dt(0.5);
+    ASSERT_FALSE(!dt);
     EXPECT_NEAR(*dt, 1.0, epsilon);
-  } else {
-    EXPECT_TRUE(false);
   }
 
-  if (const auto dt = mtq.dt(2.5)) {
+  {
+    const auto dt = mtq.dt(2.5);
+    ASSERT_FALSE(!dt);
     EXPECT_NEAR(*dt, 5.0, epsilon);
-  } else {
-    EXPECT_TRUE(false);
   }
 
-  // Shouldn't work for first element, or outside elements.
-  EXPECT_TRUE(!mtq.dt(0.0));
-  EXPECT_TRUE(!mtq.dt(-1.0));
-  EXPECT_TRUE(!mtq.dt(4.5));
-
-  // Should work.
-  if (const auto dt = mtq.dt(4.0)) {
+  // Test boundary cases.
+  EXPECT_TRUE(!mtq.dt(0.0));      // first element
+  EXPECT_TRUE(!mtq.dt(-1.0));     // outside element
+  EXPECT_TRUE(!mtq.dt(4.5));      // outside element
+  {
+    const auto dt = mtq.dt(4.0);  // last element
+    ASSERT_FALSE(!dt);
     EXPECT_NEAR(*dt, 7.0, epsilon);
-  } else {
-    EXPECT_TRUE(false);
   }
 }
 
@@ -173,6 +171,17 @@ TEST(MTQ, tests) {
   const auto point_five = mtq.get(0.5);
   ASSERT_FALSE(!point_five);
   EXPECT_EQ(*point_five, 5.0);
+
+  // Test boundary cases.
+  const auto exact_match = mtq.get(0.4);
+  ASSERT_FALSE(!exact_match);
+  EXPECT_EQ(*exact_match, 4.0);
+  const auto last_el = mtq.get(0.5);
+  ASSERT_FALSE(!last_el);
+  EXPECT_EQ(*last_el, 5.0);
+  const auto first_el = mtq.get(0.3);
+  ASSERT_FALSE(!first_el);
+  EXPECT_EQ(*first_el, 3.0);
 
   // Test clearing.
   EXPECT_TRUE(mtq.insert(10.0, 1.0));
