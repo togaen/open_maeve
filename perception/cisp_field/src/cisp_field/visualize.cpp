@@ -48,7 +48,8 @@ cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
 
   // Map (-\infty, 0) to blue
   cv::Mat attractive_forces;
-  cv::threshold(tau_channel, attractive_forces, 0.0, 0.0, cv::THRESH_TOZERO_INV);
+  cv::threshold(tau_channel, attractive_forces, 0.0, 0.0,
+                cv::THRESH_TOZERO_INV);
 
   // Scale according to user-defined value range.
   attractive_forces.convertTo(b_channel, CV_8U, 255.0 / lower_bound);
