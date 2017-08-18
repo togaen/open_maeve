@@ -129,6 +129,7 @@ TEST(MTQ, testEmpty) {
   EXPECT_TRUE(mtq.empty());
   EXPECT_FALSE(mtq.insert(0.0, 1.0));
   EXPECT_TRUE(mtq.empty());
+  EXPECT_TRUE(!mtq.mostRecentTime());
 }
 
 TEST(MTQ, tests) {
@@ -157,6 +158,10 @@ TEST(MTQ, tests) {
   EXPECT_TRUE(mtq.insert(0.4, 4.0));
   EXPECT_TRUE(mtq.insert(0.5, 5.0));
   EXPECT_EQ(mtq.size(), 3);
+
+  const auto most_recent_time = mtq.mostRecentTime();
+  ASSERT_FALSE(!most_recent_time);
+  EXPECT_EQ(*most_recent_time, 0.5);
 
   // Test interpolation.
   const auto point_three = mtq.get(0.3);

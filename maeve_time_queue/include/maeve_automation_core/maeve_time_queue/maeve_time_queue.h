@@ -102,6 +102,14 @@ class MaeveTimeQueue {
    */
   bool empty() const;
 
+  /**
+   * @brief Get the most recent time index of an element in the queue.
+   *
+   * @return If the queue is non-empty, a nullable object containing time is
+   * returned; otherwise it is a null object.
+   */
+  boost::optional<double> mostRecentTime() const;
+
  private:
   /**
    * @brief Retrieve a tuple of bounding iterators for a given time.
