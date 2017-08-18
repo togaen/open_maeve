@@ -24,7 +24,24 @@
 #include <opencv2/opencv.hpp>
 
 namespace maeve_automation_core {
+/**
+ * @brief Compute a visualization of an Image Space Potential field.
+ *
+ * This function maps repulsive forces to the red channel and attractive forces
+ * to the blue channel. The parameters 'lower_bound' and 'upper_bound' specify
+ * real-valued ranges [lower_bound, 0] and [0, upper_bound] that map attractive
+ * and repulsive potential values, respectively, onto [0, 255] for visualizing.
+ * Potential values outside [lower_bound, upper_bound] are saturated at 255. To
+ * be meaningful, the bounds must satisfy lower_bound < 0 < upper_bound.
+ *
+ * @param isp The image space potential field.
+ * @param lower_bound The lower saturation bound.
+ * @param upper_bound The upper saturation bound.
+ *
+ * @return An image that visualizes repulsive potentials as red and attractive
+ * potentials as blue, with color intensity proportional to potential magnitude.
+ */
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
-                                     const double hard_constraint_scale,
-                                     const double soft_constraint_scale);
+                                     const double lower_bound,
+                                     const double upper_bound);
 }  // namespace maeve_automation_core

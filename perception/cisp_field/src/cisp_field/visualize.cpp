@@ -26,25 +26,16 @@
 
 namespace maeve_automation_core {
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
-                                     const double hard_constraint_scale,
-                                     const double soft_constraint_scale) {
+                                     const double lower_bound,
+                                     const double upper_bound) {
   // Split out 0th and 1st order channels.
   cv::Mat channel[2];
   cv::split(isp, channel);
+  const auto& tau_channel = channel[0];
 
   // Map (0, \infty] to red: threshold everything \in [-\infty, 0] to 0.
   cv::Mat repulsive_forces;
-  cv::threshold(channel[0], repulsive_forces, 0.0, 0.0, cv::THRESH_TOZERO);
-
-  // Locate infinite values; only positive infinity may be present in ISP.
-  const auto finite_values_mask =
-      (repulsive_forces < std::numeric_limits<double>::infinity());
-
-  // Find extremal finite values in array.
-  auto min_finite_val = std::numeric_limits<double>::quiet_NaN();
-  auto max_finite_val = std::numeric_limits<double>::quiet_NaN();
-  cv::minMaxIdx(repulsive_forces, &min_finite_val, &max_finite_val, 0, 0,
-                finite_values_mask);
+  cv::threshold(tau_channel, repulsive_forces, 0.0, 0.0, cv::THRESH_TOZERO);
 
   // Storage for color channels.
   std::vector<cv::Mat> color_channels(3);
@@ -53,14 +44,14 @@ cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
   auto& b_channel = color_channels[0];
 
   // Scale according to user-defined value range.
-  repulsive_forces.convertTo(r_channel, CV_8U, 255.0 / hard_constraint_scale);
+  repulsive_forces.convertTo(r_channel, CV_8U, 255.0 / upper_bound);
 
   // Map (-\infty, 0) to blue
   cv::Mat attractive_forces;
-  cv::threshold(channel[0], attractive_forces, 0.0, 0.0, cv::THRESH_TOZERO_INV);
+  cv::threshold(tau_channel, attractive_forces, 0.0, 0.0, cv::THRESH_TOZERO_INV);
 
   // Scale according to user-defined value range.
-  attractive_forces.convertTo(b_channel, CV_8U, -255.0 / soft_constraint_scale);
+  attractive_forces.convertTo(b_channel, CV_8U, 255.0 / lower_bound);
 
   // Map 0 to black: this is implicit in the construction of the visualization.
   g_channel = cv::Mat::zeros(b_channel.rows, b_channel.cols, CV_8U);
