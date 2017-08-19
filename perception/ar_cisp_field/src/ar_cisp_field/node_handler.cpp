@@ -183,12 +183,13 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
                   // Add to time queue
                   const auto t = T_timestamp.toSec();
                   ar_max_extent_time_queue_[frame_name].insert(t, s);
-                  // With time queue full, compute \tau and \dot{\tau}.
-                  // TODO: add damper term to time queue dt function.
+                  // With time queue full, compute measurement values.
+                  // TODO: should put a filter on these dt values.
                   const auto dt = ar_max_extent_time_queue_[frame_name].dt(t);
                   if (!dt) {
-                    // ROS_WARN_STREAM("Failed to compute dt for AR tag: " <<
-                    // frame_name);
+                    // If this happens, that backward differencing operation
+                    // failed; probably the queue has recently become empty.
+                    // It's expected and probably not an error.
                     return;
                   }
                   const auto t_delta = std::get<0>(*dt);
