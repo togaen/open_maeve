@@ -39,7 +39,7 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>ar_track_alvar</depend>
+  <exec_depend>ar_track_alvar</exec_depend>
   <depend>cisp_field</depend>
   <depend>ros_parameter_loading</depend>
   <depend>geometry_msgs</depend>
