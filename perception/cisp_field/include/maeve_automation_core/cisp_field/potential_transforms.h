@@ -40,8 +40,10 @@ enum class ConstraintType { HARD, SOFT };  // enum class ConstraintType
  */
 template <ConstraintType T>
 struct PotentialTransform {
-  /** @brief The closed interval contraint range. */
-  CRange c_range;
+  /** @brief The minimum of the closed interval constraint range. */
+  double range_min;
+  /** @brief The maximum of the closed interval constraint range. */
+  double range_max;
   /** @brief The alpha shape parameter. */
   double alpha;
   /** @brief The beta shape parameter. */
@@ -55,17 +57,13 @@ struct PotentialTransform {
   /**
    * @brief Constructor: Assign the interval constraint range.
    *
-   * @param c_r The interval constraint range.
+   * @param r_min The minimum of the interval constraint range.
+   * @param r_max The maximum of the interval constraint range.
    * @param a The alpha shape parameter.
    * @param b The beta shape parameter.
    */
-  PotentialTransform(const CRange& c_r, const double a, const double b);
-
-  /**
-   * Convenience overload of constructor.
-   */
-  PotentialTransform(const double range_min, const double range_max,
-                     const double a, const double b);
+  PotentialTransform(const double r_min, const double r_max, const double a,
+                     const double b);
 
   /**
    * @brief Function definition for 0th order potential value transform.
@@ -87,15 +85,10 @@ PotentialTransform<T>::PotentialTransform()
                          std::numeric_limits<double>::quiet_NaN()) {}
 
 template <ConstraintType T>
-PotentialTransform<T>::PotentialTransform(const CRange& c_r, const double a,
+PotentialTransform<T>::PotentialTransform(const double r_min,
+                                          const double r_max, const double a,
                                           const double b)
-    : c_range(c_r), alpha(a), beta(b) {}
-
-template <ConstraintType T>
-PotentialTransform<T>::PotentialTransform(const double range_min,
-                                          const double range_max,
-                                          const double a, const double b)
-    : PotentialTransform(std::make_tuple(range_min, range_max), a, b) {}
+    : range_min(r_min), range_max(r_max), alpha(a), beta(b) {}
 
 template <>
 cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
