@@ -46,6 +46,9 @@
        http://wiki.ros.org/opencv3#package.xml -->
   <depend>cv_bridge</depend>
 
+  <!-- Get Eigen via transient dependency -->
+  <depend>eigen_conversions</depend>
+
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
 

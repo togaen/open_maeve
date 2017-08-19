@@ -17,6 +17,7 @@ add_definitions(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
+  eigen_conversions
   roscpp
 )
 
@@ -112,7 +113,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES cisp_field
- CATKIN_DEPENDS roscpp cv_bridge
+ CATKIN_DEPENDS roscpp cv_bridge eigen_conversions
 #  DEPENDS system_lib
 )
 
@@ -129,6 +130,7 @@ include_directories(
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
+  src/${PROJECT_NAME}/tau.cpp
   src/${PROJECT_NAME}/visualize.cpp
   src/${PROJECT_NAME}/potential_transforms.cpp
 )
@@ -154,9 +156,9 @@ add_library(${PROJECT_NAME}
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(${PROJECT_NAME}
+   ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
@@ -198,10 +200,10 @@ add_library(${PROJECT_NAME}
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_cisp_field.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+catkin_add_gtest(${PROJECT_NAME}-test test/test_cisp_field.cpp)
+if(TARGET ${PROJECT_NAME}-test)
+   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
