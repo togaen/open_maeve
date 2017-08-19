@@ -160,10 +160,13 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
         // Only use valid transforms (do this after field initialization).
         // TODO: add parameter for max transform age
         Eigen::Affine3d T;
+        ros::Time T_timestamp;
         try {
-          T = tf2::transformToEigen(
+          const auto T_msg =
               tf2_buffer_.lookupTransform(params_.camera_frame_name, frame_name,
-                                          ros::Time(0) /*timestamp*/));
+                                          ros::Time(0) /*timestamp*/);
+          T = tf2::transformToEigen(T_msg);
+          T_timestamp = T_msg.header.stamp;
         } catch (const tf2::TransformException& ex) {
           // ROS_WARN_STREAM(ex.what());
           return;
@@ -175,7 +178,7 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
         // Get max extent
         const auto s = computeMaxXY_Extent(image_corner_points);
         // Add to time queue
-        const auto t = timestamp.toSec();
+        const auto t = T_timestamp.toSec();
         ar_max_extent_time_queue_[frame_name].insert(t, s);
         // With time queue full, compute \tau and \dot{\tau}.
         // TODO: add damper term to time queue dt function.
