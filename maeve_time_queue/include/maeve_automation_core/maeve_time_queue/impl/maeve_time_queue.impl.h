@@ -42,14 +42,6 @@ bool MaeveTimeQueue<T_Element>::empty() const {
 }
 
 template <typename T_Element>
-boost::optional<double> MaeveTimeQueue<T_Element>::mostRecentTime() const {
-  if (cb_.empty()) {
-    return boost::none;
-  }
-  return std::get<0>(cb_.back());
-}
-
-template <typename T_Element>
 typename boost::circular_buffer<
     typename MaeveTimeQueue<T_Element>::ElementType>::size_type
 MaeveTimeQueue<T_Element>::size() const {
@@ -90,8 +82,8 @@ bool MaeveTimeQueue<T_Element>::insert(const double time, const T_Element& el) {
 }
 
 template <typename T_Element>
-boost::optional<T_Element> MaeveTimeQueue<T_Element>::dt(
-    const double time) const {
+boost::optional<typename MaeveTimeQueue<T_Element>::ElementType>
+MaeveTimeQueue<T_Element>::dt(const double time) const {
   if (size() < 2) {
     return boost::none;
   }
@@ -120,7 +112,7 @@ boost::optional<T_Element> MaeveTimeQueue<T_Element>::dt(
   const auto h = std::get<0>(*it_ub) - std::get<0>(*it_lb);
   const auto& val_prv = std::get<1>(*it_lb);
   const auto& val_nxt = std::get<1>(*it_ub);
-  return (val_nxt - val_prv) / h;
+  return std::make_tuple(h, (val_nxt - val_prv) / h);
 }
 
 template <typename T_Element>
