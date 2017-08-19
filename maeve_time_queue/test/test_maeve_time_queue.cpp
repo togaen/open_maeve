@@ -39,7 +39,8 @@ TEST(MTQ, testDifferentiation1) {
 
   // Should work.
   if (const auto dt = mtq.dt(0.5)) {
-    EXPECT_NEAR(*dt, -1.0, epsilon);
+    EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
+    EXPECT_NEAR(std::get<1>(*dt), -1.0, epsilon);
   } else {
     EXPECT_TRUE(false);
   }
@@ -51,7 +52,8 @@ TEST(MTQ, testDifferentiation1) {
 
   // Should work.
   if (const auto dt = mtq.dt(4.0)) {
-    EXPECT_NEAR(*dt, -1.0, epsilon);
+    EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
+    EXPECT_NEAR(std::get<1>(*dt), -1.0, epsilon);
   } else {
     EXPECT_TRUE(false);
   }
@@ -74,13 +76,15 @@ TEST(MTQ, testDifferentiation2) {
   {
     const auto dt = mtq.dt(0.5);
     ASSERT_FALSE(!dt);
-    EXPECT_NEAR(*dt, 1.0, epsilon);
+    EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
+    EXPECT_NEAR(std::get<1>(*dt), 1.0, epsilon);
   }
 
   {
     const auto dt = mtq.dt(2.5);
     ASSERT_FALSE(!dt);
-    EXPECT_NEAR(*dt, 5.0, epsilon);
+    EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
+    EXPECT_NEAR(std::get<1>(*dt), 5.0, epsilon);
   }
 
   // Test boundary cases.
@@ -90,7 +94,8 @@ TEST(MTQ, testDifferentiation2) {
   {
     const auto dt = mtq.dt(4.0);  // last element
     ASSERT_FALSE(!dt);
-    EXPECT_NEAR(*dt, 7.0, epsilon);
+    EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
+    EXPECT_NEAR(std::get<1>(*dt), 7.0, epsilon);
   }
 }
 
@@ -129,7 +134,6 @@ TEST(MTQ, testEmpty) {
   EXPECT_TRUE(mtq.empty());
   EXPECT_FALSE(mtq.insert(0.0, 1.0));
   EXPECT_TRUE(mtq.empty());
-  EXPECT_TRUE(!mtq.mostRecentTime());
 }
 
 TEST(MTQ, tests) {
@@ -158,10 +162,6 @@ TEST(MTQ, tests) {
   EXPECT_TRUE(mtq.insert(0.4, 4.0));
   EXPECT_TRUE(mtq.insert(0.5, 5.0));
   EXPECT_EQ(mtq.size(), 3);
-
-  const auto most_recent_time = mtq.mostRecentTime();
-  ASSERT_FALSE(!most_recent_time);
-  EXPECT_EQ(*most_recent_time, 0.5);
 
   // Test interpolation.
   const auto point_three = mtq.get(0.3);

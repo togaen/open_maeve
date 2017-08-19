@@ -83,10 +83,11 @@ class MaeveTimeQueue {
    *
    * @param time The query time for the finite difference.
    *
-   * @return The time derivative of the element at 'time', or boost::none if the
-   * operation fails.
+   * @return A tuple consisting of the time delta (first element) used to
+   * compute the derivative and the derivative value (second element). If a
+   * derivative cannot be computed, boost::none is returned.
    */
-  boost::optional<T_Element> dt(const double time) const;
+  boost::optional<ElementType> dt(const double time) const;
 
   /**
    * @brief Return the number of elements in the queue.
@@ -101,14 +102,6 @@ class MaeveTimeQueue {
    * @return True if the queue is empty; otherwise false.
    */
   bool empty() const;
-
-  /**
-   * @brief Get the most recent time index of an element in the queue.
-   *
-   * @return If the queue is non-empty, a nullable object containing time is
-   * returned; otherwise it is a null object.
-   */
-  boost::optional<double> mostRecentTime() const;
 
  private:
   /**
