@@ -1,0 +1,8 @@
+<launch>
+  <node
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    output="screen"
+    args="-d $(find ar_cisp_field)/rviz_configs/config.rviz"/>
+</launch>
