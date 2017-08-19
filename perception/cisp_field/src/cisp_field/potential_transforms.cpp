@@ -32,21 +32,53 @@ static const auto INF = std::numeric_limits<double>::infinity();
 template <>
 cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
     const cv::Scalar& pixel_value) const {
-  // Compute 0th order potential.
+  auto return_value = pixel_value;
+  // Compute potentials.
+  if (pixel_value[0] < range_min) {
+    // 0th order.
+    return_value[0] = alpha * std::pow(range_min - pixel_value[0], -beta);
+    // 1st order.
+    return_value[1] = -alpha * beta * pixel_value[1] *
+                      std::pow(range_min - pixel_value[0], -beta - 1.0);
+  } else if (pixel_value[0] > range_max) {
+    // 0th order.
+    return_value[0] = alpha * std::pow(pixel_value[0] - range_max, -beta);
+    // 1st order.
+    return_value[1] = -alpha * beta * pixel_value[1] *
+                      std::pow(pixel_value[0] - range_max, -beta - 1.0);
+  } else {
+    // 0th order.
+    return_value[0] = INF;
+    // 1st order.
+    return_value[1] = 0.0;
+  }
 
-  // Compute 1st order potential.
-
-  return pixel_value;
+  // Done.
+  return return_value;
 }
 
 template <>
 cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
     const cv::Scalar& pixel_value) const {
+  auto return_value = pixel_value;
+
+  // Range midpoint.
+  const auto mid = (range_max + range_min) / 2.0;
+
+  // Exponential term.
+  const auto e_term = std::exp(-alpha * (pixel_value[0] - mid));
+
   // Compute 0th order potential.
+  return_value[0] =
+      range_min + (range_max - range_min) / std::pow(1.0 + e_term, 1.0 / beta);
 
   // Compute 1st order potential.
+  const auto numerator = alpha * (range_max - range_min) * e_term;
+  const auto denominator = beta * std::pow(1.0 + e_term, 1.0 + 1.0 / beta);
+  return_value[0] = pixel_value[1] * numerator / denominator;
 
-  return pixel_value;
+  // Done.
+  return return_value;
 }
 
 }  // namespace maeve_automation_core

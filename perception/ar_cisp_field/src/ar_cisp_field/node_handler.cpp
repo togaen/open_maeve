@@ -191,12 +191,15 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
         const auto s_dot = std::get<1>(*dt);
         const auto tau = tauFromDiscreteScaleDt(s, s_dot, t_delta);
         const auto tau_dot = 0.0;
+
+        // Compute potential values.
+        const auto p_value = hc_(cv::Scalar(tau, tau_dot));
         if (std::isfinite(tau)) {
           ROS_INFO_STREAM(frame_name << " - tau: " << tau
                                      << ", tau_dot: " << tau_dot);
+          ROS_INFO_STREAM(frame_name << " - k0: " << p_value[0]
+                                     << ", k1: " << p_value[1]);
         }
-        // Compute potential values.
-        const auto p_value = hc_(cv::Scalar(tau, tau_dot));
         // Create ISP.
         {
           std::vector<cv::Point2i> pts;

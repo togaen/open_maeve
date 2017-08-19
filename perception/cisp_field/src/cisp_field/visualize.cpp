@@ -25,6 +25,10 @@
 #include "maeve_automation_core/cisp_field/visualize.h"
 
 namespace maeve_automation_core {
+  namespace {
+    static const auto INF = std::numeric_limits<double>::infinity();
+  }  // namespace
+
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
                                      const double lower_bound,
                                      const double upper_bound) {
@@ -33,9 +37,15 @@ cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
   cv::split(isp, channel);
   const auto& tau_channel = channel[0];
 
+  // Get a mask of infinite values.
+  cv::Mat inf_mask = (tau_channel == INF);
+
   // Map (0, \infty] to red: threshold everything \in [-\infty, 0] to 0.
   cv::Mat repulsive_forces;
   cv::threshold(tau_channel, repulsive_forces, 0.0, 0.0, cv::THRESH_TOZERO);
+
+  // Set the infinite values to upper bound.
+  repulsive_forces.setTo(upper_bound, inf_mask);
 
   // Storage for color channels.
   std::vector<cv::Mat> color_channels(3);
