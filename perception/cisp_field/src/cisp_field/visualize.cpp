@@ -25,9 +25,9 @@
 #include "maeve_automation_core/cisp_field/visualize.h"
 
 namespace maeve_automation_core {
-  namespace {
-    static const auto INF = std::numeric_limits<double>::infinity();
-  }  // namespace
+namespace {
+static const auto INF = std::numeric_limits<double>::infinity();
+}  // namespace
 
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
                                      const double lower_bound,

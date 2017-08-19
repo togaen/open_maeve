@@ -38,6 +38,13 @@ bool AR_CISPFieldParams::PotentialTransform::valid() const {
   return true;
 }
 
+AR_CISPFieldParams::AR_CISPFieldParams()
+    : verbose(false),
+      ar_time_queue_size(-1),
+      ar_time_queue_max_gap(NaN),
+      ar_tag_max_age(NaN),
+      ar_tag_size(NaN) {}
+
 bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
   LOAD_PARAM(camera_topic);
