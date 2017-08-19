@@ -60,11 +60,17 @@ struct AR_CISPFieldParams : public ParamsBase {
   /** @brief Soft constraint transform parameters. */
   PotentialTransform soft_constraint_transform;
 
+  /** @brief Print terminal output? */
+  bool verbose;
+
   /** @brief Number of elements to reserve for circular buffer. */
   int ar_time_queue_size;
 
   /** @brief Max time gap for elements in the time queue. */
   double ar_time_queue_max_gap;
+
+  /** @brief Max age of an AR tag timestamp to use before signalling error. */
+  double ar_tag_max_age;
 
   /** @brief Size along one edge of AR tag (meters). */
   double ar_tag_size;

@@ -81,7 +81,7 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
 
   // Visualize?
   if (!params_.viz_cisp_field_topic.empty()) {
-    ROS_INFO_STREAM("publishing visualization");
+    // ROS_INFO_STREAM("publishing visualization");
     viz_cisp_field_pub_ = it.advertise(params_.viz_cisp_field_topic, 1);
   }
 }
@@ -150,69 +150,77 @@ std::vector<cv::Point2d> AR_CISPFieldNodeHandler::projectPoints(
 void AR_CISPFieldNodeHandler::computePotentialFields(
     const ros::Time& timestamp) {
   // Compute max extents for each AR tag and add to time queues.
-  std::for_each(
-      std::begin(ar_tag_frames_), std::end(ar_tag_frames_),
-      [&](const std::string& frame_name) {
-        // Initialize the field for this tag by zeroing it out.
-        auto& field = field_map_[frame_name];
-        field = cv::Mat::zeros(field.rows, field.cols, CV_64FC2);
+  std::for_each(std::begin(ar_tag_frames_), std::end(ar_tag_frames_),
+                [&](const std::string& frame_name) {
+                  // Initialize the field for this tag by zeroing it out.
+                  auto& field = field_map_[frame_name];
+                  field = cv::Mat::zeros(field.rows, field.cols, CV_64FC2);
 
-        // Only use valid transforms (do this after field initialization).
-        // TODO: add parameter for max transform age
-        Eigen::Affine3d T;
-        ros::Time T_timestamp;
-        try {
-          const auto T_msg =
-              tf2_buffer_.lookupTransform(params_.camera_frame_name, frame_name,
-                                          ros::Time(0) /*timestamp*/);
-          T = tf2::transformToEigen(T_msg);
-          T_timestamp = T_msg.header.stamp;
-        } catch (const tf2::TransformException& ex) {
-          // ROS_WARN_STREAM(ex.what());
-          return;
-        }
+                  // Only use valid transforms.
+                  Eigen::Affine3d T;
+                  ros::Time T_timestamp;
+                  try {
+                    const auto T_msg = tf2_buffer_.lookupTransform(
+                        params_.camera_frame_name, frame_name, ros::Time(0));
+                    T = tf2::transformToEigen(T_msg);
+                    T_timestamp = T_msg.header.stamp;
+                    const auto age = (timestamp - T_timestamp).toSec();
 
-        // Project AR tag onto image plane
-        const auto camera_points = arTagCornerPoints(T);
-        const auto image_corner_points = projectPoints(camera_points);
-        // Get max extent
-        const auto s = computeMaxXY_Extent(image_corner_points);
-        // Add to time queue
-        const auto t = T_timestamp.toSec();
-        ar_max_extent_time_queue_[frame_name].insert(t, s);
-        // With time queue full, compute \tau and \dot{\tau}.
-        // TODO: add damper term to time queue dt function.
-        const auto dt = ar_max_extent_time_queue_[frame_name].dt(t);
-        if (!dt) {
-          ROS_WARN_STREAM("Failed to compute dt for AR tag: " << frame_name);
-          return;
-        }
-        const auto t_delta = std::get<0>(*dt);
-        const auto s_dot = std::get<1>(*dt);
-        const auto tau = tauFromDiscreteScaleDt(s, s_dot, t_delta);
-        const auto tau_dot = 0.0;
+                    // If the transform is too old, the detection is stale.
+                    if (age > params_.ar_tag_max_age) {
+                      return;
+                    }
+                  } catch (const tf2::TransformException& ex) {
+                    // ROS_WARN_STREAM(ex.what());
+                    return;
+                  }
 
-        // Compute potential values.
-        const auto p_value = hc_(cv::Scalar(tau, tau_dot));
-        if (std::isfinite(tau)) {
-          ROS_INFO_STREAM(frame_name << " - tau: " << tau
-                                     << ", tau_dot: " << tau_dot);
-          ROS_INFO_STREAM(frame_name << " - k0: " << p_value[0]
-                                     << ", k1: " << p_value[1]);
-        }
-        // Create ISP.
-        {
-          std::vector<cv::Point2i> pts;
-          pts.reserve(image_corner_points.size());
-          std::for_each(std::begin(image_corner_points),
+                  // Project AR tag onto image plane
+                  const auto camera_points = arTagCornerPoints(T);
+                  const auto image_corner_points = projectPoints(camera_points);
+                  // Get max extent
+                  const auto s = computeMaxXY_Extent(image_corner_points);
+                  // Add to time queue
+                  const auto t = T_timestamp.toSec();
+                  ar_max_extent_time_queue_[frame_name].insert(t, s);
+                  // With time queue full, compute \tau and \dot{\tau}.
+                  // TODO: add damper term to time queue dt function.
+                  const auto dt = ar_max_extent_time_queue_[frame_name].dt(t);
+                  if (!dt) {
+                    // ROS_WARN_STREAM("Failed to compute dt for AR tag: " <<
+                    // frame_name);
+                    return;
+                  }
+                  const auto t_delta = std::get<0>(*dt);
+                  const auto s_dot = std::get<1>(*dt);
+                  const auto tau = tauFromDiscreteScaleDt(s, s_dot, t_delta);
+                  const auto tau_dot = 0.0;
+
+                  // Compute potential values.
+                  const auto p_value = hc_(cv::Scalar(tau, tau_dot));
+
+                  // Print output?
+                  if (params_.verbose && std::isfinite(tau)) {
+                    ROS_INFO_STREAM(frame_name << " - tau: " << tau
+                                               << ", tau_dot: " << tau_dot);
+                    ROS_INFO_STREAM(frame_name << " - k0: " << p_value[0]
+                                               << ", k1: " << p_value[1]);
+                  }
+
+                  // Create ISP.
+                  {
+                    std::vector<cv::Point2i> pts;
+                    pts.reserve(image_corner_points.size());
+                    std::for_each(
+                        std::begin(image_corner_points),
                         std::end(image_corner_points),
                         [&](const cv::Point2d& pt) {
                           pts.push_back(cv::Point2i(static_cast<int>(pt.x),
                                                     static_cast<int>(pt.y)));
                         });
-          cv::fillConvexPoly(field, pts, p_value);
-        }
-      });
+                    cv::fillConvexPoly(field, pts, p_value);
+                  }
+                });
 }
 
 void AR_CISPFieldNodeHandler::initFieldStorage(const cv::Size& size) {

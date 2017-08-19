@@ -49,6 +49,8 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(ar_time_queue_size);
   LOAD_PARAM(ar_time_queue_max_gap);
   LOAD_PARAM(viz_potential_bounds);
+  LOAD_PARAM(verbose);
+  LOAD_PARAM(ar_tag_max_age);
   LOAD_NS_PARAM(hard_constraint_transform, alpha);
   LOAD_NS_PARAM(hard_constraint_transform, beta);
   LOAD_NS_PARAM(hard_constraint_transform, range_min);
@@ -59,6 +61,7 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(soft_constraint_transform, range_max);
 
   // Sanity check params.
+  CHECK_GE(ar_tag_max_age, 0.0);
   CHECK_STRICTLY_POSITIVE(ar_time_queue_size);
   CHECK_STRICTLY_POSITIVE(ar_time_queue_max_gap);
   CHECK_NONEMPTY(output_frame_param_name);

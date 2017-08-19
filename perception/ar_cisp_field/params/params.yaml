@@ -11,7 +11,10 @@ image_transport: 'compressed' # uncomment this to listen to image_transport topi
 viz_cisp_field_topic: 'viz_cisp_field' # node-relative topic, leave empty to disable visualization
 
 # bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero
-viz_potential_bounds: [-2.0, 2.0] 
+viz_potential_bounds: [-10.0, 10.0] 
+
+# Print output to terminal during exectution?
+verbose: true
 
 #
 # Image Space Potential field parameters
@@ -21,7 +24,7 @@ hard_constraint_transform:
   alpha: 1.0
   beta: 1.0
   range_min: 0.0
-  range_max: 1.0
+  range_max: 0.5
 
 soft_constraint_transform:
   alpha: 1.0
@@ -33,6 +36,7 @@ soft_constraint_transform:
 # AR tag tracking parameters
 #
 
+ar_tag_max_age: 0.5 # must be >= 0.0
 ar_time_queue_size: 10 # number of elements to allocate for circular buffer
 ar_time_queue_max_gap: 0.5 # seconds
 output_frame_param_name: '/ar_track_alvar/output_frame'
