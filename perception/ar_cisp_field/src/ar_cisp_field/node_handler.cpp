@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 
+#include "maeve_automation_core/cisp_field/tau.h"
 #include "maeve_automation_core/cisp_field/visualize.h"
 
 namespace maeve_automation_core {
@@ -178,13 +179,14 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
         ar_max_extent_time_queue_[frame_name].insert(t, s);
         // With time queue full, compute \tau and \dot{\tau}.
         // TODO: add damper term to time queue dt function.
-        const auto s_dot = ar_max_extent_time_queue_[frame_name].dt(t);
-        if (!s_dot) {
+        const auto dt = ar_max_extent_time_queue_[frame_name].dt(t);
+        if (!dt) {
           ROS_WARN_STREAM("Failed to compute dt for AR tag: " << frame_name);
           return;
         }
-        // TODO: double check this
-        const auto tau = (*s_dot == 0.0) ? INF : 2. * (s / *s_dot);
+        const auto t_delta = std::get<0>(*dt);
+        const auto s_dot = std::get<1>(*dt);
+        const auto tau = tauFromDiscreteScaleDt(s, s_dot, t_delta);
         const auto tau_dot = 0.0;
         if (std::isfinite(tau)) {
           ROS_INFO_STREAM(frame_name << " - tau: " << tau
