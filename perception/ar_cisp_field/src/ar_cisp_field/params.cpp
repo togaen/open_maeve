@@ -48,6 +48,7 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(marker_size_param_name);
   LOAD_PARAM(ar_time_queue_size);
   LOAD_PARAM(ar_time_queue_max_gap);
+  LOAD_PARAM(viz_potential_bounds);
   LOAD_NS_PARAM(hard_constraint_transform, alpha);
   LOAD_NS_PARAM(hard_constraint_transform, beta);
   LOAD_NS_PARAM(hard_constraint_transform, range_min);
@@ -64,6 +65,9 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   CHECK_NONEMPTY(marker_size_param_name);
   CHECK_NONEMPTY(camera_topic);
   CHECK_NONEMPTY(ar_frame_prefix);
+  CHECK_EQ(viz_potential_bounds.size(), 2);
+  CHECK_LT(viz_potential_bounds[0], 0.0);
+  CHECK_GT(viz_potential_bounds[1], 0.0);
 
   // Load AR tag parameters.
   if (!nh.getParam(output_frame_param_name, camera_frame_name)) {

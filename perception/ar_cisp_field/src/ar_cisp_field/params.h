@@ -90,6 +90,9 @@ struct AR_CISPFieldParams : public ParamsBase {
   /** @brief The CISP field visualization topic. */
   std::string viz_cisp_field_topic;
 
+  /** @brief The scaling bounds for visualizing potential values. */
+  std::vector<double> viz_potential_bounds;
+
   /**
    * @copydoc ParamsBase::ParamsBase()
    */

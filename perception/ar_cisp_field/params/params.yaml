@@ -10,6 +10,9 @@ image_transport: 'compressed' # uncomment this to listen to image_transport topi
 
 viz_cisp_field_topic: 'viz_cisp_field' # node-relative topic, leave empty to disable visualization
 
+# bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero
+viz_potential_bounds: [-2.0, 2.0] 
+
 #
 # Image Space Potential field parameters
 #

@@ -241,7 +241,8 @@ void AR_CISPFieldNodeHandler::cameraCallback(
       [&](const FieldMap::value_type& pair) { ISP = ISP + pair.second; });
 
   // Visualize ISP.
-  const auto visual = computeISPFieldVisualization(ISP, 1.0, 1.0);
+  const auto visual = computeISPFieldVisualization(
+      ISP, params_.viz_potential_bounds[0], params_.viz_potential_bounds[1]);
 
   // Convert visualiation to ROS message.
   const auto viz_msg =
