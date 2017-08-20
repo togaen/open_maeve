@@ -27,9 +27,6 @@
 #include <tuple>
 
 namespace maeve_automation_core {
-/** @brief Typedef the constraint range type for convenience. */
-typedef std::tuple<double, double> CRange;
-
 /** @brief Types of constraint transforms. */
 enum class ConstraintType { HARD, SOFT };  // enum class ConstraintType
 
