@@ -20,11 +20,11 @@ find_package(catkin REQUIRED COMPONENTS
   tf2
   tf2_ros
   tf2_eigen
-  ar_track_alvar
   cisp_field
   ros_parameter_loading
   maeve_time_queue
   image_geometry
+  image_transport
 )
 
 ## System dependencies are found with CMake's conventions

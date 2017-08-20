@@ -48,6 +48,7 @@
   <depend>tf2_eigen</depend>
   <depend>maeve_time_queue</depend>
   <depend>image_geometry</depend>
+  <depend>image_transport</depend>
 
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
