@@ -1,6 +1,6 @@
 # README #
 
-This package uses the ar\_track\_alvar package to generate and visualize Composite Image Space Potential (CISP) fields from AR tags. It is intended to serve as an example of how to compute CISP fields.
+This package uses the [ar\_track\_alvar](http://wiki.ros.org/ar_track_alvar) package to generate and visualize Composite Image Space Potential (CISP) fields from AR tags. It is intended to serve as an example of how to compute CISP fields.
 
 ## ar\_cisp\_field ##
 
