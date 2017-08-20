@@ -78,8 +78,11 @@ struct AR_CISPFieldParams : public ParamsBase {
   /** @brief Name of the parameter specifying the AR tag size. */
   std::string marker_size_param_name;
 
-  /** @brief Unique IDs for the AR tags */
-  std::vector<int> ar_tag_ids;
+  /** @brief Unique IDs for the AR tags corresponding to obstacles. */
+  std::vector<int> ar_tag_obstacle_ids;
+
+  /** @brief Unique IDs for the AR tags corresponding to targets. */
+  std::vector<int> ar_tag_target_ids;
 
   /** @brief Prefix string for AR tag coordinate frames. */
   std::string ar_frame_prefix;

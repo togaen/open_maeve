@@ -30,6 +30,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <array>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -59,6 +60,16 @@ class AR_CISPFieldNodeHandler {
       AR_TimeQueueMap;
   /** @brief AR frame -> scalar field. */
   typedef std::unordered_map<std::string, cv::Mat> FieldMap;
+
+  /**
+   * @brief Set up time queues for obstacle and target AR tags.
+   *
+   * In addition to setting up time queues for all AR tags, this function
+   * computes and records frame names for looking up tf2 transforms.
+   *
+   * @param id_list A list of AR tag ids.
+   */
+  void initializeTimeQueues(const std::vector<int>& id_list);
 
   /**
    * @brief Initialize the field storage map.
@@ -142,7 +153,7 @@ class AR_CISPFieldNodeHandler {
   /** @brief Listener for tf2 transforms. */
   tf2_ros::TransformListener tf2_listener_;
   /** @brief List of AR tag frame ids. */
-  std::vector<std::string> ar_tag_frames_;
+  std::set<std::string> ar_tag_frames_;
   /** @brief Mapping of AR tag frame id to time queue of max extents. */
   AR_TimeQueueMap ar_max_extent_time_queue_;
   /** @brief Mapping of AR tag frame id to scalar field. */

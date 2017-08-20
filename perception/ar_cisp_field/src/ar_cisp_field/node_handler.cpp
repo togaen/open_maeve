@@ -37,6 +37,16 @@ namespace {
 static const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
 
+void AR_CISPFieldNodeHandler::initializeTimeQueues(
+    const std::vector<int>& id_list) {
+  std::for_each(std::begin(id_list), std::end(id_list), [&](const int id) {
+    const auto ar_frame_name = params_.ar_frame_prefix + std::to_string(id);
+    ar_tag_frames_.insert(ar_frame_name);
+    ar_max_extent_time_queue_[ar_frame_name] = MaeveTimeQueue<double>(
+        params_.ar_time_queue_size, params_.ar_time_queue_max_gap);
+  });
+}
+
 AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
     : nh_(node_name), tf2_listener_(tf2_buffer_) {
   if (!params_.load(nh_)) {
@@ -45,15 +55,8 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   }
 
   // Set up frame list and time queues.
-  ar_tag_frames_.reserve(params_.ar_tag_ids.size());
-  std::for_each(
-      std::begin(params_.ar_tag_ids), std::end(params_.ar_tag_ids),
-      [&](const int id) {
-        const auto ar_frame_name = params_.ar_frame_prefix + std::to_string(id);
-        ar_tag_frames_.push_back(ar_frame_name);
-        ar_max_extent_time_queue_[ar_frame_name] = MaeveTimeQueue<double>(
-            params_.ar_time_queue_size, params_.ar_time_queue_max_gap);
-      });
+  initializeTimeQueues(params_.ar_tag_obstacle_ids);
+  initializeTimeQueues(params_.ar_tag_target_ids);
 
   // Compute raw tag corner points (CW ordering).
   const auto half_extent = params_.ar_tag_size / 2.0;
@@ -152,7 +155,8 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
   // Compute max extents for each AR tag and add to time queues.
   std::for_each(std::begin(ar_tag_frames_), std::end(ar_tag_frames_),
                 [&](const std::string& frame_name) {
-                  // Initialize the potential field for this tag by zeroing it out.
+                  // Initialize the potential field for this tag by zeroing it
+                  // out.
                   auto& field = field_map_[frame_name];
                   field.setTo(0.0);
 

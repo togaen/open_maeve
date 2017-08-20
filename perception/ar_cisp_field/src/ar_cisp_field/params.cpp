@@ -49,7 +49,8 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
   LOAD_PARAM(camera_topic);
   LOAD_PARAM(viz_cisp_field_topic);
-  LOAD_PARAM(ar_tag_ids);
+  LOAD_PARAM(ar_tag_obstacle_ids);
+  LOAD_PARAM(ar_tag_target_ids);
   LOAD_PARAM(ar_frame_prefix);
   LOAD_PARAM(output_frame_param_name);
   LOAD_PARAM(marker_size_param_name);
