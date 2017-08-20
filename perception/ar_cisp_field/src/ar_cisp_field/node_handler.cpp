@@ -44,7 +44,7 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
     return;
   }
 
-  // Set up transform storage.
+  // Set up frame list and time queues.
   ar_tag_frames_.reserve(params_.ar_tag_ids.size());
   std::for_each(
       std::begin(params_.ar_tag_ids), std::end(params_.ar_tag_ids),
