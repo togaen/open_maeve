@@ -152,9 +152,9 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
   // Compute max extents for each AR tag and add to time queues.
   std::for_each(std::begin(ar_tag_frames_), std::end(ar_tag_frames_),
                 [&](const std::string& frame_name) {
-                  // Initialize the field for this tag by zeroing it out.
+                  // Initialize the potential field for this tag by zeroing it out.
                   auto& field = field_map_[frame_name];
-                  field = cv::Mat::zeros(field.rows, field.cols, CV_64FC2);
+                  field.setTo(0.0);
 
                   // Only use valid transforms.
                   Eigen::Affine3d T;
