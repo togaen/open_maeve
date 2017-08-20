@@ -38,12 +38,12 @@ TEST(TAU, verifyScaling) {
   const Eigen::Vector2d P1(2.3, 3.13);
   const Eigen::Vector2d P2(5.67, -1.32);
 
-  auto t = 10.37;
-  auto tau = -(Z + Z_dot * t) / Z_dot;
+  auto t_delta = 10.37;
+  auto tau = -(Z + Z_dot * t_delta) / Z_dot;
   const auto e1 = extent(Z, P1, P2);
-  const auto e2 = extent(Z + Z_dot * t, P1, P2);
-  const auto e_dot = (e2 - e1) / t;
-  const auto tau_estimated = tauFromDiscreteScaleDt(e2, e_dot, t);
+  const auto e2 = extent(Z + Z_dot * t_delta, P1, P2);
+  const auto e_dot = (e2 - e1) / t_delta;
+  const auto tau_estimated = tauFromDiscreteScaleDt(e2, e_dot, t_delta);
   EXPECT_NEAR(tau_estimated, tau, 0.0001)
       << "e1: " << e1 << ", e2: " << e2 << ", e_dot: " << e_dot;
 }
