@@ -88,9 +88,9 @@ TEST(MTQ, testDifferentiation2) {
   }
 
   // Test boundary cases.
-  EXPECT_TRUE(!mtq.dt(0.0));      // first element
-  EXPECT_TRUE(!mtq.dt(-1.0));     // outside element
-  EXPECT_TRUE(!mtq.dt(4.5));      // outside element
+  EXPECT_TRUE(!mtq.dt(0.0));   // first element
+  EXPECT_TRUE(!mtq.dt(-1.0));  // outside element
+  EXPECT_TRUE(!mtq.dt(4.5));   // outside element
   {
     const auto dt = mtq.dt(4.0);  // last element
     ASSERT_FALSE(!dt);
