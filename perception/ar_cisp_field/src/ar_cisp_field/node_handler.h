@@ -94,14 +94,13 @@ class AR_CISPFieldNodeHandler {
   /**
    * @brief Initialize the field storage map.
    *
-   * This function only performs the allocation once; subsequent calls are a
-   * no-op.
-   *
    * @param size The size of the field to allocate.
    * @param frame_list The list of frames to initialize fields for.
+   * @param field_map The container for the initialized fields.
    */
   void initFieldStorage(const cv::Size& size,
-                        const std::vector<std::string>& frame_list);
+                        const std::vector<std::string>& frame_list,
+                        FieldMap& field_map);
 
   /**
    * @brief Callback for the camera info and image message stream.
@@ -115,15 +114,15 @@ class AR_CISPFieldNodeHandler {
    * @brief Stub function to compute potential field.
    *
    * @param timestamp The timestamp for which to compute the potential field.
-   * @param frame_list The list of frame names to compute fields for.
    * @param constraint_type The type of potential transform to use.
+   * @param field_map The set of fields for which to compute potentials.
    *
    * @return True if at least one potential field has been computed; otherwise
    * false.
    */
   bool computePotentialFields(const ros::Time& timestamp,
-                              const std::vector<std::string>& frame_list,
-                              const ConstraintType& constraint_type);
+                              const ConstraintType& constraint_type,
+                              FieldMap& field_map);
 
   /**
    * @brief Convenience wrapper for using camera model to project points.
@@ -156,8 +155,10 @@ class AR_CISPFieldNodeHandler {
   std::vector<std::string> ar_target_tag_frames_;
   /** @brief Mapping of AR tag frame id to time queue of max extents. */
   AR_TimeQueueMap ar_max_extent_time_queue_;
-  /** @brief Mapping of AR tag frame id to scalar field. */
-  FieldMap field_map_;
+  /** @brief Mapping of AR obstacle tag frame id to scalar field. */
+  FieldMap obstacle_field_map_;
+  /** @brief Mapping of AR target tag frame id to scalar field. */
+  FieldMap target_field_map_;
   /** @brief Tag-relative set of corner points. */
   AR_Points ar_corner_points_;
   /** @brief Camera model used for projecting AR tag points into image plane. */

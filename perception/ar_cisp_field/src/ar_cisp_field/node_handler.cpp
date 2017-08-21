@@ -139,16 +139,17 @@ AR_CISPFieldNodeHandler::getTransformAndStamp(
 }
 
 bool AR_CISPFieldNodeHandler::computePotentialFields(
-    const ros::Time& timestamp, const std::vector<std::string>& frame_list,
-    const ConstraintType& constraint_type) {
+    const ros::Time& timestamp, const ConstraintType& constraint_type,
+    FieldMap& field_map) {
   auto updated = false;
 
   // Compute max extents for each AR tag and add to time queues.
   std::for_each(
-      std::begin(frame_list), std::end(frame_list),
-      [&](const std::string& frame_name) {
-        // Initialize the potential field for this tag.
-        auto& field = field_map_[frame_name];
+      std::begin(field_map), std::end(field_map),
+      [&](FieldMap::value_type& pair) {
+        // Get references and initialize field.
+        const auto& frame_name = pair.first;
+        auto& field = pair.second;
         field.setTo(0.0);
 
         // Only use valid transforms.
@@ -167,11 +168,7 @@ bool AR_CISPFieldNodeHandler::computePotentialFields(
         const auto s = arComputeMaxXY_Extent(image_corner_points);
         // Add to time queue
         const auto t = T_timestamp.toSec();
-        if (!ar_max_extent_time_queue_[frame_name].insert(t, s)) {
-          // If insertion fails, probably no update to the transform tree has
-          // been recieved. Nothing to do.
-          return;
-        }
+        ar_max_extent_time_queue_[frame_name].insert(t, s);
 
         // With time queue full, compute measurement values.
         // TODO: should put a filter on these dt values.
@@ -195,10 +192,11 @@ bool AR_CISPFieldNodeHandler::computePotentialFields(
 
         // Print output?
         if (params_.verbose && std::isfinite(tau)) {
-          ROS_INFO_STREAM(frame_name << " - tau: " << tau
-                                     << ", tau_dot: " << tau_dot);
-          ROS_INFO_STREAM(frame_name << " - k0: " << p_value[0]
-                                     << ", k1: " << p_value[1]);
+          ROS_INFO_STREAM(constraint_type << " :" << frame_name << " - tau: "
+                                          << tau << ", tau_dot: " << tau_dot);
+          ROS_INFO_STREAM(constraint_type << " :" << frame_name
+                                          << " - k0: " << p_value[0]
+                                          << ", k1: " << p_value[1]);
         }
 
         // Fill ISP.
@@ -213,15 +211,12 @@ bool AR_CISPFieldNodeHandler::computePotentialFields(
 }
 
 void AR_CISPFieldNodeHandler::initFieldStorage(
-    const cv::Size& size, const std::vector<std::string>& frame_list) {
-  static bool storage_set = false;
-  if (!storage_set) {
-    std::for_each(std::begin(frame_list), std::end(frame_list),
-                  [&](const std::string& frame_name) {
-                    field_map_[frame_name] = cv::Mat::zeros(size, CV_64FC2);
-                  });
-    storage_set = true;
-  }
+    const cv::Size& size, const std::vector<std::string>& frame_list,
+    FieldMap& field_map) {
+  std::for_each(std::begin(frame_list), std::end(frame_list),
+                [&](const std::string& frame_name) {
+                  field_map[frame_name] = cv::Mat::zeros(size, CV_64FC2);
+                });
 }
 
 void AR_CISPFieldNodeHandler::cameraCallback(
@@ -232,25 +227,38 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   // Initialize camera model.
   camera_model_.fromCameraInfo(info_msg);
 
-  // Make sure field maps have storage allocated.
-  initFieldStorage(camera_model_.fullResolution(), ar_obstacle_tag_frames_);
-  initFieldStorage(camera_model_.fullResolution(), ar_target_tag_frames_);
+  // Make sure field maps have storage allocated, but do it only once.
+  static bool init = true;
+  if (init) {
+    initFieldStorage(camera_model_.fullResolution(), ar_obstacle_tag_frames_,
+                     obstacle_field_map_);
+    initFieldStorage(camera_model_.fullResolution(), ar_target_tag_frames_,
+                     target_field_map_);
+    init = false;
+  }
 
   // Compute a potential field for each tag.
   static ros::Time time_of_last_update = msg->header.stamp;
   const auto age = (msg->header.stamp - time_of_last_update).toSec();
   const auto forget_tracks = (age > params_.ar_tag_max_age);
-  if (!forget_tracks &&
-      !computePotentialFields(msg->header.stamp, ar_obstacle_tag_frames_,
-                              ConstraintType::HARD)) {
-    return;
+  if (!forget_tracks) {
+    const auto obstacles_updated = computePotentialFields(
+        msg->header.stamp, ConstraintType::HARD, obstacle_field_map_);
+    const auto targets_updated = computePotentialFields(
+        msg->header.stamp, ConstraintType::SOFT, target_field_map_);
+    if (!obstacles_updated && !targets_updated) {
+      return;
+    }
   }
   time_of_last_update = msg->header.stamp;
 
   // Compose fields into a composite ISP.
   cv::Mat ISP = cv::Mat::zeros(camera_model_.fullResolution(), CV_64FC2);
   std::for_each(
-      std::begin(field_map_), std::end(field_map_),
+      std::begin(obstacle_field_map_), std::end(obstacle_field_map_),
+      [&](const FieldMap::value_type& pair) { ISP = ISP + pair.second; });
+  std::for_each(
+      std::begin(target_field_map_), std::end(target_field_map_),
       [&](const FieldMap::value_type& pair) { ISP = ISP + pair.second; });
 
   // Visualize ISP.
