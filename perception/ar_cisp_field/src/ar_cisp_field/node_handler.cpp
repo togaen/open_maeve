@@ -97,12 +97,17 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
 }
 
 std::vector<cv::Point2d> AR_CISPFieldNodeHandler::projectPoints(
-    const AR_Points& ar_points) const {
+    const Eigen::Affine3d& camera_T_artag) const {
+  // Compute the corner points under the given transform.
+  const auto corner_points =
+      arTagCornerPoints(camera_T_artag, ar_corner_points_);
+
+  // Allocate return structure.
   std::vector<cv::Point2d> image_points;
-  image_points.reserve(ar_points.size());
+  image_points.reserve(corner_points.size());
 
   // Convert Eigen -> OpenCV.
-  const auto camera_points = arEigenPoints2OpenCV(ar_points);
+  const auto camera_points = arEigenPoints2OpenCV(corner_points);
 
   // Project camera_points into image_points.
   for (auto i = 0; i < 4; ++i) {
@@ -113,7 +118,7 @@ std::vector<cv::Point2d> AR_CISPFieldNodeHandler::projectPoints(
   return image_points;
 }
 
-boost::optional<std::tuple<Eigen::Affine3d, ros::Time>>
+boost::optional<std::tuple<Eigen::Affine3d, double>>
 AR_CISPFieldNodeHandler::getTransformAndStamp(
     const std::string& ar_tag_frame, const ros::Time& timestamp) const {
   Eigen::Affine3d T;
@@ -130,11 +135,10 @@ AR_CISPFieldNodeHandler::getTransformAndStamp(
       return boost::none;
     }
   } catch (const tf2::TransformException& ex) {
-    // ROS_WARN_STREAM(ex.what());
     return boost::none;
   }
 
-  return std::make_tuple(T, T_timestamp);
+  return std::make_tuple(T, T_timestamp.toSec());
 }
 
 bool AR_CISPFieldNodeHandler::computePotentialFields(
@@ -152,30 +156,27 @@ bool AR_CISPFieldNodeHandler::computePotentialFields(
         field.setTo(0.0);
 
         // Only use valid transforms.
-        Eigen::Affine3d T;
-        ros::Time T_timestamp;
+        auto t = NaN;
+        Eigen::Affine3d camera_T_artag = Eigen::Affine3d::Identity();
         if (const auto vals = getTransformAndStamp(frame_name, timestamp)) {
-          std::tie(T, T_timestamp) = *vals;
+          std::tie(camera_T_artag, t) = *vals;
         } else {
           return;
         }
 
-        // Project AR tag onto image plane
-        const auto image_corner_points =
-            projectPoints(arTagCornerPoints(T, ar_corner_points_));
-        // Get max extent
+        // Project AR tag onto image plane.
+        const auto image_corner_points = projectPoints(camera_T_artag);
+
+        // Get max extent and add to time queue.
         const auto s = arComputeMaxXY_Extent(image_corner_points);
-        // Add to time queue
-        const auto t = T_timestamp.toSec();
         ar_max_extent_time_queue_[frame_name].insert(t, s);
 
-        // With time queue full, compute measurement values.
+        // Compute measurement values.
         // TODO: should put a filter on these dt values.
         auto s_dot = NaN;
         auto t_delta = NaN;
         if (const auto dt = ar_max_extent_time_queue_[frame_name].dt(t)) {
-          t_delta = std::get<0>(*dt);
-          s_dot = std::get<1>(*dt);
+          std::tie(t_delta, s_dot) = *dt;
         } else {
           // If the backward differencing operation fails probably the queue has
           // recently become empty. It's expected and probably not an error.
@@ -221,7 +222,6 @@ void AR_CISPFieldNodeHandler::initFieldStorage(
 void AR_CISPFieldNodeHandler::cameraCallback(
     const sensor_msgs::Image::ConstPtr& msg,
     const sensor_msgs::CameraInfoConstPtr& info_msg) {
-
   // Initialize camera model.
   camera_model_.fromCameraInfo(info_msg);
 
@@ -251,25 +251,45 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   time_of_last_update = msg->header.stamp;
 
   // Compose fields into a composite ISP.
-  cv::Mat ISP = cv::Mat::zeros(camera_model_.fullResolution(), CV_64FC2);
+  cv::Mat CISP = computeCISP();
+
+  // Do any requested visualization.
+  visualize(CISP, msg->header);
+}
+
+cv::Mat AR_CISPFieldNodeHandler::computeCISP() const {
+  // Initialize to zeroed field.
+  cv::Mat CISP = cv::Mat::zeros(camera_model_.fullResolution(), CV_64FC2);
+
+  // Compose hard constraint field.
   std::for_each(
       std::begin(obstacle_field_map_), std::end(obstacle_field_map_),
-      [&](const FieldMap::value_type& pair) { ISP = ISP + pair.second; });
+      [&](const FieldMap::value_type& pair) { CISP = CISP + pair.second; });
+
+  // Compose soft constraint field.
   std::for_each(
       std::begin(target_field_map_), std::end(target_field_map_),
-      [&](const FieldMap::value_type& pair) { ISP = ISP + pair.second; });
+      [&](const FieldMap::value_type& pair) { CISP = CISP + pair.second; });
 
-  // Visualize ISP.
+  // Done.
+  return CISP;
+}
+
+void AR_CISPFieldNodeHandler::visualize(const cv::Mat& ISP,
+                                        const std_msgs::Header& header) const {
+  // If no topic, nothing to do.
+  if (params_.viz_cisp_field_topic.empty()) {
+    return;
+  }
+
+  // Compute visualization of ISP.
   const auto visual = computeISPFieldVisualization(
       ISP, params_.viz_potential_bounds[0], params_.viz_potential_bounds[1]);
 
-  // Convert visualiation to ROS message.
-  const auto viz_msg =
-      cv_bridge::CvImage(msg->header, "bgr8", visual).toImageMsg();
+  // Convert visualization to ROS message.
+  const auto viz_msg = cv_bridge::CvImage(header, "bgr8", visual).toImageMsg();
 
-  // Convert to ROS message and publish
-  if (!params_.viz_cisp_field_topic.empty()) {
-    viz_cisp_field_pub_.publish(viz_msg);
-  }
+  // Publish.
+  viz_cisp_field_pub_.publish(viz_msg);
 }
 }  // namespace maeve_automation_core

@@ -42,6 +42,7 @@
   <exec_depend>ar_track_alvar</exec_depend>
   <depend>cisp_field</depend>
   <depend>ros_parameter_loading</depend>
+  <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>tf2</depend>
   <depend>tf2_ros</depend>

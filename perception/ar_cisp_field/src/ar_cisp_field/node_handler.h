@@ -25,6 +25,7 @@
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
+#include <std_msgs/Header.h>
 #include <tf2_ros/transform_listener.h>
 #include <Eigen/Dense>
 #include <boost/optional.hpp>
@@ -54,11 +55,28 @@ class AR_CISPFieldNodeHandler {
    */
   explicit AR_CISPFieldNodeHandler(const std::string& node_name);
 
+ private:
   /** @brief AR frame -> time queue. */
   typedef std::unordered_map<std::string, MaeveTimeQueue<double>>
       AR_TimeQueueMap;
   /** @brief AR frame -> scalar field. */
   typedef std::unordered_map<std::string, cv::Mat> FieldMap;
+
+  /**
+   * @brief If a visualization topic is specified, this computes and publishes a
+   * visualization.
+   *
+   * @param ISP The ISP to visualize.
+   * @param header The message header to use.
+   */
+  void visualize(const cv::Mat& ISP, const std_msgs::Header& header) const;
+
+  /**
+   * @brief Compose all ISPs into a CISP.
+   *
+   * @return The Composite Image Space Potential field.
+   */
+  cv::Mat computeCISP() const;
 
   /**
    * @brief Get and return an AR tag transform and its timestamp.
@@ -75,7 +93,7 @@ class AR_CISPFieldNodeHandler {
    * @return The transform along with its timestamp, or boost::none on error or
    * age violation.
    */
-  boost::optional<std::tuple<Eigen::Affine3d, ros::Time>> getTransformAndStamp(
+  boost::optional<std::tuple<Eigen::Affine3d, double>> getTransformAndStamp(
       const std::string& ar_tag_frame, const ros::Time& timestamp) const;
 
   /**
@@ -130,11 +148,12 @@ class AR_CISPFieldNodeHandler {
    * This function handles translating arguments so that the projection method
    * of the camera model can be called.
    *
-   * @param ar_points The set of 3D ar tag corner points in the camera frame.
+   * @param camera_T_artag The transform from AR tag frame to camera frame.
    *
    * @return The set of 2D image plane points.
    */
-  std::vector<cv::Point2d> projectPoints(const AR_Points& ar_points) const;
+  std::vector<cv::Point2d> projectPoints(
+      const Eigen::Affine3d& camera_T_artag) const;
 
   /** @brief Node parameters. */
   AR_CISPFieldParams params_;
