@@ -231,9 +231,6 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   const auto age = (msg->header.stamp - time_of_last_update).toSec();
   const auto forget_tracks = (age > params_.ar_tag_max_age);
   if (!forget_tracks && !computePotentialFields(msg->header.stamp)) {
-    if (params_.verbose) {
-      ROS_WARN_STREAM("No new potential fields were computed.");
-    }
     return;
   }
   time_of_last_update = msg->header.stamp;
