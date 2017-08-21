@@ -111,8 +111,11 @@ class AR_CISPFieldNodeHandler {
    * @brief Stub function to compute potential field.
    *
    * @param timestamp The timestamp for which to compute the potential field.
+   *
+   * @return True if at least one potential field has been computed; otherwise
+   * false.
    */
-  void computePotentialFields(const ros::Time& timestamp);
+  bool computePotentialFields(const ros::Time& timestamp);
 
   /**
    * @brief Convenience wrapper for using camera model to project points.

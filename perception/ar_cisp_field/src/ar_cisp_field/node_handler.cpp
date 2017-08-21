@@ -133,8 +133,10 @@ AR_CISPFieldNodeHandler::getTransformAndStamp(
   return std::make_tuple(T, T_timestamp);
 }
 
-void AR_CISPFieldNodeHandler::computePotentialFields(
+bool AR_CISPFieldNodeHandler::computePotentialFields(
     const ros::Time& timestamp) {
+  auto updated = false;
+
   // Compute max extents for each AR tag and add to time queues.
   std::for_each(
       std::begin(ar_tag_frames_), std::end(ar_tag_frames_),
@@ -159,7 +161,11 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
         const auto s = arComputeMaxXY_Extent(image_corner_points);
         // Add to time queue
         const auto t = T_timestamp.toSec();
-        ar_max_extent_time_queue_[frame_name].insert(t, s);
+        if (!ar_max_extent_time_queue_[frame_name].insert(t, s)) {
+          // If insertion fails, probably no update to the transform tree has
+          // been recieved. Nothing to do.
+          return;
+        }
 
         // With time queue full, compute measurement values.
         // TODO: should put a filter on these dt values.
@@ -189,7 +195,13 @@ void AR_CISPFieldNodeHandler::computePotentialFields(
 
         // Fill ISP.
         arFillISP(p_value, image_corner_points, field);
+
+        // Mark that at least one potential field has been computed.
+        updated = true;
       });
+
+  // Done.
+  return updated;
 }
 
 void AR_CISPFieldNodeHandler::initFieldStorage(const cv::Size& size) {
@@ -215,7 +227,16 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   initFieldStorage(camera_model_.fullResolution());
 
   // Compute a potential field for each tag.
-  computePotentialFields(msg->header.stamp);
+  static ros::Time time_of_last_update = msg->header.stamp;
+  const auto age = (msg->header.stamp - time_of_last_update).toSec();
+  const auto forget_tracks = (age > params_.ar_tag_max_age);
+  if (!forget_tracks && !computePotentialFields(msg->header.stamp)) {
+    if (params_.verbose) {
+      ROS_WARN_STREAM("No new potential fields were computed.");
+    }
+    return;
+  }
+  time_of_last_update = msg->header.stamp;
 
   // Compose fields into a composite ISP.
   cv::Mat ISP = cv::Mat::zeros(camera_model_.fullResolution(), CV_64FC2);
