@@ -75,7 +75,7 @@ cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
   // Compute 1st order potential.
   const auto numerator = alpha * (range_max - range_min) * e_term;
   const auto denominator = beta * std::pow(1.0 + e_term, 1.0 + 1.0 / beta);
-  return_value[0] = pixel_value[1] * numerator / denominator;
+  return_value[1] = pixel_value[1] * numerator / denominator;
 
   // Done.
   return return_value;
