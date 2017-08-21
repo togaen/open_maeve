@@ -116,12 +116,14 @@ class AR_CISPFieldNodeHandler {
    *
    * @param timestamp The timestamp for which to compute the potential field.
    * @param frame_list The list of frame names to compute fields for.
+   * @param constraint_type The type of potential transform to use.
    *
    * @return True if at least one potential field has been computed; otherwise
    * false.
    */
   bool computePotentialFields(const ros::Time& timestamp,
-                              const std::vector<std::string>& frame_list);
+                              const std::vector<std::string>& frame_list,
+                              const ConstraintType& constraint_type);
 
   /**
    * @brief Convenience wrapper for using camera model to project points.

@@ -139,7 +139,8 @@ AR_CISPFieldNodeHandler::getTransformAndStamp(
 }
 
 bool AR_CISPFieldNodeHandler::computePotentialFields(
-    const ros::Time& timestamp, const std::vector<std::string>& frame_list) {
+    const ros::Time& timestamp, const std::vector<std::string>& frame_list,
+    const ConstraintType& constraint_type) {
   auto updated = false;
 
   // Compute max extents for each AR tag and add to time queues.
@@ -188,7 +189,9 @@ bool AR_CISPFieldNodeHandler::computePotentialFields(
         const auto tau_dot = 0.0;
 
         // Compute potential values.
-        const auto p_value = hc_(cv::Scalar(tau, tau_dot));
+        const auto p_value = (constraint_type == ConstraintType::HARD)
+                                 ? hc_(cv::Scalar(tau, tau_dot))
+                                 : sc_(cv::Scalar(tau, tau_dot));
 
         // Print output?
         if (params_.verbose && std::isfinite(tau)) {
@@ -238,7 +241,8 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   const auto age = (msg->header.stamp - time_of_last_update).toSec();
   const auto forget_tracks = (age > params_.ar_tag_max_age);
   if (!forget_tracks &&
-      !computePotentialFields(msg->header.stamp, ar_obstacle_tag_frames_)) {
+      !computePotentialFields(msg->header.stamp, ar_obstacle_tag_frames_,
+                              ConstraintType::HARD)) {
     return;
   }
   time_of_last_update = msg->header.stamp;
