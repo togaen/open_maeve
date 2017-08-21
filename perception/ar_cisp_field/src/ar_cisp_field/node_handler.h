@@ -27,11 +27,13 @@
 #include <sensor_msgs/Image.h>
 #include <tf2_ros/transform_listener.h>
 #include <Eigen/Dense>
+#include <boost/optional.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <array>
 #include <set>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 
@@ -58,6 +60,24 @@ class AR_CISPFieldNodeHandler {
       AR_TimeQueueMap;
   /** @brief AR frame -> scalar field. */
   typedef std::unordered_map<std::string, cv::Mat> FieldMap;
+
+  /**
+   * @brief Get and return an AR tag transform and its timestamp.
+   *
+   * This function retrieves the camera_T_ar_tag transform, convert it to an
+   * Eigen data type and returns the Eigen transform along with the timestamp of
+   * the transform. If the transform doesn't exist or violates age limits, a
+   * null object is returned.
+   *
+   * @param ar_tag_frame The name of the transform to look up.
+   * @param timestamp The time at which the function is called; used for
+   * checking age.
+   *
+   * @return The transform along with its timestamp, or boost::none on error or
+   * age violation.
+   */
+  boost::optional<std::tuple<Eigen::Affine3d, ros::Time>> getTransformAndStamp(
+      const std::string& ar_tag_frame, const ros::Time& timestamp) const;
 
   /**
    * @brief Set up time queues for obstacle and target AR tags.

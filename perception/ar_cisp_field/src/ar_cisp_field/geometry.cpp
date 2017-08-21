@@ -22,6 +22,19 @@
 #include "maeve_automation_core/ar_cisp_field/geometry.h"
 
 namespace maeve_automation_core {
+void arFillISP(const cv::Scalar& potential_value,
+               const std::vector<cv::Point2d>& image_corner_points,
+               cv::Mat& field) {
+  std::vector<cv::Point2i> pts;
+  pts.reserve(image_corner_points.size());
+  std::for_each(std::begin(image_corner_points), std::end(image_corner_points),
+                [&](const cv::Point2d& pt) {
+                  pts.push_back(cv::Point2i(static_cast<int>(pt.x),
+                                            static_cast<int>(pt.y)));
+                });
+  cv::fillConvexPoly(field, pts, potential_value);
+}
+
 namespace {
 inline double squaredMag(const cv::Point2d& point) {
   return point.x * point.x + point.y * point.y;

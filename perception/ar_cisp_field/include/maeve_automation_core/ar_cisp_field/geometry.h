@@ -32,6 +32,21 @@ namespace maeve_automation_core {
 typedef std::array<Eigen::Vector3d, 4> AR_Points;
 
 /**
+ * @brief Draw a polygon gone defined by image_corner_points onto field and fill
+ * with potentital_value.
+ *
+ * The polygon defined by image_corner_points must be convex and the points are
+ * assumed to be given in CW order.
+ *
+ * @param potential_value The potential value to fill the polygon with.
+ * @param image_corner_points The corner points of the polygon to draw.
+ * @param field The field onto which to draw the polygon.
+ */
+void arFillISP(const cv::Scalar& potential_value,
+               const std::vector<cv::Point2d>& image_corner_points,
+               cv::Mat& field);
+
+/**
  * @brief From a given AR tag pose, compute its corner points.
  *
  * This method assumes the pose is centered on the tag.
