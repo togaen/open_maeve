@@ -23,12 +23,23 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <iostream>
 #include <limits>
 #include <tuple>
 
 namespace maeve_automation_core {
 /** @brief Types of constraint transforms. */
 enum class ConstraintType { HARD, SOFT };  // enum class ConstraintType
+
+/**
+ * @brief Overload output stream operator for ConstraintType enum.
+ *
+ * @param o The output stream.
+ * @param c The constraint type enum value.
+ *
+ * @return The stream.
+ */
+std::ostream& operator<<(std::ostream& oStrStream, const ConstraintType c);
 
 /**
  * @brief Template class for constrained potential value transforms.
