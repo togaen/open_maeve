@@ -29,6 +29,18 @@ namespace {
 static const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
 
+std::ostream& operator<<(std::ostream& o, const ConstraintType c) {
+  switch (c) {
+    case ConstraintType::HARD:
+      return o << "ConstraintType::HARD";
+    case ConstraintType::SOFT:
+      return o << "ConstraintType::SOFT";
+    default:
+      return o << "String not defined for enum value: " << c;
+      break;
+  }
+}
+
 template <>
 cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
     const cv::Scalar& pixel_value) const {
