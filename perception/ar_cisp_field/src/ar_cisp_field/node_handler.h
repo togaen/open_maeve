@@ -31,7 +31,6 @@
 #include <opencv2/opencv.hpp>
 
 #include <array>
-#include <set>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -86,8 +85,11 @@ class AR_CISPFieldNodeHandler {
    * computes and records frame names for looking up tf2 transforms.
    *
    * @param id_list A list of AR tag ids.
+   *
+   * @return A list of frame names corresponding to the tag IDs.
    */
-  void initializeTimeQueues(const std::vector<int>& id_list);
+  std::vector<std::string> initializeTimeQueues(
+      const std::vector<int>& id_list);
 
   /**
    * @brief Initialize the field storage map.
@@ -96,8 +98,10 @@ class AR_CISPFieldNodeHandler {
    * no-op.
    *
    * @param size The size of the field to allocate.
+   * @param frame_list The list of frames to initialize fields for.
    */
-  void initFieldStorage(const cv::Size& size);
+  void initFieldStorage(const cv::Size& size,
+                        const std::vector<std::string>& frame_list);
 
   /**
    * @brief Callback for the camera info and image message stream.
@@ -111,11 +115,13 @@ class AR_CISPFieldNodeHandler {
    * @brief Stub function to compute potential field.
    *
    * @param timestamp The timestamp for which to compute the potential field.
+   * @param frame_list The list of frame names to compute fields for.
    *
    * @return True if at least one potential field has been computed; otherwise
    * false.
    */
-  bool computePotentialFields(const ros::Time& timestamp);
+  bool computePotentialFields(const ros::Time& timestamp,
+                              const std::vector<std::string>& frame_list);
 
   /**
    * @brief Convenience wrapper for using camera model to project points.
@@ -142,8 +148,10 @@ class AR_CISPFieldNodeHandler {
   tf2_ros::Buffer tf2_buffer_;
   /** @brief Listener for tf2 transforms. */
   tf2_ros::TransformListener tf2_listener_;
-  /** @brief List of AR tag frame ids. */
-  std::set<std::string> ar_tag_frames_;
+  /** @brief List of obstacle AR tag frame ids. */
+  std::vector<std::string> ar_obstacle_tag_frames_;
+  /** @brief List of target AR tag frame ids. */
+  std::vector<std::string> ar_target_tag_frames_;
   /** @brief Mapping of AR tag frame id to time queue of max extents. */
   AR_TimeQueueMap ar_max_extent_time_queue_;
   /** @brief Mapping of AR tag frame id to scalar field. */

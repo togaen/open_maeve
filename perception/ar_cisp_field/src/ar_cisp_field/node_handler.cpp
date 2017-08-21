@@ -40,14 +40,19 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 static const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
 
-void AR_CISPFieldNodeHandler::initializeTimeQueues(
+std::vector<std::string> AR_CISPFieldNodeHandler::initializeTimeQueues(
     const std::vector<int>& id_list) {
+  std::vector<std::string> frame_names;
+  frame_names.reserve(id_list.size());
+
   std::for_each(std::begin(id_list), std::end(id_list), [&](const int id) {
     const auto ar_frame_name = params_.ar_frame_prefix + std::to_string(id);
-    ar_tag_frames_.insert(ar_frame_name);
+    frame_names.push_back(ar_frame_name);
     ar_max_extent_time_queue_[ar_frame_name] = MaeveTimeQueue<double>(
         params_.ar_time_queue_size, params_.ar_time_queue_max_gap);
   });
+
+  return frame_names;
 }
 
 AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
@@ -58,8 +63,8 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   }
 
   // Set up frame list and time queues.
-  initializeTimeQueues(params_.ar_tag_obstacle_ids);
-  initializeTimeQueues(params_.ar_tag_target_ids);
+  ar_obstacle_tag_frames_ = initializeTimeQueues(params_.ar_tag_obstacle_ids);
+  ar_target_tag_frames_ = initializeTimeQueues(params_.ar_tag_target_ids);
 
   // Compute raw tag corner points (CW ordering).
   const auto half_extent = params_.ar_tag_size / 2.0;
@@ -134,12 +139,12 @@ AR_CISPFieldNodeHandler::getTransformAndStamp(
 }
 
 bool AR_CISPFieldNodeHandler::computePotentialFields(
-    const ros::Time& timestamp) {
+    const ros::Time& timestamp, const std::vector<std::string>& frame_list) {
   auto updated = false;
 
   // Compute max extents for each AR tag and add to time queues.
   std::for_each(
-      std::begin(ar_tag_frames_), std::end(ar_tag_frames_),
+      std::begin(frame_list), std::end(frame_list),
       [&](const std::string& frame_name) {
         // Initialize the potential field for this tag.
         auto& field = field_map_[frame_name];
@@ -204,10 +209,11 @@ bool AR_CISPFieldNodeHandler::computePotentialFields(
   return updated;
 }
 
-void AR_CISPFieldNodeHandler::initFieldStorage(const cv::Size& size) {
+void AR_CISPFieldNodeHandler::initFieldStorage(
+    const cv::Size& size, const std::vector<std::string>& frame_list) {
   static bool storage_set = false;
   if (!storage_set) {
-    std::for_each(std::begin(ar_tag_frames_), std::end(ar_tag_frames_),
+    std::for_each(std::begin(frame_list), std::end(frame_list),
                   [&](const std::string& frame_name) {
                     field_map_[frame_name] = cv::Mat::zeros(size, CV_64FC2);
                   });
@@ -224,13 +230,15 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   camera_model_.fromCameraInfo(info_msg);
 
   // Make sure field maps have storage allocated.
-  initFieldStorage(camera_model_.fullResolution());
+  initFieldStorage(camera_model_.fullResolution(), ar_obstacle_tag_frames_);
+  initFieldStorage(camera_model_.fullResolution(), ar_target_tag_frames_);
 
   // Compute a potential field for each tag.
   static ros::Time time_of_last_update = msg->header.stamp;
   const auto age = (msg->header.stamp - time_of_last_update).toSec();
   const auto forget_tracks = (age > params_.ar_tag_max_age);
-  if (!forget_tracks && !computePotentialFields(msg->header.stamp)) {
+  if (!forget_tracks &&
+      !computePotentialFields(msg->header.stamp, ar_obstacle_tag_frames_)) {
     return;
   }
   time_of_last_update = msg->header.stamp;
