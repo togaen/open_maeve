@@ -92,7 +92,6 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
 
   // Visualize?
   if (!params_.viz_cisp_field_topic.empty()) {
-    // ROS_INFO_STREAM("publishing visualization");
     viz_cisp_field_pub_ = it.advertise(params_.viz_cisp_field_topic, 1);
   }
 }
@@ -222,7 +221,6 @@ void AR_CISPFieldNodeHandler::initFieldStorage(
 void AR_CISPFieldNodeHandler::cameraCallback(
     const sensor_msgs::Image::ConstPtr& msg,
     const sensor_msgs::CameraInfoConstPtr& info_msg) {
-  // ROS_INFO_STREAM("entered callback");
 
   // Initialize camera model.
   camera_model_.fromCameraInfo(info_msg);
