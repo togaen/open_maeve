@@ -36,6 +36,7 @@
 #include <vector>
 
 #include "ar_cisp_field/params.h"
+#include "maeve_automation_core/ar_cisp_field/geometry.h"
 #include "maeve_automation_core/cisp_field/potential_transforms.h"
 #include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
 
@@ -52,9 +53,6 @@ class AR_CISPFieldNodeHandler {
    */
   explicit AR_CISPFieldNodeHandler(const std::string& node_name);
 
- private:
-  /** @brief Set of points describing an AR tag. */
-  typedef std::array<Eigen::Vector3d, 4> AR_Points;
   /** @brief AR frame -> time queue. */
   typedef std::unordered_map<std::string, MaeveTimeQueue<double>>
       AR_TimeQueueMap;
@@ -97,15 +95,6 @@ class AR_CISPFieldNodeHandler {
   void computePotentialFields(const ros::Time& timestamp);
 
   /**
-   * @brief Convert an array of Eigen::Vector3d points to cv::Point3d points.
-   *
-   * @param points The array of Eigen::Vector3d points.
-   *
-   * @return A vector of projected cv::Point3d objects.
-   */
-  static std::vector<cv::Point3d> arEigenPoints2OpenCV(const AR_Points& points);
-
-  /**
    * @brief Convenience wrapper for using camera model to project points.
    *
    * This function handles translating arguments so that the projection method
@@ -116,28 +105,6 @@ class AR_CISPFieldNodeHandler {
    * @return The set of 2D image plane points.
    */
   std::vector<cv::Point2d> projectPoints(const AR_Points& ar_points) const;
-
-  /**
-   * @brief Compute the maximum extent in the XY projection of the given set of
-   * AR tag points.
-   *
-   * @param points The AR tag corner points projected onto the image plane.
-   *
-   * @return The maximum extent.
-   */
-  static double computeMaxXY_Extent(const std::vector<cv::Point2d>& points);
-
-  /**
-   * @brief From a given AR tag pose, compute its corner point.
-   *
-   * This method assumes the pose is centered on the tag.
-   *
-   * @param Tx The AR tag pose.
-   *
-   * @return An array of corner points in CW order (assuming right hand system,
-   * looking down at XY plane).
-   */
-  AR_Points arTagCornerPoints(const Eigen::Affine3d& Tx) const;
 
   /** @brief Node parameters. */
   AR_CISPFieldParams params_;

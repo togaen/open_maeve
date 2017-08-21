@@ -117,10 +117,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES ar_cisp_field
-#  CATKIN_DEPENDS ar_track_alvar cisp_field
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS tf2_eigen cisp_field
+  #  DEPENDS system_lib
 )
 
 ###########
@@ -131,14 +131,14 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   src
-  # include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/ar_cisp_field.cpp
-# )
+add_library(${PROJECT_NAME}
+  src/${PROJECT_NAME}/geometry.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -166,6 +166,7 @@ add_executable(${PROJECT_NAME}_node
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
+  ${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
