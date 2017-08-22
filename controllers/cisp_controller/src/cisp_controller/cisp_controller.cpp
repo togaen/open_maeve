@@ -21,5 +21,36 @@
  */
 #include "maeve_automation_core/cisp_controller/cisp_controller.h"
 
+#include <limits>
+
 namespace maeve_automation_core {
+namespace {
+static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+}  // namespace
+
+CISP_Controller::ControlCommand::ControlCommand()
+    : throttle(NaN), steering(NaN) {}
+
+cv::Mat projectCISP(const cv::Mat& CISP) {
+  cv::Mat control_horizon = cv::Mat::zeros(1, CISP.cols, CV_64FC2);
+
+  return control_horizon;
+}
+
+CISP_Controller::ControlCommand CISP_Controller::computeControlCommand(
+    const cv::Mat& CISP) {
+  ControlCommand cmd;
+
+  // Get control horizon.
+  cv::Mat control_horizon = projectCISP(CISP);
+
+  // Compute steering modes.
+
+  // Choose mode.
+
+  // Compute control command.
+
+  // Done.
+  return cmd;
+}
 }  // namespace maeve_automation_core

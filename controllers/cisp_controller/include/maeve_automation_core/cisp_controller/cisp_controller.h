@@ -26,9 +26,43 @@
 
 namespace maeve_automation_core {
 class CISP_Controller {
-  public:
-    struct Params {
-    };  // struct Params
-  private:
+ public:
+  struct Params {};  // struct Params
+
+  /**
+   * @brief Container for passing control commands.
+   */
+  struct ControlCommand {
+    /** @brief The commanded throttle. */
+    double throttle;
+    /** @brief The commanded steering. */
+    double steering;
+    /**
+     * @brief Constructor: initialize to invalid values.
+     */
+    ControlCommand();
+  };  // struct ControlCommand
+
+  /**
+   * @brief For a given CISP field compute a control command.
+   *
+   * @param CISP The input CISP field.
+   *
+   * @return The computed control command as a tuple of <throttle command,
+   * steering command>.
+   */
+  ControlCommand computeControlCommand(const cv::Mat& CISP);
+
+ private:
+  /**
+   * @brief Project a CISP field onto the control horizon.
+   *
+   * @param CISP The CISP field to project.
+   *
+   * @return The projected control horizon, a 1xCISP.cols scalar array.
+   */
+  static cv::Mat projectCISP(const cv::Mat& CISP);
+  /** @brief The previously computed control command. */
+  ControlCommand commanded_control_;
 };  // class CISP_Controller
 }  // namespace maeve_automation_core
