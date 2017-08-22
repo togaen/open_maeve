@@ -24,11 +24,11 @@
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
 
+#include "maeve_automation_core/cisp_field/shape_parameters.h"
+
 namespace maeve_automation_core {
 class CISP_Controller {
  public:
-  struct Params {};  // struct Params
-
   /**
    * @brief Container for passing control commands.
    */
@@ -41,7 +41,30 @@ class CISP_Controller {
      * @brief Constructor: initialize to invalid values.
      */
     ControlCommand();
+    /**
+     * @brief Constructor: initialize to explicit values.
+     *
+     * @param t The throttle command.
+     * @param s The steering command.
+     */
+    ControlCommand(const double t, const double s);
   };  // struct ControlCommand
+
+  /**
+   * @brief Constructor: initialize to invalid values.
+   */
+  CISP_Controller() = default;
+
+  /**
+   * @brief Constructor: initialize with shape parameters.
+   *
+   * @param shape_parameters Shape parameters for performing control horizon
+   * projection.
+   * @param initial_commanded_control Initialize the state of the controller
+   * with this control command.
+   */
+  CISP_Controller(const ShapeParameters& shape_parameters,
+                  const ControlCommand& initial_commanded_control);
 
   /**
    * @brief For a given CISP field compute a control command.
@@ -62,6 +85,9 @@ class CISP_Controller {
    * @return The projected control horizon, a 1xCISP.cols scalar array.
    */
   static cv::Mat projectCISP(const cv::Mat& CISP);
+
+  /** @brief Shape parameters used for control horizon projection. */
+  ShapeParameters shape_parameters_;
   /** @brief The previously computed control command. */
   ControlCommand commanded_control_;
 };  // class CISP_Controller

@@ -15,7 +15,7 @@ add_definitions(-std=c++11)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS cv_bridge eigen_conversions)
+find_package(catkin REQUIRED COMPONENTS cisp_field cv_bridge eigen_conversions)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -109,7 +109,7 @@ find_package(catkin REQUIRED COMPONENTS cv_bridge eigen_conversions)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-#  CATKIN_DEPENDS other_catkin_pkg
+  CATKIN_DEPENDS cisp_field cv_bridge eigen_conversions
 #  DEPENDS system_lib
 )
 

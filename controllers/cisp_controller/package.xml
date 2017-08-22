@@ -45,6 +45,7 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
+  <depend>cisp_field</depend>
 
   <!-- This is to add a dependency on OpenCV:
        http://wiki.ros.org/opencv3#package.xml -->

@@ -31,6 +31,15 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 CISP_Controller::ControlCommand::ControlCommand()
     : throttle(NaN), steering(NaN) {}
 
+CISP_Controller::ControlCommand::ControlCommand(const double t, const double s)
+    : throttle(t), steering(s) {}
+
+CISP_Controller::CISP_Controller(
+    const ShapeParameters& shape_parameters,
+    const ControlCommand& initial_commanded_control)
+    : shape_parameters_(shape_parameters),
+      commanded_control_(initial_commanded_control) {}
+
 cv::Mat projectCISP(const cv::Mat& CISP) {
   cv::Mat control_horizon = cv::Mat::zeros(1, CISP.cols, CV_64FC2);
 
