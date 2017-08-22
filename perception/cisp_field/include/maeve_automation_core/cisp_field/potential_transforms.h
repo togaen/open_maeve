@@ -81,8 +81,6 @@ struct PotentialTransform {
    * @return The potential value (index 0) and its time derivative (index 1).
    */
   cv::Scalar operator()(const cv::Scalar& p) const;
-
-  static bool isValidInput(const cv::Mat& field);
 };  // struct ConstraintTransform
 
 template <ConstraintType T>
