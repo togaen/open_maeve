@@ -24,41 +24,18 @@
 #include <string>
 #include <vector>
 
+#include "maeve_automation_core/cisp_field/shape_parameters.h"
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
 namespace maeve_automation_core {
 
 /** @brief Parameter object to load ROS params.*/
 struct AR_CISPFieldParams : public ParamsBase {
-  /**
-   * @brief Container for potential transform parameters.
-   */
-  struct PotentialTransform {
-    /** @brief The alpha shape parameter. */
-    double alpha;
-    /** @brief The beta shape parameter. */
-    double beta;
-    /** @brief The min of the constraint range. */
-    double range_min;
-    /** @brief The max of the constraint range. */
-    double range_max;
-    /**
-     * @brief Constructor: initialize to invalid values.
-     */
-    PotentialTransform();
-    /**
-     * @brief Sanity check whether parameters make sense.
-     *
-     * @return True if parameters pass sanity check; otherwise false.
-     */
-    __attribute__((warn_unused_result)) bool valid() const;
-  };  // struct PotentialTransform
-
   /** @brief Hard constraint transform parameters. */
-  PotentialTransform hard_constraint_transform;
+  ShapeParameters hard_constraint_transform;
 
   /** @brief Soft constraint transform parameters. */
-  PotentialTransform soft_constraint_transform;
+  ShapeParameters soft_constraint_transform;
 
   /** @brief Print terminal output? */
   bool verbose;

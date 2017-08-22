@@ -28,16 +28,6 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
-AR_CISPFieldParams::PotentialTransform::PotentialTransform()
-    : alpha(NaN), beta(NaN), range_min(NaN), range_max(NaN) {}
-
-bool AR_CISPFieldParams::PotentialTransform::valid() const {
-  CHECK_CONTAINS_CLOSED(alpha, 0.0, 1.0);
-  CHECK_CONTAINS_CLOSED(beta, 0.0, 1.0);
-  CHECK_LE(range_min, range_max);
-  return true;
-}
-
 AR_CISPFieldParams::AR_CISPFieldParams()
     : verbose(false),
       ar_time_queue_size(-1),
@@ -58,14 +48,18 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(viz_potential_bounds);
   LOAD_PARAM(verbose);
   LOAD_PARAM(ar_tag_max_age);
+
   LOAD_NS_PARAM(hard_constraint_transform, alpha);
   LOAD_NS_PARAM(hard_constraint_transform, beta);
   LOAD_NS_PARAM(hard_constraint_transform, range_min);
   LOAD_NS_PARAM(hard_constraint_transform, range_max);
+  hard_constraint_transform.computeMidPoint();
+
   LOAD_NS_PARAM(soft_constraint_transform, alpha);
   LOAD_NS_PARAM(soft_constraint_transform, beta);
   LOAD_NS_PARAM(soft_constraint_transform, range_min);
   LOAD_NS_PARAM(soft_constraint_transform, range_max);
+  soft_constraint_transform.computeMidPoint();
 
   // Sanity check params.
   CHECK_GE(ar_tag_max_age, 0.0);
@@ -91,7 +85,9 @@ bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
   ar_tag_size /= 100.0;
 
   // All good?
-  return hard_constraint_transform.valid() && soft_constraint_transform.valid();
+  const auto hc_valid = hard_constraint_transform.valid();
+  const auto sc_valid = soft_constraint_transform.valid();
+  return hc_valid && sc_valid;
 }
 
 }  // namespace maeve_automation_core
