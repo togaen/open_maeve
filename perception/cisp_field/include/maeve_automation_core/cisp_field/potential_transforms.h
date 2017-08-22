@@ -24,8 +24,8 @@
 #include <opencv2/opencv.hpp>
 
 #include <iostream>
-#include <limits>
-#include <tuple>
+
+#include "maeve_automation_core/cisp_field/shape_parameters.h"
 
 namespace maeve_automation_core {
 /** @brief Types of constraint transforms. */
@@ -39,7 +39,7 @@ enum class ConstraintType { HARD, SOFT };  // enum class ConstraintType
  *
  * @return The stream.
  */
-std::ostream& operator<<(std::ostream& oStrStream, const ConstraintType c);
+std::ostream& operator<<(std::ostream& o, const ConstraintType c);
 
 /**
  * @brief Template class for constrained potential value transforms.
@@ -47,31 +47,19 @@ std::ostream& operator<<(std::ostream& oStrStream, const ConstraintType c);
  * @tparam T The constraint type that the potential transform is modeling.
  */
 template <ConstraintType T>
-struct PotentialTransform {
-  /** @brief The minimum of the closed interval constraint range. */
-  double range_min;
-  /** @brief The maximum of the closed interval constraint range. */
-  double range_max;
-  /** @brief The alpha shape parameter. */
-  double alpha;
-  /** @brief The beta shape parameter. */
-  double beta;
-
+class PotentialTransform {
+ public:
   /**
    * @brief Constructor: enable default construction.
    */
-  PotentialTransform();
+  PotentialTransform() = default;
 
   /**
    * @brief Constructor: Assign the interval constraint range.
    *
-   * @param r_min The minimum of the interval constraint range.
-   * @param r_max The maximum of the interval constraint range.
-   * @param a The alpha shape parameter.
-   * @param b The beta shape parameter.
+   * @param shape_params The shape parameters.
    */
-  PotentialTransform(const double r_min, const double r_max, const double a,
-                     const double b);
+  PotentialTransform(const ShapeParameters& shape_params);
 
   /**
    * @brief Function definition for 0th order potential value transform.
@@ -82,21 +70,14 @@ struct PotentialTransform {
    */
   cv::Scalar operator()(const cv::Scalar& p) const;
 
-  static bool isValidInput(const cv::Mat& field);
-};  // struct ConstraintTransform
+ private:
+  /** @brief Shape parameter for this potential transform. */
+  ShapeParameters shape_params_;
+};  // class PotentialTransform
 
 template <ConstraintType T>
-PotentialTransform<T>::PotentialTransform()
-    : PotentialTransform(std::numeric_limits<double>::quiet_NaN(),
-                         std::numeric_limits<double>::quiet_NaN(),
-                         std::numeric_limits<double>::quiet_NaN(),
-                         std::numeric_limits<double>::quiet_NaN()) {}
-
-template <ConstraintType T>
-PotentialTransform<T>::PotentialTransform(const double r_min,
-                                          const double r_max, const double a,
-                                          const double b)
-    : range_min(r_min), range_max(r_max), alpha(a), beta(b) {}
+PotentialTransform<T>::PotentialTransform(const ShapeParameters& shape_params)
+    : shape_params_(shape_params) {}
 
 template <>
 cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(

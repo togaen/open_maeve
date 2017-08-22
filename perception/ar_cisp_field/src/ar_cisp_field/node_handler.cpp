@@ -74,14 +74,10 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   ar_corner_points_[3] = Eigen::Vector3d(-half_extent, -half_extent, 0.0);
 
   // Instantiate transforms.
-  const auto& hc_params = params_.hard_constraint_transform;
-  const auto& sc_params = params_.soft_constraint_transform;
   hc_ = PotentialTransform<ConstraintType::HARD>(
-      hc_params.range_min, hc_params.range_max, hc_params.alpha,
-      hc_params.beta);
+      params_.hard_constraint_transform);
   sc_ = PotentialTransform<ConstraintType::SOFT>(
-      sc_params.range_min, sc_params.range_max, sc_params.alpha,
-      sc_params.beta);
+      params_.soft_constraint_transform);
 
   // Image transport interface.
   image_transport::ImageTransport it(nh_);
