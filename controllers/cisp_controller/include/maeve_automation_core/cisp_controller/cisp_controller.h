@@ -24,6 +24,8 @@
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
 
+#include <tuple>
+
 #include "maeve_automation_core/cisp_field/shape_parameters.h"
 
 /**
@@ -89,6 +91,24 @@ class CISP_Controller {
   ControlCommand computeControlCommand(const cv::Mat& CISP);
 
  private:
+  /** @brief Pair of indices that bound a range on 1D array. */
+  typedef std::tuple<int, int> IndexPair;
+
+  /**
+   * @brief Find local minima on the given control horizon.
+   *
+   * For minima that are peaks, both indices in the index pair will be the same.
+   * For minima that are plateaux the first index will point to the first
+   * element in the plateau and the second index will point to the first index
+   * past the plateau.
+   *
+   * @param control_horizon The control horizon to find minima for.
+   *
+   * @return The of index pairs corresponding to local minima.
+   */
+  static std::vector<IndexPair> computeHorizonMinima(
+      const cv::Mat& control_horizon);
+
   /**
    * @brief Project a CISP field onto the control horizon.
    *

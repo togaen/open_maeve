@@ -48,14 +48,23 @@ cv::Mat CISP_Controller::projectCISP(const cv::Mat& CISP) {
   return control_horizon;
 }
 
+std::vector<CISP_Controller::IndexPair> CISP_Controller::computeHorizonMinima(
+    const cv::Mat& control_horizon) {
+  std::vector<IndexPair> index_pairs;
+
+  return index_pairs;
+}
+
 CISP_Controller::ControlCommand CISP_Controller::computeControlCommand(
     const cv::Mat& CISP) {
   ControlCommand cmd;
 
   // Get control horizon.
-  cv::Mat control_horizon = projectCISP(CISP);
+  cv::Mat control_horizon = CISP_Controller::projectCISP(CISP);
 
   // Compute steering modes.
+  const auto index_pairs =
+      CISP_Controller::computeHorizonMinima(control_horizon);
 
   // Choose mode.
 
