@@ -38,7 +38,7 @@ TEST(MTQ, testDifferentiation1) {
   EXPECT_TRUE(mtq.insert(4.0, 0.0));
 
   // Should work.
-  if (const auto dt = mtq.dt(0.5)) {
+  if (const auto dt = mtq.bfd_dt(0.5)) {
     EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
     EXPECT_NEAR(std::get<1>(*dt), -1.0, epsilon);
   } else {
@@ -46,12 +46,12 @@ TEST(MTQ, testDifferentiation1) {
   }
 
   // Shouldn't work for first element, or outside elements.
-  EXPECT_TRUE(!mtq.dt(0.0));
-  EXPECT_TRUE(!mtq.dt(-1.0));
-  EXPECT_TRUE(!mtq.dt(4.5));
+  EXPECT_TRUE(!mtq.bfd_dt(0.0));
+  EXPECT_TRUE(!mtq.bfd_dt(-1.0));
+  EXPECT_TRUE(!mtq.bfd_dt(4.5));
 
   // Should work.
-  if (const auto dt = mtq.dt(4.0)) {
+  if (const auto dt = mtq.bfd_dt(4.0)) {
     EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
     EXPECT_NEAR(std::get<1>(*dt), -1.0, epsilon);
   } else {
@@ -74,25 +74,25 @@ TEST(MTQ, testDifferentiation2) {
 
   // Should work.
   {
-    const auto dt = mtq.dt(0.5);
+    const auto dt = mtq.bfd_dt(0.5);
     ASSERT_FALSE(!dt);
     EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
     EXPECT_NEAR(std::get<1>(*dt), 1.0, epsilon);
   }
 
   {
-    const auto dt = mtq.dt(2.5);
+    const auto dt = mtq.bfd_dt(2.5);
     ASSERT_FALSE(!dt);
     EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
     EXPECT_NEAR(std::get<1>(*dt), 5.0, epsilon);
   }
 
   // Test boundary cases.
-  EXPECT_TRUE(!mtq.dt(0.0));   // first element
-  EXPECT_TRUE(!mtq.dt(-1.0));  // outside element
-  EXPECT_TRUE(!mtq.dt(4.5));   // outside element
+  EXPECT_TRUE(!mtq.bfd_dt(0.0));   // first element
+  EXPECT_TRUE(!mtq.bfd_dt(-1.0));  // outside element
+  EXPECT_TRUE(!mtq.bfd_dt(4.5));   // outside element
   {
-    const auto dt = mtq.dt(4.0);  // last element
+    const auto dt = mtq.bfd_dt(4.0);  // last element
     ASSERT_FALSE(!dt);
     EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
     EXPECT_NEAR(std::get<1>(*dt), 7.0, epsilon);

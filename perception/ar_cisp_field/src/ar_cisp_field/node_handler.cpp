@@ -171,7 +171,7 @@ bool AR_CISPFieldNodeHandler::computePotentialFields(
         // TODO: should put a filter on these dt values.
         auto s_dot = NaN;
         auto t_delta = NaN;
-        if (const auto dt = ar_max_extent_time_queue_[frame_name].dt(t)) {
+        if (const auto dt = ar_max_extent_time_queue_[frame_name].bfd_dt(t)) {
           std::tie(t_delta, s_dot) = *dt;
         } else {
           // If the backward differencing operation fails probably the queue has

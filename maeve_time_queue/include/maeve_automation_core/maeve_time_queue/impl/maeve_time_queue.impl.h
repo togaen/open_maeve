@@ -83,7 +83,7 @@ bool MaeveTimeQueue<T_Element>::insert(const double time, const T_Element& el) {
 
 template <typename T_Element>
 boost::optional<typename MaeveTimeQueue<T_Element>::ElementType>
-MaeveTimeQueue<T_Element>::dt(const double time) const {
+MaeveTimeQueue<T_Element>::bfd_dt(const double time) const {
   if (size() < 2) {
     return boost::none;
   }
