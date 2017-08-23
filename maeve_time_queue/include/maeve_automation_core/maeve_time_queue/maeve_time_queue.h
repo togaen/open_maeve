@@ -87,7 +87,7 @@ class MaeveTimeQueue {
    * compute the derivative and the derivative value (second element). If a
    * derivative cannot be computed, boost::none is returned.
    */
-  boost::optional<ElementType> dt(const double time) const;
+  boost::optional<ElementType> bfd_dt(const double time) const;
 
   /**
    * @brief Return the number of elements in the queue.
