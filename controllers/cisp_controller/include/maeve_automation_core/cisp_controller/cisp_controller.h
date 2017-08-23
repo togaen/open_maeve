@@ -26,6 +26,18 @@
 
 #include "maeve_automation_core/cisp_field/shape_parameters.h"
 
+/**
+ * @brief Friend a gtest class.
+ *
+ * This is copied from:
+ *
+ * https://github.com/google/googletest/blob/master/googletest/include/gtest/gtest_prod.h
+ *
+ * Defining it here avoids a gtest dependency in the library.
+ */
+#define MAEVE_FRIEND_TEST(test_case_name, test_name) \
+  friend class test_case_name##_##test_name##_Test
+
 namespace maeve_automation_core {
 class CISP_Controller {
  public:
@@ -90,5 +102,7 @@ class CISP_Controller {
   ShapeParameters shape_parameters_;
   /** @brief The previously computed control command. */
   ControlCommand commanded_control_;
+
+  MAEVE_FRIEND_TEST(CISP_Controller, testControlHorizon);
 };  // class CISP_Controller
 }  // namespace maeve_automation_core

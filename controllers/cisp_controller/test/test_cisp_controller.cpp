@@ -19,49 +19,40 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
+#include <gtest/gtest.h>
+
 #include "maeve_automation_core/cisp_controller/cisp_controller.h"
 
-#include <limits>
-
 namespace maeve_automation_core {
-namespace {
-static const auto NaN = std::numeric_limits<double>::quiet_NaN();
-}  // namespace
 
-CISP_Controller::ControlCommand::ControlCommand()
-    : throttle(NaN), steering(NaN) {}
+TEST(CISP_Controller, testControlHorizon) {
+  cv::Mat m = cv::Mat(3, 3, CV_64FC2);
+  const auto epsilon = 0.00001;
 
-CISP_Controller::ControlCommand::ControlCommand(const double t, const double s)
-    : throttle(t), steering(s) {}
+  for (auto i = 0; i < 3; ++i) {
+    for (auto j = 0; j < 3; ++j) {
+      const auto v1 = static_cast<double>(i * 3 + j);
+      const auto v2 = 9.0 + v1;
+      m.at<cv::Point2d>(i, j) = cv::Point2d(v1, v2);
+    }
+  }
 
-CISP_Controller::CISP_Controller(
-    const ShapeParameters& shape_parameters,
-    const ControlCommand& initial_commanded_control)
-    : shape_parameters_(shape_parameters),
-      commanded_control_(initial_commanded_control) {}
+  // Expected size?
+  cv::Mat h = CISP_Controller::projectCISP(m);
+  EXPECT_EQ(h.rows, 1);
+  EXPECT_EQ(h.cols, m.cols);
 
-cv::Mat CISP_Controller::projectCISP(const cv::Mat& CISP) {
-  cv::Mat control_horizon;
-
-  cv::reduce(CISP, control_horizon, 0 /* 0: row, 1: column */, CV_REDUCE_AVG);
-
-  return control_horizon;
+  // Expected values?
+  for (auto i = 0; i < 3; ++i) {
+    const auto v = h.at<cv::Point2d>(i);
+    EXPECT_NEAR(v.x, 3.0 + i, epsilon);
+    EXPECT_NEAR(v.y, 12.0 + i, epsilon);
+  }
 }
 
-CISP_Controller::ControlCommand CISP_Controller::computeControlCommand(
-    const cv::Mat& CISP) {
-  ControlCommand cmd;
-
-  // Get control horizon.
-  cv::Mat control_horizon = projectCISP(CISP);
-
-  // Compute steering modes.
-
-  // Choose mode.
-
-  // Compute control command.
-
-  // Done.
-  return cmd;
-}
 }  // namespace maeve_automation_core
+
+int main(int argc, char** argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
