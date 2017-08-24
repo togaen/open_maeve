@@ -38,7 +38,7 @@ TEST(CISP_Controller, testControlHorizon) {
   }
 
   // Expected size?
-  cv::Mat h = CISP_Controller::projectCISP(m);
+  cv::Mat h = CISP_Controller::reduceCISP(m);
   EXPECT_EQ(h.rows, 1);
   EXPECT_EQ(h.cols, m.cols);
 

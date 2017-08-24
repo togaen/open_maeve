@@ -40,7 +40,7 @@ CISP_Controller::CISP_Controller(
     : shape_parameters_(shape_parameters),
       commanded_control_(initial_commanded_control) {}
 
-cv::Mat CISP_Controller::projectCISP(const cv::Mat& CISP) {
+cv::Mat CISP_Controller::reduceCISP(const cv::Mat& CISP) {
   cv::Mat control_horizon;
 
   cv::reduce(CISP, control_horizon, 0 /* 0: row, 1: column */, CV_REDUCE_AVG);
@@ -60,7 +60,7 @@ CISP_Controller::ControlCommand CISP_Controller::computeControlCommand(
   ControlCommand cmd;
 
   // Get control horizon.
-  cv::Mat control_horizon = CISP_Controller::projectCISP(CISP);
+  cv::Mat control_horizon = CISP_Controller::reduceCISP(CISP);
 
   // Compute steering modes.
   const auto index_pairs =

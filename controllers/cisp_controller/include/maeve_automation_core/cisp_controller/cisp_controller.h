@@ -116,7 +116,7 @@ class CISP_Controller {
    *
    * @return The projected control horizon, a 1xCISP.cols scalar array.
    */
-  static cv::Mat projectCISP(const cv::Mat& CISP);
+  static cv::Mat reduceCISP(const cv::Mat& CISP);
 
   /** @brief Shape parameters used for control horizon projection. */
   ShapeParameters shape_parameters_;
