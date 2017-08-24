@@ -19,40 +19,22 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include <gtest/gtest.h>
-
 #include "cisp_controller/lib.h"
 
+#include <opencv2/opencv.hpp>
+
 namespace maeve_automation_core {
+std::vector<IndexPair> computeHorizonMinima(const cv::Mat& control_horizon) {
+  std::vector<IndexPair> index_pairs;
 
-TEST(CISP_Controller, testControlHorizon) {
-  cv::Mat m = cv::Mat(3, 3, CV_64FC2);
-  const auto epsilon = 0.00001;
-
-  for (auto i = 0; i < 3; ++i) {
-    for (auto j = 0; j < 3; ++j) {
-      const auto v1 = static_cast<double>(i * 3 + j);
-      const auto v2 = 9.0 + v1;
-      m.at<cv::Point2d>(i, j) = cv::Point2d(v1, v2);
-    }
-  }
-
-  // Expected size?
-  cv::Mat h = reduceCISP(m);
-  EXPECT_EQ(h.rows, 1);
-  EXPECT_EQ(h.cols, m.cols);
-
-  // Expected values?
-  for (auto i = 0; i < 3; ++i) {
-    const auto v = h.at<cv::Point2d>(i);
-    EXPECT_NEAR(v.x, 3.0 + i, epsilon);
-    EXPECT_NEAR(v.y, 12.0 + i, epsilon);
-  }
+  return index_pairs;
 }
 
+cv::Mat reduceCISP(const cv::Mat& CISP) {
+  cv::Mat control_horizon;
+
+  cv::reduce(CISP, control_horizon, 0 /* 0: row, 1: column */, CV_REDUCE_AVG);
+
+  return control_horizon;
+}
 }  // namespace maeve_automation_core
-
-int main(int argc, char** argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

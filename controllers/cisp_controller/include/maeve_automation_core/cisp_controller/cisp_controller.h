@@ -21,24 +21,9 @@
  */
 #pragma once
 
-#include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
 
-#include <tuple>
-
 #include "maeve_automation_core/cisp_field/shape_parameters.h"
-
-/**
- * @brief Friend a gtest class.
- *
- * This is copied from:
- *
- * https://github.com/google/googletest/blob/master/googletest/include/gtest/gtest_prod.h
- *
- * Defining it here avoids a gtest dependency in the library.
- */
-#define MAEVE_FRIEND_TEST(test_case_name, test_name) \
-  friend class test_case_name##_##test_name##_Test
 
 namespace maeve_automation_core {
 class CISP_Controller {
@@ -91,38 +76,9 @@ class CISP_Controller {
   ControlCommand computeControlCommand(const cv::Mat& CISP);
 
  private:
-  /** @brief Pair of indices that bound a range on 1D array. */
-  typedef std::tuple<int, int> IndexPair;
-
-  /**
-   * @brief Find local minima on the given control horizon.
-   *
-   * For minima that are peaks, both indices in the index pair will be the same.
-   * For minima that are plateaux the first index will point to the first
-   * element in the plateau and the second index will point to the first index
-   * past the plateau.
-   *
-   * @param control_horizon The control horizon to find minima for.
-   *
-   * @return The of index pairs corresponding to local minima.
-   */
-  static std::vector<IndexPair> computeHorizonMinima(
-      const cv::Mat& control_horizon);
-
-  /**
-   * @brief Project a CISP field onto the control horizon.
-   *
-   * @param CISP The CISP field to project.
-   *
-   * @return The projected control horizon, a 1xCISP.cols scalar array.
-   */
-  static cv::Mat reduceCISP(const cv::Mat& CISP);
-
   /** @brief Shape parameters used for control horizon projection. */
   ShapeParameters shape_parameters_;
   /** @brief The previously computed control command. */
   ControlCommand commanded_control_;
-
-  MAEVE_FRIEND_TEST(CISP_Controller, testControlHorizon);
 };  // class CISP_Controller
 }  // namespace maeve_automation_core

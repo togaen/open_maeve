@@ -15,7 +15,7 @@ add_definitions(-std=c++11)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS cisp_field cv_bridge eigen_conversions)
+find_package(catkin REQUIRED COMPONENTS cisp_field cv_bridge)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -109,7 +109,7 @@ find_package(catkin REQUIRED COMPONENTS cisp_field cv_bridge eigen_conversions)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS cisp_field cv_bridge eigen_conversions
+  CATKIN_DEPENDS cisp_field cv_bridge
 #  DEPENDS system_lib
 )
 
@@ -120,12 +120,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
+  src
  include
  ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
+  src/${PROJECT_NAME}/lib.cpp
   src/${PROJECT_NAME}/cisp_controller.cpp
 )
 

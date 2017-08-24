@@ -19,40 +19,37 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include <gtest/gtest.h>
+#pragma once
 
-#include "cisp_controller/lib.h"
+#include <opencv2/opencv.hpp>
+
+#include <tuple>
+#include <vector>
 
 namespace maeve_automation_core {
+/** @brief Pair of indices that bound a range on 1D array. */
+typedef std::tuple<int, int> IndexPair;
 
-TEST(CISP_Controller, testControlHorizon) {
-  cv::Mat m = cv::Mat(3, 3, CV_64FC2);
-  const auto epsilon = 0.00001;
+/**
+ * @brief Find local minima on the given control horizon.
+ *
+ * For minima that are peaks, both indices in the index pair will be the same.
+ * For minima that are plateaux the first index will point to the first
+ * element in the plateau and the second index will point to the first index
+ * past the plateau.
+ *
+ * @param control_horizon The control horizon to find minima for.
+ *
+ * @return The of index pairs corresponding to local minima.
+ */
+std::vector<IndexPair> computeHorizonMinima(const cv::Mat& control_horizon);
 
-  for (auto i = 0; i < 3; ++i) {
-    for (auto j = 0; j < 3; ++j) {
-      const auto v1 = static_cast<double>(i * 3 + j);
-      const auto v2 = 9.0 + v1;
-      m.at<cv::Point2d>(i, j) = cv::Point2d(v1, v2);
-    }
-  }
-
-  // Expected size?
-  cv::Mat h = reduceCISP(m);
-  EXPECT_EQ(h.rows, 1);
-  EXPECT_EQ(h.cols, m.cols);
-
-  // Expected values?
-  for (auto i = 0; i < 3; ++i) {
-    const auto v = h.at<cv::Point2d>(i);
-    EXPECT_NEAR(v.x, 3.0 + i, epsilon);
-    EXPECT_NEAR(v.y, 12.0 + i, epsilon);
-  }
-}
-
+/**
+ * @brief Project a CISP field onto the control horizon.
+ *
+ * @param CISP The CISP field to project.
+ *
+ * @return The projected control horizon, a 1xCISP.cols scalar array.
+ */
+cv::Mat reduceCISP(const cv::Mat& CISP);
 }  // namespace maeve_automation_core
-
-int main(int argc, char** argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

@@ -23,6 +23,8 @@
 
 #include <limits>
 
+#include "cisp_controller/lib.h"
+
 namespace maeve_automation_core {
 namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -40,31 +42,15 @@ CISP_Controller::CISP_Controller(
     : shape_parameters_(shape_parameters),
       commanded_control_(initial_commanded_control) {}
 
-cv::Mat CISP_Controller::reduceCISP(const cv::Mat& CISP) {
-  cv::Mat control_horizon;
-
-  cv::reduce(CISP, control_horizon, 0 /* 0: row, 1: column */, CV_REDUCE_AVG);
-
-  return control_horizon;
-}
-
-std::vector<CISP_Controller::IndexPair> CISP_Controller::computeHorizonMinima(
-    const cv::Mat& control_horizon) {
-  std::vector<IndexPair> index_pairs;
-
-  return index_pairs;
-}
-
 CISP_Controller::ControlCommand CISP_Controller::computeControlCommand(
     const cv::Mat& CISP) {
   ControlCommand cmd;
 
   // Get control horizon.
-  cv::Mat control_horizon = CISP_Controller::reduceCISP(CISP);
+  cv::Mat control_horizon = reduceCISP(CISP);
 
   // Compute steering modes.
-  const auto index_pairs =
-      CISP_Controller::computeHorizonMinima(control_horizon);
+  const auto index_pairs = computeHorizonMinima(control_horizon);
 
   // Choose mode.
 
