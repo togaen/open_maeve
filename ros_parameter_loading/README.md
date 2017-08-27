@@ -57,7 +57,7 @@ is thrown.
 
 ### C++ ###
 
-A struct definition that corresponds to this paramter file might look like:
+A struct definition that corresponds to this parameter file might look like:
 
 ```c++
 // my_params.h
@@ -78,7 +78,10 @@ struct MyParams : public ParamsBase {
     float other_float_param;
   };
 
+  // Storage for 'string_param'.
   std::string string_param;
+
+  // Storage for 'float_param'.
   float float_param;
 
   // The parameters in this struct correspond to the parameters in the
