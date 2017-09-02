@@ -46,10 +46,11 @@ cv::Mat safeControls(const cv::Mat& ISP,
   cv::Mat masked_ISP = ISP(ROI);
 
   // Reduce to single row.
-  cv::reduce(ISP, controls, 0 /* 0: row, 1: column */, CV_REDUCE_MAX);
+  cv::Mat reduced_ISP;
+  cv::reduce(masked_ISP, reduced_ISP, 0 /* 0: row, 1: column */, CV_REDUCE_MAX);
 
   // Dilate.
-  cv::dilate(masked_ISP, controls, structuring_element);
+  cv::dilate(reduced_ISP, controls, structuring_element);
 
   // Project.
   controls.forEach<cv::Point2d>(
