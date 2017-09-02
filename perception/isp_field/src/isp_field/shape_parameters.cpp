@@ -35,6 +35,10 @@ void ShapeParameters::computeMidPoint() {
   range_mid = (range_min + range_max) / 2.0;
 }
 
+ShapeParameters::ShapeParameters(const double r_min, const double r_max,
+                                 const double a, const double b)
+    : range_min(r_min), range_max(r_max), alpha(a), beta(b) {}
+
 bool ShapeParameters::valid(const bool check_range_order) const {
   const auto alpha_valid = (alpha >= 0.0) && (alpha <= 1.0);
   const auto beta_valid = (beta >= 0.0) && (beta <= 1.0);

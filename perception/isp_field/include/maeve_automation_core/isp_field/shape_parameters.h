@@ -47,11 +47,11 @@ struct ShapeParameters {
    *
    * @param r_min The minimum of the range being mapped onto.
    * @param r_max The maximum of the range being mapped onto.
-   * @param alpha The alpha shape.
-   * @param beta  The beta shape.
+   * @param a The alpha shape.
+   * @param b  The beta shape.
    */
-  ShapeParameters(const double r_min, const double r_max, const double alpha,
-                  const double beta);
+  ShapeParameters(const double r_min, const double r_max, const double a,
+                  const double b);
   /**
    * @brief Convenience method to compute range_mid member.
    *
