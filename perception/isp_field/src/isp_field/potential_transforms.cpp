@@ -46,22 +46,21 @@ cv::Point2d PotentialTransform<ConstraintType::HARD>::operator()(
     const cv::Point2d& pixel_value) const {
   auto return_value = pixel_value;
 
-  // For convenience.
-  const auto& p = shape_params_;
-
   // Compute potentials.
-  if (pixel_value.x < p.range_min) {
+  if (pixel_value.x < p_.range_min) {
     // 0th order.
-    return_value.x = p.alpha * std::pow(p.range_min - pixel_value.x, -p.beta);
+    return_value.x =
+        p_.alpha * std::pow(p_.range_min - pixel_value.x, -p_.beta);
     // 1st order.
-    return_value.y = -p.alpha * p.beta * pixel_value.y *
-                     std::pow(p.range_min - pixel_value.x, -p.beta - 1.0);
-  } else if (pixel_value.x > p.range_max) {
+    return_value.y = -p_.alpha * p_.beta * pixel_value.y *
+                     std::pow(p_.range_min - pixel_value.x, -p_.beta - 1.0);
+  } else if (pixel_value.x > p_.range_max) {
     // 0th order.
-    return_value.x = p.alpha * std::pow(pixel_value.x - p.range_max, -p.beta);
+    return_value.x =
+        p_.alpha * std::pow(pixel_value.x - p_.range_max, -p_.beta);
     // 1st order.
-    return_value.y = -p.alpha * p.beta * pixel_value.y *
-                     std::pow(pixel_value.x - p.range_max, -p.beta - 1.0);
+    return_value.y = -p_.alpha * p_.beta * pixel_value.y *
+                     std::pow(pixel_value.x - p_.range_max, -p_.beta - 1.0);
   } else {
     // 0th order.
     return_value.x = INF;
@@ -78,20 +77,18 @@ cv::Point2d PotentialTransform<ConstraintType::SOFT>::operator()(
     const cv::Point2d& pixel_value) const {
   auto return_value = pixel_value;
 
-  // For convenience.
-  const auto& p = shape_params_;
-
   // Exponential term.
-  const auto e_term = std::exp(-p.alpha * (pixel_value.x - p.range_mid));
+  const auto e_term = std::exp(-p_.alpha * (pixel_value.x - p_.range_mid));
 
   // Compute 0th order potential.
   return_value.x =
-      p.range_min +
-      (p.range_max - p.range_min) / std::pow(1.0 + e_term, 1.0 / p.beta);
+      p_.range_min +
+      (p_.range_max - p_.range_min) / std::pow(1.0 + e_term, 1.0 / p_.beta);
 
   // Compute 1st order potential.
-  const auto numerator = p.alpha * (p.range_max - p.range_min) * e_term;
-  const auto denominator = p.beta * std::pow(1.0 + e_term, 1.0 + 1.0 / p.beta);
+  const auto numerator = p_.alpha * (p_.range_max - p_.range_min) * e_term;
+  const auto denominator =
+      p_.beta * std::pow(1.0 + e_term, 1.0 + 1.0 / p_.beta);
   return_value.y = pixel_value.y * numerator / denominator;
 
   // Done.

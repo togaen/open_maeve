@@ -79,16 +79,16 @@ class PotentialTransform {
 
  private:
   /** @brief Shape parameter for this potential transform. */
-  ShapeParameters shape_params_;
+  ShapeParameters p_;
 };  // class PotentialTransform
 
 template <ConstraintType T>
 PotentialTransform<T>::PotentialTransform(const ShapeParameters& shape_params)
-    : shape_params_(shape_params) {}
+    : p_(shape_params) {}
 
 template <ConstraintType T>
 const ShapeParameters& PotentialTransform<T>::shapeParameters() const {
-  return shape_params_;
+  return p_;
 }
 
 template <>
