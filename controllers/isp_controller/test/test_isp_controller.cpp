@@ -41,29 +41,57 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
 }
 
 TEST(ISP_Controller, testSafeControls) {
-  const auto rows = 3;
-  const auto cols = 5;
+  const auto rows = 5;
+  const auto cols = 7;
 
   // Image space potential field.
   const cv::Mat ISP = dummyMatrix(rows, cols);
 
   // Control projection.
+  const auto range_min = 1.0;
+  const auto range_max = -1.0;
+  const auto alpha = 0.05;
+  const auto beta = 0.5;
   const auto C_u = PotentialTransform<ConstraintType::SOFT>(
-      ShapeParameters(1.0, -1.0, 1.0, 1.0));
+      ShapeParameters(range_min, range_max, alpha, beta));
   EXPECT_TRUE(C_u.shapeParameters().valid(false));
 
   // Kernel parameters.
   const auto kernel_width = 3;
-  const auto kernel_height = ISP.rows;
+  const auto kernel_height = 3;
   const auto kernel_horizon = ISP.rows / 2;
   const auto K_P = 1.0;
-  const auto K_D = 1.0;
+  const auto K_D = 0.0;
 
   // Compute controls.
   cv::Mat controls = safeControls(ISP, C_u, kernel_width, kernel_height,
                                   kernel_horizon, K_P, K_D);
   ASSERT_EQ(controls.rows, 1);
   ASSERT_EQ(controls.cols, ISP.cols);
+
+  // Check controls.
+  /*
+  ISP:
+  (0, 35)  (1, 36)  (2, 37)  (3, 38)  (4, 39)  (5, 40)  (6, 41)
+  (7, 42)  (8, 43)  (9, 44)  (10, 45) (11, 46) (12, 47) (13, 48)
+  (14, 49) (15, 50) (16, 51) (17, 52) (18, 53) (19, 54) (20, 55)
+  (21, 56) (22, 57) (23, 58) (24, 59) (25, 60) (26, 61) (27, 62)
+  (28, 63) (29, 64) (30, 65) (31, 66) (32, 67) (33, 68) (34, 69)
+
+  Reduction:
+  (21, 56) (22, 57) (23, 58) (24, 59) (25, 60) (26, 61) (27, 62)
+
+  Max filter:
+  (22, 56) (23, 57) (24, 58) (25, 59) (26, 60) (27, 61) (27, 62)
+  */
+  std::vector<double> a_max_projections{-0.1257805, -0.1537137, -0.1812607,
+                                        -0.2083901, -0.2350732, -0.2612837,
+                                        -0.2612837};
+  for (auto i = 0; i < ISP.cols; ++i) {
+    const auto p = controls.at<cv::Point2d>(0, i);
+    const auto a_max = p.y;
+    EXPECT_NEAR(a_max, a_max_projections[i], epsilon);
+  }
 }
 
 TEST(ISP_Controller, testControlHorizon) {
