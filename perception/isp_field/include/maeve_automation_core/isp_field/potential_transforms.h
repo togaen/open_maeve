@@ -68,7 +68,7 @@ class PotentialTransform {
    *
    * @return The potential value (index 0) and its time derivative (index 1).
    */
-  cv::Scalar operator()(const cv::Scalar& p) const;
+  cv::Point2d operator()(const cv::Point2d& p) const;
 
  private:
   /** @brief Shape parameter for this potential transform. */
@@ -80,11 +80,11 @@ PotentialTransform<T>::PotentialTransform(const ShapeParameters& shape_params)
     : shape_params_(shape_params) {}
 
 template <>
-cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
-    const cv::Scalar& p) const;
+cv::Point2d PotentialTransform<ConstraintType::HARD>::operator()(
+    const cv::Point2d& p) const;
 
 template <>
-cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
-    const cv::Scalar& p) const;
+cv::Point2d PotentialTransform<ConstraintType::SOFT>::operator()(
+    const cv::Point2d& p) const;
 
 }  // namespace maeve_automation_core

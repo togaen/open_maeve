@@ -42,31 +42,31 @@ std::ostream& operator<<(std::ostream& o, const ConstraintType c) {
 }
 
 template <>
-cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
-    const cv::Scalar& pixel_value) const {
+cv::Point2d PotentialTransform<ConstraintType::HARD>::operator()(
+    const cv::Point2d& pixel_value) const {
   auto return_value = pixel_value;
 
   // For convenience.
   const auto& p = shape_params_;
 
   // Compute potentials.
-  if (pixel_value[0] < p.range_min) {
+  if (pixel_value.x < p.range_min) {
     // 0th order.
-    return_value[0] = p.alpha * std::pow(p.range_min - pixel_value[0], -p.beta);
+    return_value.x = p.alpha * std::pow(p.range_min - pixel_value.x, -p.beta);
     // 1st order.
-    return_value[1] = -p.alpha * p.beta * pixel_value[1] *
-                      std::pow(p.range_min - pixel_value[0], -p.beta - 1.0);
-  } else if (pixel_value[0] > p.range_max) {
+    return_value.y = -p.alpha * p.beta * pixel_value.y *
+                      std::pow(p.range_min - pixel_value.x, -p.beta - 1.0);
+  } else if (pixel_value.x > p.range_max) {
     // 0th order.
-    return_value[0] = p.alpha * std::pow(pixel_value[0] - p.range_max, -p.beta);
+    return_value.x = p.alpha * std::pow(pixel_value.x - p.range_max, -p.beta);
     // 1st order.
-    return_value[1] = -p.alpha * p.beta * pixel_value[1] *
-                      std::pow(pixel_value[0] - p.range_max, -p.beta - 1.0);
+    return_value.y = -p.alpha * p.beta * pixel_value.y *
+                      std::pow(pixel_value.x - p.range_max, -p.beta - 1.0);
   } else {
     // 0th order.
-    return_value[0] = INF;
+    return_value.x = INF;
     // 1st order.
-    return_value[1] = 0.0;
+    return_value.y = 0.0;
   }
 
   // Done.
@@ -74,25 +74,25 @@ cv::Scalar PotentialTransform<ConstraintType::HARD>::operator()(
 }
 
 template <>
-cv::Scalar PotentialTransform<ConstraintType::SOFT>::operator()(
-    const cv::Scalar& pixel_value) const {
+cv::Point2d PotentialTransform<ConstraintType::SOFT>::operator()(
+    const cv::Point2d& pixel_value) const {
   auto return_value = pixel_value;
 
   // For convenience.
   const auto& p = shape_params_;
 
   // Exponential term.
-  const auto e_term = std::exp(-p.alpha * (pixel_value[0] - p.range_mid));
+  const auto e_term = std::exp(-p.alpha * (pixel_value.x - p.range_mid));
 
   // Compute 0th order potential.
-  return_value[0] =
+  return_value.x =
       p.range_min +
       (p.range_max - p.range_min) / std::pow(1.0 + e_term, 1.0 / p.beta);
 
   // Compute 1st order potential.
   const auto numerator = p.alpha * (p.range_max - p.range_min) * e_term;
   const auto denominator = p.beta * std::pow(1.0 + e_term, 1.0 + 1.0 / p.beta);
-  return_value[1] = pixel_value[1] * numerator / denominator;
+  return_value.y = pixel_value.y * numerator / denominator;
 
   // Done.
   return return_value;

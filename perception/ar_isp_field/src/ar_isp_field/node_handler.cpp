@@ -183,16 +183,16 @@ bool AR_CISPFieldNodeHandler::computePotentialFields(
 
         // Compute potential values.
         const auto p_value = (constraint_type == ConstraintType::HARD)
-                                 ? hc_(cv::Scalar(tau, tau_dot))
-                                 : sc_(cv::Scalar(tau, tau_dot));
+                                 ? hc_(cv::Point2d(tau, tau_dot))
+                                 : sc_(cv::Point2d(tau, tau_dot));
 
         // Print output?
         if (params_.verbose && std::isfinite(tau)) {
           ROS_INFO_STREAM(constraint_type << " :" << frame_name << " - tau: "
                                           << tau << ", tau_dot: " << tau_dot);
           ROS_INFO_STREAM(constraint_type << " :" << frame_name
-                                          << " - k0: " << p_value[0]
-                                          << ", k1: " << p_value[1]);
+                                          << " - k0: " << p_value.x
+                                          << ", k1: " << p_value.y);
         }
 
         // Fill ISP.

@@ -52,10 +52,11 @@ cv::Mat safeControls(const cv::Mat& ISP,
   cv::dilate(masked_ISP, controls, structuring_element);
 
   // Project.
-  controls.forEach<cv::Scalar>([&](cv::Scalar& p, const int* position) -> void {
-    const auto u = cv::Scalar(p[0] * K_P + p[1] * K_D, 0.0);
-    p = cv::Scalar(-1.0, C_u(u)[0] /* a_max */);
-  });
+  controls.forEach<cv::Point2d>(
+      [&](cv::Point2d& p, const int* position) -> void {
+        const auto u = cv::Point2d(p.x * K_P + p.y * K_D, 0.0);
+        p = cv::Point2d(-1.0, C_u(u).x /* a_max */);
+      });
 
   // Done.
   return controls;

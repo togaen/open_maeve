@@ -22,7 +22,7 @@
 #include "maeve_automation_core/ar_isp_field/geometry.h"
 
 namespace maeve_automation_core {
-void arFillISP(const cv::Scalar& potential_value,
+void arFillISP(const cv::Point2d& potential_value,
                const std::vector<cv::Point2d>& image_corner_points,
                cv::Mat& field) {
   std::vector<cv::Point2i> pts;
@@ -32,7 +32,7 @@ void arFillISP(const cv::Scalar& potential_value,
                   pts.push_back(cv::Point2i(static_cast<int>(pt.x),
                                             static_cast<int>(pt.y)));
                 });
-  cv::fillConvexPoly(field, pts, potential_value);
+  cv::fillConvexPoly(field, pts, cv::Scalar(potential_value.x, potential_value.y));
 }
 
 namespace {

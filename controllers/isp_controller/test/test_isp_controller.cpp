@@ -24,18 +24,35 @@
 #include "isp_controller/lib.h"
 
 namespace maeve_automation_core {
-
-TEST(ISP_Controller, testControlHorizon) {
-  cv::Mat m = cv::Mat(3, 3, CV_64FC2);
-  const auto epsilon = 0.00001;
-
-  for (auto i = 0; i < 3; ++i) {
-    for (auto j = 0; j < 3; ++j) {
-      const auto v1 = static_cast<double>(i * 3 + j);
-      const auto v2 = 9.0 + v1;
+namespace {
+static const auto epsilon = 0.00001;
+cv::Mat dummyMatrix(const int rows, const int cols) {
+  cv::Mat m = cv::Mat(rows, cols, CV_64FC2);
+  const auto offset = rows * cols;
+  for (auto i = 0; i < rows; ++i) {
+    for (auto j = 0; j < cols; ++j) {
+      const auto v1 = static_cast<double>(i * cols + j);
+      const auto v2 = offset + v1;
       m.at<cv::Point2d>(i, j) = cv::Point2d(v1, v2);
     }
   }
+  return m;
+}
+}
+
+TEST(ISP_Controller, testSafeControls) {
+  const auto rows = 3;
+  const auto cols = 3;
+  const cv::Mat m = dummyMatrix(rows, cols);
+  for (auto i = 0; i < rows; ++i) {
+    for (auto j = 0; j < cols; ++j) {
+      const auto p = m.at<cv::Point2d>(i, j);
+    }
+  }
+}
+
+TEST(ISP_Controller, testControlHorizon) {
+  const cv::Mat m = dummyMatrix(3, 3);
 
   // Expected size?
   cv::Mat h = reduceISP(m);
