@@ -36,7 +36,8 @@ typedef std::tuple<int, int> IndexPair;
  * @brief For each column, compute safe longitudinal controls \in [-1, 1].
  *
  * @note The range of C_u is expected to be initialized with reverse directions,
- * i.e., such that range_min >= range_max.
+ * i.e., such that range_min >= range_max. \TODO(me) This is dumb. Invert the
+ * sign on the potential fields so that the mapping is direct.
  *
  * This function runs a max filter of the given kernel dimensions along the
  * kernel horizon to compute a max potential tuple <p, \dot{p}> at each column
