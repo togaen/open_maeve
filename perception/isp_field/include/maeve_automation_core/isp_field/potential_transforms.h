@@ -59,7 +59,7 @@ class PotentialTransform {
    *
    * @param shape_params The shape parameters.
    */
-  PotentialTransform(const ShapeParameters& shape_params);
+  explicit PotentialTransform(const ShapeParameters& shape_params);
 
   /**
    * @brief Function definition for 0th order potential value transform.
