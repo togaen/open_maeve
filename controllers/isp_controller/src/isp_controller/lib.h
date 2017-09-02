@@ -75,13 +75,4 @@ cv::Mat safeControls(const cv::Mat& ISP,
  * @return The of index pairs corresponding to local minima.
  */
 std::vector<IndexPair> computeHorizonMinima(const cv::Mat& control_horizon);
-
-/**
- * @brief Project a ISP field onto the control horizon.
- *
- * @param ISP The ISP field to project.
- *
- * @return The projected control horizon, a 1xISP.cols scalar array.
- */
-cv::Mat reduceISP(const cv::Mat& ISP);
 }  // namespace maeve_automation_core

@@ -45,17 +45,21 @@ ISP_Controller::ControlCommand::ControlCommand(const double t, const double s)
 
 ISP_Controller::ISP_Controller(const Params& params,
                                const ControlCommand& initial_commanded_control)
-    : params_(params), commanded_control_(initial_commanded_control) {}
+    : p_(params), commanded_control_(initial_commanded_control) {}
 
 ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
     const cv::Mat& ISP) {
   ControlCommand cmd;
 
   // Get control horizon.
-  cv::Mat control_horizon = reduceISP(ISP);
+  const auto C_u =
+      PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
+  const cv::Mat safe_controls =
+      safeControls(ISP, C_u, p_.kernel_width, p_.kernel_height,
+                   p_.kernel_horizon, p_.K_P, p_.K_D);
 
   // Compute steering modes.
-  const auto index_pairs = computeHorizonMinima(control_horizon);
+  const auto index_pairs = computeHorizonMinima(safe_controls);
 
   // Choose mode.
 

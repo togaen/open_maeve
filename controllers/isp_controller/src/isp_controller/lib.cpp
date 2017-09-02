@@ -71,11 +71,4 @@ std::vector<IndexPair> computeHorizonMinima(const cv::Mat& control_horizon) {
   return index_pairs;
 }
 
-cv::Mat reduceISP(const cv::Mat& ISP) {
-  cv::Mat control_horizon;
-
-  cv::reduce(ISP, control_horizon, 0 /* 0: row, 1: column */, CV_REDUCE_AVG);
-
-  return control_horizon;
-}
 }  // namespace maeve_automation_core

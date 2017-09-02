@@ -98,7 +98,7 @@ class ISP_Controller {
 
  private:
   /** @brief Controller parameters. */
-  Params params_;
+  Params p_;
   /** @brief The previously computed control command. */
   ControlCommand commanded_control_;
 };  // class ISP_Controller
