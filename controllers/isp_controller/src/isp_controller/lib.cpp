@@ -55,7 +55,7 @@ cv::Mat safeControls(const cv::Mat& ISP,
   controls.forEach<cv::Point2d>(
       [&](cv::Point2d& p, const int* position) -> void {
         const auto u = cv::Point2d(p.x * K_P + p.y * K_D, 0.0);
-        p = cv::Point2d(-1.0, C_u(u).x /* a_max */);
+        p = cv::Point2d(C_u.shapeParameters().range_min, C_u(u).x /* a_max */);
       });
 
   // Done.

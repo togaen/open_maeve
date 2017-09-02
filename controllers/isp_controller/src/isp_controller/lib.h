@@ -42,7 +42,7 @@ typedef std::tuple<int, int> IndexPair;
  * into [-1, 1] using the potential transform C_u.
  *
  * @param ISP The input image space potential field.
- * @param C_u The potential transform for mapping controls onto [-1, 1]
+ * @param C_u The potential transform for mapping controls onto [r_min, r_max]
  * @param kernel_width The width of the max filter kernel.
  * @param kernel_height The height of the max filter kernel.
  * @param kernel_horizon The horizon line to run the max filter along.
@@ -50,7 +50,7 @@ typedef std::tuple<int, int> IndexPair;
  * @param K_D The derivative gain for computing max control.
  *
  * @return A two channel, 1D matrix that, where for each column index of ISP,
- * the pixel value defines a safe control range [-1, a_max].
+ * the pixel value defines a safe control range [r_min, a_max].
  */
 cv::Mat safeControls(const cv::Mat& ISP,
                      const PotentialTransform<ConstraintType::SOFT>& C_u,

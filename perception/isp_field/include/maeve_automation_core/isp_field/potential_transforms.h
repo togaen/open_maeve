@@ -70,6 +70,13 @@ class PotentialTransform {
    */
   cv::Point2d operator()(const cv::Point2d& p) const;
 
+  /**
+   * @brief Access the shape parameters for this transform.
+   *
+   * @return A const ref to the shape parameters.
+   */
+  const ShapeParameters& shapeParameters() const;
+
  private:
   /** @brief Shape parameter for this potential transform. */
   ShapeParameters shape_params_;
@@ -78,6 +85,11 @@ class PotentialTransform {
 template <ConstraintType T>
 PotentialTransform<T>::PotentialTransform(const ShapeParameters& shape_params)
     : shape_params_(shape_params) {}
+
+template <ConstraintType T>
+const ShapeParameters& PotentialTransform<T>::shapeParameters() const {
+  return shape_params_;
+}
 
 template <>
 cv::Point2d PotentialTransform<ConstraintType::HARD>::operator()(
