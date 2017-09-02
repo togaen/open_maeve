@@ -39,7 +39,7 @@ cv::Mat safeControls(const cv::Mat& ISP,
       cv::getStructuringElement(cv::MORPH_RECT, cv::Size(kernel_width, 1));
 
   // Set ROI.
-  auto half_height = kernel_height / 2;
+  auto half_height = static_cast<int>(kernel_height) / 2;
   auto top_left_row = kernel_horizon - half_height;
   auto top_left_col = 0;
   cv::Rect ROI = cv::Rect(top_left_col, top_left_row, ISP.cols, kernel_height);
