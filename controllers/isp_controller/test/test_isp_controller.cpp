@@ -42,13 +42,28 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
 
 TEST(ISP_Controller, testSafeControls) {
   const auto rows = 3;
-  const auto cols = 3;
-  const cv::Mat m = dummyMatrix(rows, cols);
-  for (auto i = 0; i < rows; ++i) {
-    for (auto j = 0; j < cols; ++j) {
-      const auto p = m.at<cv::Point2d>(i, j);
-    }
-  }
+  const auto cols = 5;
+
+  // Image space potential field.
+  const cv::Mat ISP = dummyMatrix(rows, cols);
+
+  // Control projection.
+  const auto C_u = PotentialTransform<ConstraintType::SOFT>(
+      ShapeParameters(1.0, -1.0, 1.0, 1.0));
+  EXPECT_TRUE(C_u.shapeParameters().valid(false));
+
+  // Kernel parameters.
+  const auto kernel_width = 3;
+  const auto kernel_height = ISP.rows;
+  const auto kernel_horizon = ISP.rows / 2;
+  const auto K_P = 1.0;
+  const auto K_D = 1.0;
+
+  // Compute controls.
+  cv::Mat controls = safeControls(ISP, C_u, kernel_width, kernel_height,
+                                  kernel_horizon, K_P, K_D);
+  ASSERT_EQ(controls.rows, 1);
+  ASSERT_EQ(controls.cols, ISP.cols);
 }
 
 TEST(ISP_Controller, testControlHorizon) {
