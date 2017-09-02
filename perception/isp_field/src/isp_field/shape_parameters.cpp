@@ -35,12 +35,12 @@ void ShapeParameters::computeMidPoint() {
   range_mid = (range_min + range_max) / 2.0;
 }
 
-bool ShapeParameters::valid() const {
+bool ShapeParameters::valid(const bool check_range_order) const {
   const auto alpha_valid = (alpha >= 0.0) && (alpha <= 1.0);
   const auto beta_valid = (beta >= 0.0) && (beta <= 1.0);
-  const auto range_valid = (range_min <= range_max);
+  const auto range_valid = !check_range_order || (range_min <= range_max);
   const auto range_mid_valid = (range_mid == ((range_min + range_max) / 2.0));
-  return alpha_valid && beta_valid && range_valid && range_mid_valid;
+  return alpha_valid && beta_valid && range_mid_valid && range_mid_valid;
 }
 
 std::ostream& operator<<(std::ostream& o, const ShapeParameters& sp) {

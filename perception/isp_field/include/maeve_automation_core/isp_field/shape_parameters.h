@@ -43,6 +43,16 @@ struct ShapeParameters {
    */
   ShapeParameters();
   /**
+   * @brief Constructor: explicit initialization.
+   *
+   * @param r_min The minimum of the range being mapped onto.
+   * @param r_max The maximum of the range being mapped onto.
+   * @param alpha The alpha shape.
+   * @param beta  The beta shape.
+   */
+  ShapeParameters(const double r_min, const double r_max, const double alpha,
+                  const double beta);
+  /**
    * @brief Convenience method to compute range_mid member.
    *
    * This method assumes range_min and range_max have both been set.
@@ -51,9 +61,12 @@ struct ShapeParameters {
   /**
    * @brief Sanity check whether parameters make sense.
    *
+   * @param check_range_order Whether to check that r_min <= r_max.
+   *
    * @return True if parameters pass sanity check; otherwise false.
    */
-  __attribute__((warn_unused_result)) bool valid() const;
+  __attribute__((warn_unused_result)) bool valid(
+      const bool check_range_order = true) const;
 };  // struct ShapeParameters
 
 /**
