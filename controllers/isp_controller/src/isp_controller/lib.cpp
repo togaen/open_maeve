@@ -23,7 +23,44 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <vector>
+
 namespace maeve_automation_core {
+cv::Mat safeControls(const cv::Mat& ISP,
+                     const PotentialTransform<ConstraintType::SOFT>& C_u,
+                     const double kernel_width, const double kernel_height,
+                     const double kernel_horizon, const double K_P,
+                     const double K_D) {
+  // Reserve return value.
+  cv::Mat controls;
+
+  // Compute structuring element.
+  cv::Mat structuring_element =
+      cv::getStructuringElement(cv::MORPH_RECT, cv::Size(kernel_width, 1));
+
+  // Set ROI.
+  auto half_height = kernel_height / 2;
+  auto top_left_row = kernel_horizon - half_height;
+  auto top_left_col = 0;
+  cv::Rect ROI = cv::Rect(top_left_col, top_left_row, ISP.cols, kernel_height);
+  cv::Mat masked_ISP = ISP(ROI);
+
+  // Reduce to single row.
+  cv::reduce(ISP, controls, 0 /* 0: row, 1: column */, CV_REDUCE_MAX);
+
+  // Dilate.
+  cv::dilate(masked_ISP, controls, structuring_element);
+
+  // Project.
+  controls.forEach<cv::Scalar>([&](cv::Scalar& p, const int* position) -> void {
+    const auto u = cv::Scalar(p[0] * K_P + p[1] * K_D, 0.0);
+    p = cv::Scalar(-1.0, C_u(u)[0] /* a_max */);
+  });
+
+  // Done.
+  return controls;
+}
+
 std::vector<IndexPair> computeHorizonMinima(const cv::Mat& control_horizon) {
   std::vector<IndexPair> index_pairs;
 

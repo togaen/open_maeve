@@ -26,9 +26,37 @@
 #include <tuple>
 #include <vector>
 
+#include "maeve_automation_core/isp_field/potential_transforms.h"
+
 namespace maeve_automation_core {
 /** @brief Pair of indices that bound a range on 1D array. */
 typedef std::tuple<int, int> IndexPair;
+
+/**
+ * @brief For each column, compute safe longitudinal controls \in [-1, 1].
+ *
+ * This function runs a max filter of the given kernel dimensions along the
+ * kernel horizon to compute a max potential tuple <p, \dot{p}> at each column
+ * index. The dot product <p, \dot{p}> x <K_P, K_D> is taken as the raw maximum
+ * acceptable control value at each column index. These raw values are projected
+ * into [-1, 1] using the potential transform C_u.
+ *
+ * @param ISP The input image space potential field.
+ * @param C_u The potential transform for mapping controls onto [-1, 1]
+ * @param kernel_width The width of the max filter kernel.
+ * @param kernel_height The height of the max filter kernel.
+ * @param kernel_horizon The horizon line to run the max filter along.
+ * @param K_P The proportional gain for computing max control.
+ * @param K_D The derivative gain for computing max control.
+ *
+ * @return A two channel, 1D matrix that, where for each column index of ISP,
+ * the pixel value defines a safe control range [-1, a_max].
+ */
+cv::Mat safeControls(const cv::Mat& ISP,
+                     const PotentialTransform<ConstraintType::SOFT>& C_u,
+                     const double kernel_width, const double kernel_height,
+                     const double kernel_horizon, const double K_P,
+                     const double K_D);
 
 /**
  * @brief Find local minima on the given control horizon.

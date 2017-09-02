@@ -23,8 +23,6 @@
 
 #include <opencv2/opencv.hpp>
 
-#include <vector>
-
 #include "maeve_automation_core/isp_field/shape_parameters.h"
 
 namespace maeve_automation_core {
@@ -44,18 +42,12 @@ class ISP_Controller {
     int kernel_height;
     /** @brief Max filter kernel horizon line. */
     int kernel_horizon;
-    /** @brief Max filter structuring element. */
-    cv::Mat structuring_element;
     /** @brief Shape parameters used for safe control computation. */
     ShapeParameters shape_parameters;
     /**
      * @brief Constructor: initialize to invalid values.
      */
     Params();
-    /**
-     * @brief Once parameters are set, call this to set structuring element.
-     */
-    void setStructuringElement();
   };  // struct Params
 
   /**
@@ -109,7 +101,5 @@ class ISP_Controller {
   Params params_;
   /** @brief The previously computed control command. */
   ControlCommand commanded_control_;
-
-  static std::vector<double> safeControls(const cv::Mat& ISP);
 };  // class ISP_Controller
 }  // namespace maeve_automation_core
