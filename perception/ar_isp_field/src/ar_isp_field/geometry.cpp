@@ -32,7 +32,8 @@ void arFillISP(const cv::Point2d& potential_value,
                   pts.push_back(cv::Point2i(static_cast<int>(pt.x),
                                             static_cast<int>(pt.y)));
                 });
-  cv::fillConvexPoly(field, pts, cv::Scalar(potential_value.x, potential_value.y));
+  cv::fillConvexPoly(field, pts,
+                     cv::Scalar(potential_value.x, potential_value.y));
 }
 
 namespace {
