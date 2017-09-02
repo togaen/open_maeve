@@ -23,11 +23,41 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <vector>
+
 #include "maeve_automation_core/isp_field/shape_parameters.h"
 
 namespace maeve_automation_core {
 class ISP_Controller {
  public:
+  /**
+   * @brief Container for controller parameters.
+   */
+  struct Params {
+    /** @brief Proportional gain. */
+    double K_P;
+    /** @brief Derivative gain. */
+    double K_D;
+    /** @brief Max filter kernel width. */
+    int kernel_width;
+    /** @brief Max filter kernel height. */
+    int kernel_height;
+    /** @brief Max filter kernel horizon line. */
+    int kernel_horizon;
+    /** @brief Max filter structuring element. */
+    cv::Mat structuring_element;
+    /** @brief Shape parameters used for safe control computation. */
+    ShapeParameters shape_parameters;
+    /**
+     * @brief Constructor: initialize to invalid values.
+     */
+    Params();
+    /**
+     * @brief Once parameters are set, call this to set structuring element.
+     */
+    void setStructuringElement();
+  };  // struct Params
+
   /**
    * @brief Container for passing control commands.
    */
@@ -50,20 +80,19 @@ class ISP_Controller {
   };  // struct ControlCommand
 
   /**
-   * @brief Constructor: initialize to invalid values.
+   * @brief Constructor: default.
    */
   ISP_Controller() = default;
 
   /**
    * @brief Constructor: initialize with shape parameters.
    *
-   * @param shape_parameters Shape parameters for performing control horizon
-   * projection.
+   * @param params Parameters for control computation from ISP field.
    * @param initial_commanded_control Initialize the state of the controller
    * with this control command.
    */
-  ISP_Controller(const ShapeParameters& shape_parameters,
-                  const ControlCommand& initial_commanded_control);
+  ISP_Controller(const Params& params,
+                 const ControlCommand& initial_commanded_control);
 
   /**
    * @brief For a given ISP field compute a control command.
@@ -76,9 +105,11 @@ class ISP_Controller {
   ControlCommand computeControlCommand(const cv::Mat& ISP);
 
  private:
-  /** @brief Shape parameters used for control horizon projection. */
-  ShapeParameters shape_parameters_;
+  /** @brief Controller parameters. */
+  Params params_;
   /** @brief The previously computed control command. */
   ControlCommand commanded_control_;
+
+  static std::vector<double> safeControls(const cv::Mat& ISP);
 };  // class ISP_Controller
 }  // namespace maeve_automation_core

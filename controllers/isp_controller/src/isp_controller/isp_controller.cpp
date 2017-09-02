@@ -30,17 +30,34 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
+ISP_Controller::Params::Params()
+    : K_P(NaN),
+      K_D(NaN),
+      kernel_width(-1),
+      kernel_height(-1),
+      kernel_horizon(-1) {}
+
+ISP_Controller::Params::setStructuringElement() {
+  structuring_element = cv::getStructuringElement(
+      MORPH_RECT, cv::Size(kernel_width, kernel_height));
+}
+
 ISP_Controller::ControlCommand::ControlCommand()
     : throttle(NaN), steering(NaN) {}
 
 ISP_Controller::ControlCommand::ControlCommand(const double t, const double s)
     : throttle(t), steering(s) {}
 
-ISP_Controller::ISP_Controller(
-    const ShapeParameters& shape_parameters,
-    const ControlCommand& initial_commanded_control)
-    : shape_parameters_(shape_parameters),
-      commanded_control_(initial_commanded_control) {}
+ISP_Controller::ISP_Controller(const Params& params,
+                               const ControlCommand& initial_commanded_control)
+    : params_(params), commanded_control_(initial_commanded_control) {}
+
+std::vector<double> ISP_Controller::safeControls(const cv::Mat& ISP) {
+  std::vector<double> controls;
+  controls.reserve(ISP.cols);
+
+  return controls;
+}
 
 ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
     const cv::Mat& ISP) {
