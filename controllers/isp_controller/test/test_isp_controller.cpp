@@ -21,6 +21,8 @@
  */
 #include <gtest/gtest.h>
 
+#include <vector>
+
 #include "isp_controller/lib.h"
 
 namespace maeve_automation_core {
@@ -38,6 +40,34 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
   }
   return m;
 }
+}  // namespace
+
+TEST(ISP_Controller, testBiasHorizon) {
+  const auto left_decay = 0.5;
+  const auto right_decay = 0.7;
+  const auto width = 7;
+  const auto center = 4;
+
+  // Compute bias horizon.
+  cv::Mat bias_horizon = biasHorizon(center, width, left_decay, right_decay);
+  ASSERT_EQ(bias_horizon.rows, 1);
+  ASSERT_EQ(bias_horizon.cols, width);
+
+  // Ground truth.
+  std::vector<double> biases{std::pow(left_decay, 4),
+                             std::pow(left_decay, 3),
+                             std::pow(left_decay, 2),
+                             left_decay,
+                             1.0,
+                             right_decay,
+                             std::pow(right_decay, 2)};
+
+  // Compare.
+  ASSERT_EQ(biases.size(), bias_horizon.cols);
+  for (auto i = 0; i < biases.size(); ++i) {
+    const auto p = bias_horizon.at<cv::Point2d>(i);
+    EXPECT_NEAR(p.x, biases[i], epsilon);
+  }
 }
 
 TEST(ISP_Controller, testSafeControls) {

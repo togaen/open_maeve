@@ -33,6 +33,23 @@ namespace maeve_automation_core {
 typedef std::tuple<int, int> IndexPair;
 
 /**
+ * @brief Compute a biasing horizon for choosing controls.
+ *
+ * This horizon is used by the control law to bias direction towards `center'.
+ * Potential rewards to the left and right are decayed by the given factors the
+ * farther from `center' they are.
+ *
+ * @param center The center of biasing field where bias is 0.
+ * @param width The total width of the biasing field.
+ * @param left_decay The left biasing decay factor.
+ * @param right_decay The right biasing decay factor.
+ *
+ * @return A row vector containing biasing factors.
+ */
+cv::Mat biasHorizon(const int center, const int width, const double left_decay,
+                    const double right_decay);
+
+/**
  * @brief For each column, compute safe longitudinal controls \in [-1, 1].
  *
  * @note The range of C_u is expected to be initialized with reverse directions,

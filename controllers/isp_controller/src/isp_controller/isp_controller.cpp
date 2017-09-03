@@ -31,11 +31,14 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 ISP_Controller::Params::Params()
-    : K_P(NaN),
-      K_D(NaN),
-      kernel_width(-1),
+    : kernel_width(-1),
       kernel_height(-1),
-      kernel_horizon(-1) {}
+      kernel_horizon(-1),
+      theta_bias_column(-1),
+      theta_decay_left(NaN),
+      theta_decay_right(NaN),
+      K_P(NaN),
+      K_D(NaN) {}
 
 ISP_Controller::ControlCommand::ControlCommand()
     : throttle(NaN), steering(NaN) {}
@@ -50,6 +53,8 @@ ISP_Controller::ISP_Controller(const Params& params,
 ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
     const cv::Mat& ISP) {
   ControlCommand cmd;
+
+  // Compute steering bias scalars.
 
   // Get control horizon.
   const auto C_u =

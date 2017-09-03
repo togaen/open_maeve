@@ -26,6 +26,25 @@
 #include <vector>
 
 namespace maeve_automation_core {
+cv::Mat biasHorizon(const int center, const int width, const double left_decay,
+                    const double right_decay) {
+  cv::Mat bias_horizon(1, width, CV_64FC2);
+
+  auto decay = 1.0;
+  for (auto i = center; i >= 0; --i) {
+    bias_horizon.at<cv::Point2d>(i) = cv::Point2d(decay, 0.0);
+    decay = decay * left_decay;
+  }
+
+  decay = 1.0;
+  for (auto i = center; i < width; ++i) {
+    bias_horizon.at<cv::Point2d>(i) = cv::Point2d(decay, 0.0);
+    decay = decay * right_decay;
+  }
+
+  return bias_horizon;
+}
+
 cv::Mat safeControls(const cv::Mat& ISP,
                      const PotentialTransform<ConstraintType::SOFT>& C_u,
                      const double kernel_width, const double kernel_height,
@@ -67,8 +86,7 @@ cv::Mat safeControls(const cv::Mat& ISP,
 
 std::vector<IndexPair> computeHorizonMinima(const cv::Mat& control_horizon) {
   std::vector<IndexPair> index_pairs;
-
+  // \TODO(me)
   return index_pairs;
 }
-
 }  // namespace maeve_automation_core

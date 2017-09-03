@@ -32,16 +32,22 @@ class ISP_Controller {
    * @brief Container for controller parameters.
    */
   struct Params {
-    /** @brief Proportional gain. */
-    double K_P;
-    /** @brief Derivative gain. */
-    double K_D;
     /** @brief Max filter kernel width. */
     int kernel_width;
     /** @brief Max filter kernel height. */
     int kernel_height;
     /** @brief Max filter kernel horizon line. */
     int kernel_horizon;
+    /** @brief Steering bias column. */
+    int theta_bias_column;
+    /** @brief Steering bias left decay. */
+    double theta_decay_left;
+    /** @brief Steering bias right decay. */
+    double theta_decay_right;
+    /** @brief Proportional gain. */
+    double K_P;
+    /** @brief Derivative gain. */
+    double K_D;
     /** @brief Shape parameters used for safe control computation. */
     ShapeParameters shape_parameters;
     /**
