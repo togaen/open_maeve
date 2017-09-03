@@ -54,8 +54,6 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
     const cv::Mat& ISP) {
   ControlCommand cmd;
 
-  // Compute steering bias scalars.
-
   // Get control horizon.
   const auto C_u =
       PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
@@ -63,8 +61,15 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
       safeControls(ISP, C_u, p_.kernel_width, p_.kernel_height,
                    p_.kernel_horizon, p_.K_P, p_.K_D);
 
+  // Compute steering biasing field.
+  cv::Mat bias_horizon = biasHorizon(p_.theta_bias_column, ISP.cols,
+                                     p_.theta_decay_left, p_.theta_decay_right);
+
+  // Apply biasing field.
+  cv::Mat biased_safe_controls = safe_controls.mul(bias_horizon);
+
   // Compute steering modes.
-  const auto index_pairs = computeHorizonMinima(safe_controls);
+  const auto index_pairs = computeHorizonMinima(biased_safe_controls);
 
   // Choose mode.
 
