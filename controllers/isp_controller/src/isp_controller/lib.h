@@ -23,15 +23,9 @@
 
 #include <opencv2/opencv.hpp>
 
-#include <tuple>
-#include <vector>
-
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 
 namespace maeve_automation_core {
-/** @brief Pair of indices that bound a range on 1D array. */
-typedef std::tuple<int, int> IndexPair;
-
 /**
  * @brief Compute a biasing horizon for choosing controls.
  *
@@ -80,16 +74,16 @@ cv::Mat safeControls(const cv::Mat& ISP,
                      const double K_D);
 
 /**
- * @brief Find local minima on the given control horizon.
+ * @brief Find local extrema on the given control horizon.
  *
- * For minima that are peaks, both indices in the index pair will be the same.
- * For minima that are plateaux the first index will point to the first
- * element in the plateau and the second index will point to the first index
- * past the plateau.
+ * Positions along 'control_horizon' that are inflection points are marked with
+ * 1.0 (concave down) or -1.0 (concave up). The first and last indices are
+ * always 0.
  *
  * @param control_horizon The control horizon to find minima for.
  *
- * @return The of index pairs corresponding to local minima.
+ * @return A row vector mask that indicates inflection points in
+ * 'control_horizon'.
  */
-std::vector<IndexPair> computeHorizonMinima(const cv::Mat& control_horizon);
+cv::Mat computeHorizonExtrema(const cv::Mat& control_horizon);
 }  // namespace maeve_automation_core

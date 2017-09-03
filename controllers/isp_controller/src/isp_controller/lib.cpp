@@ -84,9 +84,25 @@ cv::Mat safeControls(const cv::Mat& ISP,
   return controls;
 }
 
-std::vector<IndexPair> computeHorizonMinima(const cv::Mat& control_horizon) {
-  std::vector<IndexPair> index_pairs;
-  // \TODO(me)
-  return index_pairs;
+cv::Mat computeHorizonExtrema(const cv::Mat& control_horizon) {
+  // Store extrema markers.
+  cv::Mat inflection_points = cv::Mat::zeros(1, control_horizon.cols, CV_64FC2);
+
+  for (auto i = 1; i < control_horizon.cols - 1; ++i) {
+    const auto prv = control_horizon.at<cv::Point2d>(i - 1);
+    const auto cur = control_horizon.at<cv::Point2d>(i);
+    const auto nxt = control_horizon.at<cv::Point2d>(i + 1);
+
+    // -1 decreasing, 1 increasing, 0 flat.
+    const auto left_dir = (prv.x > cur.x) ? -1 : ((prv.x < cur.x) ? 1 : 0);
+    const auto right_dir = (cur.x > nxt.x) ? -1 : ((cur.x < nxt.x) ? 1 : 0);
+
+    // Mark.
+    const auto extremum =
+        (left_dir == right_dir) ? 0.0 : ((left_dir > right_dir) ? 1.0 : -1.0);
+    inflection_points.at<cv::Point2d>(i) = cv::Point2d(extremum, 0.0);
+  }
+
+  return inflection_points;
 }
 }  // namespace maeve_automation_core

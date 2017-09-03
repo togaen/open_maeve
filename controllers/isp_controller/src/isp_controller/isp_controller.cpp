@@ -68,8 +68,8 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
   // Apply biasing field.
   cv::Mat biased_safe_controls = safe_controls.mul(bias_horizon);
 
-  // Compute steering modes.
-  const auto index_pairs = computeHorizonMinima(biased_safe_controls);
+  // Compute extrema
+  const auto extrema = computeHorizonExtrema(biased_safe_controls);
 
   // Choose mode.
 
