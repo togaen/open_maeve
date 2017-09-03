@@ -59,13 +59,20 @@ TEST(ISP_Controller, testHorizonExtrema) {
 
   {
     cv::Mat m = dummyMatrix(rows, cols);
-    const auto extrema = computeHorizonExtrema(m);
+    auto extrema = computeHorizonExtrema(m);
     ASSERT_EQ(extrema.rows, rows);
     ASSERT_EQ(extrema.cols, cols);
-    for (auto i = 0; i < cols; ++i) {
+    for (auto i = 1; i < cols - 1; ++i) {
       const auto p = extrema.at<cv::Point2d>(i);
       EXPECT_EQ(p.x, 0.0);
     }
+    EXPECT_EQ(extrema.at<cv::Point2d>(0).x, -1.0);
+    EXPECT_EQ(extrema.at<cv::Point2d>(extrema.cols - 1).x, 1.0);
+
+    m = m * -1.0;
+    extrema = computeHorizonExtrema(m);
+    EXPECT_EQ(extrema.at<cv::Point2d>(0).x, 1.0);
+    EXPECT_EQ(extrema.at<cv::Point2d>(extrema.cols - 1).x, -1.0);
   }
 
   {
@@ -85,6 +92,8 @@ TEST(ISP_Controller, testHorizonExtrema) {
 
     // Test.
     std::vector<double> gt(cols, 0.0);
+    gt.front() = -1.0;
+    gt.back() = -1.0;
     gt[midpoint] = 1.0;
     for (auto i = 0; i < cols; ++i) {
       const auto p = extrema.at<cv::Point2d>(i);
@@ -94,6 +103,8 @@ TEST(ISP_Controller, testHorizonExtrema) {
     // Flip and test again.
     m = m * -1.0;
     extrema = computeHorizonExtrema(m);
+    gt.front() = 1.0;
+    gt.back() = 1.0;
     gt[midpoint] = -1.0;
     for (auto i = 0; i < cols; ++i) {
       const auto p = extrema.at<cv::Point2d>(i);

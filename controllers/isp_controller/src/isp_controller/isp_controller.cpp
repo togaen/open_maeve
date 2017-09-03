@@ -71,7 +71,23 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
   // Compute extrema
   const auto extrema = computeHorizonExtrema(biased_safe_controls);
 
-  // Choose mode.
+  // Choose nearest minimum.
+  auto nearest_left = -1;
+  for (auto i = p_.kernel_horizon; i >= 0; --i) {
+    const auto p = extrema.at<cv::Point2d>(i);
+    if (p.x < 0.0) {
+      nearest_left = i;
+      break;
+    }
+  }
+  auto nearest_right = -1;
+  for (auto i = p_.kernel_horizon; i < ISP.cols; ++i) {
+    const auto p = extrema.at<cv::Point2d>(i);
+    if (p.x < 0.0) {
+      nearest_right = i;
+      break;
+    }
+  }
 
   // Compute control command.
 
