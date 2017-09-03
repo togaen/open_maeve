@@ -131,7 +131,7 @@ TEST(ISP_Controller, testBiasHorizon) {
   const auto center = 4;
 
   // Compute bias horizon.
-  cv::Mat bias_horizon = biasHorizon(center, width, left_decay, right_decay);
+  cv::Mat bias_horizon = thetaBias(center, width, left_decay, right_decay);
   ASSERT_EQ(bias_horizon.rows, 1);
   ASSERT_EQ(bias_horizon.cols, width);
 

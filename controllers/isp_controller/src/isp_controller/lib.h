@@ -27,7 +27,19 @@
 
 namespace maeve_automation_core {
 /**
- * @brief Compute a biasing horizon for choosing controls.
+ * @brief Compute an acceleration control set biasing horizon.
+ *
+ * This horizon is used by the control law to bias direction towards larger sets
+ * of available controls.
+ *
+ * @param controls The available sets of controls for each ISP column.
+ *
+ * @return A row vector containing biasing factors.
+ */
+cv::Mat accelBias(const cv::Mat& controls);
+
+/**
+ * @brief Compute a theta-based biasing horizon for choosing controls.
  *
  * This horizon is used by the control law to bias direction towards `center'.
  * Potential rewards to the left and right are decayed by the given factors the
@@ -40,8 +52,8 @@ namespace maeve_automation_core {
  *
  * @return A row vector containing biasing factors.
  */
-cv::Mat biasHorizon(const int center, const int width, const double left_decay,
-                    const double right_decay);
+cv::Mat thetaBias(const int center, const int width, const double left_decay,
+                  const double right_decay);
 
 /**
  * @brief Max reduce the ISP to a single row vector.

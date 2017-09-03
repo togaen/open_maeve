@@ -48,6 +48,8 @@ class ISP_Controller {
     double K_P;
     /** @brief Derivative gain. */
     double K_D;
+    /** @brief Potential delta must exceed this to trigger control change. */
+    double potential_inertia;
     /** @brief Shape parameters used for safe control computation. */
     ShapeParameters shape_parameters;
     /**

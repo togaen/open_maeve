@@ -26,8 +26,14 @@
 #include <vector>
 
 namespace maeve_automation_core {
-cv::Mat biasHorizon(const int center, const int width, const double left_decay,
-                    const double right_decay) {
+cv::Mat accelBias(const cv::Mat& controls) {
+  cv::Mat accel_bias = cv::Mat::ones(1, controls.cols, CV_64FC2);
+  // \TODO(me)
+  return accel_bias;
+}
+
+cv::Mat thetaBias(const int center, const int width, const double left_decay,
+                  const double right_decay) {
   cv::Mat bias_horizon(1, width, CV_64FC2);
 
   auto decay = 1.0;

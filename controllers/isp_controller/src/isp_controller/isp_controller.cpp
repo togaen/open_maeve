@@ -39,7 +39,8 @@ ISP_Controller::Params::Params()
       theta_decay_left(NaN),
       theta_decay_right(NaN),
       K_P(NaN),
-      K_D(NaN) {}
+      K_D(NaN),
+      potential_inertia(NaN) {}
 
 ISP_Controller::ControlCommand::ControlCommand()
     : throttle(NaN), steering(NaN) {}
@@ -58,32 +59,41 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
   // Get control horizon.
   const cv::Mat h = controlHorizon(ISP, p_.kernel_height, p_.kernel_horizon);
 
-  // Compute steering biasing field.
-  const cv::Mat bias_horizon = biasHorizon(
-      p_.theta_bias_column, h.cols, p_.theta_decay_left, p_.theta_decay_right);
-
-  // Apply biasing field.
-  const cv::Mat biased_h = h.mul(bias_horizon);
-
   // Apply max filter.
-  const cv::Mat dilated_h = dilateHorizon(biased_h, p_.kernel_width);
+  const cv::Mat dilated_h = dilateHorizon(h, p_.kernel_width);
 
-  // Get safe controls from dilated horizon.
+  // Get safe controls from filtered horizon.
   const auto C_u =
       PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
   const cv::Mat safe_controls = safeControls(dilated_h, C_u, p_.K_P, p_.K_D);
+
+  // Compute biasing fields.
+  const cv::Mat theta_biasing = thetaBias(
+      p_.theta_bias_column, h.cols, p_.theta_decay_left, p_.theta_decay_right);
+  const cv::Mat accel_biasing = accelBias(safe_controls);
+
+  // Apply biasing fields.
+  const cv::Mat biased_h = dilated_h.mul(theta_biasing.mul(accel_biasing));
 
   // Find minimum.
   double min_val = NaN;
   double max_val = NaN;
   std::array<int, 2> min_idx;
   std::array<int, 2> max_idx;
-  const cv::Mat sc = safe_controls.reshape(1);
-  cv::minMaxIdx(sc, &min_val, &max_val, min_idx.data(), max_idx.data());
+  cv::minMaxIdx(biased_h.reshape(1), &min_val, &max_val, min_idx.data(),
+                max_idx.data());
 
   // If minimum does not exceed inertia, revert to bias column.
+  const auto p_bias_column = biased_h.at<cv::Point2d>(p_.theta_bias_column).x;
+  if (std::abs(p_bias_column - min_val) <= p_.potential_inertia) {
+    min_idx[1] = p_.theta_bias_column;
+  }
 
   // Compute control command.
+  const auto midpoint = ISP.cols / 2;
+  const auto theta_offset = min_idx[1] - midpoint;
+  const cv::Point2d accel_set = safe_controls.at<cv::Point2d>(min_idx[1]);
+  // \TODO(me)
 
   // Done.
   return cmd;
