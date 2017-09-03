@@ -43,6 +43,15 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
 }
 }  // namespace
 
+TEST(ISP_Controller, testNearestIntervalPoint) {
+  const cv::Point2d interval(-3.0, 1.0);
+  EXPECT_EQ(nearestIntervalPoint(interval, -3.0), -3.0);
+  EXPECT_EQ(nearestIntervalPoint(interval, 1.0), 1.0);
+  EXPECT_EQ(nearestIntervalPoint(interval, -5.2), -3.0);
+  EXPECT_EQ(nearestIntervalPoint(interval, 3.1), 1.0);
+  EXPECT_EQ(nearestIntervalPoint(interval, 0.73), 0.73);
+}
+
 TEST(ISP_Controller, testThetaColumnConversions) {
   const auto rows = 1;
   const auto cols = 13;

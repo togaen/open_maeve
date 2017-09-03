@@ -27,6 +27,17 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief Given a Point2d that represents a number line interval, find the
+ * nearest point in the interval to `point'.
+ *
+ * @param interval The interval.
+ * @param point The point.
+ *
+ * @return The nearest point in the interval to `point'.
+ */
+double nearestIntervalPoint(const cv::Point2d& interval, const double point);
+
+/**
  * @brief For a given image plane and focal length compute theta.
  *
  * This function computes the angular displacement in radians from the center of

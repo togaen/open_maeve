@@ -54,6 +54,7 @@ ISP_Controller::ISP_Controller(const Params& params,
 
 ISP_Controller::ControlCommand ISP_Controller::SD_Control(
     const cv::Mat& ISP, const ControlCommand& u_d) {
+  // Reserve return value.
   ControlCommand cmd;
 
   // Map desired yaw image plane column.
