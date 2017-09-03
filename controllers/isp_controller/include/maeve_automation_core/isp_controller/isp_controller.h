@@ -38,8 +38,8 @@ class ISP_Controller {
     int kernel_height;
     /** @brief Max filter kernel horizon line. */
     int kernel_horizon;
-    /** @brief Steering bias column. */
-    int theta_bias_column;
+    /** @brief Camera focal length along x (pixels). */
+    double focal_length_x;
     /** @brief Steering bias left decay. */
     double theta_decay_left;
     /** @brief Steering bias right decay. */
@@ -64,8 +64,8 @@ class ISP_Controller {
   struct ControlCommand {
     /** @brief The commanded throttle. */
     double throttle;
-    /** @brief The commanded steering. */
-    double steering;
+    /** @brief The commanded yaw. */
+    double yaw;
     /**
      * @brief Constructor: initialize to invalid values.
      */
@@ -74,9 +74,9 @@ class ISP_Controller {
      * @brief Constructor: initialize to explicit values.
      *
      * @param t The throttle command.
-     * @param s The steering command.
+     * @param y The yaw command.
      */
-    ControlCommand(const double t, const double s);
+    ControlCommand(const double t, const double y);
   };  // struct ControlCommand
 
   /**
@@ -95,14 +95,14 @@ class ISP_Controller {
                  const ControlCommand& initial_commanded_control);
 
   /**
-   * @brief For a given ISP field compute a control command.
+   * @brief For a given ISP field compute a selective determinism control.
    *
    * @param ISP The input ISP field.
+   * @param u_d The desired control command.
    *
-   * @return The computed control command as a tuple of <throttle command,
-   * steering command>.
+   * @return The computed control command.
    */
-  ControlCommand computeControlCommand(const cv::Mat& ISP);
+  ControlCommand SD_Control(const cv::Mat& ISP, const ControlCommand& u_d);
 
  private:
   /** @brief Controller parameters. */

@@ -27,6 +27,41 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief For a given image plane and focal length compute theta.
+ *
+ * This function computes the angular displacement in radians from the center of
+ * the image plane to the center of a given image column. By convention,
+ * negative theta corresponds to displacements toward negative x (to the left),
+ * and positive theta to positive x (to the right).
+ *
+ * @param image_plane The image plane.
+ * @param col The column index.
+ * @param f_x The focal length (pixels) along x.
+ *
+ * @return The angular displacement between the column at 'col' and the optical
+ * axis.
+ */
+double column2Theta(const cv::Mat& image_plane, const int col,
+                    const double f_x);
+
+/**
+ * @brief For a given image plane and angular offset, compute column index.
+ *
+ * This function compute the column index of the image plane column that
+ * contains a ray offset by theta from the optical axis. By convention, theta is
+ * negative when offset in the direction of negative x (to the left), and
+ * positive in the direction of positive x (to the right).
+ *
+ * @param image_plane The image plane.
+ * @param theta The angular offset from optical axis.
+ * @param f_x The focal length (pixels) along x.
+ *
+ * @return The column index of image_plane containing a ray offset from the
+ * optical axis by theta.
+ */
+int theta2Column(const cv::Mat& image_plane, const double theta,
+                 const double f_x);
+/**
  * @brief Compute an acceleration control set biasing horizon.
  *
  * This horizon is used by the control law to bias direction towards larger sets

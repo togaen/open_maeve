@@ -23,9 +23,26 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <limits>
 #include <vector>
 
 namespace maeve_automation_core {
+namespace {
+static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+}  // namespace
+
+double column2Theta(const cv::Mat& image_plane, const int col,
+                    const double f_x) {
+  // \TODO(me)
+  return NaN;
+}
+
+int theta2Column(const cv::Mat& image_plane, const double theta,
+                 const double f_x) {
+  // \TODO(me)
+  return -1;
+}
+
 cv::Mat accelBias(const cv::Mat& controls) {
   cv::Mat accel_bias = cv::Mat::ones(1, controls.cols, CV_64FC2);
   // \TODO(me)

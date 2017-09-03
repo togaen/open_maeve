@@ -35,26 +35,28 @@ ISP_Controller::Params::Params()
     : kernel_width(-1),
       kernel_height(-1),
       kernel_horizon(-1),
-      theta_bias_column(-1),
+      focal_length_x(NaN),
       theta_decay_left(NaN),
       theta_decay_right(NaN),
       K_P(NaN),
       K_D(NaN),
       potential_inertia(NaN) {}
 
-ISP_Controller::ControlCommand::ControlCommand()
-    : throttle(NaN), steering(NaN) {}
+ISP_Controller::ControlCommand::ControlCommand() : throttle(NaN), yaw(NaN) {}
 
-ISP_Controller::ControlCommand::ControlCommand(const double t, const double s)
-    : throttle(t), steering(s) {}
+ISP_Controller::ControlCommand::ControlCommand(const double t, const double y)
+    : throttle(t), yaw(y) {}
 
 ISP_Controller::ISP_Controller(const Params& params,
                                const ControlCommand& initial_commanded_control)
     : p_(params), commanded_control_(initial_commanded_control) {}
 
-ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
-    const cv::Mat& ISP) {
+ISP_Controller::ControlCommand ISP_Controller::SD_Control(
+    const cv::Mat& ISP, const ControlCommand& u_d) {
   ControlCommand cmd;
+
+  // Map desired yaw image plane column.
+  const auto col_d = theta2Column(ISP, u_d.yaw, p_.focal_length_x);
 
   // Get control horizon.
   const cv::Mat h = controlHorizon(ISP, p_.kernel_height, p_.kernel_horizon);
@@ -68,8 +70,8 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
   const cv::Mat safe_controls = safeControls(dilated_h, C_u, p_.K_P, p_.K_D);
 
   // Compute biasing fields.
-  const cv::Mat theta_biasing = thetaBias(
-      p_.theta_bias_column, h.cols, p_.theta_decay_left, p_.theta_decay_right);
+  const cv::Mat theta_biasing =
+      thetaBias(col_d, h.cols, p_.theta_decay_left, p_.theta_decay_right);
   const cv::Mat accel_biasing = accelBias(safe_controls);
 
   // Apply biasing fields.
@@ -84,9 +86,9 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
                 max_idx.data());
 
   // If minimum does not exceed inertia, revert to bias column.
-  const auto p_bias_column = biased_h.at<cv::Point2d>(p_.theta_bias_column).x;
+  const auto p_bias_column = biased_h.at<cv::Point2d>(col_d).x;
   if (std::abs(p_bias_column - min_val) <= p_.potential_inertia) {
-    min_idx[1] = p_.theta_bias_column;
+    min_idx[1] = col_d;
   }
 
   // Compute control command.
