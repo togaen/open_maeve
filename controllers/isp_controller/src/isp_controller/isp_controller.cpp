@@ -21,6 +21,7 @@
  */
 #include "maeve_automation_core/isp_controller/isp_controller.h"
 
+#include <array>
 #include <limits>
 
 #include "isp_controller/lib.h"
@@ -58,8 +59,8 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
   const cv::Mat h = controlHorizon(ISP, p_.kernel_height, p_.kernel_horizon);
 
   // Compute steering biasing field.
-  const cv::Mat bias_horizon = biasHorizon(p_.theta_bias_column, h.cols,
-                                     p_.theta_decay_left, p_.theta_decay_right);
+  const cv::Mat bias_horizon = biasHorizon(
+      p_.theta_bias_column, h.cols, p_.theta_decay_left, p_.theta_decay_right);
 
   // Apply biasing field.
   const cv::Mat biased_h = h.mul(bias_horizon);
@@ -72,7 +73,15 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
       PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
   const cv::Mat safe_controls = safeControls(dilated_h, C_u, p_.K_P, p_.K_D);
 
-  // Choose minimum; if no minimum, choose bias column.
+  // Find minimum.
+  double min_val = NaN;
+  double max_val = NaN;
+  std::array<int, 2> min_idx;
+  std::array<int, 2> max_idx;
+  const cv::Mat sc = safe_controls.reshape(1);
+  cv::minMaxIdx(sc, &min_val, &max_val, min_idx.data(), max_idx.data());
+
+  // If minimum does not exceed inertia, revert to bias column.
 
   // Compute control command.
 
