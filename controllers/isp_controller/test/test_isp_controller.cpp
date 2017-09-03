@@ -93,23 +93,6 @@ TEST(ISP_Controller, testSafeControls) {
     EXPECT_NEAR(a_max, a_max_projections[i], epsilon);
   }
 }
-
-TEST(ISP_Controller, testControlHorizon) {
-  const cv::Mat m = dummyMatrix(3, 3);
-
-  // Expected size?
-  cv::Mat h = reduceISP(m);
-  EXPECT_EQ(h.rows, 1);
-  EXPECT_EQ(h.cols, m.cols);
-
-  // Expected values?
-  for (auto i = 0; i < 3; ++i) {
-    const auto v = h.at<cv::Point2d>(i);
-    EXPECT_NEAR(v.x, 3.0 + i, epsilon);
-    EXPECT_NEAR(v.y, 12.0 + i, epsilon);
-  }
-}
-
 }  // namespace maeve_automation_core
 
 int main(int argc, char** argv) {
