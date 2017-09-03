@@ -55,39 +55,24 @@ ISP_Controller::ControlCommand ISP_Controller::computeControlCommand(
   ControlCommand cmd;
 
   // Get control horizon.
-  const auto C_u =
-      PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
-  const cv::Mat safe_controls =
-      safeControls(ISP, C_u, p_.kernel_width, p_.kernel_height,
-                   p_.kernel_horizon, p_.K_P, p_.K_D);
+  const cv::Mat h = controlHorizon(ISP, p_.kernel_height, p_.kernel_horizon);
 
   // Compute steering biasing field.
-  cv::Mat bias_horizon = biasHorizon(p_.theta_bias_column, ISP.cols,
+  const cv::Mat bias_horizon = biasHorizon(p_.theta_bias_column, h.cols,
                                      p_.theta_decay_left, p_.theta_decay_right);
 
   // Apply biasing field.
-  cv::Mat biased_safe_controls = safe_controls.mul(bias_horizon);
+  const cv::Mat biased_h = h.mul(bias_horizon);
 
-  // Compute extrema
-  const auto extrema = computeHorizonExtrema(biased_safe_controls);
+  // Apply max filter.
+  const cv::Mat dilated_h = dilateHorizon(biased_h, p_.kernel_width);
 
-  // Choose nearest minimum.
-  auto nearest_left = -1;
-  for (auto i = p_.kernel_horizon; i >= 0; --i) {
-    const auto p = extrema.at<cv::Point2d>(i);
-    if (p.x < 0.0) {
-      nearest_left = i;
-      break;
-    }
-  }
-  auto nearest_right = -1;
-  for (auto i = p_.kernel_horizon; i < ISP.cols; ++i) {
-    const auto p = extrema.at<cv::Point2d>(i);
-    if (p.x < 0.0) {
-      nearest_right = i;
-      break;
-    }
-  }
+  // Get safe controls from dilated horizon.
+  const auto C_u =
+      PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
+  const cv::Mat safe_controls = safeControls(dilated_h, C_u, p_.K_P, p_.K_D);
+
+  // Choose minimum; if no minimum, choose bias column.
 
   // Compute control command.
 

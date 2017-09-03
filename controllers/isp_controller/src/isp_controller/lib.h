@@ -44,6 +44,31 @@ cv::Mat biasHorizon(const int center, const int width, const double left_decay,
                     const double right_decay);
 
 /**
+ * @brief Max reduce the ISP to a single row vector.
+ *
+ * @param ISP The input image space potential field.
+ * @param kernel_height The height of the max filter kernel.
+ * @param kernel_horizon The horizon line to run the max filter along.
+ *
+ * @return A single row vector of width ISP.cols that contains the max of each
+ * column in ISP.
+ */
+cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
+                       const double kernel_horizon);
+
+/**
+ * @brief Apply a max filter to a control horizon.
+ *
+ * @pre h should be a row vector.
+ *
+ * @param h The control horizon.
+ * @param kernel_width The max filter kernel width.
+ *
+ * @return A row vector that is a max filtered version of 'h'.
+ */
+cv::Mat dilateHorizon(const cv::Mat& h, const double kernel_width);
+
+/**
  * @brief For each column, compute safe longitudinal controls \in [-1, 1].
  *
  * @note The range of C_u is expected to be initialized with reverse directions,
@@ -51,27 +76,21 @@ cv::Mat biasHorizon(const int center, const int width, const double left_decay,
  * sign on the potential fields so that the mapping is direct.
  *
  * This function runs a max filter of the given kernel dimensions along the
- * kernel horizon to compute a max potential tuple <p, \dot{p}> at each column
- * index. The dot product <p, \dot{p}> x <K_P, K_D> is taken as the raw maximum
- * acceptable control value at each column index. These raw values are projected
- * into [-1, 1] using the potential transform C_u.
+ * kernel horizon to compute a max potential tuple <p, \dot{p}> at each
+ * column index. The dot product <p, \dot{p}> x <K_P, K_D> is taken as the raw
+ * maximum acceptable control value at each column index. These raw values are
+ * projected into [-1, 1] using the potential transform C_u.
  *
- * @param ISP The input image space potential field.
  * @param C_u The potential transform for mapping controls onto [r_min, r_max]
- * @param kernel_width The width of the max filter kernel.
- * @param kernel_height The height of the max filter kernel.
- * @param kernel_horizon The horizon line to run the max filter along.
  * @param K_P The proportional gain for computing max control.
  * @param K_D The derivative gain for computing max control.
  *
  * @return A two channel, 1D matrix that, where for each column index of ISP,
  * the pixel value defines a safe control range [r_min, a_max].
  */
-cv::Mat safeControls(const cv::Mat& ISP,
+cv::Mat safeControls(const cv::Mat& h,
                      const PotentialTransform<ConstraintType::SOFT>& C_u,
-                     const double kernel_width, const double kernel_height,
-                     const double kernel_horizon, const double K_P,
-                     const double K_D);
+                     const double K_P, const double K_D);
 
 /**
  * @brief Find local extrema on the given control horizon.

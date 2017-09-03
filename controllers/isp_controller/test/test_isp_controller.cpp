@@ -175,12 +175,6 @@ TEST(ISP_Controller, testSafeControls) {
   const auto K_P = 1.0;
   const auto K_D = 0.0;
 
-  // Compute controls.
-  cv::Mat controls = safeControls(ISP, C_u, kernel_width, kernel_height,
-                                  kernel_horizon, K_P, K_D);
-  ASSERT_EQ(controls.rows, 1);
-  ASSERT_EQ(controls.cols, ISP.cols);
-
   // Check controls.
   /*
   ISP:
@@ -189,16 +183,36 @@ TEST(ISP_Controller, testSafeControls) {
   (14, 49) (15, 50) (16, 51) (17, 52) (18, 53) (19, 54) (20, 55)
   (21, 56) (22, 57) (23, 58) (24, 59) (25, 60) (26, 61) (27, 62)
   (28, 63) (29, 64) (30, 65) (31, 66) (32, 67) (33, 68) (34, 69)
-
-  Reduction:
-  (21, 56) (22, 57) (23, 58) (24, 59) (25, 60) (26, 61) (27, 62)
-
-  Max filter:
-  (22, 56) (23, 57) (24, 58) (25, 59) (26, 60) (27, 61) (27, 62)
   */
+
+  // Compute control horizon.
+  std::vector<double> reduction{21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0};
+  cv::Mat h = controlHorizon(ISP, kernel_height, kernel_horizon);
+  ASSERT_EQ(reduction.size(), h.cols);
+  ASSERT_EQ(h.rows, 1);
+  for (auto i = 0; i < h.cols; ++i) {
+    const auto p = h.at<cv::Point2d>(i);
+    EXPECT_EQ(p.x, reduction[i]);
+  }
+
+  // Dilate control horizon.
+  std::vector<double> max_filter{22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 27.0};
+  cv::Mat dilated_h = dilateHorizon(h, kernel_width);
+  ASSERT_EQ(dilated_h.rows, 1);
+  ASSERT_EQ(dilated_h.cols, max_filter.size());
+  for (auto i = 0; i < h.cols; ++i) {
+    const auto p = dilated_h.at<cv::Point2d>(i);
+    EXPECT_EQ(p.x, max_filter[i]);
+  }
+
+  // Compute controls.
   std::vector<double> a_max_projections{-0.1257805, -0.1537137, -0.1812607,
                                         -0.2083901, -0.2350732, -0.2612837,
                                         -0.2612837};
+  cv::Mat controls = safeControls(dilated_h, C_u, K_P, K_D);
+  ASSERT_EQ(controls.rows, 1);
+  ASSERT_EQ(controls.cols, ISP.cols);
+
   for (auto i = 0; i < ISP.cols; ++i) {
     const auto p = controls.at<cv::Point2d>(0, i);
     const auto a_max = p.y;

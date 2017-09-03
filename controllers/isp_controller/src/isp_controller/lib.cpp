@@ -45,17 +45,10 @@ cv::Mat biasHorizon(const int center, const int width, const double left_decay,
   return bias_horizon;
 }
 
-cv::Mat safeControls(const cv::Mat& ISP,
-                     const PotentialTransform<ConstraintType::SOFT>& C_u,
-                     const double kernel_width, const double kernel_height,
-                     const double kernel_horizon, const double K_P,
-                     const double K_D) {
-  // Reserve return value.
-  cv::Mat controls;
-
-  // Compute structuring element.
-  cv::Mat structuring_element =
-      cv::getStructuringElement(cv::MORPH_RECT, cv::Size(kernel_width, 1));
+cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
+                       const double kernel_horizon) {
+  // Allocate horizon.
+  cv::Mat reduced_ISP;
 
   // Set ROI.
   auto half_height = static_cast<int>(kernel_height) / 2;
@@ -65,11 +58,33 @@ cv::Mat safeControls(const cv::Mat& ISP,
   cv::Mat masked_ISP = ISP(ROI);
 
   // Reduce to single row.
-  cv::Mat reduced_ISP;
   cv::reduce(masked_ISP, reduced_ISP, 0 /* 0: row, 1: column */, CV_REDUCE_MAX);
 
+  // Done.
+  return reduced_ISP;
+}
+
+cv::Mat dilateHorizon(const cv::Mat& h, const double kernel_width) {
+  // Reserve return value.
+  cv::Mat dilated_h;
+
+  // Compute structuring element.
+  cv::Mat structuring_element =
+      cv::getStructuringElement(cv::MORPH_RECT, cv::Size(kernel_width, 1));
+
   // Dilate.
-  cv::dilate(reduced_ISP, controls, structuring_element);
+  cv::dilate(h, dilated_h, structuring_element);
+
+  // Done.
+  return dilated_h;
+}
+
+cv::Mat safeControls(const cv::Mat& h,
+                     const PotentialTransform<ConstraintType::SOFT>& C_u,
+                     const double K_P, const double K_D) {
+  // Reserve return value.
+  cv::Mat controls;
+  h.copyTo(controls);
 
   // Project.
   controls.forEach<cv::Point2d>(
