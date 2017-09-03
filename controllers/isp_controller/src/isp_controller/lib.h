@@ -76,14 +76,16 @@ cv::Mat safeControls(const cv::Mat& ISP,
 /**
  * @brief Find local extrema on the given control horizon.
  *
+ * @pre The horizon 'h' shall have at more than two elements.
+ *
  * Positions along 'control_horizon' that are inflection points are marked with
  * 1.0 (concave down) or -1.0 (concave up). The first and last indices are
- * always 0.
+ * always take the value of their neighbor.
  *
- * @param control_horizon The control horizon to find minima for.
+ * @param h The control horizon to find extrema for.
  *
  * @return A row vector mask that indicates inflection points in
  * 'control_horizon'.
  */
-cv::Mat computeHorizonExtrema(const cv::Mat& control_horizon);
+cv::Mat computeHorizonExtrema(const cv::Mat& h);
 }  // namespace maeve_automation_core

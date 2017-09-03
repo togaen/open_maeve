@@ -84,25 +84,37 @@ cv::Mat safeControls(const cv::Mat& ISP,
   return controls;
 }
 
-cv::Mat computeHorizonExtrema(const cv::Mat& control_horizon) {
-  // Store extrema markers.
-  cv::Mat inflection_points = cv::Mat::zeros(1, control_horizon.cols, CV_64FC2);
+namespace {
+inline double getDirection(double x1, double x2) {
+  // -1 decreasing, 1 increasing, 0 flat.
+  return (x1 > x2) ? -1.0 : ((x1 < x2) ? 1.0 : 0.0);
+}
+}  // namespace
 
-  for (auto i = 1; i < control_horizon.cols - 1; ++i) {
-    const auto prv = control_horizon.at<cv::Point2d>(i - 1);
-    const auto cur = control_horizon.at<cv::Point2d>(i);
-    const auto nxt = control_horizon.at<cv::Point2d>(i + 1);
+cv::Mat computeHorizonExtrema(const cv::Mat& h) {
+  // Store extrema markers.
+  cv::Mat extrema = cv::Mat::zeros(1, h.cols, CV_64FC2);
+
+  for (auto i = 1; i < h.cols - 1; ++i) {
+    const auto prv = h.at<cv::Point2d>(i - 1);
+    const auto cur = h.at<cv::Point2d>(i);
+    const auto nxt = h.at<cv::Point2d>(i + 1);
 
     // -1 decreasing, 1 increasing, 0 flat.
-    const auto left_dir = (prv.x > cur.x) ? -1 : ((prv.x < cur.x) ? 1 : 0);
-    const auto right_dir = (cur.x > nxt.x) ? -1 : ((cur.x < nxt.x) ? 1 : 0);
+    const auto left_dir = getDirection(prv.x, cur.x);
+    const auto right_dir = getDirection(cur.x, nxt.x);
 
     // Mark.
     const auto extremum =
         (left_dir == right_dir) ? 0.0 : ((left_dir > right_dir) ? 1.0 : -1.0);
-    inflection_points.at<cv::Point2d>(i) = cv::Point2d(extremum, 0.0);
+    extrema.at<cv::Point2d>(i) = cv::Point2d(extremum, 0.0);
   }
 
-  return inflection_points;
+  // Set terminal indices.
+  extrema.at<cv::Point2d>(0) = extrema.at<cv::Point2d>(1);
+  extrema.at<cv::Point2d>(extrema.cols - 1) =
+      extrema.at<cv::Point2d>(extrema.cols - 2);
+
+  return extrema;
 }
 }  // namespace maeve_automation_core
