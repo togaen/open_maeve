@@ -21,6 +21,7 @@
  */
 #include <gtest/gtest.h>
 
+#include <cmath>
 #include <vector>
 
 #include "isp_controller/lib.h"
@@ -41,6 +42,25 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
   return m;
 }
 }  // namespace
+
+TEST(ISP_Controller, testThetaColumnConversions) {
+  const auto rows = 1;
+  const auto cols = 13;
+  cv::Mat m = dummyMatrix(rows, cols);
+  const auto focal_length_x = 3.7;
+  const auto principal_point_x = static_cast<double>(cols / 2) + 1.3;
+
+  for (auto i = 0; i < cols; ++i) {
+    const auto center_x = static_cast<double>(i) + 0.5;
+    const auto theta = std::atan2(center_x - principal_point_x, focal_length_x);
+    const auto computed_theta =
+        column2Theta(m, i, focal_length_x, principal_point_x);
+    const auto computed_column =
+        theta2Column(m, theta, focal_length_x, principal_point_x);
+    EXPECT_NEAR(theta, computed_theta, epsilon);
+    EXPECT_EQ(computed_column, i);
+  }
+}
 
 TEST(ISP_Controller, testHorizonExtrema) {
   const auto rows = 1;

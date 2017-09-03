@@ -36,6 +36,7 @@ ISP_Controller::Params::Params()
       kernel_height(-1),
       kernel_horizon(-1),
       focal_length_x(NaN),
+      principal_point_x(NaN),
       theta_decay_left(NaN),
       theta_decay_right(NaN),
       K_P(NaN),
@@ -56,7 +57,8 @@ ISP_Controller::ControlCommand ISP_Controller::SD_Control(
   ControlCommand cmd;
 
   // Map desired yaw image plane column.
-  const auto col_d = theta2Column(ISP, u_d.yaw, p_.focal_length_x);
+  const auto col_d =
+      theta2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
 
   // Get control horizon.
   const cv::Mat h = controlHorizon(ISP, p_.kernel_height, p_.kernel_horizon);

@@ -23,6 +23,7 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <cmath>
 #include <limits>
 #include <vector>
 
@@ -31,16 +32,14 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
-double column2Theta(const cv::Mat& image_plane, const int col,
-                    const double f_x) {
-  // \TODO(me)
-  return NaN;
+double column2Theta(const cv::Mat& image_plane, const int col, const double f_x,
+                    const double p_x) {
+  return std::atan2(static_cast<double>(col) - p_x + 0.5, f_x);
 }
 
 int theta2Column(const cv::Mat& image_plane, const double theta,
-                 const double f_x) {
-  // \TODO(me)
-  return -1;
+                 const double f_x, const double p_x) {
+  return static_cast<int>(f_x * std::tan(theta) + p_x);
 }
 
 cv::Mat accelBias(const cv::Mat& controls) {

@@ -37,12 +37,13 @@ namespace maeve_automation_core {
  * @param image_plane The image plane.
  * @param col The column index.
  * @param f_x The focal length (pixels) along x.
+ * @param p_x The x-coordinate of the camera principal point.
  *
  * @return The angular displacement between the column at 'col' and the optical
  * axis.
  */
-double column2Theta(const cv::Mat& image_plane, const int col,
-                    const double f_x);
+double column2Theta(const cv::Mat& image_plane, const int col, const double f_x,
+                    const double p_x);
 
 /**
  * @brief For a given image plane and angular offset, compute column index.
@@ -55,12 +56,13 @@ double column2Theta(const cv::Mat& image_plane, const int col,
  * @param image_plane The image plane.
  * @param theta The angular offset from optical axis.
  * @param f_x The focal length (pixels) along x.
+ * @param p_x The x-coordinate of the camera principal point.
  *
  * @return The column index of image_plane containing a ray offset from the
  * optical axis by theta.
  */
 int theta2Column(const cv::Mat& image_plane, const double theta,
-                 const double f_x);
+                 const double f_x, const double p_x);
 /**
  * @brief Compute an acceleration control set biasing horizon.
  *

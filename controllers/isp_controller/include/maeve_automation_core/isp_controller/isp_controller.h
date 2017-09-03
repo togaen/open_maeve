@@ -40,6 +40,8 @@ class ISP_Controller {
     int kernel_horizon;
     /** @brief Camera focal length along x (pixels). */
     double focal_length_x;
+    /** @brief The x-coordinate of the camera principal point (pixels). */
+    double principal_point_x;
     /** @brief Steering bias left decay. */
     double theta_decay_left;
     /** @brief Steering bias right decay. */
