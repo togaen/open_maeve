@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "isp_controller/lib.h"
+#include "maeve_automation_core/isp_controller/isp_controller.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -43,7 +44,51 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
 }
 }  // namespace
 
-TEST(ISP_Controller, test) {}
+TEST(ISP_Controller, test) {
+  // ISP.
+  const auto rows = 5;
+  const auto cols = 7;
+  const cv::Mat m = 0.1 * dummyMatrix(rows, cols);
+
+  // Shape parameters for control projection onto [-1, 1).
+  const auto r_min = 1.0;
+  const auto r_max = -1.0;
+  const auto a = 0.05;
+  const auto b = 0.5;
+  const ShapeParameters sp(r_min, r_max, a, b);
+
+  // Parameters for computing throttle and yaw from ISP.
+  const auto k_w = 3;
+  const auto k_ht = 3;
+  const auto k_hr = rows / 2;
+  const auto fx = 1.0;
+  const auto px = static_cast<double>(cols / 2);
+  const auto ld = 1.1;
+  const auto rd = 1.2;
+  const auto kp = 1.0;
+  const auto kd = 1.0;
+  const auto pi = epsilon;
+  const ISP_Controller::Params p(sp, k_w, k_ht, k_hr, fx, px, ld, rd, kp, kd,
+                                 pi);
+
+  // Initial control command.
+  const auto throttle = 0.0;
+  const auto yaw = 0.0;
+  const ISP_Controller::ControlCommand u(throttle, yaw);
+
+  // Build controller.
+  ISP_Controller controller(p, u);
+
+  // Desired control.
+  ISP_Controller::ControlCommand u_d(1.0, 0.5);
+
+  // Compute SD control.
+  const auto u_star = controller.SD_Control(m, u_d);
+  EXPECT_NEAR(u_star.throttle, 0.280268, epsilon);
+  EXPECT_NEAR(u_star.yaw, -1.35213, epsilon);
+
+  // \TODO(me): Should do more testing.
+}
 
 TEST(ISP_Controller, testNearestIntervalPoint) {
   const cv::Point2d interval(-3.0, 1.0);
@@ -54,7 +99,7 @@ TEST(ISP_Controller, testNearestIntervalPoint) {
   EXPECT_EQ(nearestIntervalPoint(interval, 0.73), 0.73);
 }
 
-TEST(ISP_Controller, testThetaColumnConversions) {
+TEST(ISP_Controller, testYawColumnConversions) {
   const auto rows = 1;
   const auto cols = 13;
   cv::Mat m = dummyMatrix(rows, cols);
@@ -63,12 +108,12 @@ TEST(ISP_Controller, testThetaColumnConversions) {
 
   for (auto i = 0; i < cols; ++i) {
     const auto center_x = static_cast<double>(i) + 0.5;
-    const auto theta = std::atan2(center_x - principal_point_x, focal_length_x);
-    const auto computed_theta =
-        column2Theta(m, i, focal_length_x, principal_point_x);
+    const auto yaw = std::atan2(center_x - principal_point_x, focal_length_x);
+    const auto computed_yaw =
+        column2Yaw(m, i, focal_length_x, principal_point_x);
     const auto computed_column =
-        theta2Column(m, theta, focal_length_x, principal_point_x);
-    EXPECT_NEAR(theta, computed_theta, epsilon);
+        yaw2Column(m, yaw, focal_length_x, principal_point_x);
+    EXPECT_NEAR(yaw, computed_yaw, epsilon);
     EXPECT_EQ(computed_column, i);
   }
 }
@@ -80,7 +125,7 @@ TEST(ISP_Controller, testBiasHorizon) {
   const auto center = 4;
 
   // Compute bias horizon.
-  cv::Mat bias_horizon = thetaBias(center, width, left_decay, right_decay);
+  cv::Mat bias_horizon = yawBias(center, width, left_decay, right_decay);
   ASSERT_EQ(bias_horizon.rows, 1);
   ASSERT_EQ(bias_horizon.cols, width);
 
