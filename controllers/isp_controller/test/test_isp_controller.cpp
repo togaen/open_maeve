@@ -84,7 +84,7 @@ TEST(ISP_Controller, test) {
 
   // Compute SD control.
   const auto u_star = controller.SD_Control(m, u_d);
-  EXPECT_NEAR(u_star.throttle, 0.280268, epsilon);
+  EXPECT_NEAR(u_star.throttle, 0.37068, epsilon);
   EXPECT_NEAR(u_star.yaw, -1.35213, epsilon);
 
   // \TODO(me): Should do more testing.
@@ -154,8 +154,8 @@ TEST(ISP_Controller, testSafeControls) {
   const cv::Mat ISP = dummyMatrix(rows, cols);
 
   // Control projection.
-  const auto range_min = 1.0;
-  const auto range_max = -1.0;
+  const auto range_min = -1.0;
+  const auto range_max = 1.0;
   const auto alpha = 0.05;
   const auto beta = 0.5;
   const auto C_u = PotentialTransform<ConstraintType::SOFT>(
@@ -180,7 +180,7 @@ TEST(ISP_Controller, testSafeControls) {
   */
 
   // Compute control horizon.
-  std::vector<double> reduction{21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0};
+  std::vector<double> reduction{7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0};
   cv::Mat h = controlHorizon(ISP, kernel_height, kernel_horizon);
   ASSERT_EQ(reduction.size(), h.cols);
   ASSERT_EQ(h.rows, 1);
@@ -189,28 +189,28 @@ TEST(ISP_Controller, testSafeControls) {
     EXPECT_EQ(p.x, reduction[i]);
   }
 
-  // Dilate control horizon.
-  std::vector<double> max_filter{22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 27.0};
-  cv::Mat dilated_h = dilateHorizon(h, kernel_width);
-  ASSERT_EQ(dilated_h.rows, 1);
-  ASSERT_EQ(dilated_h.cols, max_filter.size());
+  // Erode control horizon.
+  std::vector<double> min_filter{7.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0};
+  cv::Mat eroded_h = erodeHorizon(h, kernel_width);
+  ASSERT_EQ(eroded_h.rows, 1);
+  ASSERT_EQ(eroded_h.cols, min_filter.size());
   for (auto i = 0; i < h.cols; ++i) {
-    const auto p = dilated_h.at<cv::Point2d>(i);
-    EXPECT_EQ(p.x, max_filter[i]);
+    const auto p = eroded_h.at<cv::Point2d>(i);
+    EXPECT_EQ(p.x, min_filter[i]);
   }
 
   // Compute controls.
-  std::vector<double> a_max_projections{-0.1257805, -0.1537137, -0.1812607,
-                                        -0.2083901, -0.2350732, -0.2612837,
-                                        -0.2612837};
-  cv::Mat controls = safeControls(dilated_h, C_u, K_P, K_D);
+  std::vector<double> projections{-0.3117596, -0.3117596, -0.2831462,
+                                  -0.2542395, -0.2250888, -0.1957441,
+                                  -0.1662559};
+  cv::Mat controls = safeControls(eroded_h, C_u, K_P, K_D);
   ASSERT_EQ(controls.rows, 1);
   ASSERT_EQ(controls.cols, ISP.cols);
 
   for (auto i = 0; i < ISP.cols; ++i) {
     const auto p = controls.at<cv::Point2d>(0, i);
-    const auto a_max = p.y;
-    EXPECT_NEAR(a_max, a_max_projections[i], epsilon);
+    const auto throttle_max = p.y;
+    EXPECT_NEAR(throttle_max, projections[i], epsilon);
   }
 }
 }  // namespace maeve_automation_core

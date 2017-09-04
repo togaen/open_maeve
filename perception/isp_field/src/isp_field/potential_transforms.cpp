@@ -50,20 +50,20 @@ cv::Point2d PotentialTransform<ConstraintType::HARD>::operator()(
   if (pixel_value.x < p_.range_min) {
     // 0th order.
     return_value.x =
-        p_.alpha * std::pow(p_.range_min - pixel_value.x, -p_.beta);
+        -p_.alpha * std::pow(p_.range_min - pixel_value.x, -p_.beta);
     // 1st order.
-    return_value.y = -p_.alpha * p_.beta * pixel_value.y *
+    return_value.y = p_.alpha * p_.beta * pixel_value.y *
                      std::pow(p_.range_min - pixel_value.x, -p_.beta - 1.0);
   } else if (pixel_value.x > p_.range_max) {
     // 0th order.
     return_value.x =
-        p_.alpha * std::pow(pixel_value.x - p_.range_max, -p_.beta);
+        -p_.alpha * std::pow(pixel_value.x - p_.range_max, -p_.beta);
     // 1st order.
-    return_value.y = -p_.alpha * p_.beta * pixel_value.y *
+    return_value.y = p_.alpha * p_.beta * pixel_value.y *
                      std::pow(pixel_value.x - p_.range_max, -p_.beta - 1.0);
   } else {
     // 0th order.
-    return_value.x = INF;
+    return_value.x = -INF;
     // 1st order.
     return_value.y = 0.0;
   }

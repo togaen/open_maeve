@@ -90,25 +90,25 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
   cv::Mat masked_ISP = ISP(ROI);
 
   // Reduce to single row.
-  cv::reduce(masked_ISP, reduced_ISP, 0 /* 0: row, 1: column */, CV_REDUCE_MAX);
+  cv::reduce(masked_ISP, reduced_ISP, 0 /* 0: row, 1: column */, CV_REDUCE_MIN);
 
   // Done.
   return reduced_ISP;
 }
 
-cv::Mat dilateHorizon(const cv::Mat& h, const double kernel_width) {
+cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width) {
   // Reserve return value.
-  cv::Mat dilated_h;
+  cv::Mat eroded_h;
 
   // Compute structuring element.
   cv::Mat structuring_element =
       cv::getStructuringElement(cv::MORPH_RECT, cv::Size(kernel_width, 1));
 
-  // Dilate.
-  cv::dilate(h, dilated_h, structuring_element);
+  // Erode.
+  cv::erode(h, eroded_h, structuring_element);
 
   // Done.
-  return dilated_h;
+  return eroded_h;
 }
 
 cv::Mat safeControls(const cv::Mat& h,

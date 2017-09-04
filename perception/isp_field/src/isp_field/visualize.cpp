@@ -35,14 +35,14 @@ cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
   // Split out 0th and 1st order channels.
   cv::Mat channel[2];
   cv::split(isp, channel);
-  const auto& tau_channel = channel[0];
+  const auto& p_channel = channel[0];
 
   // Get a mask of infinite values.
-  cv::Mat inf_mask = (tau_channel == INF);
+  cv::Mat inf_mask = (p_channel == -INF);
 
-  // Map (0, \infty] to red: threshold everything \in [-\infty, 0] to 0.
+  // Map [-\infty, 0) to red: threshold everything \in [0, \infty) to 0.
   cv::Mat repulsive_forces;
-  cv::threshold(tau_channel, repulsive_forces, 0.0, 0.0, cv::THRESH_TOZERO);
+  cv::threshold(p_channel, repulsive_forces, 0.0, 0.0, cv::THRESH_TOZERO_INV);
 
   // Set the infinite values to upper bound.
   repulsive_forces.setTo(upper_bound, inf_mask);
@@ -54,15 +54,14 @@ cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
   auto& b_channel = color_channels[0];
 
   // Scale according to user-defined value range.
-  repulsive_forces.convertTo(r_channel, CV_8U, 255.0 / upper_bound);
+  repulsive_forces.convertTo(r_channel, CV_8U, 255.0 / lower_bound);
 
-  // Map (-\infty, 0) to blue
+  // Map (0, \infty) to blue: threshold everything \in [-\infty, 0) to 0.
   cv::Mat attractive_forces;
-  cv::threshold(tau_channel, attractive_forces, 0.0, 0.0,
-                cv::THRESH_TOZERO_INV);
+  cv::threshold(p_channel, attractive_forces, 0.0, 0.0, cv::THRESH_TOZERO);
 
   // Scale according to user-defined value range.
-  attractive_forces.convertTo(b_channel, CV_8U, 255.0 / lower_bound);
+  attractive_forces.convertTo(b_channel, CV_8U, 255.0 / upper_bound);
 
   // Map 0 to black: this is implicit in the construction of the visualization.
   g_channel = cv::Mat::zeros(b_channel.rows, b_channel.cols, CV_8U);

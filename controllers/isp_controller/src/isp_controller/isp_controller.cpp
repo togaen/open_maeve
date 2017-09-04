@@ -102,12 +102,12 @@ ISP_Controller::ControlCommand ISP_Controller::SD_Control(
   const cv::Mat h = controlHorizon(ISP, p_.kernel_height, p_.kernel_horizon);
 
   // Apply max filter.
-  const cv::Mat dilated_h = dilateHorizon(h, p_.kernel_width);
+  const cv::Mat eroded_h = erodeHorizon(h, p_.kernel_width);
 
   // Get safe controls from filtered horizon.
   const auto C_u =
       PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
-  const cv::Mat safe_controls = safeControls(dilated_h, C_u, p_.K_P, p_.K_D);
+  const cv::Mat safe_controls = safeControls(eroded_h, C_u, p_.K_P, p_.K_D);
 
   // Compute biasing fields.
   const cv::Mat yaw_biasing =
@@ -115,7 +115,7 @@ ISP_Controller::ControlCommand ISP_Controller::SD_Control(
   const cv::Mat throttle_biasing = throttleBias(safe_controls);
 
   // Apply biasing fields.
-  const cv::Mat biased_h = dilated_h.mul(yaw_biasing.mul(throttle_biasing));
+  const cv::Mat biased_h = eroded_h.mul(yaw_biasing.mul(throttle_biasing));
 
   // Find minimum.
   auto min_val = NaN;
