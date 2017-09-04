@@ -133,4 +133,14 @@ class ISP_Controller {
   /** @brief The previously computed control command. */
   ControlCommand commanded_control_;
 };  // class ISP_Controller
+
+/**
+ * @brief Overload output stream operator for controller parameter set.
+ *
+ * @param o The output stream.
+ * @param sp The controller parameters object.
+ *
+ * @return The stream.
+ */
+std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p);
 }  // namespace maeve_automation_core

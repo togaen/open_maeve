@@ -31,6 +31,21 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
+std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p) {
+  o << "kernel_width: " << p.kernel_width << "\n";
+  o << "kernel_height: " << p.kernel_height << "\n";
+  o << "kernel_horizon: " << p.kernel_horizon << "\n";
+  o << "focal_length_x: " << p.focal_length_x << "\n";
+  o << "principal_point_x: " << p.principal_point_x << "\n";
+  o << "theta_decay_left: " << p.theta_decay_left << "\n";
+  o << "theta_decay_right: " << p.theta_decay_right << "\n";
+  o << "K_P: " << p.K_P << "\n";
+  o << "K_D: " << p.K_D << "\n";
+  o << "potential_inertia: " << p.potential_inertia << "\n";
+  o << "shape_parameters: " << p.shape_parameters;
+  return o;
+}
+
 ISP_Controller::Params::Params()
     : kernel_width(-1),
       kernel_height(-1),
