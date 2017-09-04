@@ -117,13 +117,15 @@ class ISP_Controller {
   /**
    * @brief For a given ISP field compute a selective determinism control.
    *
-   * @pre The desired control u_d values shall each be in the range [-1, 1]
-   * indicating minimum and maximum actuation, respectively.
+   * @note For reasonable results, the desired control commands should be in the
+   * range [-1, 1] indicating minimum and maximum actuation values,
+   * respectively.
    *
    * @param ISP The input ISP field.
    * @param u_d The desired control command.
    *
-   * @return The computed control command.
+   * @return The computed control command with each member in the range [-1, 1]
+   * indicating minimum and maximum actuation, respectively.
    */
   ControlCommand SD_Control(const cv::Mat& ISP, const ControlCommand& u_d);
 
