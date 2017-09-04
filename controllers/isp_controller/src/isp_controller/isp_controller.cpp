@@ -42,8 +42,8 @@ std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p) {
   o << "kernel_horizon: " << p.kernel_horizon << "\n";
   o << "focal_length_x: " << p.focal_length_x << "\n";
   o << "principal_point_x: " << p.principal_point_x << "\n";
-  o << "theta_decay_left: " << p.theta_decay_left << "\n";
-  o << "theta_decay_right: " << p.theta_decay_right << "\n";
+  o << "yaw_decay_left: " << p.yaw_decay_left << "\n";
+  o << "yaw_decay_right: " << p.yaw_decay_right << "\n";
   o << "K_P: " << p.K_P << "\n";
   o << "K_D: " << p.K_D << "\n";
   o << "potential_inertia: " << p.potential_inertia << "\n";
@@ -57,8 +57,8 @@ ISP_Controller::Params::Params()
       kernel_horizon(-1),
       focal_length_x(NaN),
       principal_point_x(NaN),
-      theta_decay_left(NaN),
-      theta_decay_right(NaN),
+      yaw_decay_left(NaN),
+      yaw_decay_right(NaN),
       K_P(NaN),
       K_D(NaN),
       potential_inertia(NaN) {}
@@ -73,8 +73,8 @@ ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
       kernel_horizon(k_hr),
       focal_length_x(fx),
       principal_point_x(px),
-      theta_decay_left(ld),
-      theta_decay_right(rd),
+      yaw_decay_left(ld),
+      yaw_decay_right(rd),
       K_P(kp),
       K_D(kd),
       potential_inertia(pi),
@@ -96,7 +96,7 @@ ISP_Controller::ControlCommand ISP_Controller::SD_Control(
 
   // Map desired yaw image plane column.
   const auto col_d =
-      theta2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
+      yaw2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
 
   // Get control horizon.
   const cv::Mat h = controlHorizon(ISP, p_.kernel_height, p_.kernel_horizon);
@@ -110,16 +110,16 @@ ISP_Controller::ControlCommand ISP_Controller::SD_Control(
   const cv::Mat safe_controls = safeControls(dilated_h, C_u, p_.K_P, p_.K_D);
 
   // Compute biasing fields.
-  const cv::Mat theta_biasing =
-      thetaBias(col_d, h.cols, p_.theta_decay_left, p_.theta_decay_right);
-  const cv::Mat accel_biasing = accelBias(safe_controls);
+  const cv::Mat yaw_biasing =
+      yawBias(col_d, h.cols, p_.yaw_decay_left, p_.yaw_decay_right);
+  const cv::Mat throttle_biasing = throttleBias(safe_controls);
 
   // Apply biasing fields.
-  const cv::Mat biased_h = dilated_h.mul(theta_biasing.mul(accel_biasing));
+  const cv::Mat biased_h = dilated_h.mul(yaw_biasing.mul(throttle_biasing));
 
   // Find minimum.
-  double min_val = NaN;
-  double max_val = NaN;
+  auto min_val = NaN;
+  auto max_val = NaN;
   std::array<int, 2> min_idx;
   std::array<int, 2> max_idx;
   cv::minMaxIdx(biased_h.reshape(1), &min_val, &max_val, min_idx.data(),
@@ -132,16 +132,16 @@ ISP_Controller::ControlCommand ISP_Controller::SD_Control(
   }
 
   // Compute control command.
-  const auto theta_col_offset =
+  const auto yaw_col_offset =
       static_cast<int>(static_cast<double>(min_idx[1]) - p_.principal_point_x);
-  const auto theta_star = column2Theta(safe_controls, theta_col_offset,
-                                       p_.focal_length_x, p_.principal_point_x);
-  const cv::Point2d accel_set = safe_controls.at<cv::Point2d>(min_idx[1]);
-  const auto a_star = nearestIntervalPoint(accel_set, u_d.throttle);
+  const auto yaw_star = column2Yaw(safe_controls, yaw_col_offset,
+                                   p_.focal_length_x, p_.principal_point_x);
+  const cv::Point2d throttle_set = safe_controls.at<cv::Point2d>(min_idx[1]);
+  const auto throttle_star = nearestIntervalPoint(throttle_set, u_d.throttle);
 
   // Done.
-  cmd.yaw = theta_star;
-  cmd.throttle = a_star;
+  cmd.yaw = yaw_star;
+  cmd.throttle = throttle_star;
   return cmd;
 }
 }  // namespace maeve_automation_core

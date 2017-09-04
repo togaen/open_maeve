@@ -43,9 +43,9 @@ class ISP_Controller {
     /** @brief The x-coordinate of the camera principal point (pixels). */
     double principal_point_x;
     /** @brief Yaw bias left decay. */
-    double theta_decay_left;
+    double yaw_decay_left;
     /** @brief Yaw bias right decay. */
-    double theta_decay_right;
+    double yaw_decay_right;
     /** @brief Proportional gain. */
     double K_P;
     /** @brief Derivative gain. */

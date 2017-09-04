@@ -42,24 +42,24 @@ double nearestIntervalPoint(const cv::Point2d& interval, const double point) {
   return point;
 }
 
-double column2Theta(const cv::Mat& image_plane, const int col, const double f_x,
-                    const double p_x) {
+double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
+                  const double p_x) {
   return std::atan2(static_cast<double>(col) - p_x + 0.5, f_x);
 }
 
-int theta2Column(const cv::Mat& image_plane, const double theta,
-                 const double f_x, const double p_x) {
-  return static_cast<int>(f_x * std::tan(theta) + p_x);
+int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
+               const double p_x) {
+  return static_cast<int>(f_x * std::tan(yaw) + p_x);
 }
 
-cv::Mat accelBias(const cv::Mat& controls) {
-  cv::Mat accel_bias = cv::Mat::ones(1, controls.cols, CV_64FC2);
+cv::Mat throttleBias(const cv::Mat& controls) {
+  cv::Mat throttle_bias = cv::Mat::ones(1, controls.cols, CV_64FC2);
   // \TODO(me)
-  return accel_bias;
+  return throttle_bias;
 }
 
-cv::Mat thetaBias(const int center, const int width, const double left_decay,
-                  const double right_decay) {
+cv::Mat yawBias(const int center, const int width, const double left_decay,
+                const double right_decay) {
   cv::Mat bias_horizon(1, width, CV_64FC2);
 
   auto decay = 1.0;

@@ -38,12 +38,12 @@ namespace maeve_automation_core {
 double nearestIntervalPoint(const cv::Point2d& interval, const double point);
 
 /**
- * @brief For a given image plane and focal length compute theta.
+ * @brief For a given image plane and focal length compute yaw.
  *
  * This function computes the angular displacement in radians from the center of
  * the image plane to the center of a given image column. By convention,
- * negative theta corresponds to displacements toward negative x (to the left),
- * and positive theta to positive x (to the right).
+ * negative yaw corresponds to displacements toward negative x (to the left),
+ * and positive yaw to positive x (to the right).
  *
  * @param image_plane The image plane.
  * @param col The column index.
@@ -53,27 +53,27 @@ double nearestIntervalPoint(const cv::Point2d& interval, const double point);
  * @return The angular displacement between the column at 'col' and the optical
  * axis.
  */
-double column2Theta(const cv::Mat& image_plane, const int col, const double f_x,
-                    const double p_x);
+double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
+                  const double p_x);
 
 /**
  * @brief For a given image plane and angular offset, compute column index.
  *
  * This function compute the column index of the image plane column that
- * contains a ray offset by theta from the optical axis. By convention, theta is
+ * contains a ray offset by yaw from the optical axis. By convention, yaw is
  * negative when offset in the direction of negative x (to the left), and
  * positive in the direction of positive x (to the right).
  *
  * @param image_plane The image plane.
- * @param theta The angular offset from optical axis.
+ * @param yaw The angular offset from optical axis.
  * @param f_x The focal length (pixels) along x.
  * @param p_x The x-coordinate of the camera principal point.
  *
  * @return The column index of image_plane containing a ray offset from the
- * optical axis by theta.
+ * optical axis by yaw.
  */
-int theta2Column(const cv::Mat& image_plane, const double theta,
-                 const double f_x, const double p_x);
+int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
+               const double p_x);
 /**
  * @brief Compute an acceleration control set biasing horizon.
  *
@@ -84,10 +84,10 @@ int theta2Column(const cv::Mat& image_plane, const double theta,
  *
  * @return A row vector containing biasing factors.
  */
-cv::Mat accelBias(const cv::Mat& controls);
+cv::Mat throttleBias(const cv::Mat& controls);
 
 /**
- * @brief Compute a theta-based biasing horizon for choosing controls.
+ * @brief Compute a yaw-based biasing horizon for choosing controls.
  *
  * This horizon is used by the control law to bias direction towards `center'.
  * Potential rewards to the left and right are decayed by the given factors the
@@ -100,8 +100,8 @@ cv::Mat accelBias(const cv::Mat& controls);
  *
  * @return A row vector containing biasing factors.
  */
-cv::Mat thetaBias(const int center, const int width, const double left_decay,
-                  const double right_decay);
+cv::Mat yawBias(const int center, const int width, const double left_decay,
+                const double right_decay);
 
 /**
  * @brief Max reduce the ISP to a single row vector.
