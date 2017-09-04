@@ -130,43 +130,4 @@ cv::Mat safeControls(const cv::Mat& h,
   // Done.
   return controls;
 }
-
-namespace {
-inline double getDirection(const double x1, const double x2) {
-  // -1 decreasing, 1 increasing, 0 flat.
-  return (x1 > x2) ? -1.0 : ((x1 < x2) ? 1.0 : 0.0);
-}
-inline double getExtremum(const double left_dir, const double right_dir) {
-  return (left_dir == right_dir) ? 0.0 : ((left_dir > right_dir) ? 1.0 : -1.0);
-}
-}  // namespace
-
-cv::Mat computeHorizonExtrema(const cv::Mat& h) {
-  // Store extrema markers.
-  cv::Mat extrema = cv::Mat::zeros(1, h.cols, CV_64FC2);
-  cv::Mat directions = cv::Mat::zeros(1, h.cols, CV_64FC2);
-
-  for (auto i = 1; i < h.cols - 1; ++i) {
-    const auto prv = h.at<cv::Point2d>(i - 1);
-    const auto cur = h.at<cv::Point2d>(i);
-    const auto nxt = h.at<cv::Point2d>(i + 1);
-
-    // -1 decreasing, 1 increasing, 0 flat.
-    const auto left_dir = getDirection(prv.x, cur.x);
-    const auto right_dir = getDirection(cur.x, nxt.x);
-    directions.at<cv::Point2d>(i) = cv::Point2d(left_dir, right_dir);
-
-    // Mark.
-    const auto extremum = getExtremum(left_dir, right_dir);
-    extrema.at<cv::Point2d>(i) = cv::Point2d(extremum, 0.0);
-  }
-
-  // Set terminal indices.
-  const auto second = directions.at<cv::Point2d>(1);
-  const auto penultimate = directions.at<cv::Point2d>(directions.cols - 2);
-  extrema.at<cv::Point2d>(0) = cv::Point2d(-second.x, 0.0);
-  extrema.at<cv::Point2d>(extrema.cols - 1) = cv::Point2d(penultimate.x, 0.0);
-
-  return extrema;
-}
 }  // namespace maeve_automation_core

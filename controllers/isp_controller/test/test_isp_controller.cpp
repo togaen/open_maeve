@@ -43,6 +43,8 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
 }
 }  // namespace
 
+TEST(ISP_Controller, test) {}
+
 TEST(ISP_Controller, testNearestIntervalPoint) {
   const cv::Point2d interval(-3.0, 1.0);
   EXPECT_EQ(nearestIntervalPoint(interval, -3.0), -3.0);
@@ -68,88 +70,6 @@ TEST(ISP_Controller, testThetaColumnConversions) {
         theta2Column(m, theta, focal_length_x, principal_point_x);
     EXPECT_NEAR(theta, computed_theta, epsilon);
     EXPECT_EQ(computed_column, i);
-  }
-}
-
-TEST(ISP_Controller, testHorizonExtrema) {
-  const auto rows = 1;
-  const auto cols = 11;
-
-  {
-    cv::Mat m = cv::Mat::zeros(rows, cols, CV_64FC2);
-    const auto extrema = computeHorizonExtrema(m);
-    ASSERT_EQ(extrema.rows, rows);
-    ASSERT_EQ(extrema.cols, cols);
-    for (auto i = 0; i < cols; ++i) {
-      const auto p = extrema.at<cv::Point2d>(i);
-      EXPECT_EQ(p.x, 0.0);
-    }
-  }
-
-  {
-    cv::Mat m = dummyMatrix(rows, cols);
-    auto extrema = computeHorizonExtrema(m);
-    ASSERT_EQ(extrema.rows, rows);
-    ASSERT_EQ(extrema.cols, cols);
-    for (auto i = 1; i < cols - 1; ++i) {
-      const auto p = extrema.at<cv::Point2d>(i);
-      EXPECT_EQ(p.x, 0.0);
-    }
-    EXPECT_EQ(extrema.at<cv::Point2d>(0).x, -1.0);
-    EXPECT_EQ(extrema.at<cv::Point2d>(extrema.cols - 1).x, 1.0);
-
-    m = m * -1.0;
-    extrema = computeHorizonExtrema(m);
-    EXPECT_EQ(extrema.at<cv::Point2d>(0).x, 1.0);
-    EXPECT_EQ(extrema.at<cv::Point2d>(extrema.cols - 1).x, -1.0);
-  }
-
-  {
-    cv::Mat m = cv::Mat::zeros(rows, cols, CV_64FC2);
-    const auto midpoint = cols / 2;
-    for (auto i = 0; i < midpoint; ++i) {
-      m.at<cv::Point2d>(i) = cv::Point2d(static_cast<double>(i), 0.0);
-    }
-    for (auto i = midpoint; i < cols; ++i) {
-      const auto val = midpoint - (i - midpoint);
-      m.at<cv::Point2d>(i) = cv::Point2d(static_cast<double>(val), 0.0);
-    }
-
-    auto extrema = computeHorizonExtrema(m);
-    ASSERT_EQ(extrema.rows, rows);
-    ASSERT_EQ(extrema.cols, cols);
-
-    // Test.
-    std::vector<double> gt(cols, 0.0);
-    gt.front() = -1.0;
-    gt.back() = -1.0;
-    gt[midpoint] = 1.0;
-    for (auto i = 0; i < cols; ++i) {
-      const auto p = extrema.at<cv::Point2d>(i);
-      EXPECT_EQ(p.x, gt[i]);
-    }
-
-    // Flip and test again.
-    m = m * -1.0;
-    extrema = computeHorizonExtrema(m);
-    gt.front() = 1.0;
-    gt.back() = 1.0;
-    gt[midpoint] = -1.0;
-    for (auto i = 0; i < cols; ++i) {
-      const auto p = extrema.at<cv::Point2d>(i);
-      EXPECT_EQ(p.x, gt[i]);
-    }
-
-    // Add a peak
-    m.at<cv::Point2d>(3) = cv::Point2d(5.0, 0.0);
-    extrema = computeHorizonExtrema(m);
-    gt[2] = -1.0;
-    gt[3] = 1.0;
-    gt[5] = -1.0;
-    for (auto i = 0; i < cols; ++i) {
-      const auto p = extrema.at<cv::Point2d>(i);
-      EXPECT_EQ(p.x, gt[i]) << "Failure at index " << i;
-    }
   }
 }
 
