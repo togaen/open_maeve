@@ -42,9 +42,9 @@ class ISP_Controller {
     double focal_length_x;
     /** @brief The x-coordinate of the camera principal point (pixels). */
     double principal_point_x;
-    /** @brief Steering bias left decay. */
+    /** @brief Yaw bias left decay. */
     double theta_decay_left;
-    /** @brief Steering bias right decay. */
+    /** @brief Yaw bias right decay. */
     double theta_decay_right;
     /** @brief Proportional gain. */
     double K_P;
@@ -58,6 +58,24 @@ class ISP_Controller {
      * @brief Constructor: initialize to invalid values.
      */
     Params();
+    /**
+     * @brief Constructor: explicit initialization.
+     *
+     * @param sp The shape parameters object.
+     * @param k_w The max filter kernel width.
+     * @param k_ht The max filter kernel height.
+     * @param k_hr The max filter kernel horizon line.
+     * @param fx The camera focal length along x (pixels).
+     * @param px The x-coordinate of the camera principal point (pixels).
+     * @param ld The yaw bias left decay.
+     * @param rd The yaw bias right decay.
+     * @param kp Proportional gain for control projection.
+     * @param kd Derivative gain for control projection.
+     * @param pi Potential inertia to overcome to change direction.
+     */
+    Params(const ShapeParameters& sp, const int k_w, const int k_ht,
+           const int k_hr, const double fx, const double px, const double ld,
+           const double rd, const double kp, const double kd, const double pi);
   };  // struct Params
 
   /**

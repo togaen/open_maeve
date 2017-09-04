@@ -43,6 +43,23 @@ ISP_Controller::Params::Params()
       K_D(NaN),
       potential_inertia(NaN) {}
 
+ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
+                               const int k_ht, const int k_hr, const double fx,
+                               const double px, const double ld,
+                               const double rd, const double kp,
+                               const double kd, const double pi)
+    : kernel_width(k_w),
+      kernel_height(k_ht),
+      kernel_horizon(k_hr),
+      focal_length_x(fx),
+      principal_point_x(px),
+      theta_decay_left(ld),
+      theta_decay_right(rd),
+      K_P(kp),
+      K_D(kd),
+      potential_inertia(pi),
+      shape_parameters(sp) {}
+
 ISP_Controller::ControlCommand::ControlCommand() : throttle(NaN), yaw(NaN) {}
 
 ISP_Controller::ControlCommand::ControlCommand(const double t, const double y)
