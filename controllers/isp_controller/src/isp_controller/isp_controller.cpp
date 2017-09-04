@@ -31,6 +31,11 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
+std::ostream& operator<<(std::ostream& o,
+                         const ISP_Controller::ControlCommand& u) {
+  return o << "{" << u.throttle << ", " << u.yaw << "}";
+}
+
 std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p) {
   o << "kernel_width: " << p.kernel_width << "\n";
   o << "kernel_height: " << p.kernel_height << "\n";

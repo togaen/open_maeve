@@ -135,6 +135,17 @@ class ISP_Controller {
 };  // class ISP_Controller
 
 /**
+ * @brief Overload output stream operator for control command.
+ *
+ * @param o The output stream.
+ * @param sp The control command object.
+ *
+ * @return The stream.
+ */
+std::ostream& operator<<(std::ostream& o,
+                         const ISP_Controller::ControlCommand& u);
+
+/**
  * @brief Overload output stream operator for controller parameter set.
  *
  * @param o The output stream.
