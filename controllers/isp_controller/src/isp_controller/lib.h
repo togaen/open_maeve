@@ -151,20 +151,4 @@ cv::Mat dilateHorizon(const cv::Mat& h, const double kernel_width);
 cv::Mat safeControls(const cv::Mat& h,
                      const PotentialTransform<ConstraintType::SOFT>& C_u,
                      const double K_P, const double K_D);
-
-/**
- * @brief Find local extrema on the given control horizon.
- *
- * @pre The horizon 'h' shall have at more than two elements.
- *
- * Positions along 'control_horizon' that are inflection points are marked with
- * 1.0 (concave down) or -1.0 (concave up). The first and last indices are
- * always take the value of their neighbor.
- *
- * @param h The control horizon to find extrema for.
- *
- * @return A row vector mask that indicates inflection points in
- * 'control_horizon'.
- */
-cv::Mat computeHorizonExtrema(const cv::Mat& h);
 }  // namespace maeve_automation_core
