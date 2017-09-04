@@ -95,12 +95,16 @@ ISP_Controller::ControlCommand ISP_Controller::SD_Control(
   }
 
   // Compute control command.
-  const auto midpoint = ISP.cols / 2;
-  const auto theta_offset = min_idx[1] - midpoint;
+  const auto theta_col_offset =
+      static_cast<int>(static_cast<double>(min_idx[1]) - p_.principal_point_x);
+  const auto theta_star = column2Theta(safe_controls, theta_col_offset,
+                                       p_.focal_length_x, p_.principal_point_x);
   const cv::Point2d accel_set = safe_controls.at<cv::Point2d>(min_idx[1]);
-  // \TODO(me)
+  const auto a_star = nearestIntervalPoint(accel_set, u_d.throttle);
 
   // Done.
+  cmd.yaw = theta_star;
+  cmd.throttle = a_star;
   return cmd;
 }
 }  // namespace maeve_automation_core
