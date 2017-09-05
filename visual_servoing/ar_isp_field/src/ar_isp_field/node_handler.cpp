@@ -260,6 +260,17 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   // Compose fields into an ISP.
   cv::Mat ISP = computeISP();
 
+  // Compute desired control.
+  ControlCommand u_d(0.5 /* throttle */, 0.0 /* yaw */);
+
+  // Compute SD control.
+  const auto u_star = isp_controller_.SD_Control(ISP, u_d);
+
+  // Publish control.
+  if (!params_.control_command_topic.empty()) {
+    control_command_pub_.publish(controlCommand2Command2D_Msg(u_star));
+  }
+
   // Do any requested visualization.
   visualize(ISP, msg->header);
 }
