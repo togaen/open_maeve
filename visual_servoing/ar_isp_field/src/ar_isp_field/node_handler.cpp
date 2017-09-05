@@ -30,7 +30,7 @@
 #include <tuple>
 #include <vector>
 
-#include "maeve_automation_core/ar_isp_field/geometry.h"
+#include "ar_isp_field/geometry.h"
 #include "maeve_automation_core/isp_field/tau.h"
 #include "maeve_automation_core/isp_field/visualize.h"
 
@@ -115,8 +115,8 @@ std::vector<cv::Point2d> AR_ISPFieldNodeHandler::projectPoints(
 }
 
 boost::optional<std::tuple<Eigen::Affine3d, double>>
-AR_ISPFieldNodeHandler::getTransformAndStamp(
-    const std::string& ar_tag_frame, const ros::Time& timestamp) const {
+AR_ISPFieldNodeHandler::getTransformAndStamp(const std::string& ar_tag_frame,
+                                             const ros::Time& timestamp) const {
   Eigen::Affine3d T;
   ros::Time T_timestamp;
   try {
@@ -272,7 +272,7 @@ cv::Mat AR_ISPFieldNodeHandler::computeISP() const {
 }
 
 void AR_ISPFieldNodeHandler::visualize(const cv::Mat& ISP,
-                                        const std_msgs::Header& header) const {
+                                       const std_msgs::Header& header) const {
   // If no topic, nothing to do.
   if (params_.viz_isp_field_topic.empty()) {
     return;

@@ -41,6 +41,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>ar_track_alvar</exec_depend>
   <depend>isp_field</depend>
+  <depend>isp_controller</depend>
   <depend>ros_parameter_loading</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>

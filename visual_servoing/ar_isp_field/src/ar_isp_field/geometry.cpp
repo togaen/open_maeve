@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/ar_isp_field/geometry.h"
+#include "ar_isp_field/geometry.h"
 
 namespace maeve_automation_core {
 void arFillISP(const cv::Point2d& potential_value,

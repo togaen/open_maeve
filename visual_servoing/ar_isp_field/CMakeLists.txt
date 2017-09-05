@@ -22,6 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   tf2_eigen
   isp_field
+  isp_controller
   ros_parameter_loading
   maeve_time_queue
   image_geometry
@@ -118,9 +119,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS tf2_eigen isp_field
+  # INCLUDE_DIRS include
+  # LIBRARIES ${PROJECT_NAME}
+  # CATKIN_DEPENDS tf2_eigen isp_field
   #  DEPENDS system_lib
 )
 
@@ -132,14 +133,12 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   src
-  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-add_library(${PROJECT_NAME}
-  src/${PROJECT_NAME}/geometry.cpp
-)
+#add_library(${PROJECT_NAME}
+#)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -150,8 +149,9 @@ add_library(${PROJECT_NAME}
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
-  src/ar_isp_field/params.cpp
-  src/ar_isp_field/node_handler.cpp
+  src/${PROJECT_NAME}/geometry.cpp
+  src/${PROJECT_NAME}/params.cpp
+  src/${PROJECT_NAME}/node_handler.cpp
   src/ar_isp_field_node.cpp
 )
 
@@ -167,7 +167,6 @@ add_executable(${PROJECT_NAME}_node
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
-  ${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
