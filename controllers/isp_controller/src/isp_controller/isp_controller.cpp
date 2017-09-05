@@ -31,11 +31,6 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
-std::ostream& operator<<(std::ostream& o,
-                         const ISP_Controller::ControlCommand& u) {
-  return o << "{" << u.throttle << ", " << u.yaw << "}";
-}
-
 std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p) {
   o << "kernel_width: " << p.kernel_width << "\n";
   o << "kernel_height: " << p.kernel_height << "\n";
@@ -80,17 +75,12 @@ ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
       potential_inertia(pi),
       shape_parameters(sp) {}
 
-ISP_Controller::ControlCommand::ControlCommand() : throttle(NaN), yaw(NaN) {}
-
-ISP_Controller::ControlCommand::ControlCommand(const double t, const double y)
-    : throttle(t), yaw(y) {}
-
 ISP_Controller::ISP_Controller(const Params& params,
                                const ControlCommand& initial_commanded_control)
     : p_(params), commanded_control_(initial_commanded_control) {}
 
-ISP_Controller::ControlCommand ISP_Controller::SD_Control(
-    const cv::Mat& ISP, const ControlCommand& u_d) {
+ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
+                                          const ControlCommand& u_d) {
   // Reserve return value.
   ControlCommand cmd;
 

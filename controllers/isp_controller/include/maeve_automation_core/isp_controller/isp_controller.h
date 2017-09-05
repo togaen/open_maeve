@@ -23,6 +23,7 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "maeve_automation_core/isp_controller/control_command.h"
 #include "maeve_automation_core/isp_field/shape_parameters.h"
 
 namespace maeve_automation_core {
@@ -79,27 +80,6 @@ class ISP_Controller {
   };  // struct Params
 
   /**
-   * @brief Container for passing control commands.
-   */
-  struct ControlCommand {
-    /** @brief The commanded throttle. */
-    double throttle;
-    /** @brief The commanded yaw. */
-    double yaw;
-    /**
-     * @brief Constructor: initialize to invalid values.
-     */
-    ControlCommand();
-    /**
-     * @brief Constructor: initialize to explicit values.
-     *
-     * @param t The throttle command.
-     * @param y The yaw command.
-     */
-    ControlCommand(const double t, const double y);
-  };  // struct ControlCommand
-
-  /**
    * @brief Constructor: default.
    */
   ISP_Controller() = default;
@@ -135,17 +115,6 @@ class ISP_Controller {
   /** @brief The previously computed control command. */
   ControlCommand commanded_control_;
 };  // class ISP_Controller
-
-/**
- * @brief Overload output stream operator for control command.
- *
- * @param o The output stream.
- * @param sp The control command object.
- *
- * @return The stream.
- */
-std::ostream& operator<<(std::ostream& o,
-                         const ISP_Controller::ControlCommand& u);
 
 /**
  * @brief Overload output stream operator for controller parameter set.
