@@ -40,7 +40,7 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 static const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
 
-std::vector<std::string> AR_CISPFieldNodeHandler::initializeTimeQueues(
+std::vector<std::string> AR_ISPFieldNodeHandler::initializeTimeQueues(
     const std::vector<int>& id_list) {
   std::vector<std::string> frame_names;
   frame_names.reserve(id_list.size());
@@ -55,7 +55,7 @@ std::vector<std::string> AR_CISPFieldNodeHandler::initializeTimeQueues(
   return frame_names;
 }
 
-AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
+AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
     : nh_(node_name), tf2_listener_(tf2_buffer_) {
   if (!params_.load(nh_)) {
     ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
@@ -84,7 +84,7 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
 
   // Register callback.
   camera_sub_ = it.subscribeCamera(
-      params_.camera_topic, 1, &AR_CISPFieldNodeHandler::cameraCallback, this);
+      params_.camera_topic, 1, &AR_ISPFieldNodeHandler::cameraCallback, this);
 
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
@@ -92,7 +92,7 @@ AR_CISPFieldNodeHandler::AR_CISPFieldNodeHandler(const std::string& node_name)
   }
 }
 
-std::vector<cv::Point2d> AR_CISPFieldNodeHandler::projectPoints(
+std::vector<cv::Point2d> AR_ISPFieldNodeHandler::projectPoints(
     const Eigen::Affine3d& camera_T_artag) const {
   // Compute the corner points under the given transform.
   const auto corner_points =
@@ -115,7 +115,7 @@ std::vector<cv::Point2d> AR_CISPFieldNodeHandler::projectPoints(
 }
 
 boost::optional<std::tuple<Eigen::Affine3d, double>>
-AR_CISPFieldNodeHandler::getTransformAndStamp(
+AR_ISPFieldNodeHandler::getTransformAndStamp(
     const std::string& ar_tag_frame, const ros::Time& timestamp) const {
   Eigen::Affine3d T;
   ros::Time T_timestamp;
@@ -137,7 +137,7 @@ AR_CISPFieldNodeHandler::getTransformAndStamp(
   return std::make_tuple(T, T_timestamp.toSec());
 }
 
-bool AR_CISPFieldNodeHandler::computePotentialFields(
+bool AR_ISPFieldNodeHandler::computePotentialFields(
     const ros::Time& timestamp, const ConstraintType& constraint_type,
     FieldMap& field_map) {
   auto updated = false;
@@ -206,7 +206,7 @@ bool AR_CISPFieldNodeHandler::computePotentialFields(
   return updated;
 }
 
-void AR_CISPFieldNodeHandler::initFieldStorage(
+void AR_ISPFieldNodeHandler::initFieldStorage(
     const cv::Size& size, const std::vector<std::string>& frame_list,
     FieldMap& field_map) {
   std::for_each(std::begin(frame_list), std::end(frame_list),
@@ -215,7 +215,7 @@ void AR_CISPFieldNodeHandler::initFieldStorage(
                 });
 }
 
-void AR_CISPFieldNodeHandler::cameraCallback(
+void AR_ISPFieldNodeHandler::cameraCallback(
     const sensor_msgs::Image::ConstPtr& msg,
     const sensor_msgs::CameraInfoConstPtr& info_msg) {
   // Initialize camera model.
@@ -246,32 +246,32 @@ void AR_CISPFieldNodeHandler::cameraCallback(
   }
   time_of_last_update = msg->header.stamp;
 
-  // Compose fields into a composite ISP.
-  cv::Mat CISP = computeCISP();
+  // Compose fields into an ISP.
+  cv::Mat ISP = computeISP();
 
   // Do any requested visualization.
-  visualize(CISP, msg->header);
+  visualize(ISP, msg->header);
 }
 
-cv::Mat AR_CISPFieldNodeHandler::computeCISP() const {
+cv::Mat AR_ISPFieldNodeHandler::computeISP() const {
   // Initialize to zeroed field.
-  cv::Mat CISP = cv::Mat::zeros(camera_model_.fullResolution(), CV_64FC2);
+  cv::Mat ISP = cv::Mat::zeros(camera_model_.fullResolution(), CV_64FC2);
 
   // Compose hard constraint field.
   std::for_each(
       std::begin(obstacle_field_map_), std::end(obstacle_field_map_),
-      [&](const FieldMap::value_type& pair) { CISP = CISP + pair.second; });
+      [&](const FieldMap::value_type& pair) { ISP = ISP + pair.second; });
 
   // Compose soft constraint field.
   std::for_each(
       std::begin(target_field_map_), std::end(target_field_map_),
-      [&](const FieldMap::value_type& pair) { CISP = CISP + pair.second; });
+      [&](const FieldMap::value_type& pair) { ISP = ISP + pair.second; });
 
   // Done.
-  return CISP;
+  return ISP;
 }
 
-void AR_CISPFieldNodeHandler::visualize(const cv::Mat& ISP,
+void AR_ISPFieldNodeHandler::visualize(const cv::Mat& ISP,
                                         const std_msgs::Header& header) const {
   // If no topic, nothing to do.
   if (params_.viz_isp_field_topic.empty()) {

@@ -46,14 +46,14 @@ namespace maeve_automation_core {
 /**
  * @brief Interface between ROS and the expansion segmentation libraries.
  */
-class AR_CISPFieldNodeHandler {
+class AR_ISPFieldNodeHandler {
  public:
   /**
    * @brief Construct handler instance and register callbacks/subscribers.
    *
    * @param node_name The node name used to construct the ROS node handle.
    */
-  explicit AR_CISPFieldNodeHandler(const std::string& node_name);
+  explicit AR_ISPFieldNodeHandler(const std::string& node_name);
 
  private:
   /** @brief AR frame -> time queue. */
@@ -72,11 +72,11 @@ class AR_CISPFieldNodeHandler {
   void visualize(const cv::Mat& ISP, const std_msgs::Header& header) const;
 
   /**
-   * @brief Compose all ISPs into a CISP.
+   * @brief Compose all ISPs into a ISP.
    *
-   * @return The Composite Image Space Potential field.
+   * @return The Image Space Potential field.
    */
-  cv::Mat computeCISP() const;
+  cv::Mat computeISP() const;
 
   /**
    * @brief Get and return an AR tag transform and its timestamp.
@@ -156,11 +156,11 @@ class AR_CISPFieldNodeHandler {
       const Eigen::Affine3d& camera_T_artag) const;
 
   /** @brief Node parameters. */
-  AR_CISPFieldParams params_;
+  AR_ISPFieldParams params_;
 
   /** @brief Camera image subscriber. */
   image_transport::CameraSubscriber camera_sub_;
-  /** @brief CISP field visualization publisher. */
+  /** @brief ISP field visualization publisher. */
   image_transport::Publisher viz_isp_field_pub_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
@@ -186,5 +186,5 @@ class AR_CISPFieldNodeHandler {
   PotentialTransform<ConstraintType::HARD> hc_;
   /** @brief The soft constraint transform. */
   PotentialTransform<ConstraintType::SOFT> sc_;
-};  // class AR_CISPFieldNodeHandler
+};  // class AR_ISPFieldNodeHandler
 }  // namespace maeve_automation_core

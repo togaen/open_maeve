@@ -1,6 +1,6 @@
 # README #
 
-This package uses the [ar\_track\_alvar](http://wiki.ros.org/ar_track_alvar) package to generate and visualize Composite Image Space Potential (CISP) fields from AR tags. It is intended to serve as an example of how to compute CISP fields.
+This package uses the [ar\_track\_alvar](http://wiki.ros.org/ar_track_alvar) package to generate and visualize Image Space Potential (ISP) fields from AR tags. It is intended to serve as an example of how to compute ISP fields.
 
 ## ar\_isp\_field ##
 
@@ -12,7 +12,7 @@ The node defined by this package computes performs the following for each detect
 * The time-to-contact measure, tau, is computed for the AR tag.
 * An Image Space Potential field is computed such that each pixel in the area of the image occuped by the AR tag takes the potential value f(tau) and all other pixels take the value 0.
 
-Once ISPs have been computed for each detected tag, they are composed into a CISP field.
+Once ISPs have been computed for each detected tag, they are composed into a ISP field.
 
 ## Usage ##
 
@@ -24,7 +24,7 @@ In order to use the node:
 * Assuming a calibrated camera is available, configure the ar\_isp\_field params to listen to the proper camera topic
 * Configure launch/markers.launch to listen to the correct camera topic.
 * Use the launch.launch file to start this node and launch the [ar\_track\_alvar](http://wiki.ros.org/ar_track_alvar) node, which provides AR tag tracking information.
-* Use the provided rviz.launch launch file to start rviz with a window camera and CISP field visualization output (you may need to modify the camera topic to whatever you are using).
+* Use the provided rviz.launch launch file to start rviz with a window camera and ISP field visualization output (you may need to modify the camera topic to whatever you are using).
 
 ## Subscribe ##
 
@@ -32,7 +32,7 @@ In order to use the node:
 
 ## Publish ##
 
-* /viz\_isp\_field (sensor\_msgs/Image): The CISP field visualization
+* /viz\_isp\_field (sensor\_msgs/Image): The ISP field visualization
 
 ## Parameters: params/params.yaml ##
 
@@ -68,10 +68,10 @@ The below values govern AR tag tracking behavior:
 
 ## RViz Configs ##
 
-* rviz\_configs/config.rviz: Included for convenience. Displays input image and CISP field visualization in RViz.
+* rviz\_configs/config.rviz: Included for convenience. Displays input image and ISP field visualization in RViz.
 
 ## Launch Files ##
 
 * launch.launch: This loads the `params/params.yaml` parameter file and launches all nodes.
 * markers.launch: This loads the ar\_track\_alvar node to perform AR tag tracker.
-* rviz.launch: This loads RViz configured to display camera output and CISP field visualizations.
+* rviz.launch: This loads RViz configured to display camera output and ISP field visualizations.

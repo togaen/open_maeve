@@ -28,14 +28,14 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
-AR_CISPFieldParams::AR_CISPFieldParams()
+AR_ISPFieldParams::AR_ISPFieldParams()
     : verbose(false),
       ar_time_queue_size(-1),
       ar_time_queue_max_gap(NaN),
       ar_tag_max_age(NaN),
       ar_tag_size(NaN) {}
 
-bool AR_CISPFieldParams::load(const ros::NodeHandle& nh) {
+bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
   LOAD_PARAM(camera_topic);
   LOAD_PARAM(viz_isp_field_topic);

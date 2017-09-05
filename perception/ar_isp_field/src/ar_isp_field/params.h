@@ -30,7 +30,7 @@
 namespace maeve_automation_core {
 
 /** @brief Parameter object to load ROS params.*/
-struct AR_CISPFieldParams : public ParamsBase {
+struct AR_ISPFieldParams : public ParamsBase {
   /** @brief Hard constraint transform parameters. */
   ShapeParameters hard_constraint_transform;
 
@@ -73,7 +73,7 @@ struct AR_CISPFieldParams : public ParamsBase {
   /** @brief The image sequence topic. */
   std::string camera_topic;
 
-  /** @brief The CISP field visualization topic. */
+  /** @brief The ISP field visualization topic. */
   std::string viz_isp_field_topic;
 
   /** @brief The scaling bounds for visualizing potential values. */
@@ -82,13 +82,13 @@ struct AR_CISPFieldParams : public ParamsBase {
   /**
    * @brief Default constructor: initialize to invalid values.
    */
-  AR_CISPFieldParams();
+  AR_ISPFieldParams();
 
   /**
    * @copydoc ParamsBase::ParamsBase()
    */
   __attribute__((warn_unused_result)) bool load(
       const ros::NodeHandle& nh) override;
-};  // struct AR_CISPFieldParams
+};  // struct AR_ISPFieldParams
 
 }  // namespace maeve_automation_core
