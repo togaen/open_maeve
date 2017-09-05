@@ -27,6 +27,9 @@ other_float_param:  678.9
 scoped_params:
   inner_int_param:  3
   inner_bool_param: false
+  grouped_params:
+    grouped_param1: 1.2
+    grouped_param2: 3.4
 ```
 
 ### Python ###
@@ -68,9 +71,15 @@ A struct definition that corresponds to this parameter file might look like:
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
 struct MyParams : public ParamsBase {
+  struct GroupedParams {
+    float grouped_param1;
+    float grouped_param1;
+  };
+
   struct ScopedParams {
     int inner_int_param;
     bool inner_bool_param;
+    GroupedParams grouped_params;
   };
 
   struct StructParams {
@@ -114,6 +123,8 @@ bool MyParams::load(const ros::NodeHandle& nh) {
   LOAD_STRUCT_PARAM(struct_params, other_float_param);
   LOAD_NS_PARAM(scoped_params, inner_int_param);
   LOAD_NS_PARAM(scoped_params, inner_bool_param);
+  LOAD_NS_PARAM(scoped_params.grouped_params, grouped_param1);
+  LOAD_NS_PARAM(scoped_params.grouped_params, grouped_param2);
 
   // All params successfully loaded. Sanity checking can be done if wanted.
   // Below are a few convenience macros defined by this package. If any
