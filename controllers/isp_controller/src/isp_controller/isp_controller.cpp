@@ -39,6 +39,7 @@ std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p) {
   o << "principal_point_x: " << p.principal_point_x << "\n";
   o << "yaw_decay_left: " << p.yaw_decay_left << "\n";
   o << "yaw_decay_right: " << p.yaw_decay_right << "\n";
+  o << "throttle_bias_gain: " << p.throttle_bias_gain << "\n";
   o << "K_P: " << p.K_P << "\n";
   o << "K_D: " << p.K_D << "\n";
   o << "potential_inertia: " << p.potential_inertia << "\n";
@@ -54,6 +55,7 @@ ISP_Controller::Params::Params()
       principal_point_x(NaN),
       yaw_decay_left(NaN),
       yaw_decay_right(NaN),
+      throttle_bias_gain(NaN),
       K_P(NaN),
       K_D(NaN),
       potential_inertia(NaN) {}
@@ -61,8 +63,9 @@ ISP_Controller::Params::Params()
 ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
                                const int k_ht, const int k_hr, const double fx,
                                const double px, const double ld,
-                               const double rd, const double kp,
-                               const double kd, const double pi)
+                               const double rd, const double tg,
+                               const double kp, const double kd,
+                               const double pi)
     : kernel_width(k_w),
       kernel_height(k_ht),
       kernel_horizon(k_hr),
@@ -70,6 +73,7 @@ ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
       principal_point_x(px),
       yaw_decay_left(ld),
       yaw_decay_right(rd),
+      throttle_bias_gain(tg),
       K_P(kp),
       K_D(kd),
       potential_inertia(pi),
@@ -100,10 +104,13 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
   // Compute biasing fields.
   const cv::Mat yaw_biasing =
       yawBias(col_d, h.cols, p_.yaw_decay_left, p_.yaw_decay_right);
-  const cv::Mat throttle_biasing = throttleBias(safe_controls);
+  const cv::Mat throttle_biasing =
+      throttleBias(u_d.throttle, h.cols, p_.throttle_bias_gain);
+  const cv::Mat control_set_biasing = controlSetBias(safe_controls);
 
   // Apply biasing fields.
-  const cv::Mat biased_h = eroded_h.mul(yaw_biasing.mul(throttle_biasing));
+  const cv::Mat biased_h =
+      eroded_h.mul(control_set_biasing.mul(yaw_biasing.mul(throttle_biasing)));
 
   // Find minimum.
   auto min_val = NaN;

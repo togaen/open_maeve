@@ -52,29 +52,36 @@ int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
   return static_cast<int>(f_x * std::tan(yaw) + p_x);
 }
 
-cv::Mat throttleBias(const cv::Mat& controls) {
-  cv::Mat throttle_bias = cv::Mat::ones(1, controls.cols, CV_64FC2);
+cv::Mat controlSetBias(const cv::Mat& controls) {
+  cv::Mat biasing_horizon = cv::Mat::ones(1, controls.cols, CV_64FC2);
   // \TODO(me)
-  return throttle_bias;
+  return biasing_horizon;
+}
+
+cv::Mat throttleBias(const double throttle, const int width,
+                     const double throttle_bias_gain) {
+  cv::Mat biasing_horizon = cv::Mat::ones(1, width, CV_64FC2);
+  // \TODO(me)
+  return biasing_horizon;
 }
 
 cv::Mat yawBias(const int center, const int width, const double left_decay,
                 const double right_decay) {
-  cv::Mat bias_horizon(1, width, CV_64FC2);
+  cv::Mat biasing_horizon(1, width, CV_64FC2);
 
   auto decay = 1.0;
   for (auto i = center; i >= 0; --i) {
-    bias_horizon.at<cv::Point2d>(i) = cv::Point2d(decay, 0.0);
+    biasing_horizon.at<cv::Point2d>(i) = cv::Point2d(decay, 0.0);
     decay = decay * left_decay;
   }
 
   decay = 1.0;
   for (auto i = center; i < width; ++i) {
-    bias_horizon.at<cv::Point2d>(i) = cv::Point2d(decay, 0.0);
+    biasing_horizon.at<cv::Point2d>(i) = cv::Point2d(decay, 0.0);
     decay = decay * right_decay;
   }
 
-  return bias_horizon;
+  return biasing_horizon;
 }
 
 cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,

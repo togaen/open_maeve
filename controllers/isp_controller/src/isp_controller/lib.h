@@ -74,17 +74,30 @@ double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
  */
 int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
                const double p_x);
+
 /**
- * @brief Compute an acceleration control set biasing horizon.
+ * @brief Compute a biasing horizon based on availability of controls.
  *
  * This horizon is used by the control law to bias direction towards larger sets
  * of available controls.
  *
- * @param controls The available sets of controls for each ISP column.
+ * @param controls The availabe set of controls for each ISP column.
  *
  * @return A row vector containing biasing factors.
  */
-cv::Mat throttleBias(const cv::Mat& controls);
+cv::Mat controlSetBias(const cv::Mat& controls);
+
+/**
+ * @brief Compute a throttle biasing horizon.
+ *
+ * @param throttle The throttle value to bias towards.
+ * @param width The width of the biasing horizon.
+ * @param throttle_bias_gain A gain to apply to the throttle bias.
+ *
+ * @return A row vector containing biasing factors.
+ */
+cv::Mat throttleBias(const double throttle, const int width,
+                     const double throttle_bias_gain);
 
 /**
  * @brief Compute a yaw-based biasing horizon for choosing controls.

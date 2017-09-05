@@ -62,6 +62,7 @@ isp_controller_params:
   kernel_horizon: 3
   yaw_decay_left: 0.4
   yaw_decay_right: 0.5
+  throttle_bias_gain: 5.5
   K_P: 6
   K_D: 7
   potential_inertia: 8
