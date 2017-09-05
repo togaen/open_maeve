@@ -24,6 +24,7 @@
 #include <ros/console.h>
 #include <ros/ros.h>
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 
@@ -228,12 +229,16 @@
  * @param ns The namespace (or scope) of var in the parameter server.
  * @param var The name of the parameter and of the variable that holds it.
  */
-#define LOAD_NS_PARAM(ns, var)                                              \
-  if (!nh.getParam(std::string(#ns) + std::string("/") + std::string(#var), \
-                   ns.var)) {                                               \
-    ROS_ERROR_STREAM("Failed to load parameter '" << #ns << "/" << #var     \
-                                                  << "'");                  \
-    return false;                                                           \
+#define LOAD_NS_PARAM(ns, var)                                                \
+  {                                                                           \
+    auto ns_name = std::string(#ns);                                          \
+    std::replace(ns_name.begin(), ns_name.end(), '.', '/');                   \
+    if (!nh.getParam(ns_name + std::string("/") + std::string(#var),          \
+                     ns.var)) {                                               \
+      ROS_ERROR_STREAM("Failed to load parameter '" << ns_name << "/" << #var \
+                                                    << "'");                  \
+      return false;                                                           \
+    }                                                                         \
   }
 
 namespace maeve_automation_core {
