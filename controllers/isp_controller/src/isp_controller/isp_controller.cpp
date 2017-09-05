@@ -39,7 +39,6 @@ std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p) {
   o << "principal_point_x: " << p.principal_point_x << "\n";
   o << "yaw_decay_left: " << p.yaw_decay_left << "\n";
   o << "yaw_decay_right: " << p.yaw_decay_right << "\n";
-  o << "throttle_bias_gain: " << p.throttle_bias_gain << "\n";
   o << "K_P: " << p.K_P << "\n";
   o << "K_D: " << p.K_D << "\n";
   o << "potential_inertia: " << p.potential_inertia << "\n";
@@ -55,7 +54,6 @@ ISP_Controller::Params::Params()
       principal_point_x(NaN),
       yaw_decay_left(NaN),
       yaw_decay_right(NaN),
-      throttle_bias_gain(NaN),
       K_P(NaN),
       K_D(NaN),
       potential_inertia(NaN) {}
@@ -63,9 +61,8 @@ ISP_Controller::Params::Params()
 ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
                                const int k_ht, const int k_hr, const double fx,
                                const double px, const double ld,
-                               const double rd, const double tg,
-                               const double kp, const double kd,
-                               const double pi)
+                               const double rd, const double kp,
+                               const double kd, const double pi)
     : kernel_width(k_w),
       kernel_height(k_ht),
       kernel_horizon(k_hr),
@@ -73,7 +70,6 @@ ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
       principal_point_x(px),
       yaw_decay_left(ld),
       yaw_decay_right(rd),
-      throttle_bias_gain(tg),
       K_P(kp),
       K_D(kd),
       potential_inertia(pi),
@@ -99,18 +95,21 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
   // Get safe controls from filtered horizon.
   const auto C_u =
       PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
-  const cv::Mat safe_controls = safeControls(eroded_h, C_u, p_.K_P, p_.K_D);
+  const cv::Mat controls = safeControls(eroded_h, C_u, p_.K_P, p_.K_D);
+
+  // Compute guidance fields.
+  const cv::Mat throttle_guidance = throttleGuidance(u_d.throttle, h.cols);
+
+  // Apply guidance fields.
+  const cv::Mat guided_controls = controls + throttle_guidance;
 
   // Compute biasing fields.
   const cv::Mat yaw_biasing =
       yawBias(col_d, h.cols, p_.yaw_decay_left, p_.yaw_decay_right);
-  const cv::Mat throttle_biasing =
-      throttleBias(u_d.throttle, h.cols, p_.throttle_bias_gain);
-  const cv::Mat control_set_biasing = controlSetBias(safe_controls);
+  const cv::Mat control_set_biasing = controlSetBias(guided_controls);
 
   // Apply biasing fields.
-  const cv::Mat biased_h =
-      eroded_h.mul(control_set_biasing.mul(yaw_biasing.mul(throttle_biasing)));
+  const cv::Mat biased_h = eroded_h.mul(control_set_biasing.mul(yaw_biasing));
 
   // Find minimum.
   auto min_val = NaN;
@@ -129,9 +128,9 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
   // Compute control command.
   const auto yaw_col_offset =
       static_cast<int>(static_cast<double>(min_idx[1]) - p_.principal_point_x);
-  const auto yaw_star = column2Yaw(safe_controls, yaw_col_offset,
+  const auto yaw_star = column2Yaw(guided_controls, yaw_col_offset,
                                    p_.focal_length_x, p_.principal_point_x);
-  const cv::Point2d throttle_set = safe_controls.at<cv::Point2d>(min_idx[1]);
+  const cv::Point2d throttle_set = guided_controls.at<cv::Point2d>(min_idx[1]);
   const auto throttle_star = nearestIntervalPoint(throttle_set, u_d.throttle);
 
   // Done.

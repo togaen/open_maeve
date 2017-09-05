@@ -47,8 +47,6 @@ class ISP_Controller {
     double yaw_decay_left;
     /** @brief Yaw bias right decay. */
     double yaw_decay_right;
-    /** @brief Throttle bias gain. */
-    double throttle_bias_gain;
     /** @brief Proportional gain. */
     double K_P;
     /** @brief Derivative gain. */
@@ -72,15 +70,13 @@ class ISP_Controller {
      * @param px The x-coordinate of the camera principal point (pixels).
      * @param ld The yaw bias left decay.
      * @param rd The yaw bias right decay.
-     * @param tg The throttle bias gain.
      * @param kp Proportional gain for control projection.
      * @param kd Derivative gain for control projection.
      * @param pi Potential inertia to overcome to change direction.
      */
     Params(const ShapeParameters& sp, const int k_w, const int k_ht,
            const int k_hr, const double fx, const double px, const double ld,
-           const double rd, const double tg, const double kp, const double kd,
-           const double pi);
+           const double rd, const double kp, const double kd, const double pi);
   };  // struct Params
 
   /**

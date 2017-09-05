@@ -68,7 +68,6 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(isp_controller_params, kernel_horizon);
   LOAD_NS_PARAM(isp_controller_params, yaw_decay_left);
   LOAD_NS_PARAM(isp_controller_params, yaw_decay_right);
-  LOAD_NS_PARAM(isp_controller_params, throttle_bias_gain);
   LOAD_NS_PARAM(isp_controller_params, K_P);
   LOAD_NS_PARAM(isp_controller_params, K_D);
   LOAD_NS_PARAM(isp_controller_params, potential_inertia);
@@ -82,7 +81,6 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_width);
   CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_height);
   CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_horizon);
-  CHECK_STRICTLY_POSITIVE(isp_controller_params.throttle_bias_gain);
   CHECK_CONTAINS_CLOSED(isp_controller_params.yaw_decay_left, 0.0, 1.0);
   CHECK_CONTAINS_CLOSED(isp_controller_params.yaw_decay_right, 0.0, 1.0);
   CHECK_GE(isp_controller_params.K_P, 0.0);

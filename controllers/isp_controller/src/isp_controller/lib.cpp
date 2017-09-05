@@ -58,11 +58,8 @@ cv::Mat controlSetBias(const cv::Mat& controls) {
   return biasing_horizon;
 }
 
-cv::Mat throttleBias(const double throttle, const int width,
-                     const double throttle_bias_gain) {
-  cv::Mat biasing_horizon = cv::Mat::ones(1, width, CV_64FC2);
-  // \TODO(me)
-  return biasing_horizon;
+cv::Mat throttleGuidance(const double throttle, const int width) {
+  return cv::Mat::ones(1, width, CV_64FC2) * throttle;
 }
 
 cv::Mat yawBias(const int center, const int width, const double left_decay,

@@ -88,16 +88,14 @@ int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
 cv::Mat controlSetBias(const cv::Mat& controls);
 
 /**
- * @brief Compute a throttle biasing horizon.
+ * @brief Compute a throttle guidance horizon.
  *
- * @param throttle The throttle value to bias towards.
- * @param width The width of the biasing horizon.
- * @param throttle_bias_gain A gain to apply to the throttle bias.
+ * @param throttle The throttle value to guide towards.
+ * @param width The width of the guidance horizon.
  *
- * @return A row vector containing biasing factors.
+ * @return A row vector containing guidance factors.
  */
-cv::Mat throttleBias(const double throttle, const int width,
-                     const double throttle_bias_gain);
+cv::Mat throttleGuidance(const double throttle, const int width);
 
 /**
  * @brief Compute a yaw-based biasing horizon for choosing controls.
