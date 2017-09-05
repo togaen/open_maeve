@@ -19,24 +19,18 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/isp_controller/control_command.h"
-
-#include <iostream>
-#include <limits>
+#pragma once
 
 #include "controller_interface_msgs/Command2D.h"
 
+#include "maeve_automation_core/isp_controller/control_command.h"
+
 namespace maeve_automation_core {
-namespace {
-static const auto NaN = std::numeric_limits<double>::quiet_NaN();
-}  // namespace
-
-std::ostream& operator<<(std::ostream& o, const ControlCommand& u) {
-  return o << "{" << u.throttle << ", " << u.yaw << "}";
-}
-
-ControlCommand::ControlCommand() : throttle(NaN), yaw(NaN) {}
-
-ControlCommand::ControlCommand(const double t, const double y)
-    : throttle(t), yaw(y) {}
+/**
+ * @brief Serialize and return this object.
+ *
+ * @return The serialized version of this object.
+ */
+controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
+    const ControlCommand& cmd);
 }  // namespace maeve_automation_core

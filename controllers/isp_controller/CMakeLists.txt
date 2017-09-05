@@ -108,7 +108,7 @@ find_package(catkin REQUIRED COMPONENTS isp_field cv_bridge controller_interface
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES ${PROJECT_NAME}
+  LIBRARIES ${PROJECT_NAME} ${PROJECT_NAME}_ros_interface
   CATKIN_DEPENDS isp_field cv_bridge controller_interface_msgs
 #  DEPENDS system_lib
 )
@@ -130,6 +130,9 @@ add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/control_command.cpp
   src/${PROJECT_NAME}/lib.cpp
   src/${PROJECT_NAME}/isp_controller.cpp
+)
+add_library(${PROJECT_NAME}_ros_interface
+  src/${PROJECT_NAME}/ros_interface.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -154,6 +157,10 @@ add_library(${PROJECT_NAME}
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_ros_interface
+  ${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
@@ -201,6 +208,11 @@ catkin_add_gtest(${PROJECT_NAME}-test test/test_isp_controller.cpp)
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME} ${catkin_LIBRARIES})
 endif()
+catkin_add_gtest(${PROJECT_NAME}-test-ros test/test_ros_interface.cpp)
+if(TARGET ${PROJECT_NAME}-test-ros)
+  target_link_libraries(${PROJECT_NAME}-test-ros ${PROJECT_NAME} ${PROJECT_NAME}_ros_interface ${catkin_LIBRARIES})
+endif()
+
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)

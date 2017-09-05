@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "isp_controller/lib.h"
+#include "maeve_automation_core/isp_controller/control_command.h"
 #include "maeve_automation_core/isp_controller/isp_controller.h"
 
 namespace maeve_automation_core {
@@ -71,16 +72,11 @@ TEST(ISP_Controller, test) {
   const ISP_Controller::Params p(sp, k_w, k_ht, k_hr, fx, px, ld, rd, kp, kd,
                                  pi);
 
-  // Initial control command.
-  const auto throttle = 0.0;
-  const auto yaw = 0.0;
-  const ISP_Controller::ControlCommand u(throttle, yaw);
-
   // Build controller.
-  ISP_Controller controller(p, u);
+  ISP_Controller controller(p);
 
   // Desired control.
-  ISP_Controller::ControlCommand u_d(1.0, 0.5);
+  ControlCommand u_d(1.0, 0.5);
 
   // Compute SD control.
   const auto u_star = controller.SD_Control(m, u_d);

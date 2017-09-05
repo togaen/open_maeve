@@ -19,24 +19,20 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/isp_controller/control_command.h"
+#include <gtest/gtest.h>
 
-#include <iostream>
-#include <limits>
-
-#include "controller_interface_msgs/Command2D.h"
+#include "maeve_automation_core/isp_controller/ros_interface.h"
 
 namespace maeve_automation_core {
-namespace {
-static const auto NaN = std::numeric_limits<double>::quiet_NaN();
-}  // namespace
-
-std::ostream& operator<<(std::ostream& o, const ControlCommand& u) {
-  return o << "{" << u.throttle << ", " << u.yaw << "}";
+TEST(ISP_Controller_ROS, testROS_Interface) {
+  ControlCommand cmd(1.3, 4.7);
+  const auto msg = controlCommand2Command2D_Msg(cmd);
+  EXPECT_EQ(msg.x, cmd.throttle);
+  EXPECT_EQ(msg.y, cmd.yaw);
 }
-
-ControlCommand::ControlCommand() : throttle(NaN), yaw(NaN) {}
-
-ControlCommand::ControlCommand(const double t, const double y)
-    : throttle(t), yaw(y) {}
 }  // namespace maeve_automation_core
+
+int main(int argc, char** argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}

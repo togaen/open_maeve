@@ -21,7 +21,7 @@
  */
 #pragma once
 
-#include "controller_interface_msgs/Command2D.h"
+#include <iostream>
 
 namespace maeve_automation_core {
 /**
@@ -46,14 +46,6 @@ struct ControlCommand {
    * @param y The yaw command.
    */
   ControlCommand(const double t, const double y);
-
-  /**
-   * @brief Serialize and return this object.
-   *
-   * @return The serialized version of this object.
-   */
-  static controller_interface_msgs::Command2D toCommand2D_Msg(
-      const ControlCommand& cmd);
 };  // struct ControlCommand
 
 /**
