@@ -76,6 +76,9 @@ struct AR_ISPFieldParams : public ParamsBase {
   /** @brief The ISP field visualization topic. */
   std::string viz_isp_field_topic;
 
+  /** @brief Control command output topic. */
+  std::string control_command_topic;
+
   /** @brief The scaling bounds for visualizing potential values. */
   std::vector<double> viz_potential_bounds;
 

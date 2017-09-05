@@ -39,6 +39,7 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
   LOAD_PARAM(camera_topic);
   LOAD_PARAM(viz_isp_field_topic);
+  LOAD_PARAM(control_command_topic);
   LOAD_PARAM(ar_tag_obstacle_ids);
   LOAD_PARAM(ar_tag_target_ids);
   LOAD_PARAM(ar_frame_prefix);
@@ -70,6 +71,7 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   CHECK_NONEMPTY(marker_size_param_name);
   CHECK_NONEMPTY(camera_topic);
   CHECK_NONEMPTY(ar_frame_prefix);
+  CHECK_NONEMPTY(control_command_topic);
   CHECK_EQ(viz_potential_bounds.size(), 2);
   CHECK_LT(viz_potential_bounds[0], 0.0);
   CHECK_GT(viz_potential_bounds[1], 0.0);

@@ -88,11 +88,8 @@ class ISP_Controller {
    * @brief Constructor: initialize with shape parameters.
    *
    * @param params Parameters for control computation from ISP field.
-   * @param initial_commanded_control Initialize the state of the controller
-   * with this control command.
    */
-  ISP_Controller(const Params& params,
-                 const ControlCommand& initial_commanded_control);
+  ISP_Controller(const Params& params);
 
   /**
    * @brief For a given ISP field compute a selective determinism control.
@@ -112,8 +109,6 @@ class ISP_Controller {
  private:
   /** @brief Controller parameters. */
   Params p_;
-  /** @brief The previously computed control command. */
-  ControlCommand commanded_control_;
 };  // class ISP_Controller
 
 /**

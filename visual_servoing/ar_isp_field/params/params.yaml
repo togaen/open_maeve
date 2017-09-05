@@ -8,7 +8,11 @@ camera_topic: '/cv_camera_node/image_raw'
 #camera_topic: '/raspicam_node/image'
 image_transport: 'compressed' # uncomment this to listen to image_transport topics
 
-viz_isp_field_topic: 'viz_isp_field' # node-relative topic, leave empty to disable visualization
+# node-relative topic, leave empty to disable visualization
+viz_isp_field_topic: 'viz_isp_field'
+
+# node-relative topic for control command output
+control_command_topic: 'control_command'
 
 # bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero
 # it makes sense for the lower bound to be equal to the range_min of soft constraint transform

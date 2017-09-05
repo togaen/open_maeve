@@ -75,9 +75,7 @@ ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
       potential_inertia(pi),
       shape_parameters(sp) {}
 
-ISP_Controller::ISP_Controller(const Params& params,
-                               const ControlCommand& initial_commanded_control)
-    : p_(params), commanded_control_(initial_commanded_control) {}
+ISP_Controller::ISP_Controller(const Params& params) : p_(params) {}
 
 ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
                                           const ControlCommand& u_d) {

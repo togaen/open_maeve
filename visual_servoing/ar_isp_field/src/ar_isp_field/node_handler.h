@@ -39,6 +39,7 @@
 
 #include "ar_isp_field/geometry.h"
 #include "ar_isp_field/params.h"
+#include "maeve_automation_core/isp_controller/isp_controller.h"
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 #include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
 
@@ -164,6 +165,8 @@ class AR_ISPFieldNodeHandler {
   image_transport::Publisher viz_isp_field_pub_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
+  /** @brief Control command publisher. */
+  ros::Publisher control_command_pub_;
   /** @brief Buffer for listening to tf2 transforms. */
   tf2_ros::Buffer tf2_buffer_;
   /** @brief Listener for tf2 transforms. */

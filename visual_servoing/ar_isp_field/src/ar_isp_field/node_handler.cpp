@@ -31,6 +31,7 @@
 #include <vector>
 
 #include "ar_isp_field/geometry.h"
+#include "maeve_automation_core/isp_controller/control_command.h"
 #include "maeve_automation_core/isp_field/tau.h"
 #include "maeve_automation_core/isp_field/visualize.h"
 
@@ -85,6 +86,10 @@ AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
   // Register callback.
   camera_sub_ = it.subscribeCamera(
       params_.camera_topic, 1, &AR_ISPFieldNodeHandler::cameraCallback, this);
+
+  // Control command publisher.
+  control_command_pub_ = nh_.advertise<controller_interface_msgs::Command2D>(
+      params_.control_command_topic, 1);
 
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
