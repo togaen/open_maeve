@@ -229,6 +229,9 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   // Make sure field maps have storage allocated, but do it only once.
   static bool init = true;
   if (init) {
+    params_.isp_controller_params.principal_point_x = camera_model_.cx();
+    params_.isp_controller_params.focal_length_x = camera_model_.fx();
+
     initFieldStorage(camera_model_.fullResolution(), ar_obstacle_tag_frames_,
                      obstacle_field_map_);
     initFieldStorage(camera_model_.fullResolution(), ar_target_tag_frames_,

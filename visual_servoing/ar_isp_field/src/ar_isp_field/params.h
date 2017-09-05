@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 
+#include "maeve_automation_core/isp_controller/isp_controller.h"
 #include "maeve_automation_core/isp_field/shape_parameters.h"
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
@@ -31,6 +32,9 @@ namespace maeve_automation_core {
 
 /** @brief Parameter object to load ROS params.*/
 struct AR_ISPFieldParams : public ParamsBase {
+  /** @brief ISP controller parameters. */
+  ISP_Controller::Params isp_controller_params;
+
   /** @brief Hard constraint transform parameters. */
   ShapeParameters hard_constraint_transform;
 

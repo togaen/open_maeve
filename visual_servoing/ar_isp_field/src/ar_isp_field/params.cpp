@@ -63,7 +63,29 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(soft_constraint_transform, range_max);
   soft_constraint_transform.computeMidPoint();
 
+  LOAD_NS_PARAM(isp_controller_params, kernel_width);
+  LOAD_NS_PARAM(isp_controller_params, kernel_height);
+  LOAD_NS_PARAM(isp_controller_params, kernel_horizon);
+  LOAD_NS_PARAM(isp_controller_params, yaw_decay_left);
+  LOAD_NS_PARAM(isp_controller_params, yaw_decay_right);
+  LOAD_NS_PARAM(isp_controller_params, K_P);
+  LOAD_NS_PARAM(isp_controller_params, K_D);
+  LOAD_NS_PARAM(isp_controller_params, potential_inertia);
+  LOAD_NS_PARAM(isp_controller_params.shape_parameters, range_min);
+  LOAD_NS_PARAM(isp_controller_params.shape_parameters, range_max);
+  LOAD_NS_PARAM(isp_controller_params.shape_parameters, alpha);
+  LOAD_NS_PARAM(isp_controller_params.shape_parameters, beta);
+  std::cout << isp_controller_params << std::endl;
+
   // Sanity check params.
+  CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_width);
+  CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_height);
+  CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_horizon);
+  CHECK_CONTAINS_CLOSED(isp_controller_params.yaw_decay_left, 0.0, 1.0);
+  CHECK_CONTAINS_CLOSED(isp_controller_params.yaw_decay_right, 0.0, 1.0);
+  CHECK_GE(isp_controller_params.K_P, 0.0);
+  CHECK_GE(isp_controller_params.K_D, 0.0);
+  CHECK_GE(isp_controller_params.potential_inertia, 0.0);
   CHECK_GE(ar_tag_max_age, 0.0);
   CHECK_STRICTLY_POSITIVE(ar_time_queue_size);
   CHECK_STRICTLY_POSITIVE(ar_time_queue_max_gap);

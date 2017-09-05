@@ -51,3 +51,22 @@ ar_frame_prefix: 'ar_marker_'
 # these need to match the set of tags being tracked by ar_track_alvar
 ar_tag_obstacle_ids: [0] #, 1, 2, 3, 4, 5, 6, 7, 8]
 ar_tag_target_ids: [0]
+
+#
+# Visual servoing parameters
+#
+
+isp_controller_params:
+  kernel_width: 1
+  kernel_height: 2
+  kernel_horizon: 3
+  yaw_decay_left: 0.4
+  yaw_decay_right: 0.5
+  K_P: 6
+  K_D: 7
+  potential_inertia: 8
+  shape_parameters:
+    range_min: 9
+    range_max: 10
+    alpha: 11
+    beta: 12
