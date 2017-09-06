@@ -33,12 +33,12 @@ class ISP_Controller {
    * @brief Container for controller parameters.
    */
   struct Params {
-    /** @brief Max filter kernel width. */
+    /** @brief Min filter kernel width. */
     int kernel_width;
-    /** @brief Max filter kernel height. */
+    /** @brief Min filter kernel height. */
     int kernel_height;
-    /** @brief Max filter kernel horizon line. */
-    int kernel_horizon;
+    /** @brief Min filter kernel horizon line from 0 (top) to 1 (bottom). */
+    double kernel_horizon;
     /** @brief Camera focal length along x (pixels). */
     double focal_length_x;
     /** @brief The x-coordinate of the camera principal point (pixels). */
@@ -63,9 +63,9 @@ class ISP_Controller {
      * @brief Constructor: explicit initialization.
      *
      * @param sp The shape parameters object.
-     * @param k_w The max filter kernel width.
-     * @param k_ht The max filter kernel height.
-     * @param k_hr The max filter kernel horizon line.
+     * @param k_w The min filter kernel width.
+     * @param k_ht The min filter kernel height.
+     * @param k_hr The min filter kernel horizon from 0 (top) to 1 (bottom).
      * @param fx The camera focal length along x (pixels).
      * @param px The x-coordinate of the camera principal point (pixels).
      * @param ld The yaw bias left decay.
@@ -75,7 +75,7 @@ class ISP_Controller {
      * @param pi Potential inertia to overcome to change direction.
      */
     Params(const ShapeParameters& sp, const int k_w, const int k_ht,
-           const int k_hr, const double fx, const double px, const double ld,
+           const double k_hr, const double fx, const double px, const double ld,
            const double rd, const double kp, const double kd, const double pi);
   };  // struct Params
 

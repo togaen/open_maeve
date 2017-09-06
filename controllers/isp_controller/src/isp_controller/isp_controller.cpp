@@ -49,7 +49,7 @@ std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p) {
 ISP_Controller::Params::Params()
     : kernel_width(-1),
       kernel_height(-1),
-      kernel_horizon(-1),
+      kernel_horizon(NaN),
       focal_length_x(NaN),
       principal_point_x(NaN),
       yaw_decay_left(NaN),
@@ -59,10 +59,11 @@ ISP_Controller::Params::Params()
       potential_inertia(NaN) {}
 
 ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
-                               const int k_ht, const int k_hr, const double fx,
-                               const double px, const double ld,
-                               const double rd, const double kp,
-                               const double kd, const double pi)
+                               const int k_ht, const double k_hr,
+                               const double fx, const double px,
+                               const double ld, const double rd,
+                               const double kp, const double kd,
+                               const double pi)
     : kernel_width(k_w),
       kernel_height(k_ht),
       kernel_horizon(k_hr),
@@ -87,7 +88,8 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
       yaw2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
 
   // Get control horizon.
-  const cv::Mat h = controlHorizon(ISP, p_.kernel_height, p_.kernel_horizon);
+  const auto horizon_row = static_cast<int>(ISP.rows * p_.kernel_horizon);
+  const cv::Mat h = controlHorizon(ISP, p_.kernel_height, horizon_row);
 
   // Apply max filter.
   const cv::Mat eroded_h = erodeHorizon(h, p_.kernel_width);

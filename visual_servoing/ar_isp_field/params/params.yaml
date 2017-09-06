@@ -59,7 +59,7 @@ ar_tag_target_ids: [0]
 isp_controller_params:
   kernel_width: 1
   kernel_height: 2
-  kernel_horizon: 3
+  kernel_horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
   yaw_decay_left: 0.4
   yaw_decay_right: 0.5
   K_P: 6

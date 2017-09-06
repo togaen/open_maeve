@@ -61,7 +61,7 @@ TEST(ISP_Controller, test) {
   // Parameters for computing throttle and yaw from ISP.
   const auto k_w = 3;
   const auto k_ht = 3;
-  const auto k_hr = rows / 2;
+  const auto k_hr = 0.5;
   const auto fx = 1.0;
   const auto px = static_cast<double>(cols / 2);
   const auto ld = 1.1;
