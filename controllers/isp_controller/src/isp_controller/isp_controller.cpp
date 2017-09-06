@@ -94,45 +94,49 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
   // Apply max filter.
   const cv::Mat eroded_h = erodeHorizon(h, p_.kernel_width);
 
-  // Get safe controls from filtered horizon.
-  const auto C_u =
-      PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
-  const cv::Mat controls = safeControls(eroded_h, C_u, p_.K_P, p_.K_D);
-
   // Compute guidance fields.
   const cv::Mat throttle_guidance = throttleGuidance(u_d.throttle, h.cols);
 
   // Apply guidance fields.
-  const cv::Mat guided_controls = controls + throttle_guidance;
+  const cv::Mat guided_h = eroded_h + throttle_guidance;
 
   // Compute biasing fields.
   const cv::Mat yaw_biasing =
       yawBias(col_d, h.cols, p_.yaw_decay_left, p_.yaw_decay_right);
-  const cv::Mat control_set_biasing = controlSetBias(guided_controls);
+  const cv::Mat control_set_biasing = controlSetBias(guided_h);
 
   // Apply biasing fields.
-  const cv::Mat biased_h = eroded_h.mul(control_set_biasing.mul(yaw_biasing));
+  const cv::Mat biased_h = guided_h.mul(control_set_biasing.mul(yaw_biasing));
+
+  // Get safe controls from filtered horizon.
+  const auto C_u =
+      PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
+  const cv::Mat controls = safeControls(biased_h, C_u, p_.K_P, p_.K_D);
+
+  // Get channel with throttle max values.
+  std::vector<cv::Mat> control_channels(2);
+  cv::split(controls, control_channels);
 
   // Find minimum.
   auto min_val = NaN;
   auto max_val = NaN;
   std::array<int, 2> min_idx;
   std::array<int, 2> max_idx;
-  cv::minMaxIdx(biased_h.reshape(1), &min_val, &max_val, min_idx.data(),
+  cv::minMaxIdx(control_channels[1], &min_val, &max_val, min_idx.data(),
                 max_idx.data());
 
-  // If minimum does not exceed inertia, revert to bias column.
-  const auto p_bias_column = biased_h.at<cv::Point2d>(col_d).x;
-  if (std::abs(p_bias_column - min_val) <= p_.potential_inertia) {
-    min_idx[1] = col_d;
+  // If maximum does not exceed inertia, revert to bias column.
+  const auto p_bias_column_val = biased_h.at<cv::Point2d>(col_d).x;
+  if (std::abs(p_bias_column_val - max_val) <= p_.potential_inertia) {
+    max_idx[1] = col_d;
   }
 
   // Compute control command.
   const auto yaw_col_offset =
-      static_cast<int>(static_cast<double>(min_idx[1]) - p_.principal_point_x);
-  const auto yaw_star = column2Yaw(guided_controls, yaw_col_offset,
-                                   p_.focal_length_x, p_.principal_point_x);
-  const cv::Point2d throttle_set = guided_controls.at<cv::Point2d>(min_idx[1]);
+      static_cast<int>(static_cast<double>(max_idx[1]) - p_.principal_point_x);
+  const auto yaw_star = column2Yaw(controls, yaw_col_offset, p_.focal_length_x,
+                                   p_.principal_point_x);
+  const cv::Point2d throttle_set = controls.at<cv::Point2d>(max_idx[1]);
   const auto throttle_star = nearestIntervalPoint(throttle_set, u_d.throttle);
 
   // Done.

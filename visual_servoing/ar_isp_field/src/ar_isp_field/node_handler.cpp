@@ -261,6 +261,7 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   cv::Mat ISP = computeISP();
 
   // Compute desired control.
+  // \TODO(me): replace this with joystick input.
   ControlCommand u_d(0.5 /* throttle */, 0.0 /* yaw */);
 
   // Compute SD control.

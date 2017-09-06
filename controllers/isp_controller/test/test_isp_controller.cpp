@@ -80,8 +80,8 @@ TEST(ISP_Controller, test) {
 
   // Compute SD control.
   const auto u_star = controller.SD_Control(m, u_d);
-  EXPECT_NEAR(u_star.throttle, 0.37068, epsilon);
-  EXPECT_NEAR(u_star.yaw, -1.35213, epsilon);
+  EXPECT_NEAR(u_star.throttle, 0.45140926, epsilon);
+  EXPECT_NEAR(u_star.yaw, -1.19029, epsilon);
 
   // \TODO(me): Should do more testing.
 }
