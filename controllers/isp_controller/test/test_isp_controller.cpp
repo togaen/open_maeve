@@ -88,11 +88,11 @@ TEST(ISP_Controller, test) {
 
 TEST(ISP_Controller, testNearestIntervalPoint) {
   const cv::Point2d interval(-3.0, 1.0);
-  EXPECT_EQ(nearestIntervalPoint(interval, -3.0), -3.0);
-  EXPECT_EQ(nearestIntervalPoint(interval, 1.0), 1.0);
-  EXPECT_EQ(nearestIntervalPoint(interval, -5.2), -3.0);
-  EXPECT_EQ(nearestIntervalPoint(interval, 3.1), 1.0);
-  EXPECT_EQ(nearestIntervalPoint(interval, 0.73), 0.73);
+  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, -3.0), -3.0);
+  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, 1.0), 1.0);
+  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, -5.2), -3.0);
+  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, 3.1), 1.0);
+  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, 0.73), 0.73);
 }
 
 TEST(ISP_Controller, testYawColumnConversions) {
@@ -102,15 +102,30 @@ TEST(ISP_Controller, testYawColumnConversions) {
   const auto focal_length_x = 3.7;
   const auto principal_point_x = static_cast<double>(cols / 2) + 1.3;
 
-  for (auto i = 0; i < cols; ++i) {
+  const auto bound_extension = 10;
+  for (auto i = -bound_extension; i < (cols + bound_extension); ++i) {
     const auto center_x = static_cast<double>(i) + 0.5;
     const auto yaw = std::atan2(center_x - principal_point_x, focal_length_x);
     const auto computed_yaw =
         column2Yaw(m, i, focal_length_x, principal_point_x);
     const auto computed_column =
         yaw2Column(m, yaw, focal_length_x, principal_point_x);
-    EXPECT_NEAR(yaw, computed_yaw, epsilon);
-    EXPECT_EQ(computed_column, i);
+
+    if ((i >= 0) && (i < cols)) {
+      EXPECT_NEAR(yaw, computed_yaw, epsilon);
+      EXPECT_EQ(computed_column, i);
+    } else {
+      double bound_yaw;
+      if (i < 0) {
+        bound_yaw = std::atan2(0.5 - principal_point_x, focal_length_x);
+        EXPECT_EQ(computed_column, 0);
+      } else {
+        bound_yaw =
+            std::atan2(m.cols - 0.5 - principal_point_x, focal_length_x);
+        EXPECT_EQ(computed_column, m.cols - 1);
+      }
+      EXPECT_NEAR(bound_yaw, computed_yaw, epsilon);
+    }
   }
 }
 

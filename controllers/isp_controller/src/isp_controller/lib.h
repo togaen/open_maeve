@@ -23,19 +23,29 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <algorithm>
+
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 
 namespace maeve_automation_core {
 /**
- * @brief Given a Point2d that represents a number line interval, find the
- * nearest point in the interval to `point'.
+ * @brief Given a number line interval, find the nearrest point in the interval
+ * to `point'.
  *
- * @param interval The interval.
+ * @pre interval_min shall be <= interval_max.
+ *
+ * @tparam T The type of number being compared.
+ * @param interval_min The minimum of the interval.
+ * @param interval_max The maximum of the interval
  * @param point The point.
  *
  * @return The nearest point in the interval to `point'.
  */
-double nearestIntervalPoint(const cv::Point2d& interval, const double point);
+template <typename T>
+T nearestIntervalPoint(const T& interval_min, const T& interval_max,
+                       const T& point) {
+  return std::min(interval_max, std::max(point, interval_min));
+}
 
 /**
  * @brief For a given image plane and focal length compute yaw.

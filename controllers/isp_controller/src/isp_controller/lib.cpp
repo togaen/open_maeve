@@ -32,24 +32,16 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
-double nearestIntervalPoint(const cv::Point2d& interval, const double point) {
-  if (point < interval.x) {
-    return interval.x;
-  }
-  if (point > interval.y) {
-    return interval.y;
-  }
-  return point;
-}
-
 double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
                   const double p_x) {
-  return std::atan2(static_cast<double>(col) - p_x + 0.5, f_x);
+  const auto bounded_col = nearestIntervalPoint(0, image_plane.cols - 1, col);
+  return std::atan2(static_cast<double>(bounded_col) - p_x + 0.5, f_x);
 }
 
 int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
                const double p_x) {
-  return static_cast<int>(f_x * std::tan(yaw) + p_x);
+  const auto col = static_cast<int>(f_x * std::tan(yaw) + p_x);
+  return nearestIntervalPoint(0, image_plane.cols - 1, col);
 }
 
 cv::Mat controlSetBias(const cv::Mat& controls) {

@@ -137,7 +137,8 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
   const auto yaw_star = column2Yaw(controls, yaw_col_offset, p_.focal_length_x,
                                    p_.principal_point_x);
   const cv::Point2d throttle_set = controls.at<cv::Point2d>(max_idx[1]);
-  const auto throttle_star = nearestIntervalPoint(throttle_set, u_d.throttle);
+  const auto throttle_star =
+      nearestIntervalPoint(throttle_set.x, throttle_set.y, u_d.throttle);
 
   // Done.
   cmd.yaw = yaw_star;
