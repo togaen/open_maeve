@@ -55,13 +55,11 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(hard_constraint_transform, beta);
   LOAD_NS_PARAM(hard_constraint_transform, range_min);
   LOAD_NS_PARAM(hard_constraint_transform, range_max);
-  hard_constraint_transform.computeMidPoint();
 
   LOAD_NS_PARAM(soft_constraint_transform, alpha);
   LOAD_NS_PARAM(soft_constraint_transform, beta);
   LOAD_NS_PARAM(soft_constraint_transform, range_min);
   LOAD_NS_PARAM(soft_constraint_transform, range_max);
-  soft_constraint_transform.computeMidPoint();
 
   LOAD_NS_PARAM(isp_controller_params, kernel_width);
   LOAD_NS_PARAM(isp_controller_params, kernel_height);
@@ -75,7 +73,6 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(isp_controller_params.shape_parameters, range_max);
   LOAD_NS_PARAM(isp_controller_params.shape_parameters, alpha);
   LOAD_NS_PARAM(isp_controller_params.shape_parameters, beta);
-  std::cout << isp_controller_params << std::endl;
 
   // Sanity check params.
   CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_width);

@@ -78,7 +78,7 @@ cv::Point2d PotentialTransform<ConstraintType::SOFT>::operator()(
   auto return_value = pixel_value;
 
   // Exponential term.
-  const auto e_term = std::exp(-p_.alpha * (pixel_value.x - p_.range_mid));
+  const auto e_term = std::exp(-p_.alpha * (pixel_value.x - p_.rangeMidPoint()));
 
   // Compute 0th order potential.
   return_value.x =

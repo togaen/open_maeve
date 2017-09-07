@@ -23,16 +23,31 @@
 
 #include <Eigen/Dense>
 
+#include <cmath>
+
+#include "maeve_automation_core/isp_field/shape_parameters.h"
 #include "maeve_automation_core/isp_field/tau.h"
 
 namespace maeve_automation_core {
 namespace {
+const auto epsilon = 0.00001;
 double extent(const double Z, const Eigen::Vector2d& p1,
               const Eigen::Vector2d& p2) {
   return (p1 - p2).norm() / Z;
 }
 }  // namespace
-TEST(TAU, verifyScaling) {
+
+TEST(ShapeParams, testMidPoint) {
+  const auto r_min = 3.5;
+  const auto r_max = 5.0;
+  const auto a = 1.0;
+  const auto b = 1.0;
+  ShapeParameters sp(r_min, r_max, a, b);
+  EXPECT_NEAR(sp.rangeMidPoint(), (r_min + r_max) / 2.0, epsilon);
+  EXPECT_TRUE(std::isnan(ShapeParameters().rangeMidPoint()));
+}
+
+TEST(Tau, verifyScaling) {
   const auto Z = 17.0;
   const auto Z_dot = -1.2;
   const Eigen::Vector2d P1(2.3, 3.13);

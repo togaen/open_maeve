@@ -32,8 +32,6 @@ struct ShapeParameters {
   double range_min;
   /** @brief The maximum of the closed interval constraint range. */
   double range_max;
-  /** @brief The mid-point of [range_min, range_max]. */
-  double range_mid;
   /** @brief The alpha shape parameter. */
   double alpha;
   /** @brief The beta shape parameter. */
@@ -53,11 +51,11 @@ struct ShapeParameters {
   ShapeParameters(const double r_min, const double r_max, const double a,
                   const double b);
   /**
-   * @brief Convenience method to compute range_mid member.
+   * @brief Convenience method to compute range mid-point.
    *
-   * This method assumes range_min and range_max have both been set.
+   * @return The mid-point of the range.
    */
-  void computeMidPoint();
+  double rangeMidPoint() const;
   /**
    * @brief Sanity check whether parameters make sense.
    *

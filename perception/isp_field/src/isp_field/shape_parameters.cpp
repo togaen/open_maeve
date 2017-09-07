@@ -29,28 +29,26 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 ShapeParameters::ShapeParameters()
-    : range_min(NaN), range_mid(NaN), range_max(NaN), alpha(NaN), beta(NaN) {}
+    : range_min(NaN), range_max(NaN), alpha(NaN), beta(NaN) {}
 
 ShapeParameters::ShapeParameters(const double r_min, const double r_max,
                                  const double a, const double b)
     : range_min(r_min), range_max(r_max), alpha(a), beta(b) {
-  computeMidPoint();
 }
 
-void ShapeParameters::computeMidPoint() {
-  range_mid = (range_min + range_max) / 2.0;
+double ShapeParameters::rangeMidPoint() const {
+  return (range_min + range_max) / 2.0;
 }
 
 bool ShapeParameters::valid(const bool check_range_order) const {
   const auto alpha_valid = (alpha >= 0.0) && (alpha <= 1.0);
   const auto beta_valid = (beta >= 0.0) && (beta <= 1.0);
   const auto range_valid = !check_range_order || (range_min <= range_max);
-  const auto range_mid_valid = (range_mid == ((range_min + range_max) / 2.0));
-  return alpha_valid && beta_valid && range_mid_valid && range_mid_valid;
+  return alpha_valid && beta_valid && range_valid;
 }
 
 std::ostream& operator<<(std::ostream& o, const ShapeParameters& sp) {
-  return o << "{r_min: " << sp.range_min << ", r_mid: " << sp.range_mid
+  return o << "{r_min: " << sp.range_min << ", r_mid: " << sp.rangeMidPoint()
            << ", r_max: " << sp.range_max << ", alpha: " << sp.alpha
            << ", beta: " << sp.beta << "}";
 }
