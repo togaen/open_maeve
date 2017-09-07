@@ -119,24 +119,22 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
 
   // Find minimum.
   auto min_val = NaN;
-  auto max_val = NaN;
+  auto dummy_val = NaN;
   std::array<int, 2> min_idx;
-  std::array<int, 2> max_idx;
-  cv::minMaxIdx(control_channels[1], &min_val, &max_val, min_idx.data(),
-                max_idx.data());
+  std::array<int, 2> dummy_idx;
+  cv::minMaxIdx(control_channels[1], &min_val, &dummy_val, min_idx.data(),
+                dummy_idx.data());
 
   // If maximum does not exceed inertia, revert to bias column.
   const auto p_bias_column_val = biased_h.at<cv::Point2d>(col_d).x;
-  if (std::abs(p_bias_column_val - max_val) <= p_.potential_inertia) {
-    max_idx[1] = col_d;
+  if (std::abs(p_bias_column_val - min_val) <= p_.potential_inertia) {
+    min_idx[1] = col_d;
   }
 
   // Compute control command.
-  const auto yaw_col_offset =
-      static_cast<int>(static_cast<double>(max_idx[1]) - p_.principal_point_x);
-  const auto yaw_star = column2Yaw(controls, yaw_col_offset, p_.focal_length_x,
-                                   p_.principal_point_x);
-  const cv::Point2d throttle_set = controls.at<cv::Point2d>(max_idx[1]);
+  const auto yaw_star =
+      column2Yaw(controls, min_idx[1], p_.focal_length_x, p_.principal_point_x);
+  const cv::Point2d throttle_set = controls.at<cv::Point2d>(min_idx[1]);
   const auto throttle_star =
       nearestIntervalPoint(throttle_set.x, throttle_set.y, u_d.throttle);
 
