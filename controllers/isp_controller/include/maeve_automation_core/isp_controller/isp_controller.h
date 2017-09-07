@@ -24,7 +24,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "maeve_automation_core/isp_controller/control_command.h"
-#include "maeve_automation_core/isp_field/shape_parameters.h"
+#include "maeve_automation_core/isp_field/potential_transforms.h"
 
 namespace maeve_automation_core {
 class ISP_Controller {
@@ -89,7 +89,7 @@ class ISP_Controller {
    *
    * @param params Parameters for control computation from ISP field.
    */
-  ISP_Controller(const Params& params);
+  explicit ISP_Controller(const Params& params);
 
   /**
    * @brief For a given ISP field compute a selective determinism control.
@@ -109,6 +109,8 @@ class ISP_Controller {
  private:
   /** @brief Controller parameters. */
   Params p_;
+  /** @brief Projection function onto control space. */
+  PotentialTransform<ConstraintType::SOFT> C_u_;
 };  // class ISP_Controller
 
 /**

@@ -45,6 +45,16 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
 }
 }  // namespace
 
+TEST(ISP_Controller, testDampedMaxThrottleIndex) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
+
+TEST(ISP_Controller, testProjectYawToControlSpace) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
+
 TEST(ISP_Controller, test) {
   // ISP.
   const auto rows = 5;
@@ -63,9 +73,9 @@ TEST(ISP_Controller, test) {
   const auto k_ht = 3;
   const auto k_hr = 0.5;
   const auto fx = 1.0;
-  const auto px = static_cast<double>(cols / 2);
-  const auto ld = 1.1;
-  const auto rd = 1.2;
+  const auto px = static_cast<double>(cols) / 2.0;
+  const auto ld = 0.95;
+  const auto rd = 0.95;
   const auto kp = 1.0;
   const auto kd = 1.0;
   const auto pi = epsilon;
@@ -81,8 +91,8 @@ TEST(ISP_Controller, test) {
 
     // Compute SD control.
     const auto u_star = controller.SD_Control(m, u_d);
-    EXPECT_NEAR(u_star.throttle, -0.451409, epsilon);
-    EXPECT_NEAR(u_star.yaw, 0.33232, epsilon);
+    EXPECT_NEAR(u_star.throttle, -0.4487937, epsilon);
+    EXPECT_NEAR(u_star.yaw, 0.6287985, epsilon);
   }
 
   {
@@ -204,12 +214,12 @@ TEST(ISP_Controller, testSafeControls) {
   const auto beta = 0.5;
   const auto C_u = PotentialTransform<ConstraintType::SOFT>(
       ShapeParameters(range_min, range_max, alpha, beta));
-  EXPECT_TRUE(C_u.shapeParameters().valid(false));
+  EXPECT_TRUE(C_u.shapeParameters().valid());
 
   // Kernel parameters.
   const auto kernel_width = 3;
   const auto kernel_height = 3;
-  const auto kernel_horizon = ISP.rows / 2;
+  const auto kernel_horizon = 0.5;
   const auto K_P = 1.0;
   const auto K_D = 0.0;
 
@@ -247,7 +257,7 @@ TEST(ISP_Controller, testSafeControls) {
   std::vector<double> projections{-0.3117596, -0.3117596, -0.2831462,
                                   -0.2542395, -0.2250888, -0.1957441,
                                   -0.1662559};
-  cv::Mat controls = safeControls(eroded_h, C_u, K_P, K_D);
+  cv::Mat controls = projectThrottlesToControlSpace(eroded_h, C_u, K_P, K_D);
   ASSERT_EQ(controls.rows, 1);
   ASSERT_EQ(controls.cols, ISP.cols);
 

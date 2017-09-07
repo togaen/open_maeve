@@ -26,7 +26,7 @@
 namespace maeve_automation_core {
 TEST(ISP_Controller_ROS, testROS_Interface) {
   ControlCommand cmd(1.3, 4.7);
-  const auto msg = controlCommand2Command2D_Msg(cmd);
+  const auto msg = controlCommand2Command2D_Msg(cmd, std_msgs::Header());
   EXPECT_EQ(msg.x, cmd.throttle);
   EXPECT_EQ(msg.y, cmd.yaw);
 }

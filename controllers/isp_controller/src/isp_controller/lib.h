@@ -149,7 +149,7 @@ cv::Mat yawBias(const int center, const int width, const double left_decay,
  *
  * @param ISP The input image space potential field.
  * @param kernel_height The height of the max filter kernel.
- * @param kernel_horizon The horizon line to run the max filter along.
+ * @param kernel_horizon Location of horizon line from 0 - top, to 1 - bottom.
  *
  * @return A single row vector of width ISP.cols that contains the max of each
  * column in ISP.
@@ -174,13 +174,13 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
 cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width);
 
 /**
- * @brief For each column, compute safe longitudinal controls \in [-1, 1].
+ * @brief For each column, project to throttle controls \in [r_min, r_max].
  *
  * The dot product <p, \dot{p}> \cdot <K_P, K_D> is taken as the raw
  * maximum acceptable control value at each column index. These raw values are
  * projected into [-1, 1] using the potential transform C_u.
  *
- * @param h The control horizon to compute safe sets for.
+ * @param h The control horizon to perform projection on.
  * @param C_u The potential transform for mapping controls onto [r_min, r_max]
  * @param K_P The proportional gain for computing max control.
  * @param K_D The derivative gain for computing max control.
@@ -188,7 +188,43 @@ cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width);
  * @return A two channel, 1D matrix that, where for each column index of ISP,
  * the pixel value defines a safe control range [C_u.range_min, a_max].
  */
-cv::Mat safeControls(const cv::Mat& h,
-                     const PotentialTransform<ConstraintType::SOFT>& C_u,
-                     const double K_P, const double K_D);
+cv::Mat projectThrottlesToControlSpace(
+    const cv::Mat& h, const PotentialTransform<ConstraintType::SOFT>& C_u,
+    const double K_P, const double K_D);
+
+/**
+ * @brief Project a given yaw value to [r_min, r_max].
+ *
+ * @param h The horizon over which the yaw is defined.
+ * @param C_u The potential transform for mapping controls onto [r_min, r_max].
+ * @param fx The camera focal length (x axis).
+ * @param px The camera principal point (x coordinate).
+ * @param yaw The yaw value to project.
+ *
+ * @return The yaw value projected to [r_min, r_max].
+ */
+double projectYawToControlSpace(
+    const cv::Mat& h, const PotentialTransform<ConstraintType::SOFT>& C_u,
+    const double fx, const double px, const double yaw);
+
+/**
+ * @brief Compute the index of the throttle horizon is the greatest range.
+ *
+ * @pre Horizons shall be non-empty and of the same size. Damping index shall be
+ * a valid horizon index.
+ *
+ * This function scans the throttle horizon and finds the one with the largest
+ * defined control set. If the potential value for the found index does not
+ * exceed the given inertia, the index is set to the damping index.
+ *
+ * @param throttle_h The horizon of throttle values.
+ * @param potential_h The horizon of potential values.
+ * @param inertia The inertia to overcome.
+ * @param damp_idx The damping index.
+ *
+ * @return The throttle horizon index.
+ */
+int dampedMaxThrottleIndex(const cv::Mat& throttle_h,
+                           const cv::Mat& potential_h, const double inertia,
+                           const int damp_idx);
 }  // namespace maeve_automation_core

@@ -78,9 +78,12 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
   // Allocate horizon.
   cv::Mat reduced_ISP;
 
+  // Compute horizon row.
+  const auto horizon_row = static_cast<int>(ISP.rows * kernel_horizon);
+
   // Set ROI.
   auto half_height = static_cast<int>(kernel_height) / 2;
-  auto top_left_row = kernel_horizon - half_height;
+  auto top_left_row = horizon_row - half_height;
   auto top_left_col = 0;
   cv::Rect ROI = cv::Rect(top_left_col, top_left_row, ISP.cols, kernel_height);
   cv::Mat masked_ISP = ISP(ROI);
@@ -107,9 +110,9 @@ cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width) {
   return eroded_h;
 }
 
-cv::Mat safeControls(const cv::Mat& h,
-                     const PotentialTransform<ConstraintType::SOFT>& C_u,
-                     const double K_P, const double K_D) {
+cv::Mat projectThrottlesToControlSpace(
+    const cv::Mat& h, const PotentialTransform<ConstraintType::SOFT>& C_u,
+    const double K_P, const double K_D) {
   // Reserve return value.
   cv::Mat controls;
   h.copyTo(controls);
@@ -125,5 +128,40 @@ cv::Mat safeControls(const cv::Mat& h,
 
   // Done.
   return controls;
+}
+
+double projectYawToControlSpace(
+    const cv::Mat& h, const PotentialTransform<ConstraintType::SOFT>& C_u,
+    const double fx, const double px, const double yaw) {
+  const auto yaw_min = column2Yaw(h, 0, fx, px);
+  const auto yaw_max = column2Yaw(h, h.cols - 1, fx, px);
+  return projectToRange(yaw, yaw_min, yaw_max, C_u.shapeParameters().range_min,
+                        C_u.shapeParameters().range_max);
+}
+
+int dampedMaxThrottleIndex(const cv::Mat& throttle_h,
+                           const cv::Mat& potential_h, const double inertia,
+                           const int damp_idx) {
+  // Get channel with throttle max values.
+  std::vector<cv::Mat> throttle_channels(2);
+  cv::split(throttle_h, throttle_channels);
+
+  // Find max of available controls.
+  auto dummy_val = NaN;
+  auto max_val = NaN;
+  std::array<int, 2> dummy_idx;
+  std::array<int, 2> max_idx;
+  cv::minMaxIdx(throttle_channels[1], &dummy_val, &max_val, dummy_idx.data(),
+                max_idx.data());
+
+  // Perform damping: If potential value at maximum control index does not
+  // exceed potential inertia, revert control index to bias column.
+  const auto index_potential_val = potential_h.at<cv::Point2d>(damp_idx).x;
+  if (std::abs(index_potential_val - max_val) <= inertia) {
+    max_idx[1] = damp_idx;
+  }
+
+  // Done.
+  return max_idx[1];
 }
 }  // namespace maeve_automation_core

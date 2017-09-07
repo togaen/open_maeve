@@ -76,7 +76,8 @@ ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
       potential_inertia(pi),
       shape_parameters(sp) {}
 
-ISP_Controller::ISP_Controller(const Params& params) : p_(params) {}
+ISP_Controller::ISP_Controller(const Params& params)
+    : p_(params), C_u_(p_.shape_parameters) {}
 
 ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
                                           const ControlCommand& u_d) {
@@ -88,10 +89,9 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
       yaw2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
 
   // Get control horizon.
-  const auto horizon_row = static_cast<int>(ISP.rows * p_.kernel_horizon);
-  const cv::Mat h = controlHorizon(ISP, p_.kernel_height, horizon_row);
+  const cv::Mat h = controlHorizon(ISP, p_.kernel_height, p_.kernel_horizon);
 
-  // Apply max filter.
+  // Apply min filter.
   const cv::Mat eroded_h = erodeHorizon(h, p_.kernel_width);
 
   // Compute guidance fields.
@@ -108,46 +108,28 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
   // Apply biasing fields.
   const cv::Mat biased_h = guided_h.mul(control_set_biasing.mul(yaw_biasing));
 
-  // Get safe controls from filtered horizon.
-  const auto C_u =
-      PotentialTransform<ConstraintType::SOFT>(p_.shape_parameters);
-  const cv::Mat controls = safeControls(biased_h, C_u, p_.K_P, p_.K_D);
+  // Project throttles onto [r_min, r_max].
+  const cv::Mat throttle_h =
+      projectThrottlesToControlSpace(biased_h, C_u_, p_.K_P, p_.K_D);
 
-  // Get channel with throttle max values.
-  std::vector<cv::Mat> control_channels(2);
-  cv::split(controls, control_channels);
+  // Find the index of the desired control command.
+  const auto control_idx =
+      dampedMaxThrottleIndex(throttle_h, biased_h, p_.potential_inertia, col_d);
 
-  // Find minimum.
-  auto min_val = NaN;
-  auto dummy_val = NaN;
-  std::array<int, 2> min_idx;
-  std::array<int, 2> dummy_idx;
-  cv::minMaxIdx(control_channels[1], &min_val, &dummy_val, min_idx.data(),
-                dummy_idx.data());
+  // Compute yaw control command.
+  const auto yaw = column2Yaw(throttle_h, control_idx, p_.focal_length_x,
+                              p_.principal_point_x);
 
-  // If maximum does not exceed inertia, revert to bias column.
-  const auto p_bias_column_val = biased_h.at<cv::Point2d>(col_d).x;
-  if (std::abs(p_bias_column_val - min_val) <= p_.potential_inertia) {
-    min_idx[1] = col_d;
-  }
+  // Project yaw to [range_min, range_max].
+  cmd.yaw = projectYawToControlSpace(throttle_h, C_u_, p_.focal_length_x,
+                                     p_.principal_point_x, yaw);
 
-  // Compute control command.
-  const auto yaw_star =
-      column2Yaw(controls, min_idx[1], p_.focal_length_x, p_.principal_point_x);
-  const cv::Point2d throttle_set = controls.at<cv::Point2d>(min_idx[1]);
-  const auto throttle_star =
+  // Compute throttle control command (it is already projected by C_u_).
+  const cv::Point2d throttle_set = throttle_h.at<cv::Point2d>(control_idx);
+  cmd.throttle =
       projectToInterval(throttle_set.x, throttle_set.y, u_d.throttle);
 
-  // Project to [-1, 1] and return.
-  const auto yaw_min =
-      column2Yaw(controls, 0, p_.focal_length_x, p_.principal_point_x);
-  const auto yaw_max = column2Yaw(controls, controls.cols - 1,
-                                  p_.focal_length_x, p_.principal_point_x);
-  cmd.yaw = projectToRange(yaw_star, yaw_min, yaw_max, -1.0, 1.0);
-  const auto throttle_min = C_u.shapeParameters().range_min;
-  const auto throttle_max = C_u.shapeParameters().range_max;
-  cmd.throttle =
-      projectToRange(throttle_star, throttle_min, throttle_max, -1.0, 1.0);
+  // Done.
   return cmd;
 }
 }  // namespace maeve_automation_core

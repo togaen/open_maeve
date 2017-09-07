@@ -61,12 +61,12 @@ isp_controller_params:
   kernel_width: 3
   kernel_height: 3
   kernel_horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
-  yaw_decay_left: 1.05 # \TODO(me) probably don't call this 'decay'
-  yaw_decay_right: 1.05 # \TODO(me) probably don't call this 'decay'
+  yaw_decay_left: 0.95
+  yaw_decay_right: 0.95
   K_P: 1.0
   K_D: 0.0
   potential_inertia: 0.0
-  shape_parameters:
+  shape_parameters: # These shape parameters define the output control space.
     range_min: -1.0
     range_max: 1.0
     alpha: 0.05
