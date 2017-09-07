@@ -173,7 +173,7 @@ bool AR_ISPFieldNodeHandler::computePotentialFields(
         ar_max_extent_time_queue_[frame_name].insert(t, s);
 
         // Compute measurement values.
-        // TODO: should put a filter on these dt values.
+        // TODO(me): should put a filter on these dt values.
         auto s_dot = NaN;
         auto t_delta = NaN;
         if (const auto dt = ar_max_extent_time_queue_[frame_name].bfd_dt(t)) {
@@ -269,7 +269,8 @@ void AR_ISPFieldNodeHandler::cameraCallback(
 
   // Publish control.
   if (!params_.control_command_topic.empty()) {
-    control_command_pub_.publish(controlCommand2Command2D_Msg(u_star));
+    control_command_pub_.publish(
+        controlCommand2Command2D_Msg(u_star, msg->header));
   }
 
   // Do any requested visualization.

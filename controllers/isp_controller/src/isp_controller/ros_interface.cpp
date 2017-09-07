@@ -23,8 +23,9 @@
 
 namespace maeve_automation_core {
 controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
-    const ControlCommand& cmd) {
+    const ControlCommand& cmd, const std_msgs::Header& header) {
   controller_interface_msgs::Command2D msg;
+  msg.header = header;
   msg.x = cmd.throttle;
   msg.y = cmd.yaw;
   return msg;

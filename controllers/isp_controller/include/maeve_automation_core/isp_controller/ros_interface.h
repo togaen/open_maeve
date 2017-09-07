@@ -22,6 +22,7 @@
 #pragma once
 
 #include "controller_interface_msgs/Command2D.h"
+#include "std_msgs/Header.h"
 
 #include "maeve_automation_core/isp_controller/control_command.h"
 
@@ -32,5 +33,5 @@ namespace maeve_automation_core {
  * @return The serialized version of this object.
  */
 controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
-    const ControlCommand& cmd);
+    const ControlCommand& cmd, const std_msgs::Header& header);
 }  // namespace maeve_automation_core
