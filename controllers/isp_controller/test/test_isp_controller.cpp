@@ -52,8 +52,8 @@ TEST(ISP_Controller, test) {
   const cv::Mat m = 0.1 * dummyMatrix(rows, cols);
 
   // Shape parameters for control projection onto [-1, 1).
-  const auto r_min = 1.0;
-  const auto r_max = -1.0;
+  const auto r_min = -1.0;
+  const auto r_max = 1.0;
   const auto a = 0.05;
   const auto b = 0.5;
   const ShapeParameters sp(r_min, r_max, a, b);
@@ -75,14 +75,33 @@ TEST(ISP_Controller, test) {
   // Build controller.
   ISP_Controller controller(p);
 
-  // Desired control.
-  ControlCommand u_d(1.0, 0.5);
+  {
+    // Desired control.
+    ControlCommand u_d(1.0, 0.5);
 
-  // Compute SD control.
-  const auto u_star = controller.SD_Control(m, u_d);
-  EXPECT_NEAR(u_star.throttle, 0.45140926, epsilon);
-  EXPECT_NEAR(u_star.yaw, -1.19029, epsilon);
+    // Compute SD control.
+    const auto u_star = controller.SD_Control(m, u_d);
+    EXPECT_NEAR(u_star.throttle, -0.4007559, epsilon);
+    EXPECT_NEAR(u_star.yaw, 0.463648, epsilon);
+  }
 
+  {
+    // Probe testing.
+    const auto step = 0.017;
+    const auto min_val = -150.0;
+    const auto max_val = 150.0;
+    auto val = min_val;
+    while (val <= max_val) {
+      ControlCommand u_d(val, max_val - val);
+      const auto u_star = controller.SD_Control(m, u_d);
+      ASSERT_GE(u_star.throttle, -1.0);
+      ASSERT_LE(u_star.throttle, 1.0);
+      ASSERT_GE(u_star.yaw, -1.0);
+      ASSERT_LE(u_star.yaw, 1.0);
+
+      val += step;
+    }
+  }
   // \TODO(me): Should do more testing.
 }
 
