@@ -63,8 +63,7 @@ struct ShapeParameters {
    *
    * @return True if parameters pass sanity check; otherwise false.
    */
-  __attribute__((warn_unused_result)) bool valid(
-      const bool check_range_order = true) const;
+  __attribute__((warn_unused_result)) bool valid() const;
 };  // struct ShapeParameters
 
 /**

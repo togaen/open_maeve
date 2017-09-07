@@ -109,7 +109,8 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   // All good?
   const auto hc_valid = hard_constraint_transform.valid();
   const auto sc_valid = soft_constraint_transform.valid();
-  return hc_valid && sc_valid;
+  const auto isp_valid = isp_controller_params.shape_parameters.valid();
+  return hc_valid && sc_valid && isp_valid;
 }
 
 }  // namespace maeve_automation_core
