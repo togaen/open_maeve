@@ -42,9 +42,29 @@ namespace maeve_automation_core {
  * @return The nearest point in the interval to `point'.
  */
 template <typename T>
-T nearestIntervalPoint(const T& interval_min, const T& interval_max,
-                       const T& point) {
+T projectToInterval(const T& interval_min, const T& interval_max,
+                    const T& point) {
   return std::min(interval_max, std::max(point, interval_min));
+}
+
+/**
+ * @brief Project a value 'val' from one range onto another.
+ *
+ * @tparam T The type of numbers being projected.
+ * @param val The value being projected.
+ * @param from_range_min The min of the originating range.
+ * @param from_range_max The max of the originating range.
+ * @param to_range_min The min of the target range.
+ * @param to_range_max The max of the target range.
+ *
+ * @return The value in the target range with the same proportional offset as
+ * 'val' in the originating range.
+ */
+template <typename T>
+T projectToRange(const T& val, const T& from_range_min, const T& from_range_max,
+                 const T& to_range_min, const T& to_range_max) {
+  const auto s = (val - from_range_min) / (from_range_max - from_range_min);
+  return to_range_min + s * (to_range_max - to_range_min);
 }
 
 /**

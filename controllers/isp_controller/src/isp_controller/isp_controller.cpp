@@ -136,11 +136,18 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
       column2Yaw(controls, min_idx[1], p_.focal_length_x, p_.principal_point_x);
   const cv::Point2d throttle_set = controls.at<cv::Point2d>(min_idx[1]);
   const auto throttle_star =
-      nearestIntervalPoint(throttle_set.x, throttle_set.y, u_d.throttle);
+      projectToInterval(throttle_set.x, throttle_set.y, u_d.throttle);
 
-  // Done.
-  cmd.yaw = yaw_star;
-  cmd.throttle = throttle_star;
+  // Project to [-1, 1] and return.
+  const auto yaw_min =
+      column2Yaw(controls, 0, p_.focal_length_x, p_.principal_point_x);
+  const auto yaw_max = column2Yaw(controls, controls.cols - 1,
+                                  p_.focal_length_x, p_.principal_point_x);
+  cmd.yaw = projectToRange(yaw_star, yaw_min, yaw_max, -1.0, 1.0);
+  const auto throttle_min = C_u.shapeParameters().range_min;
+  const auto throttle_max = C_u.shapeParameters().range_max;
+  cmd.throttle =
+      projectToRange(throttle_star, throttle_min, throttle_max, -1.0, 1.0);
   return cmd;
 }
 }  // namespace maeve_automation_core

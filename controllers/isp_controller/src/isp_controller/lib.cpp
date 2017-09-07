@@ -34,14 +34,14 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 
 double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
                   const double p_x) {
-  const auto bounded_col = nearestIntervalPoint(0, image_plane.cols - 1, col);
+  const auto bounded_col = projectToInterval(0, image_plane.cols - 1, col);
   return std::atan2(static_cast<double>(bounded_col) - p_x + 0.5, f_x);
 }
 
 int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
                const double p_x) {
   const auto col = static_cast<int>(f_x * std::tan(yaw) + p_x);
-  return nearestIntervalPoint(0, image_plane.cols - 1, col);
+  return projectToInterval(0, image_plane.cols - 1, col);
 }
 
 cv::Mat controlSetBias(const cv::Mat& controls) {

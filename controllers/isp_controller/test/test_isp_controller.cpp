@@ -81,8 +81,8 @@ TEST(ISP_Controller, test) {
 
     // Compute SD control.
     const auto u_star = controller.SD_Control(m, u_d);
-    EXPECT_NEAR(u_star.throttle, -0.4007559, epsilon);
-    EXPECT_NEAR(u_star.yaw, 0.463648, epsilon);
+    EXPECT_NEAR(u_star.throttle, -0.451409, epsilon);
+    EXPECT_NEAR(u_star.yaw, 0.33232, epsilon);
   }
 
   {
@@ -105,13 +105,27 @@ TEST(ISP_Controller, test) {
   // \TODO(me): Should do more testing.
 }
 
-TEST(ISP_Controller, testNearestIntervalPoint) {
+TEST(ISP_Controller, testProjetToRange) {
+  const auto from_range_min = -3.0;
+  const auto from_range_max = 7.0;
+  const auto to_range_min = -1.0;
+  const auto to_range_max = 4.0;
+
+  EXPECT_NEAR(projectToRange(-2.0, from_range_min, from_range_max, to_range_min,
+                             to_range_max),
+              -0.5, epsilon);
+  EXPECT_NEAR(projectToRange(0.0, from_range_min, from_range_max, to_range_min,
+                             to_range_max),
+              0.5, epsilon);
+}
+
+TEST(ISP_Controller, testProjectToInterval) {
   const cv::Point2d interval(-3.0, 1.0);
-  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, -3.0), -3.0);
-  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, 1.0), 1.0);
-  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, -5.2), -3.0);
-  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, 3.1), 1.0);
-  EXPECT_EQ(nearestIntervalPoint(interval.x, interval.y, 0.73), 0.73);
+  EXPECT_EQ(projectToInterval(interval.x, interval.y, -3.0), -3.0);
+  EXPECT_EQ(projectToInterval(interval.x, interval.y, 1.0), 1.0);
+  EXPECT_EQ(projectToInterval(interval.x, interval.y, -5.2), -3.0);
+  EXPECT_EQ(projectToInterval(interval.x, interval.y, 3.1), 1.0);
+  EXPECT_EQ(projectToInterval(interval.x, interval.y, 0.73), 0.73);
 }
 
 TEST(ISP_Controller, testYawColumnConversions) {
