@@ -58,16 +58,16 @@ ar_tag_target_ids: []
 #
 
 isp_controller_params:
-  kernel_width: 1
-  kernel_height: 2
+  kernel_width: 3
+  kernel_height: 3
   kernel_horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
-  yaw_decay_left: 0.4
-  yaw_decay_right: 0.5
-  K_P: 6
-  K_D: 7
-  potential_inertia: 8
+  yaw_decay_left: 1.05 # \TODO(me) probably don't call this 'decay'
+  yaw_decay_right: 1.05 # \TODO(me) probably don't call this 'decay'
+  K_P: 1.0
+  K_D: 0.0
+  potential_inertia: 0.0
   shape_parameters:
-    range_min: 9
-    range_max: 10
-    alpha: 11
-    beta: 12
+    range_min: -1.0
+    range_max: 1.0
+    alpha: 0.05
+    beta: 0.5
