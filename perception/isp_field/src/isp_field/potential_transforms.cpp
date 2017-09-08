@@ -50,14 +50,16 @@ cv::Point2d PotentialTransform<ConstraintType::HARD>::operator()(
   if (pixel_value.x < p_.range_min) {
     // 0th order.
     return_value.x =
-        -p_.alpha * std::pow(p_.range_min - pixel_value.x, -p_.beta);
+        p_.translation -
+        p_.alpha * std::pow(p_.range_min - pixel_value.x, -p_.beta);
     // 1st order.
     return_value.y = p_.alpha * p_.beta * pixel_value.y *
                      std::pow(p_.range_min - pixel_value.x, -p_.beta - 1.0);
   } else if (pixel_value.x > p_.range_max) {
     // 0th order.
     return_value.x =
-        -p_.alpha * std::pow(pixel_value.x - p_.range_max, -p_.beta);
+        p_.translation -
+        p_.alpha * std::pow(pixel_value.x - p_.range_max, -p_.beta);
     // 1st order.
     return_value.y = p_.alpha * p_.beta * pixel_value.y *
                      std::pow(pixel_value.x - p_.range_max, -p_.beta - 1.0);
@@ -78,7 +80,8 @@ cv::Point2d PotentialTransform<ConstraintType::SOFT>::operator()(
   auto return_value = pixel_value;
 
   // Exponential term.
-  const auto e_term = std::exp(-p_.alpha * (pixel_value.x - p_.rangeMidPoint()));
+  const auto e_term = std::exp(
+      -p_.alpha * (pixel_value.x + p_.translation - p_.rangeMidPoint()));
 
   // Compute 0th order potential.
   return_value.x =
