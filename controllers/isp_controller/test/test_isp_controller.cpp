@@ -62,11 +62,12 @@ TEST(ISP_Controller, test) {
   const cv::Mat m = 0.1 * dummyMatrix(rows, cols);
 
   // Shape parameters for control projection onto [-1, 1).
+  const auto t = 0.0;
   const auto r_min = -1.0;
   const auto r_max = 1.0;
   const auto a = 0.05;
   const auto b = 0.5;
-  const ShapeParameters sp(r_min, r_max, a, b);
+  const ShapeParameters sp(t, r_min, r_max, a, b);
 
   // Parameters for computing throttle and yaw from ISP.
   const auto k_w = 3;
@@ -208,12 +209,13 @@ TEST(ISP_Controller, testSafeControls) {
   const cv::Mat ISP = dummyMatrix(rows, cols);
 
   // Control projection.
+  const auto translation = 0.0;
   const auto range_min = -1.0;
   const auto range_max = 1.0;
   const auto alpha = 0.05;
   const auto beta = 0.5;
   const auto C_u = PotentialTransform<ConstraintType::SOFT>(
-      ShapeParameters(range_min, range_max, alpha, beta));
+      ShapeParameters(translation, range_min, range_max, alpha, beta));
   EXPECT_TRUE(C_u.shapeParameters().valid());
 
   // Kernel parameters.

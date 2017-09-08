@@ -38,11 +38,12 @@ double extent(const double Z, const Eigen::Vector2d& p1,
 }  // namespace
 
 TEST(ShapeParams, testMidPoint) {
+  const auto t = 0.0;
   const auto r_min = 3.5;
   const auto r_max = 5.0;
   const auto a = 1.0;
   const auto b = 1.0;
-  ShapeParameters sp(r_min, r_max, a, b);
+  ShapeParameters sp(t, r_min, r_max, a, b);
   EXPECT_NEAR(sp.rangeMidPoint(), (r_min + r_max) / 2.0, epsilon);
   EXPECT_TRUE(std::isnan(ShapeParameters().rangeMidPoint()));
 }

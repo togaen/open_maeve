@@ -21,6 +21,7 @@
  */
 #include "maeve_automation_core/isp_field/shape_parameters.h"
 
+#include <cmath>
 #include <limits>
 
 namespace maeve_automation_core {
@@ -29,12 +30,12 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 ShapeParameters::ShapeParameters()
-    : range_min(NaN), range_max(NaN), alpha(NaN), beta(NaN) {}
+    : translation(NaN), range_min(NaN), range_max(NaN), alpha(NaN), beta(NaN) {}
 
-ShapeParameters::ShapeParameters(const double r_min, const double r_max,
-                                 const double a, const double b)
-    : range_min(r_min), range_max(r_max), alpha(a), beta(b) {
-}
+ShapeParameters::ShapeParameters(const double t, const double r_min,
+                                 const double r_max, const double a,
+                                 const double b)
+    : translation(t), range_min(r_min), range_max(r_max), alpha(a), beta(b) {}
 
 double ShapeParameters::rangeMidPoint() const {
   return (range_min + range_max) / 2.0;
@@ -44,13 +45,14 @@ bool ShapeParameters::valid() const {
   const auto alpha_valid = (alpha >= 0.0) && (alpha <= 1.0);
   const auto beta_valid = (beta >= 0.0) && (beta <= 1.0);
   const auto range_valid = (range_min <= range_max);
-  return alpha_valid && beta_valid && range_valid;
+  const auto translation_valid = !std::isnan(translation);
+  return alpha_valid && beta_valid && range_valid && translation_valid;
 }
 
 std::ostream& operator<<(std::ostream& o, const ShapeParameters& sp) {
-  return o << "{r_min: " << sp.range_min << ", r_mid: " << sp.rangeMidPoint()
-           << ", r_max: " << sp.range_max << ", alpha: " << sp.alpha
-           << ", beta: " << sp.beta << "}";
+  return o << "{t: " << sp.translation << ", r_min: " << sp.range_min
+           << ", r_mid: " << sp.rangeMidPoint() << ", r_max: " << sp.range_max
+           << ", alpha: " << sp.alpha << ", beta: " << sp.beta << "}";
 }
 
 }  // namespace maeve_automation_core

@@ -28,6 +28,8 @@ namespace maeve_automation_core {
  * @brief A container for shape parameters.
  */
 struct ShapeParameters {
+  /** @brief Translate the curve by this amount along a meaningful axis. */
+  double translation;
   /** @brief The minimum of the closed interval constraint range. */
   double range_min;
   /** @brief The maximum of the closed interval constraint range. */
@@ -43,13 +45,14 @@ struct ShapeParameters {
   /**
    * @brief Constructor: explicit initialization.
    *
+   * @param t The translation amount.
    * @param r_min The minimum of the range being mapped onto.
    * @param r_max The maximum of the range being mapped onto.
    * @param a The alpha shape.
    * @param b The beta shape.
    */
-  ShapeParameters(const double r_min, const double r_max, const double a,
-                  const double b);
+  ShapeParameters(const double t, const double r_min, const double r_max,
+                  const double a, const double b);
   /**
    * @brief Convenience method to compute range mid-point.
    *

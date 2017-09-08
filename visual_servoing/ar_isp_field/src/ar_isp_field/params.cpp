@@ -51,15 +51,23 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(verbose);
   LOAD_PARAM(ar_tag_max_age);
 
+  LOAD_NS_PARAM(hard_constraint_transform, translation);
   LOAD_NS_PARAM(hard_constraint_transform, alpha);
   LOAD_NS_PARAM(hard_constraint_transform, beta);
   LOAD_NS_PARAM(hard_constraint_transform, range_min);
   LOAD_NS_PARAM(hard_constraint_transform, range_max);
 
+  LOAD_NS_PARAM(soft_constraint_transform, translation);
   LOAD_NS_PARAM(soft_constraint_transform, alpha);
   LOAD_NS_PARAM(soft_constraint_transform, beta);
   LOAD_NS_PARAM(soft_constraint_transform, range_min);
   LOAD_NS_PARAM(soft_constraint_transform, range_max);
+
+  LOAD_NS_PARAM(isp_controller_params.shape_parameters, translation);
+  LOAD_NS_PARAM(isp_controller_params.shape_parameters, range_min);
+  LOAD_NS_PARAM(isp_controller_params.shape_parameters, range_max);
+  LOAD_NS_PARAM(isp_controller_params.shape_parameters, alpha);
+  LOAD_NS_PARAM(isp_controller_params.shape_parameters, beta);
 
   LOAD_NS_PARAM(isp_controller_params, kernel_width);
   LOAD_NS_PARAM(isp_controller_params, kernel_height);
@@ -69,10 +77,6 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(isp_controller_params, K_P);
   LOAD_NS_PARAM(isp_controller_params, K_D);
   LOAD_NS_PARAM(isp_controller_params, potential_inertia);
-  LOAD_NS_PARAM(isp_controller_params.shape_parameters, range_min);
-  LOAD_NS_PARAM(isp_controller_params.shape_parameters, range_max);
-  LOAD_NS_PARAM(isp_controller_params.shape_parameters, alpha);
-  LOAD_NS_PARAM(isp_controller_params.shape_parameters, beta);
 
   // Sanity check params.
   CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_width);

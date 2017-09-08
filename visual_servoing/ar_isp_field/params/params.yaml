@@ -27,12 +27,14 @@ verbose: false
 #
 
 hard_constraint_transform:
+  translation: 0.0
   alpha: 1.0
   beta: 1.0
   range_min: 0.0
   range_max: 0.5
 
 soft_constraint_transform:
+  translation: 0.0
   alpha: 1.0
   beta: 1.0
   range_min: 5.0
@@ -67,6 +69,7 @@ isp_controller_params:
   K_D: 0.0
   potential_inertia: 0.0
   shape_parameters: # These shape parameters define the output control space.
+    translation: 0.0
     range_min: -1.0
     range_max: 1.0
     alpha: 0.05
