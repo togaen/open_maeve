@@ -127,21 +127,14 @@ bool MyParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(scoped_params.grouped_params, grouped_param2);
 
   // All params successfully loaded. Sanity checking can be done if wanted.
-  // Below are a few convenience macros defined by this package. If any
-  // check fails, the function immediately returns false.
+  // Below are a few convenience macros defined by this package. See
+  // maeve_macros pacakge for full list.
   CHECK_GT(float_param, 0.f);
-  CHECK_GE(scoped_params.inner_int_param, 3);
-  CHECK_LT(scoped_params.inner_int_param, 9);
   CHECK_ODD(scoped_params.inner_int_param);
-  CHECK_EVEN(scoped_params.inner_int_param + 1);
   CHECK_LE(float_param, 1234.5f);
-  CHECK_GT(struct_params.other_float_param, float_param);
   CHECK_CONTAINS_CLOSED(float_param, 0.0f, 1234.5f);
-  CHECK_CONTAINS_OPEN(float_param, 0.0f, 1234.6f);
   CHECK_STRICTLY_POSITIVE(float_param);
-  CHECK_NONEMPTY(string_param);
   CHECK_NONEMPTY(struct_params.other_string_param);
-  CHECK_NE(scoped_params.inner_int_param, 5);
   CHECK_EQ(scoped_params.inner_int_param, 3);
 
   // All params loaded, and all checks passed. Return success.
