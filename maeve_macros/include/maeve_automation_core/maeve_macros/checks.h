@@ -21,7 +21,33 @@
  */
 #pragma once
 
+#include <cmath>
+#include <limits>
+
 #include <ros/console.h>
+
+/**
+ * @brief Checks whether a value is finite; return false immediately on failure.
+ *
+ * @param var The variable to check.
+ */
+#define CHECK_FINITE(var)                                                 \
+  if (!std::isfinite(var)) {                                              \
+    ROS_ERROR_STREAM(#var << " is not finite: " << #var << " = " << var); \
+    return false;                                                         \
+  }
+
+/**
+ * @brief Checks whether a value is infinite; return false immediately on
+ * failure.
+ *
+ * @param var The variable to check.
+ */
+#define CHECK_INFINITE(var)                                                  \
+  if (!std::isnan(var) && std::isfinite(var)) {                              \
+    ROS_ERROR_STREAM(#var << " is finite or NaN: " << #var << " = " << var); \
+    return false;                                                            \
+  }
 
 /**
  * @brief Check that the value of 'var' is not equal to the value of 'val';
