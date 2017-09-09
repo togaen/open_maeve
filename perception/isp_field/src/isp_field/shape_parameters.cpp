@@ -21,7 +21,6 @@
  */
 #include "maeve_automation_core/isp_field/shape_parameters.h"
 
-#include <cmath>
 #include <limits>
 
 #include "maeve_automation_core/maeve_macros/checks.h"
