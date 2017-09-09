@@ -29,8 +29,7 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
-ShapeParameters::ShapeParameters()
-    : translation(NaN), range_min(NaN), range_max(NaN), alpha(NaN), beta(NaN) {}
+ShapeParameters::ShapeParameters() : ShapeParameters(NaN, NaN, NaN, NaN, NaN) {}
 
 ShapeParameters::ShapeParameters(const double t, const double r_min,
                                  const double r_max, const double a,
@@ -50,9 +49,9 @@ bool ShapeParameters::valid() const {
 }
 
 std::ostream& operator<<(std::ostream& o, const ShapeParameters& sp) {
-  return o << "{t: " << sp.translation << ", r_min: " << sp.range_min
+  return o << "[t: " << sp.translation << ", r_min: " << sp.range_min
            << ", r_mid: " << sp.rangeMidPoint() << ", r_max: " << sp.range_max
-           << ", alpha: " << sp.alpha << ", beta: " << sp.beta << "}";
+           << ", alpha: " << sp.alpha << ", beta: " << sp.beta << "]";
 }
 
 }  // namespace maeve_automation_core

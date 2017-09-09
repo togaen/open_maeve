@@ -16,8 +16,8 @@ add_definitions(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  maeve_macros
   cv_bridge
-  eigen_conversions
   roscpp
 )
 
@@ -113,7 +113,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ${PROJECT_NAME}
- CATKIN_DEPENDS roscpp cv_bridge eigen_conversions
+ CATKIN_DEPENDS roscpp cv_bridge
 #  DEPENDS system_lib
 )
 

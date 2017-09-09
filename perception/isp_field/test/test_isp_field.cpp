@@ -21,7 +21,7 @@
  */
 #include <gtest/gtest.h>
 
-#include <Eigen/Dense>
+#include <opencv2/opencv.hpp>
 
 #include <cmath>
 
@@ -31,9 +31,11 @@
 namespace maeve_automation_core {
 namespace {
 const auto epsilon = 0.00001;
-double extent(const double Z, const Eigen::Vector2d& p1,
-              const Eigen::Vector2d& p2) {
-  return (p1 - p2).norm() / Z;
+double extent(const double Z, const cv::Point2d& p1, const cv::Point2d& p2) {
+  const auto x_delta = p1.x - p2.x;
+  const auto y_delta = p1.y - p2.y;
+  const auto d = std::sqrt(x_delta * x_delta + y_delta * y_delta);
+  return d / Z;
 }
 }  // namespace
 
@@ -51,8 +53,8 @@ TEST(ShapeParams, testMidPoint) {
 TEST(Tau, verifyScaling) {
   const auto Z = 17.0;
   const auto Z_dot = -1.2;
-  const Eigen::Vector2d P1(2.3, 3.13);
-  const Eigen::Vector2d P2(5.67, -1.32);
+  const cv::Point2d P1(2.3, 3.13);
+  const cv::Point2d P2(5.67, -1.32);
 
   auto t_delta = 10.37;
   auto tau = -(Z + Z_dot * t_delta) / Z_dot;
