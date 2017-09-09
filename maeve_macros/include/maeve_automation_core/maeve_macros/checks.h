@@ -27,6 +27,17 @@
 #include <ros/console.h>
 
 /**
+ * @brief Check whether a varaible is NaN; return false immediately if so.
+ *
+ * @param var The variable to check.
+ */
+#define CHECK_NOT_NAN(var)               \
+  if (std::isnan(var)) {                 \
+    ROS_ERROR_STREAM(#var << " is NaN"); \
+    return false;                        \
+  }
+
+/**
  * @brief Checks whether a value is finite; return false immediately on failure.
  *
  * @param var The variable to check.
@@ -44,7 +55,8 @@
  * @param var The variable to check.
  */
 #define CHECK_INFINITE(var)                                                  \
-  if (!std::isnan(var) && std::isfinite(var)) {                              \
+  CHECK_NOT_NAN(var);                                                        \
+  if (std::isfinite(var)) {                                                  \
     ROS_ERROR_STREAM(#var << " is finite or NaN: " << #var << " = " << var); \
     return false;                                                            \
   }

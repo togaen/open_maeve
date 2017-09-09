@@ -24,6 +24,8 @@
 #include "maeve_automation_core/maeve_macros/checks.h"
 
 namespace maeve_automation_core {
+TEST(MaeveMacros, testNotNaN) { EXPECT_TRUE(false); }
+
 TEST(MaeveMacros, testFinite) { EXPECT_TRUE(false); }
 
 TEST(MaeveMacros, testInfinite) { EXPECT_TRUE(false); }
