@@ -24,33 +24,80 @@
 #include "maeve_automation_core/maeve_macros/checks.h"
 
 namespace maeve_automation_core {
-TEST(MaeveMacros, testNotNaN) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testNotNaN) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testFinite) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testFinite) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testInfinite) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testInfinite) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testNE) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testNE) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testEQ) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testEQ) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testEven) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testEven) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testOdd) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testOdd) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testLT) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testLT) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testLE) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testLE) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testGT) { EXPECT_TRUE(false); }
-TEST(MaeveMacros, testGE) { EXPECT_TRUE(false); }
-TEST(MaeveMacros, testContainsClosed) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testGT) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testContainsOpen) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testGE) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testStrictlyPositive) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testContainsClosed) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 
-TEST(MaeveMacros, testNonempty) { EXPECT_TRUE(false); }
+TEST(MaeveMacros, testContainsOpen) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
+
+TEST(MaeveMacros, testStrictlyPositive) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
+
+TEST(MaeveMacros, testNonempty) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
 }  // namespace maeve_automation_core
 
 int main(int argc, char** argv) {
