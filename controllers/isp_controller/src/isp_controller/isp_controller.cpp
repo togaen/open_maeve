@@ -79,6 +79,7 @@ ISP_Controller::Params::Params(const ShapeParameters& sp, const int k_w,
 ISP_Controller::ISP_Controller(const Params& params)
     : p_(params), C_u_(p_.shape_parameters) {}
 
+namespace {}  // namespace
 ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
                                           const ControlCommand& u_d) {
   // Reserve return value.
@@ -96,25 +97,21 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
 
   // Compute guidance fields.
   const cv::Mat throttle_guidance = throttleGuidance(u_d.throttle, h.cols);
+  const cv::Mat control_set_guidance = controlSetGuidance(throttle_guidance);
+  const cv::Mat yaw_guidance =
+      yawGuidance(col_d, h.cols, p_.yaw_decay_left, p_.yaw_decay_right);
 
   // Apply guidance fields.
-  const cv::Mat guided_h = eroded_h + throttle_guidance;
-
-  // Compute biasing fields.
-  const cv::Mat yaw_biasing =
-      yawBias(col_d, h.cols, p_.yaw_decay_left, p_.yaw_decay_right);
-  const cv::Mat control_set_biasing = controlSetBias(guided_h);
-
-  // Apply biasing fields.
-  const cv::Mat biased_h = guided_h.mul(control_set_biasing.mul(yaw_biasing));
+  const cv::Mat guided_h =
+      eroded_h + throttle_guidance + yaw_guidance + control_set_guidance;
 
   // Project throttles onto [r_min, r_max].
   const cv::Mat throttle_h =
-      projectThrottlesToControlSpace(biased_h, C_u_, p_.K_P, p_.K_D);
+      projectThrottlesToControlSpace(guided_h, C_u_, p_.K_P, p_.K_D);
 
   // Find the index of the desired control command.
   const auto control_idx =
-      dampedMaxThrottleIndex(throttle_h, biased_h, p_.potential_inertia, col_d);
+      dampedMaxThrottleIndex(throttle_h, guided_h, p_.potential_inertia, col_d);
 
   // Compute yaw control command.
   const auto yaw = column2Yaw(throttle_h, control_idx, p_.focal_length_x,

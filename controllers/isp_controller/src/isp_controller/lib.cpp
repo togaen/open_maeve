@@ -32,6 +32,15 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
+void printHorizon(const cv::Mat& h) {
+  std::cout << "\n>>>\n";
+  for (auto i = 0; i < h.cols; ++i) {
+    const auto p = h.at<cv::Point2d>(i);
+    std::cout << "(" << p.x << ", " << p.y << ") ";
+  }
+  std::cout << "\n<<<\n";
+}
+
 double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
                   const double p_x) {
   const auto bounded_col = projectToInterval(0, image_plane.cols - 1, col);
@@ -44,8 +53,8 @@ int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
   return projectToInterval(0, image_plane.cols - 1, col);
 }
 
-cv::Mat controlSetBias(const cv::Mat& controls) {
-  cv::Mat biasing_horizon = cv::Mat::ones(1, controls.cols, CV_64FC2);
+cv::Mat controlSetGuidance(const cv::Mat& controls) {
+  cv::Mat biasing_horizon = cv::Mat::zeros(1, controls.cols, CV_64FC2);
   // \TODO(me)
   return biasing_horizon;
 }
@@ -54,8 +63,8 @@ cv::Mat throttleGuidance(const double throttle, const int width) {
   return cv::Mat::ones(1, width, CV_64FC2) * throttle;
 }
 
-cv::Mat yawBias(const int center, const int width, const double left_decay,
-                const double right_decay) {
+cv::Mat yawGuidance(const int center, const int width, const double left_decay,
+                    const double right_decay) {
   cv::Mat biasing_horizon(1, width, CV_64FC2);
 
   auto decay = 1.0;

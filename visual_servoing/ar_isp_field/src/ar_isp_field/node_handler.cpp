@@ -262,7 +262,7 @@ void AR_ISPFieldNodeHandler::cameraCallback(
 
   // Compute desired control.
   // \TODO(me): replace this with joystick input.
-  ControlCommand u_d(0.5 /* throttle */, 0.0 /* yaw */);
+  ControlCommand u_d(0.0 /* throttle */, 0.0 /* yaw */);
 
   // Compute SD control.
   const auto u_star = isp_controller_.SD_Control(ISP, u_d);

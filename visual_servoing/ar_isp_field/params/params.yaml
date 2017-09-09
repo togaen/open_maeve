@@ -9,15 +9,15 @@ camera_topic: '/cv_camera_node/image_raw'
 image_transport: 'compressed' # uncomment this to listen to image_transport topics
 
 # node-relative topic, leave empty to disable visualization
-viz_isp_field_topic: ''
-#viz_isp_field_topic: 'viz_isp_field'
+#viz_isp_field_topic: ''
+viz_isp_field_topic: 'viz_isp_field'
 
 # node-relative topic for control command output
 control_command_topic: 'control_command'
 
 # bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero
 # it makes sense for the lower bound to be equal to the range_min of soft constraint transform
-viz_potential_bounds: [-10.0, 10.0] 
+viz_potential_bounds: [-5.0, 5.0]
 
 # Print output to terminal during exectution?
 verbose: false
@@ -31,7 +31,7 @@ hard_constraint_transform:
   alpha: 1.0
   beta: 1.0
   range_min: 0.0
-  range_max: 0.5
+  range_max: 0.75
 
 soft_constraint_transform:
   translation: 0.0
@@ -72,5 +72,5 @@ isp_controller_params:
     translation: 0.0
     range_min: -1.0 # This is taken as the minimum of the control range for output
     range_max: 1.0  # This is taken as the maximum of the control range for output
-    alpha: 0.05
-    beta: 0.5
+    alpha: 1.0
+    beta: 1.0

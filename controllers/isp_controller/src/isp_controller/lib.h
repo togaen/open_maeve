@@ -29,6 +29,15 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief Print a horizon matrix to console. Useful for debugging.
+ *
+ * @pre 'h' shall be a non-empty row vector.
+ *
+ * @param h The horizon matrix.
+ */
+void printHorizon(const cv::Mat& h);
+
+/**
  * @brief Given a number line interval, find the nearrest point in the interval
  * to `point'.
  *
@@ -106,16 +115,16 @@ int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
                const double p_x);
 
 /**
- * @brief Compute a biasing horizon based on availability of controls.
+ * @brief Compute a guidance horizon based on availability of controls.
  *
  * This horizon is used by the control law to bias direction towards larger sets
  * of available controls.
  *
  * @param controls The availabe set of controls for each ISP column.
  *
- * @return A row vector containing biasing factors.
+ * @return A row vector containing guidance factors.
  */
-cv::Mat controlSetBias(const cv::Mat& controls);
+cv::Mat controlSetGuidance(const cv::Mat& controls);
 
 /**
  * @brief Compute a throttle guidance horizon.
@@ -128,7 +137,7 @@ cv::Mat controlSetBias(const cv::Mat& controls);
 cv::Mat throttleGuidance(const double throttle, const int width);
 
 /**
- * @brief Compute a yaw-based biasing horizon for choosing controls.
+ * @brief Compute a yaw-based guidance horizon for choosing controls.
  *
  * This horizon is used by the control law to bias direction towards `center'.
  * Potential rewards to the left and right are decayed by the given factors the
@@ -141,8 +150,8 @@ cv::Mat throttleGuidance(const double throttle, const int width);
  *
  * @return A row vector containing biasing factors.
  */
-cv::Mat yawBias(const int center, const int width, const double left_decay,
-                const double right_decay);
+cv::Mat yawGuidance(const int center, const int width, const double left_decay,
+                    const double right_decay);
 
 /**
  * @brief Max reduce the ISP to a single row vector.
