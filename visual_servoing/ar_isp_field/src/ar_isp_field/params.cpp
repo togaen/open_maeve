@@ -95,8 +95,22 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   // Convert cm -> m
   ar_tag_size /= 100.0;
 
-  // All good?
-  return valid();
+  // These parameters are set at run time by the camera callback. To bypass
+  // validity checking, set them temporarily to valid values.
+  const auto org_focal_length_x = isp_controller_params.focal_length_x;
+  isp_controller_params.focal_length_x = 1.0;
+  const auto org_principal_point_x = isp_controller_params.principal_point_x;
+  isp_controller_params.principal_point_x = 1.0;
+
+  // Get parameter validity.
+  const auto all_valid = valid();
+
+  // Reset run-time parameters.
+  isp_controller_params.focal_length_x = org_focal_length_x;
+  isp_controller_params.principal_point_x = org_principal_point_x;
+
+  // Done.
+  return all_valid;
 }
 
 bool AR_ISPFieldParams::valid() const {
