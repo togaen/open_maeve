@@ -88,13 +88,16 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
   cv::Mat reduced_ISP;
 
   // Compute horizon row.
-  const auto horizon_row = static_cast<int>(ISP.rows * kernel_horizon);
+  const auto horizon_row = static_cast<int>(kernel_horizon * ISP.rows);
+
+  const auto kernel_pixel_height = static_cast<int>(kernel_height * ISP.rows);
 
   // Set ROI.
-  auto half_height = static_cast<int>(kernel_height) / 2;
+  auto half_height = kernel_pixel_height / 2;
   auto top_left_row = horizon_row - half_height;
   auto top_left_col = 0;
-  cv::Rect ROI = cv::Rect(top_left_col, top_left_row, ISP.cols, kernel_height);
+  cv::Rect ROI =
+      cv::Rect(top_left_col, top_left_row, ISP.cols, kernel_pixel_height);
   cv::Mat masked_ISP = ISP(ROI);
 
   // Reduce to single row.
@@ -108,9 +111,11 @@ cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width) {
   // Reserve return value.
   cv::Mat eroded_h;
 
+  const auto kernel_pixel_width = static_cast<int>(kernel_width * h.cols);
+
   // Compute structuring element.
-  cv::Mat structuring_element =
-      cv::getStructuringElement(cv::MORPH_RECT, cv::Size(kernel_width, 1));
+  cv::Mat structuring_element = cv::getStructuringElement(
+      cv::MORPH_RECT, cv::Size(kernel_pixel_width, 1));
 
   // Erode.
   cv::erode(h, eroded_h, structuring_element);

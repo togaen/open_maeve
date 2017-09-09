@@ -69,35 +69,20 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(isp_controller_params.shape_parameters, alpha);
   LOAD_NS_PARAM(isp_controller_params.shape_parameters, beta);
 
-  LOAD_NS_PARAM(isp_controller_params, kernel_width);
-  LOAD_NS_PARAM(isp_controller_params, kernel_height);
-  LOAD_NS_PARAM(isp_controller_params, kernel_horizon);
-  LOAD_NS_PARAM(isp_controller_params, yaw_decay_left);
-  LOAD_NS_PARAM(isp_controller_params, yaw_decay_right);
+  LOAD_NS_PARAM(isp_controller_params.erosion_kernel, width);
+  LOAD_NS_PARAM(isp_controller_params.erosion_kernel, height);
+  LOAD_NS_PARAM(isp_controller_params.erosion_kernel, horizon);
+
+  LOAD_NS_PARAM(isp_controller_params.yaw_decay, left);
+  LOAD_NS_PARAM(isp_controller_params.yaw_decay, right);
+
+  LOAD_NS_PARAM(isp_controller_params.guidance_gains, throttle);
+  LOAD_NS_PARAM(isp_controller_params.guidance_gains, yaw);
+  LOAD_NS_PARAM(isp_controller_params.guidance_gains, control_set);
+
   LOAD_NS_PARAM(isp_controller_params, K_P);
   LOAD_NS_PARAM(isp_controller_params, K_D);
   LOAD_NS_PARAM(isp_controller_params, potential_inertia);
-
-  // Sanity check params.
-  CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_width);
-  CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_height);
-  CHECK_STRICTLY_POSITIVE(isp_controller_params.kernel_horizon);
-  CHECK_GE(isp_controller_params.yaw_decay_left, 0.0);
-  CHECK_GE(isp_controller_params.yaw_decay_right, 0.0);
-  CHECK_GE(isp_controller_params.K_P, 0.0);
-  CHECK_GE(isp_controller_params.K_D, 0.0);
-  CHECK_GE(isp_controller_params.potential_inertia, 0.0);
-  CHECK_GE(ar_tag_max_age, 0.0);
-  CHECK_STRICTLY_POSITIVE(ar_time_queue_size);
-  CHECK_STRICTLY_POSITIVE(ar_time_queue_max_gap);
-  CHECK_NONEMPTY(output_frame_param_name);
-  CHECK_NONEMPTY(marker_size_param_name);
-  CHECK_NONEMPTY(camera_topic);
-  CHECK_NONEMPTY(ar_frame_prefix);
-  CHECK_NONEMPTY(control_command_topic);
-  CHECK_EQ(viz_potential_bounds.size(), 2);
-  CHECK_LT(viz_potential_bounds[0], 0.0);
-  CHECK_GT(viz_potential_bounds[1], 0.0);
 
   // Load AR tag parameters.
   if (!nh.getParam(output_frame_param_name, camera_frame_name)) {
@@ -111,10 +96,12 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   ar_tag_size /= 100.0;
 
   // All good?
-  const auto hc_valid = hard_constraint_transform.valid();
-  const auto sc_valid = soft_constraint_transform.valid();
-  const auto isp_valid = isp_controller_params.shape_parameters.valid();
-  return hc_valid && sc_valid && isp_valid;
+  return valid();
+}
+
+bool AR_ISPFieldParams::valid() const {
+  return hard_constraint_transform.valid() &&
+         soft_constraint_transform.valid() && isp_controller_params.valid();
 }
 
 }  // namespace maeve_automation_core

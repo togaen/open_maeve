@@ -87,6 +87,13 @@ struct AR_ISPFieldParams : public ParamsBase {
   std::vector<double> viz_potential_bounds;
 
   /**
+   * @brief Check validity of loaded parameter values.
+   *
+   * @return True if values valid; otherwise false.
+   */
+  __attribute__((warn_unused_result)) bool valid() const;
+
+  /**
    * @brief Default constructor: initialize to invalid values.
    */
   AR_ISPFieldParams();

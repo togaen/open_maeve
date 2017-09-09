@@ -47,6 +47,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>isp_field</depend>
   <depend>controller_interface_msgs</depend>
+  <depend>maeve_macros</depend>
 
   <!-- This is to add a dependency on OpenCV:
        http://wiki.ros.org/opencv3#package.xml -->

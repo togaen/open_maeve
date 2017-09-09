@@ -60,17 +60,23 @@ ar_tag_target_ids: []
 #
 
 isp_controller_params:
-  kernel_width: 3
-  kernel_height: 3
-  kernel_horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
-  yaw_decay_left: 0.95
-  yaw_decay_right: 0.95
   K_P: 1.0
   K_D: 0.0
   potential_inertia: 0.0
+  erosion_kernel:
+    width: 0.05  # \in [0, 1] a proportion of image width
+    height: 0.75 # \in [0, 1] a proportion of image height
+    horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
+  yaw_decay:
+    left: 0.95
+    right: 0.95
   shape_parameters: # These shape parameters define the output control space.
     translation: 0.0
     range_min: -1.0 # This is taken as the minimum of the control range for output
     range_max: 1.0  # This is taken as the maximum of the control range for output
     alpha: 1.0
     beta: 1.0
+  guidance_gains:
+    throttle: 1.0
+    yaw: 1.0
+    control_set: 1.0

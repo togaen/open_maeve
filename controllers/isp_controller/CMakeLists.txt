@@ -15,7 +15,7 @@ add_definitions(-std=c++11)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS isp_field cv_bridge controller_interface_msgs)
+find_package(catkin REQUIRED COMPONENTS maeve_macros isp_field cv_bridge controller_interface_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -109,7 +109,7 @@ find_package(catkin REQUIRED COMPONENTS isp_field cv_bridge controller_interface
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME} ${PROJECT_NAME}_ros_interface
-  CATKIN_DEPENDS isp_field cv_bridge controller_interface_msgs
+  CATKIN_DEPENDS isp_field cv_bridge controller_interface_msgs maeve_macros
 #  DEPENDS system_lib
 )
 

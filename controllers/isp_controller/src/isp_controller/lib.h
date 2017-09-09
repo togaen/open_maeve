@@ -154,13 +154,15 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
                     const double right_decay);
 
 /**
- * @brief Max reduce the ISP to a single row vector.
+ * @brief Min reduce the ISP to a single row vector.
+ *
+ * @pre kernel_height shall correspond to at least one whole pixel.
  *
  * @param ISP The input image space potential field.
- * @param kernel_height The height of the max filter kernel.
+ * @param kernel_height Min filter kernel height from 0 - top, to 1 - bottom.
  * @param kernel_horizon Location of horizon line from 0 - top, to 1 - bottom.
  *
- * @return A single row vector of width ISP.cols that contains the max of each
+ * @return A single row vector of width ISP.cols that contains the min of each
  * column in ISP.
  */
 cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
@@ -173,10 +175,11 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
  * kernel horizon to compute a min potential tuple <p, \dot{p}> at each
  * column index.
  *
- * @pre h should be a row vector.
+ * @pre h should be a row vector and kernel_width shall correspond to at least
+ * one whole pixel.
  *
  * @param h The control horizon.
- * @param kernel_width The min filter kernel width.
+ * @param kernel_width Min filter kernel with from 0 - top, to 1 - bottom.
  *
  * @return A row vector that is a min filtered version of 'h'.
  */

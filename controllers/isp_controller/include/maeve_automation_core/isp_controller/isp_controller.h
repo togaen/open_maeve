@@ -33,20 +33,101 @@ class ISP_Controller {
    * @brief Container for controller parameters.
    */
   struct Params {
-    /** @brief Min filter kernel width. */
-    int kernel_width;
-    /** @brief Min filter kernel height. */
-    int kernel_height;
-    /** @brief Min filter kernel horizon line from 0 (top) to 1 (bottom). */
-    double kernel_horizon;
+    /**
+     * @brief Container for guidance gain values.
+     */
+    struct GuidanceGains {
+      /** @brief Apply this gain to the throttle guidance horizon. */
+      double throttle;
+      /** @brief Apply this gain to the yaw guidance horizon. */
+      double yaw;
+      /** @brief Apply this gain to the control set guidance horizon. */
+      double control_set;
+      /**
+       * @brief Whether the parameter values are valid.
+       *
+       * @return True if the values are valid; otherwise false.
+       */
+      __attribute__((warn_unused_result)) bool valid() const;
+      /**
+       * @brief Constructor: initialize to invalid values.
+       */
+      GuidanceGains();
+      /**
+       * @brief Constructor: explicit initialization.
+       *
+       * @param t The throttle gain \in (0, +\infty).
+       * @param y The yaw gain \in (0, +\infty).
+       * @param c The control_set gain \in (0, +\infty).
+       */
+      GuidanceGains(const double t, const double y, const double c);
+    };  // struct GuidanceGains
+
+    /**
+     * @brief Container for erosion parameters.
+     */
+    struct ErosionKernel {
+      /** @brief Min filter kernel width. */
+      double width;
+      /** @brief Min filter kernel height. */
+      double height;
+      /** @brief Min filter kernel horizon line from 0 (top) to 1 (bottom). */
+      double horizon;
+      /**
+       * @brief Whether the parameter values are valid.
+       *
+       * @return True if they are valid; otherwise false.
+       */
+      __attribute__((warn_unused_result)) bool valid() const;
+      /**
+       * @brief Constructor: initialize to invalid values.
+       */
+      ErosionKernel();
+      /**
+       * @brief Constructor: explicit initialization.
+       *
+       * @param w Width of the kernel \in [0, 1] as a portion of image width.
+       * @param ht Height of the kernel \in [0, 1] as a portion of image height.
+       * @param hr Horizon line to apply kernel to \in [0, 1] as a portion of
+       * image height.
+       */
+      ErosionKernel(const double w, const double ht, const double hr);
+    };  // struct ErosionKernel
+
+    struct HorizonDecay {
+      /** @brief Yaw guidance left decay \in [0, 1]. */
+      double left;
+      /** @brief Yaw guidance right decay \in [0, 1]. */
+      double right;
+      /**
+       * @brief Whether the parameter values are valid.
+       *
+       * @return True if the values are valid; otherwise false.
+       */
+      __attribute__((warn_unused_result)) bool valid() const;
+      /**
+       * @brief Constructor: initialize to invalid values.
+       */
+      HorizonDecay();
+      /**
+       * @brief Constructor: explicit initialization.
+       *
+       * @param l The left decay parameter \in [0, 1].
+       * @param r The right decay parameter \in [0, 1].
+       */
+      HorizonDecay(const double l, const double r);
+    };  // struct HorizonDecay
+
+    /** @brief Guidance gains. */
+    GuidanceGains guidance_gains;
+    /** @brief Erosion kernel parameters. */
+    ErosionKernel erosion_kernel;
+    /** @brief Yaw horizon decay parameters. */
+    HorizonDecay yaw_decay;
     /** @brief Camera focal length along x (pixels). */
     double focal_length_x;
     /** @brief The x-coordinate of the camera principal point (pixels). */
     double principal_point_x;
-    /** @brief Yaw bias left decay. */
-    double yaw_decay_left;
-    /** @brief Yaw bias right decay. */
-    double yaw_decay_right;
     /** @brief Proportional gain. */
     double K_P;
     /** @brief Derivative gain. */
@@ -56,6 +137,12 @@ class ISP_Controller {
     /** @brief Shape parameters used for safe control computation. */
     ShapeParameters shape_parameters;
     /**
+     * @brief Whether the parameters all have valid values.
+     *
+     * @return True if values are valid; otherwise false.
+     */
+    __attribute__((warn_unused_result)) bool valid() const;
+    /**
      * @brief Constructor: initialize to invalid values.
      */
     Params();
@@ -63,20 +150,18 @@ class ISP_Controller {
      * @brief Constructor: explicit initialization.
      *
      * @param sp The shape parameters object.
-     * @param k_w The min filter kernel width.
-     * @param k_ht The min filter kernel height.
-     * @param k_hr The min filter kernel horizon from 0 (top) to 1 (bottom).
+     * @param ek The erosion kernel object.
+     * @param yd The yaw decay object.
+     * @param gg The guidance gains object.
      * @param fx The camera focal length along x (pixels).
      * @param px The x-coordinate of the camera principal point (pixels).
-     * @param ld The yaw bias left decay.
-     * @param rd The yaw bias right decay.
      * @param kp Proportional gain for control projection.
      * @param kd Derivative gain for control projection.
      * @param pi Potential inertia to overcome to change direction.
      */
-    Params(const ShapeParameters& sp, const int k_w, const int k_ht,
-           const double k_hr, const double fx, const double px, const double ld,
-           const double rd, const double kp, const double kd, const double pi);
+    Params(const ShapeParameters& sp, const ErosionKernel& ek,
+           const HorizonDecay& yd, const GuidanceGains& gg, const double fx,
+           const double px, const double kp, const double kd, const double pi);
   };  // struct Params
 
   /**
@@ -122,4 +207,37 @@ class ISP_Controller {
  * @return The stream.
  */
 std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p);
+
+/**
+ * @brief Overload output stream operator for controller parameter set.
+ *
+ * @param o The output stream.
+ * @param sp The controller parameters object.
+ *
+ * @return The stream.
+ */
+std::ostream& operator<<(std::ostream& o,
+                         const ISP_Controller::Params::HorizonDecay& hd);
+
+/**
+ * @brief Overload output stream operator for controller parameter set.
+ *
+ * @param o The output stream.
+ * @param sp The controller parameters object.
+ *
+ * @return The stream.
+ */
+std::ostream& operator<<(std::ostream& o,
+                         const ISP_Controller::Params::GuidanceGains& gg);
+
+/**
+ * @brief Overload output stream operator for controller parameter set.
+ *
+ * @param o The output stream.
+ * @param sp The controller parameters object.
+ *
+ * @return The stream.
+ */
+std::ostream& operator<<(std::ostream& o,
+                         const ISP_Controller::Params::ErosionKernel& ek);
 }  // namespace maeve_automation_core

@@ -45,6 +45,11 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
 }
 }  // namespace
 
+TEST(ISP_Controller, testParamValidityChecks) {
+  // \TODO(me)
+  EXPECT_TRUE(false);
+}
+
 TEST(ISP_Controller, testDampedMaxThrottleIndex) {
   // \TODO(me)
   EXPECT_TRUE(false);
@@ -65,23 +70,28 @@ TEST(ISP_Controller, test) {
   const auto t = 0.0;
   const auto r_min = -1.0;
   const auto r_max = 1.0;
-  const auto a = 0.05;
-  const auto b = 0.5;
+  const auto a = 1.0;
+  const auto b = 1.0;
   const ShapeParameters sp(t, r_min, r_max, a, b);
 
   // Parameters for computing throttle and yaw from ISP.
-  const auto k_w = 3;
-  const auto k_ht = 3;
+  const auto k_w = 0.45;
+  const auto k_ht = 0.6;
   const auto k_hr = 0.5;
+  const auto ek = ISP_Controller::Params::ErosionKernel(k_w, k_ht, k_hr);
   const auto fx = 1.0;
   const auto px = static_cast<double>(cols) / 2.0;
   const auto ld = 0.95;
   const auto rd = 0.95;
+  const auto yd = ISP_Controller::Params::HorizonDecay(ld, rd);
+  const auto tg = 1.0;
+  const auto yg = 1.0;
+  const auto cg = 1.0;
+  const auto gg = ISP_Controller::Params::GuidanceGains(tg, yg, cg);
   const auto kp = 1.0;
   const auto kd = 1.0;
   const auto pi = epsilon;
-  const ISP_Controller::Params p(sp, k_w, k_ht, k_hr, fx, px, ld, rd, kp, kd,
-                                 pi);
+  const ISP_Controller::Params p(sp, ek, yd, gg, fx, px, kp, kd, pi);
 
   // Build controller.
   ISP_Controller controller(p);
@@ -92,8 +102,8 @@ TEST(ISP_Controller, test) {
 
     // Compute SD control.
     const auto u_star = controller.SD_Control(m, u_d);
-    EXPECT_NEAR(u_star.throttle, -0.4487937, epsilon);
-    EXPECT_NEAR(u_star.yaw, 0.6287985, epsilon);
+    EXPECT_NEAR(u_star.throttle, 0.99918, epsilon);
+    EXPECT_NEAR(u_star.yaw, 1.0, epsilon);
   }
 
   {
@@ -180,9 +190,10 @@ TEST(ISP_Controller, testBiasHorizon) {
   const auto center = 4;
 
   // Compute bias horizon.
-  cv::Mat bias_horizon = yawBias(center, width, left_decay, right_decay);
-  ASSERT_EQ(bias_horizon.rows, 1);
-  ASSERT_EQ(bias_horizon.cols, width);
+  cv::Mat guidance_horizon =
+      yawGuidance(center, width, left_decay, right_decay);
+  ASSERT_EQ(guidance_horizon.rows, 1);
+  ASSERT_EQ(guidance_horizon.cols, width);
 
   // Ground truth.
   std::vector<double> biases{std::pow(left_decay, 4),
@@ -194,9 +205,9 @@ TEST(ISP_Controller, testBiasHorizon) {
                              std::pow(right_decay, 2)};
 
   // Compare.
-  ASSERT_EQ(biases.size(), bias_horizon.cols);
+  ASSERT_EQ(biases.size(), guidance_horizon.cols);
   for (auto i = 0; i < biases.size(); ++i) {
-    const auto p = bias_horizon.at<cv::Point2d>(i);
+    const auto p = guidance_horizon.at<cv::Point2d>(i);
     EXPECT_NEAR(p.x, biases[i], epsilon);
   }
 }
@@ -219,8 +230,8 @@ TEST(ISP_Controller, testSafeControls) {
   EXPECT_TRUE(C_u.shapeParameters().valid());
 
   // Kernel parameters.
-  const auto kernel_width = 3;
-  const auto kernel_height = 3;
+  const auto kernel_width = 0.45;
+  const auto kernel_height = 0.6;
   const auto kernel_horizon = 0.5;
   const auto K_P = 1.0;
   const auto K_D = 0.0;
