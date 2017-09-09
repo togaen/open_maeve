@@ -24,6 +24,8 @@
 #include <cmath>
 #include <limits>
 
+#include "maeve_automation_core/maeve_macros/checks.h"
+
 namespace maeve_automation_core {
 namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -41,11 +43,14 @@ double ShapeParameters::rangeMidPoint() const {
 }
 
 bool ShapeParameters::valid() const {
-  const auto alpha_valid = (alpha >= 0.0) && (alpha <= 1.0);
-  const auto beta_valid = (beta >= 0.0) && (beta <= 1.0);
-  const auto range_valid = (range_min <= range_max);
-  const auto translation_valid = !std::isnan(translation);
-  return alpha_valid && beta_valid && range_valid && translation_valid;
+  // Perform checks.
+  CHECK_CONTAINS_CLOSED(alpha, 0.0, 1.0);
+  CHECK_CONTAINS_CLOSED(beta, 0.0, 1.0);
+  CHECK_LE(range_min, range_max);
+  CHECK_FINITE(translation);
+
+  // All good.
+  return true;
 }
 
 std::ostream& operator<<(std::ostream& o, const ShapeParameters& sp) {
