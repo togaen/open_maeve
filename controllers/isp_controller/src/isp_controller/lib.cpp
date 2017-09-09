@@ -55,7 +55,9 @@ int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
 
 cv::Mat controlSetGuidance(const cv::Mat& controls) {
   cv::Mat biasing_horizon = cv::Mat::zeros(1, controls.cols, CV_64FC2);
-  // \TODO(me)
+  // \TODO(me) Formulate this to behave like a balloon being pushed: suppression
+  // of potential values in one area result in proportional expansion of
+  // potential values elsewhere.
   return biasing_horizon;
 }
 

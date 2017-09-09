@@ -170,8 +170,10 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
       yawGuidance(col_d, h.cols, p_.yaw_decay.left, p_.yaw_decay.right);
 
   // Apply guidance fields.
-  const cv::Mat guided_h =
-      eroded_h + throttle_guidance + yaw_guidance + control_set_guidance;
+  const cv::Mat guided_h = eroded_h +
+                           p_.guidance_gains.throttle * throttle_guidance +
+                           p_.guidance_gains.yaw * yaw_guidance +
+                           p_.guidance_gains.control_set * control_set_guidance;
 
   // Project throttles onto [r_min, r_max].
   const cv::Mat throttle_h =
