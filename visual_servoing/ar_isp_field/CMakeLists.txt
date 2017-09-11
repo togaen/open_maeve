@@ -27,6 +27,7 @@ find_package(catkin REQUIRED COMPONENTS
   maeve_time_queue
   image_geometry
   image_transport
+  controller_interface_msgs
 )
 
 ## System dependencies are found with CMake's conventions

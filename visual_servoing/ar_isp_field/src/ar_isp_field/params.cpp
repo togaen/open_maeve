@@ -39,7 +39,8 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
   LOAD_PARAM(camera_topic);
   LOAD_PARAM(viz_isp_field_topic);
-  LOAD_PARAM(control_command_topic);
+  LOAD_PARAM(control_command_input_topic);
+  LOAD_PARAM(control_command_output_topic);
   LOAD_PARAM(ar_tag_obstacle_ids);
   LOAD_PARAM(ar_tag_target_ids);
   LOAD_PARAM(ar_frame_prefix);
@@ -114,6 +115,24 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
 }
 
 bool AR_ISPFieldParams::valid() const {
+  // Check this object's parameters.
+  CHECK_STRICTLY_POSITIVE(ar_time_queue_size);
+  CHECK_STRICTLY_POSITIVE(ar_time_queue_max_gap);
+  CHECK_STRICTLY_POSITIVE(ar_tag_max_age);
+  CHECK_STRICTLY_POSITIVE(ar_tag_size);
+  CHECK_NONEMPTY(ar_frame_prefix);
+  CHECK_NONEMPTY(camera_frame_name);
+  CHECK_NONEMPTY(camera_topic);
+  CHECK_NONEMPTY(viz_isp_field_topic);
+  CHECK_NONEMPTY(control_command_output_topic);
+  CHECK_NONEMPTY(control_command_input_topic);
+  CHECK_EQ(viz_potential_bounds.size(), 2);
+  for (const auto b : viz_potential_bounds) {
+    CHECK_FINITE(b);
+    CHECK_STRICTLY_POSITIVE(b);
+  }
+
+  // Return okay if all members are ok.
   return hard_constraint_transform.valid() &&
          soft_constraint_transform.valid() && isp_controller_params.valid();
 }

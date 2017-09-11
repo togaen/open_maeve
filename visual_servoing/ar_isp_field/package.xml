@@ -40,6 +40,8 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>ar_track_alvar</exec_depend>
+  <exec_depend>joystick_controller_2d</exec_depend>
+  <depend>controller_interface_msgs</depend>
   <depend>isp_field</depend>
   <depend>isp_controller</depend>
   <depend>ros_parameter_loading</depend>

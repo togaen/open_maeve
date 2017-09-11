@@ -87,9 +87,15 @@ AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
   camera_sub_ = it.subscribeCamera(
       params_.camera_topic, 1, &AR_ISPFieldNodeHandler::cameraCallback, this);
 
-  // Control command publisher.
-  control_command_pub_ = nh_.advertise<controller_interface_msgs::Command2D>(
-      params_.control_command_topic, 1);
+  // Desired control command input subscriber.
+  control_command_input_sub_ = nh_.subscribe(
+      params_.control_command_input_topic, 1,
+      &AR_ISPFieldNodeHandler::desiredControlCommandCallback, this);
+
+  // Control command output publisher.
+  control_command_output_pub_ =
+      nh_.advertise<controller_interface_msgs::Command2D>(
+          params_.control_command_output_topic, 1);
 
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
@@ -220,6 +226,12 @@ void AR_ISPFieldNodeHandler::initFieldStorage(
                 });
 }
 
+void AR_ISPFieldNodeHandler::desiredControlCommandCallback(
+    const controller_interface_msgs::Command2D::ConstPtr& msg) {
+  ROS_INFO_STREAM("Received " << msg->x << ", " << msg->y);
+  // \TODO(me)
+}
+
 void AR_ISPFieldNodeHandler::cameraCallback(
     const sensor_msgs::Image::ConstPtr& msg,
     const sensor_msgs::CameraInfoConstPtr& info_msg) {
@@ -268,8 +280,8 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   const auto u_star = isp_controller_.SD_Control(ISP, u_d);
 
   // Publish control.
-  if (!params_.control_command_topic.empty()) {
-    control_command_pub_.publish(
+  if (!params_.control_command_output_topic.empty()) {
+    control_command_output_pub_.publish(
         controlCommand2Command2D_Msg(u_star, msg->header));
   }
 
