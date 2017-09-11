@@ -26,9 +26,14 @@
 namespace maeve_automation_core {
 TEST(ISP_Controller_ROS, testROS_Interface) {
   ControlCommand cmd(1.3, 4.7);
+  // \TODO(me) Also test that header is set correctly.
   const auto msg = controlCommand2Command2D_Msg(cmd, std_msgs::Header());
   EXPECT_EQ(msg.x, cmd.throttle);
   EXPECT_EQ(msg.y, cmd.yaw);
+
+  const auto gsm = command2D_Msg2ControlCommand(msg);
+  EXPECT_EQ(gsm.throttle, cmd.throttle);
+  EXPECT_EQ(gsm.yaw, cmd.yaw);
 }
 }  // namespace maeve_automation_core
 

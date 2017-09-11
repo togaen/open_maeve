@@ -28,6 +28,7 @@
 #include <std_msgs/Header.h>
 #include <tf2_ros/transform_listener.h>
 #include <Eigen/Dense>
+#include <boost/lockfree/spsc_queue.hpp>
 #include <boost/optional.hpp>
 #include <opencv2/opencv.hpp>
 
@@ -170,6 +171,10 @@ class AR_ISPFieldNodeHandler {
 
   /** @brief Compute control commands from ISP field. */
   ISP_Controller isp_controller_;
+
+  /** @brief Use this queue to transfer command messages between callbacks. */
+  boost::lockfree::spsc_queue<ControlCommand, boost::lockfree::capacity<10>>
+      desired_command_queue_;
 
   /** @brief Camera image subscriber. */
   image_transport::CameraSubscriber camera_sub_;

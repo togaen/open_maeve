@@ -23,6 +23,7 @@
 
 #include <cv_bridge/cv_bridge.h>
 #include <tf2_eigen/tf2_eigen.h>
+#include <boost/optional.hpp>
 
 #include <algorithm>
 #include <limits>
@@ -228,19 +229,21 @@ void AR_ISPFieldNodeHandler::initFieldStorage(
 
 void AR_ISPFieldNodeHandler::desiredControlCommandCallback(
     const controller_interface_msgs::Command2D::ConstPtr& msg) {
-  ROS_INFO_STREAM("Received " << msg->x << ", " << msg->y);
-  // \TODO(me)
+  // ROS_INFO_STREAM("Received " << msg->x << ", " << msg->y);
+  if (!desired_command_queue_.push(command2D_Msg2ControlCommand(*msg))) {
+    ROS_INFO_STREAM("Pushed: " << msg->x << ", " << msg->y);
+  }
 }
 
 void AR_ISPFieldNodeHandler::cameraCallback(
     const sensor_msgs::Image::ConstPtr& msg,
     const sensor_msgs::CameraInfoConstPtr& info_msg) {
-  // Initialize camera model.
-  camera_model_.fromCameraInfo(info_msg);
-
   // Make sure field maps have storage allocated, but do it only once.
   static bool init = true;
   if (init) {
+    // Initialize camera model.
+    camera_model_.fromCameraInfo(info_msg);
+
     // Initialize ISP controller.
     params_.isp_controller_params.principal_point_x = camera_model_.cx();
     params_.isp_controller_params.focal_length_x = camera_model_.fx();
@@ -272,18 +275,21 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   // Compose fields into an ISP.
   cv::Mat ISP = computeISP();
 
-  // Compute desired control.
-  // \TODO(me): replace this with joystick input.
-  ControlCommand u_d(0.0 /* throttle */, 0.0 /* yaw */);
+  // Get most recent desired control.
+  boost::optional<ControlCommand> u_d = boost::none;
+  while (desired_command_queue_.pop(*u_d))
+    ;
+  if (!u_d) {
+    ROS_INFO_STREAM("No available command.");
+    return;
+  }
 
   // Compute SD control.
-  const auto u_star = isp_controller_.SD_Control(ISP, u_d);
+  const auto u_star = isp_controller_.SD_Control(ISP, *u_d);
 
   // Publish control.
-  if (!params_.control_command_output_topic.empty()) {
-    control_command_output_pub_.publish(
-        controlCommand2Command2D_Msg(u_star, msg->header));
-  }
+  control_command_output_pub_.publish(
+      controlCommand2Command2D_Msg(u_star, msg->header));
 
   // Do any requested visualization.
   visualize(ISP, msg->header);

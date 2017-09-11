@@ -30,4 +30,9 @@ controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
   msg.y = cmd.yaw;
   return msg;
 }
+
+ControlCommand command2D_Msg2ControlCommand(
+    const controller_interface_msgs::Command2D& msg) {
+  return ControlCommand(msg.x, msg.y);
+}
 }  // namespace maeve_automation_core

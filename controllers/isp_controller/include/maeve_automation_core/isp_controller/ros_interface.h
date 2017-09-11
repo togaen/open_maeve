@@ -34,4 +34,14 @@ namespace maeve_automation_core {
  */
 controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
     const ControlCommand& cmd, const std_msgs::Header& header);
+
+/**
+ * @brief Deserialize and return a control command object.
+ *
+ * @param msg The serialized version.
+ *
+ * @return The deserialized version.
+ */
+ControlCommand command2D_Msg2ControlCommand(
+    const controller_interface_msgs::Command2D& msg);
 }  // namespace maeve_automation_core
