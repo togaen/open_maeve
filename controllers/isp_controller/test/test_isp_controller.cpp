@@ -159,7 +159,7 @@ TEST(ISP_Controller, testYawColumnConversions) {
   const auto bound_extension = 10;
   for (auto i = -bound_extension; i < (cols + bound_extension); ++i) {
     const auto center_x = static_cast<double>(i) + 0.5;
-    const auto yaw = std::atan2(center_x - principal_point_x, focal_length_x);
+    const auto yaw = std::atan2(principal_point_x - center_x, focal_length_x);
     const auto computed_yaw =
         column2Yaw(m, i, focal_length_x, principal_point_x);
     const auto computed_column =
@@ -171,11 +171,11 @@ TEST(ISP_Controller, testYawColumnConversions) {
     } else {
       double bound_yaw;
       if (i < 0) {
-        bound_yaw = std::atan2(0.5 - principal_point_x, focal_length_x);
+        bound_yaw = std::atan2(principal_point_x - 0.5, focal_length_x);
         EXPECT_EQ(computed_column, 0);
       } else {
         bound_yaw =
-            std::atan2(m.cols - 0.5 - principal_point_x, focal_length_x);
+            std::atan2(principal_point_x + 0.5 - m.cols, focal_length_x);
         EXPECT_EQ(computed_column, m.cols - 1);
       }
       EXPECT_NEAR(bound_yaw, computed_yaw, epsilon);

@@ -81,8 +81,8 @@ T projectToRange(const T& val, const T& from_range_min, const T& from_range_max,
  *
  * This function computes the angular displacement in radians from the center of
  * the image plane to the center of a given image column. By convention,
- * negative yaw corresponds to displacements toward negative x (to the left),
- * and positive yaw to positive x (to the right).
+ * negative yaw corresponds to displacements toward positive camera x (to the
+ * right), and positive yaw to negative camera x (to the left).
  *
  * @param image_plane The image plane.
  * @param col The column index.
@@ -99,9 +99,8 @@ double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
  * @brief For a given image plane and angular offset, compute column index.
  *
  * This function compute the column index of the image plane column that
- * contains a ray offset by yaw from the optical axis. By convention, yaw is
- * negative when offset in the direction of negative x (to the left), and
- * positive in the direction of positive x (to the right).
+ * contains a ray offset by yaw from the optical axis. Sign convention for yaw
+ * is assumed to be that used by column2Yaw.
  *
  * @param image_plane The image plane.
  * @param yaw The angular offset from optical axis.

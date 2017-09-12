@@ -44,12 +44,12 @@ void printHorizon(const cv::Mat& h) {
 double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
                   const double p_x) {
   const auto bounded_col = projectToInterval(0, image_plane.cols - 1, col);
-  return std::atan2(static_cast<double>(bounded_col) - p_x + 0.5, f_x);
+  return std::atan2(p_x - static_cast<double>(bounded_col) - 0.5, f_x);
 }
 
 int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
                const double p_x) {
-  const auto col = static_cast<int>(f_x * std::tan(yaw) + p_x);
+  const auto col = static_cast<int>(p_x - f_x * std::tan(yaw));
   return projectToInterval(0, image_plane.cols - 1, col);
 }
 
