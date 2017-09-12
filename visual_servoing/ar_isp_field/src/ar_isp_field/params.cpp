@@ -129,7 +129,6 @@ bool AR_ISPFieldParams::valid() const {
   CHECK_EQ(viz_potential_bounds.size(), 2);
   for (const auto b : viz_potential_bounds) {
     CHECK_FINITE(b);
-    CHECK_STRICTLY_POSITIVE(b);
   }
 
   // Return okay if all members are ok.
