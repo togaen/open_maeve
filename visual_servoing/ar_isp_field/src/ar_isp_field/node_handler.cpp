@@ -88,10 +88,8 @@ AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
   camera_sub_ = it.subscribeCamera(
       params_.camera_topic, 1, &AR_ISPFieldNodeHandler::cameraCallback, this);
 
-  // Desired control command input subscriber.
-  control_command_input_sub_ = nh_.subscribe(
-      params_.control_command_input_topic, 1,
-      &AR_ISPFieldNodeHandler::desiredControlCommandCallback, this);
+  // Set up command handler.
+  command2d_mgr_.initialize(nh_, params_.control_command_input_topic);
 
   // Control command output publisher.
   control_command_output_pub_ =
@@ -227,14 +225,6 @@ void AR_ISPFieldNodeHandler::initFieldStorage(
                 });
 }
 
-void AR_ISPFieldNodeHandler::desiredControlCommandCallback(
-    const controller_interface_msgs::Command2D::ConstPtr& msg) {
-  // ROS_INFO_STREAM("Received " << msg->x << ", " << msg->y);
-  if (desired_command_queue_.push(command2D_Msg2ControlCommand(*msg))) {
-    // ROS_INFO_STREAM("Pushed: " << msg->x << ", " << msg->y);
-  }
-}
-
 void AR_ISPFieldNodeHandler::cameraCallback(
     const sensor_msgs::Image::ConstPtr& msg,
     const sensor_msgs::CameraInfoConstPtr& info_msg) {
@@ -278,14 +268,15 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   // Do any requested visualization.
   visualize(ISP, msg->header);
 
-  // Get most recent desired control.
-  ControlCommand u_d;
-  while (desired_command_queue_.pop(u_d))
-    ;
-  if (!u_d.valid()) {
+  // Get most recent desired control message.
+  const auto cmd_msg = command2d_mgr_.mostRecentMsg();
+  if (!cmd_msg) {
     // ROS_INFO_STREAM("No available command.");
     return;
   }
+
+  // Convert to control command.
+  const auto u_d = command2D_Msg2ControlCommand(*cmd_msg);
 
   // Compute SD control.
   const auto u_star = isp_controller_.SD_Control(ISP, u_d);
