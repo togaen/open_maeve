@@ -21,82 +21,19 @@
  */
 #include <gtest/gtest.h>
 
-#include "maeve_automation_core/maeve_macros/checks.h"
+#include "maeve_automation_core/isp_controller/ros_interface.h"
 
 namespace maeve_automation_core {
-TEST(MaeveMacros, testNotNaN) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
+TEST(ISP_Controller_ROS, testROS_Interface) {
+  ControlCommand cmd(1.3, 4.7);
+  // \TODO(me) Also test that header is set correctly.
+  const auto msg = controlCommand2Command2D_Msg(cmd, std_msgs::Header());
+  EXPECT_EQ(msg.x, cmd.throttle);
+  EXPECT_EQ(msg.y, cmd.yaw);
 
-TEST(MaeveMacros, testFinite) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testInfinite) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testNE) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testEQ) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testEven) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testOdd) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testLT) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testLE) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testGT) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testGE) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testContainsClosed) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testContainsOpen) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testStrictlyPositive) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testNonempty) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  const auto gsm = command2D_Msg2ControlCommand(msg);
+  EXPECT_EQ(gsm.throttle, cmd.throttle);
+  EXPECT_EQ(gsm.yaw, cmd.yaw);
 }
 }  // namespace maeve_automation_core
 

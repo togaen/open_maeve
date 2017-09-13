@@ -19,88 +19,43 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include <gtest/gtest.h>
+#include "maeve_automation_core/isp_field/shape_parameters.h"
+
+#include <limits>
 
 #include "maeve_automation_core/maeve_macros/checks.h"
 
 namespace maeve_automation_core {
-TEST(MaeveMacros, testNotNaN) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+namespace {
+static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+}  // namespace
+
+ShapeParameters::ShapeParameters() : ShapeParameters(NaN, NaN, NaN, NaN, NaN) {}
+
+ShapeParameters::ShapeParameters(const double t, const double r_min,
+                                 const double r_max, const double a,
+                                 const double b)
+    : translation(t), range_min(r_min), range_max(r_max), alpha(a), beta(b) {}
+
+double ShapeParameters::rangeMidPoint() const {
+  return (range_min + range_max) / 2.0;
 }
 
-TEST(MaeveMacros, testFinite) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+bool ShapeParameters::valid() const {
+  // Perform checks.
+  CHECK_CONTAINS_CLOSED(alpha, 0.0, 1.0);
+  CHECK_CONTAINS_CLOSED(beta, 0.0, 1.0);
+  CHECK_LE(range_min, range_max);
+  CHECK_FINITE(translation);
+
+  // All good.
+  return true;
 }
 
-TEST(MaeveMacros, testInfinite) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+std::ostream& operator<<(std::ostream& o, const ShapeParameters& sp) {
+  return o << "[t: " << sp.translation << ", r_min: " << sp.range_min
+           << ", r_mid: " << sp.rangeMidPoint() << ", r_max: " << sp.range_max
+           << ", alpha: " << sp.alpha << ", beta: " << sp.beta << "]";
 }
 
-TEST(MaeveMacros, testNE) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testEQ) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testEven) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testOdd) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testLT) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testLE) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testGT) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testGE) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testContainsClosed) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testContainsOpen) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testStrictlyPositive) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
-
-TEST(MaeveMacros, testNonempty) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
-}
 }  // namespace maeve_automation_core
-
-int main(int argc, char** argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

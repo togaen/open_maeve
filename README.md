@@ -32,7 +32,7 @@ the packages in this repository. For details and download, see
 
 ## Collaboration ##
 
-Collaboration is welcome and encouraged using [feature branches](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow) or [forks](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) :-).
+Collaboration is welcome and encouraged using [feature branches](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow) or [forks](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow).
 
 Anyone with a Bitbucket account may contribute, but users of the Maeve
 Automation Ubuntu MATE platform for Raspberry Pi get built-in team member

@@ -1,0 +1,12 @@
+<launch>
+  <node
+    name="ar_isp_field"
+    pkg="ar_isp_field"
+    type="ar_isp_field_node"
+    output="screen"> 
+    <rosparam
+      command="load"
+      file="$(find ar_isp_field)/params/params.yaml"/>
+  </node>
+  <include file="$(find ar_isp_field)/launch/markers.launch"/>
+</launch>
