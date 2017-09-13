@@ -21,6 +21,7 @@
  */
 #include "maeve_automation_core/isp_controller/control_command.h"
 
+#include <cmath>
 #include <iostream>
 #include <limits>
 
@@ -33,6 +34,12 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 
 std::ostream& operator<<(std::ostream& o, const ControlCommand& u) {
   return o << "{" << u.throttle << ", " << u.yaw << "}";
+}
+
+bool ControlCommand::valid() const {
+  const auto throttle_okay = !std::isnan(throttle) && std::isfinite(throttle);
+  const auto yaw_okay = !std::isnan(yaw) && std::isfinite(yaw);
+  return throttle_okay && yaw_okay;
 }
 
 ControlCommand::ControlCommand() : throttle(NaN), yaw(NaN) {}

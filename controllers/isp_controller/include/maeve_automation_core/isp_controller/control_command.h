@@ -35,6 +35,13 @@ struct ControlCommand {
   double yaw;
 
   /**
+   * @brief Whether members are set to valid control command values.
+   *
+   * @return True if the numbers are meaningful; otherwise false.
+   */
+  bool valid() const;
+
+  /**
    * @brief Constructor: initialize to invalid values.
    */
   ControlCommand();
