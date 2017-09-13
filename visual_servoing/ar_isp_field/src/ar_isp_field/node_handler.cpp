@@ -230,8 +230,8 @@ void AR_ISPFieldNodeHandler::initFieldStorage(
 void AR_ISPFieldNodeHandler::desiredControlCommandCallback(
     const controller_interface_msgs::Command2D::ConstPtr& msg) {
   // ROS_INFO_STREAM("Received " << msg->x << ", " << msg->y);
-  if (!desired_command_queue_.push(command2D_Msg2ControlCommand(*msg))) {
-    ROS_INFO_STREAM("Pushed: " << msg->x << ", " << msg->y);
+  if (desired_command_queue_.push(command2D_Msg2ControlCommand(*msg))) {
+    // ROS_INFO_STREAM("Pushed: " << msg->x << ", " << msg->y);
   }
 }
 
@@ -275,24 +275,25 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   // Compose fields into an ISP.
   cv::Mat ISP = computeISP();
 
+  // Do any requested visualization.
+  visualize(ISP, msg->header);
+
   // Get most recent desired control.
-  boost::optional<ControlCommand> u_d = boost::none;
-  while (desired_command_queue_.pop(*u_d))
+  ControlCommand u_d;
+  while (desired_command_queue_.pop(u_d))
     ;
-  if (!u_d) {
-    ROS_INFO_STREAM("No available command.");
+  if (!u_d.valid()) {
+    // ROS_INFO_STREAM("No available command.");
     return;
   }
 
   // Compute SD control.
-  const auto u_star = isp_controller_.SD_Control(ISP, *u_d);
+  const auto u_star = isp_controller_.SD_Control(ISP, u_d);
+  // ROS_INFO_STREAM("u_d: " << u_d << ", u_star: " << u_star);
 
   // Publish control.
   control_command_output_pub_.publish(
       controlCommand2Command2D_Msg(u_star, msg->header));
-
-  // Do any requested visualization.
-  visualize(ISP, msg->header);
 }
 
 cv::Mat AR_ISPFieldNodeHandler::computeISP() const {
