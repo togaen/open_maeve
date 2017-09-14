@@ -26,6 +26,7 @@
 #include <limits>
 
 #include "controller_interface_msgs/Command2D.h"
+#include "maeve_automation_core/maeve_macros/checks.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -37,9 +38,12 @@ std::ostream& operator<<(std::ostream& o, const ControlCommand& u) {
 }
 
 bool ControlCommand::valid() const {
-  const auto throttle_okay = !std::isnan(throttle) && std::isfinite(throttle);
-  const auto yaw_okay = !std::isnan(yaw) && std::isfinite(yaw);
-  return throttle_okay && yaw_okay;
+  // Control value checks.
+  CHECK_CONTAINS_CLOSED(throttle, -1.0, 1.0);
+  CHECK_CONTAINS_CLOSED(yaw, -1.0, 1.0);
+
+  // All good.
+  return true;
 }
 
 ControlCommand::ControlCommand() : throttle(NaN), yaw(NaN) {}
