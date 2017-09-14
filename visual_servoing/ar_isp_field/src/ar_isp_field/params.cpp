@@ -52,6 +52,9 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(verbose);
   LOAD_PARAM(ar_tag_max_age);
 
+  LOAD_NS_PARAM(default_guidance_control, throttle);
+  LOAD_NS_PARAM(default_guidance_control, yaw);
+
   LOAD_NS_PARAM(hard_constraint_transform, translation);
   LOAD_NS_PARAM(hard_constraint_transform, alpha);
   LOAD_NS_PARAM(hard_constraint_transform, beta);
@@ -132,7 +135,8 @@ bool AR_ISPFieldParams::valid() const {
   }
 
   // Return okay if all members are ok.
-  return hard_constraint_transform.valid() &&
+  return default_guidance_control.valid() &&
+         hard_constraint_transform.valid() &&
          soft_constraint_transform.valid() && isp_controller_params.valid();
 }
 

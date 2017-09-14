@@ -66,6 +66,11 @@ ar_tag_target_ids: [0]
 # Visual servoing parameters
 #
 
+# Use these values if the controller launches before any explicit guidance is available.
+default_guidance_control:
+  throttle: 0.0
+  yaw: 0.0
+
 isp_controller_params:
   K_P: 1.0
   K_D: 0.0

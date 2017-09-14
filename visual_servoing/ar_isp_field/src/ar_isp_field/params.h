@@ -41,6 +41,9 @@ struct AR_ISPFieldParams : public ParamsBase {
   /** @brief Soft constraint transform parameters. */
   ShapeParameters soft_constraint_transform;
 
+  /** @brief Guidance control to use absent explicit user input. */
+  ControlCommand default_guidance_control;
+
   /** @brief Print terminal output? */
   bool verbose;
 
