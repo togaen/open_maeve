@@ -1,11 +1,18 @@
 <launch>
-	<arg name="marker_size" default="4.2" />
-	<arg name="max_new_marker_error" default="0.1" />
-	<arg name="max_track_error" default="0.2" />
+  <!--
+       Camera Parameters: These should match corresponding parameters in params.yaml
+       TODO(me): Unify parameters between nodes
+  -->
   <arg name="cam_image_topic" default="/cv_camera_node/image_raw" />
   <arg name="cam_info_topic" default="/cv_camera_node/camera_info" />
 	<arg name="output_frame" default="camera" />
 
+  <!-- Marker Parameters -->
+	<arg name="marker_size" default="4.2" />
+	<arg name="max_new_marker_error" default="0.1" />
+	<arg name="max_track_error" default="0.2" />
+
+  <!-- Fire it up -->
 	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
 		<param name="marker_size"           type="double" value="$(arg marker_size)" />
 		<param name="max_new_marker_error"  type="double" value="$(arg max_new_marker_error)" />
