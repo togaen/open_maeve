@@ -30,7 +30,7 @@
 
 namespace maeve_automation_core {
 namespace {
-static const auto epsilon = 0.00001;
+static const auto epsilon = 0.0001;
 cv::Mat dummyMatrix(const int rows, const int cols) {
   cv::Mat m = cv::Mat(rows, cols, CV_64FC2);
   const auto offset = rows * cols;
@@ -103,7 +103,7 @@ TEST(ISP_Controller, test) {
     // Compute SD control.
     const auto u_star = controller.SD_Control(m, u_d);
     EXPECT_NEAR(u_star.throttle, 0.99918, epsilon);
-    EXPECT_NEAR(u_star.yaw, 1.0, epsilon);
+    EXPECT_NEAR(u_star.yaw, -1.0, epsilon);
   }
 
   {
@@ -127,17 +127,19 @@ TEST(ISP_Controller, test) {
 }
 
 TEST(ISP_Controller, testProjetToRange) {
-  const auto from_range_min = -3.0;
-  const auto from_range_max = 7.0;
-  const auto to_range_min = -1.0;
-  const auto to_range_max = 4.0;
+  {
+    const auto from_range_min = -3.0;
+    const auto from_range_max = 7.0;
+    const auto to_range_min = -1.0;
+    const auto to_range_max = 4.0;
 
-  EXPECT_NEAR(projectToRange(-2.0, from_range_min, from_range_max, to_range_min,
-                             to_range_max),
-              -0.5, epsilon);
-  EXPECT_NEAR(projectToRange(0.0, from_range_min, from_range_max, to_range_min,
-                             to_range_max),
-              0.5, epsilon);
+    EXPECT_NEAR(projectToRange(-2.0, from_range_min, from_range_max,
+                               to_range_min, to_range_max),
+                -0.5, epsilon);
+    EXPECT_NEAR(projectToRange(0.0, from_range_min, from_range_max,
+                               to_range_min, to_range_max),
+                0.5, epsilon);
+  }
 }
 
 TEST(ISP_Controller, testProjectToInterval) {
@@ -154,17 +156,36 @@ TEST(ISP_Controller, testYawColumnConversions) {
   const auto cols = 13;
   cv::Mat m = dummyMatrix(rows, cols);
   const auto focal_length_x = 3.7;
-  const auto principal_point_x = static_cast<double>(cols / 2) + 1.3;
+  const auto principal_point_x = static_cast<double>(cols / 2);
 
   const auto bound_extension = 10;
   for (auto i = -bound_extension; i < (cols + bound_extension); ++i) {
     const auto center_x = static_cast<double>(i) + 0.5;
-    const auto yaw = std::atan2(principal_point_x - center_x, focal_length_x);
+    const auto yaw = std::atan2(
+        principal_point_x -
+            projectToInterval(0.0, static_cast<double>(cols), center_x),
+        focal_length_x);
     const auto computed_yaw =
         column2Yaw(m, i, focal_length_x, principal_point_x);
     const auto computed_column =
         yaw2Column(m, yaw, focal_length_x, principal_point_x);
 
+    // Sign convention check.
+    if (i < principal_point_x) {
+      EXPECT_LT(computed_column, principal_point_x)
+          << "i: " << i << ", yaw: " << yaw;
+      EXPECT_FALSE(std::signbit(computed_yaw))
+          << "i: " << i << ", mid: " << principal_point_x
+          << ", yaw: " << computed_yaw;
+    } else if (i > principal_point_x) {
+      EXPECT_GT(computed_column, principal_point_x);
+      EXPECT_TRUE(std::signbit(computed_yaw))
+          << "i: " << i << ", mid: " << principal_point_x
+          << ", yaw: " << computed_yaw;
+    }
+    continue;
+
+    // Value check.
     if ((i >= 0) && (i < cols)) {
       EXPECT_NEAR(yaw, computed_yaw, epsilon);
       EXPECT_EQ(computed_column, i);

@@ -85,15 +85,15 @@ T projectToRange(const T& val, const T& from_range_min, const T& from_range_max,
  * right), and positive yaw to negative camera x (to the left).
  *
  * @param image_plane The image plane.
- * @param col The column index.
+ * @param col The column index (may be fractional).
  * @param f_x The focal length (pixels) along x.
  * @param p_x The x-coordinate of the camera principal point.
  *
  * @return The angular displacement between the column at 'col' and the optical
  * axis.
  */
-double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
-                  const double p_x);
+double column2Yaw(const cv::Mat& image_plane, const double col,
+                  const double f_x, const double p_x);
 
 /**
  * @brief For a given image plane and angular offset, compute column index.
@@ -107,11 +107,11 @@ double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
  * @param f_x The focal length (pixels) along x.
  * @param p_x The x-coordinate of the camera principal point.
  *
- * @return The column index of image_plane containing a ray offset from the
- * optical axis by yaw.
+ * @return The column index (may be fractional) of image_plane containing a ray
+ * offset from the optical axis by yaw.
  */
-int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
-               const double p_x);
+double yaw2Column(const cv::Mat& image_plane, const double yaw,
+                  const double f_x, const double p_x);
 
 /**
  * @brief Compute a guidance horizon based on availability of controls.

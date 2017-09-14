@@ -41,16 +41,18 @@ void printHorizon(const cv::Mat& h) {
   std::cout << "\n<<<\n";
 }
 
-double column2Yaw(const cv::Mat& image_plane, const int col, const double f_x,
-                  const double p_x) {
-  const auto bounded_col = projectToInterval(0, image_plane.cols - 1, col);
+double column2Yaw(const cv::Mat& image_plane, const double col,
+                  const double f_x, const double p_x) {
+  const auto bounded_col =
+      projectToInterval(0.0, static_cast<double>(image_plane.cols - 1), col);
   return std::atan2(p_x - static_cast<double>(bounded_col) - 0.5, f_x);
 }
 
-int yaw2Column(const cv::Mat& image_plane, const double yaw, const double f_x,
-               const double p_x) {
-  const auto col = static_cast<int>(p_x - f_x * std::tan(yaw));
-  return projectToInterval(0, image_plane.cols - 1, col);
+double yaw2Column(const cv::Mat& image_plane, const double yaw,
+                  const double f_x, const double p_x) {
+  const auto offset = f_x * std::tan(yaw);
+  const auto col = p_x - offset;
+  return projectToInterval(0.0, static_cast<double>(image_plane.cols - 1), col);
 }
 
 cv::Mat controlSetGuidance(const cv::Mat& controls) {
@@ -149,10 +151,12 @@ cv::Mat projectThrottlesToControlSpace(
 double projectYawToControlSpace(
     const cv::Mat& h, const PotentialTransform<ConstraintType::SOFT>& C_u,
     const double fx, const double px, const double yaw) {
-  const auto yaw_min = column2Yaw(h, 0, fx, px);
-  const auto yaw_max = column2Yaw(h, h.cols - 1, fx, px);
-  return projectToRange(yaw, yaw_min, yaw_max, C_u.shapeParameters().range_min,
-                        C_u.shapeParameters().range_max);
+  const auto yaw_max = column2Yaw(h, 0.5, fx, px);
+  const auto yaw_min = column2Yaw(h, static_cast<double>(h.cols) - 0.5, fx, px);
+  const auto y =
+      projectToRange(yaw, yaw_min, yaw_max, C_u.shapeParameters().range_min,
+                     C_u.shapeParameters().range_max);
+  return y;
 }
 
 int dampedMaxThrottleIndex(const cv::Mat& throttle_h,
