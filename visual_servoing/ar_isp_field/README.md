@@ -40,6 +40,8 @@ In order to use the node:
 
 ## Parameters: params/params.yaml ##
 
+Note that there are also camera parameters specified in the markers.launch launch file. These need to correspond to the camera parameters in params.yaml. At some point parameters should be unified between nodes.
+
 The below parameters govern node behavior:
 
 * camera\_topic (default '/cv\_camera\_node/image\_raw'): The input camera topic.
@@ -105,5 +107,5 @@ The below govern the behavior of the ISP controller:
 ## Launch Files ##
 
 * launch.launch: This loads the `params/params.yaml` parameter file and launches all nodes.
-* markers.launch: This loads the ar\_track\_alvar node to perform AR tag tracker.
+* markers.launch: This loads the ar\_track\_alvar node to perform AR tag tracker. Note: the camera parameters in this launch file need to correspond to those specified in params.yaml
 * rviz.launch: This loads RViz configured to display camera output and ISP field visualizations.
