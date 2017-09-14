@@ -166,8 +166,8 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
   // Compute guidance fields.
   const cv::Mat throttle_guidance = throttleGuidance(u_d.throttle, h.cols);
   const cv::Mat control_set_guidance = controlSetGuidance(throttle_guidance);
-  const cv::Mat yaw_guidance =
-      yawGuidance(col_d, h.cols, p_.yaw_decay.left, p_.yaw_decay.right);
+  const cv::Mat yaw_guidance = yawGuidance(
+      static_cast<int>(col_d), h.cols, p_.yaw_decay.left, p_.yaw_decay.right);
 
   // Apply guidance fields.
   const cv::Mat guided_h = eroded_h +
@@ -180,14 +180,13 @@ ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
       projectThrottlesToControlSpace(guided_h, C_u_, p_.K_P, p_.K_D);
 
   // Find the index of the desired control command.
-  const auto control_idx =
-      dampedMaxThrottleIndex(throttle_h, guided_h, p_.potential_inertia, col_d);
+  const auto control_idx = dampedMaxThrottleIndex(
+      throttle_h, guided_h, p_.potential_inertia, static_cast<int>(col_d));
 
   // Compute yaw control command.
-  const auto yaw = column2Yaw(throttle_h, control_idx, p_.focal_length_x,
-                              p_.principal_point_x);
-
-  // Project yaw to [range_min, range_max].
+  const auto yaw =
+      column2Yaw(throttle_h, static_cast<double>(control_idx) + 0.5,
+                 p_.focal_length_x, p_.principal_point_x);
   cmd.yaw = projectYawToControlSpace(throttle_h, C_u_, p_.focal_length_x,
                                      p_.principal_point_x, yaw);
 

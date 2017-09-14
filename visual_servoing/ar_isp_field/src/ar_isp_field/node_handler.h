@@ -28,7 +28,6 @@
 #include <std_msgs/Header.h>
 #include <tf2_ros/transform_listener.h>
 #include <Eigen/Dense>
-#include <boost/lockfree/spsc_queue.hpp>
 #include <boost/optional.hpp>
 #include <opencv2/opencv.hpp>
 
@@ -40,7 +39,7 @@
 
 #include "ar_isp_field/geometry.h"
 #include "ar_isp_field/params.h"
-#include "controller_interface_msgs/Command2D.h"
+#include "maeve_automation_core/controller_interface_msgs/command2d_manager.h"
 #include "maeve_automation_core/isp_controller/isp_controller.h"
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 #include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
@@ -132,14 +131,6 @@ class AR_ISPFieldNodeHandler {
                       const sensor_msgs::CameraInfoConstPtr& info_msg);
 
   /**
-   * @brief Callback to recieve the desired input control command.
-   *
-   * @param msg The ROS message containing the control command.
-   */
-  void desiredControlCommandCallback(
-      const controller_interface_msgs::Command2D::ConstPtr& msg);
-
-  /**
    * @brief Stub function to compute potential field.
    *
    * @param timestamp The timestamp for which to compute the potential field.
@@ -166,15 +157,14 @@ class AR_ISPFieldNodeHandler {
   std::vector<cv::Point2d> projectPoints(
       const Eigen::Affine3d& camera_T_artag) const;
 
+  /** @brief Manager for retrieving most recent control commands. */
+  Command2D_Manager command2d_mgr_;
+
   /** @brief Node parameters. */
   AR_ISPFieldParams params_;
 
   /** @brief Compute control commands from ISP field. */
   ISP_Controller isp_controller_;
-
-  /** @brief Use this queue to transfer command messages between callbacks. */
-  boost::lockfree::spsc_queue<ControlCommand, boost::lockfree::capacity<10>>
-      desired_command_queue_;
 
   /** @brief Camera image subscriber. */
   image_transport::CameraSubscriber camera_sub_;
