@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /Camera1
         - /ISP1
+        - /ISP1/Status1
       Splitter Ratio: 0.5
     Tree Height: 1041
   - Class: rviz/Selection
