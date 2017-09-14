@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find maeve_cameras)/launch/raspicam_node.launch"/>
+  <include file="$(find donkey_vehicle_controller)/launch/launch.launch">
+    <arg name="command2D_topic" value="$(arg topic)"/>
+  </include>
+</launch>

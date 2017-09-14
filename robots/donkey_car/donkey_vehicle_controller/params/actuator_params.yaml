@@ -1,10 +1,6 @@
-# Listen to Command2D messages on this topic. The incoming commands are
-# scaled to the pulse ranges [min, max] of the actuators.
-command2D_topic: '/joystick_controller_2d/command'
-
 #  Channel and PWM settings for the throttle (x control axis) actuator.
 throttle_actuator:
-  debug_only: false # If true, prints commands rather than sending them to vehicle.
+  debug_only: true # If true, prints commands rather than sending them to vehicle.
   channel:    0
   max_pulse:  500
   zero_pulse: 370
@@ -12,7 +8,7 @@ throttle_actuator:
 
 # Channel and PWM settings for the steering (y control axis) actuator.
 steering_actuator:
-  debug_only: false # If true, prints commands rather than sending them to vehicle.
+  debug_only: true # If true, prints commands rather than sending them to vehicle.
   channel:     1
   max_pulse:  460 # left
   zero_pulse: 360
