@@ -51,23 +51,24 @@ class Controller:
     def update(self, cmd):
         if cmd < 0:
             pulse = map_index(
-                cmd,
+                cmd * self.params['min_pulse_scale'],
                 self.RANGE_MIN,
                 0,
                 self.params['min_pulse'],
                 self.params['zero_pulse'])
         else:
             pulse = map_index(
-                cmd,
+                cmd * self.params['max_pulse_scale'],
                 0,
                 self.RANGE_MAX,
                 self.params['zero_pulse'],
                 self.params['max_pulse'])
 
-        if self.params['debug_only']:
+        if self.params['verbose']:
             rospy.loginfo(
                 'set ' + str(pulse) + ' to channel ' + str(self.params['channel']))
-        else:
+
+        if not self.params['debug_only']:
             self.controller.set_pulse(pulse)
 
 

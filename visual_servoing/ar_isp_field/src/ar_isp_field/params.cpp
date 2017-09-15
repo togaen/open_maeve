@@ -33,7 +33,8 @@ AR_ISPFieldParams::AR_ISPFieldParams()
       ar_time_queue_size(-1),
       ar_time_queue_max_gap(NaN),
       ar_tag_max_age(NaN),
-      ar_tag_size(NaN) {}
+      ar_tag_size(NaN),
+      target_reward(NaN) {}
 
 bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
@@ -51,6 +52,10 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(viz_potential_bounds);
   LOAD_PARAM(verbose);
   LOAD_PARAM(ar_tag_max_age);
+  LOAD_PARAM(target_reward);
+
+  LOAD_NS_PARAM(default_guidance_control, throttle);
+  LOAD_NS_PARAM(default_guidance_control, yaw);
 
   LOAD_NS_PARAM(hard_constraint_transform, translation);
   LOAD_NS_PARAM(hard_constraint_transform, alpha);
@@ -120,6 +125,7 @@ bool AR_ISPFieldParams::valid() const {
   CHECK_STRICTLY_POSITIVE(ar_time_queue_max_gap);
   CHECK_STRICTLY_POSITIVE(ar_tag_max_age);
   CHECK_STRICTLY_POSITIVE(ar_tag_size);
+  CHECK_NOT_NAN(target_reward);
   CHECK_NONEMPTY(ar_frame_prefix);
   CHECK_NONEMPTY(camera_frame_name);
   CHECK_NONEMPTY(camera_topic);
@@ -132,7 +138,8 @@ bool AR_ISPFieldParams::valid() const {
   }
 
   // Return okay if all members are ok.
-  return hard_constraint_transform.valid() &&
+  return default_guidance_control.valid() &&
+         hard_constraint_transform.valid() &&
          soft_constraint_transform.valid() && isp_controller_params.valid();
 }
 

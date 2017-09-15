@@ -1,5 +1,17 @@
 <launch>
-  <node name="donkey_vehicle_controller" pkg="donkey_vehicle_controller" type="donkey_vehicle_controller_node.py" output="screen"> 
-    <rosparam command="load" file="$(find donkey_vehicle_controller)/params/actuator_params.yaml"/>
+  <!-- Listen to Command2D messages on this topic. The incoming commands are
+       scaled to the pulse ranges [min, max] of the actuators. -->
+  <arg name="command2D_topic" default="/joystick_controller_2d/command"/>
+
+  <!-- Launch node. -->
+  <node
+    name="donkey_vehicle_controller"
+    pkg="donkey_vehicle_controller"
+    type="donkey_vehicle_controller_node.py"
+    output="screen">
+    <rosparam
+      command="load"
+      file="$(find donkey_vehicle_controller)/params/actuator_params.yaml"/>
+    <param name="command2D_topic" value="$(arg command2D_topic)"/>
   </node>
 </launch>

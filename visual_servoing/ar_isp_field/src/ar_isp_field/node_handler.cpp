@@ -194,7 +194,7 @@ bool AR_ISPFieldNodeHandler::computePotentialFields(
         // Compute potential values.
         const auto p_value = (constraint_type == ConstraintType::HARD)
                                  ? hc_(cv::Point2d(tau, tau_dot))
-                                 : sc_(cv::Point2d(tau, tau_dot));
+                                 : sc_(cv::Point2d(params_.target_reward, 0.0));
 
         // Print output?
         if (params_.verbose && std::isfinite(tau)) {
@@ -268,15 +268,19 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   // Do any requested visualization.
   visualize(ISP, msg->header);
 
-  // Get most recent desired control message.
-  const auto cmd_msg = command2d_mgr_.mostRecentMsg();
-  if (!cmd_msg) {
-    // ROS_INFO_STREAM("No available command.");
-    return;
+  // Get most recent desired control.
+  ControlCommand u_d;
+  if (const auto cmd_msg = command2d_mgr_.mostRecentMsg()) {
+    u_d = command2D_Msg2ControlCommand(*cmd_msg);
+  } else {
+    u_d = params_.default_guidance_control;
   }
 
-  // Convert to control command.
-  const auto u_d = command2D_Msg2ControlCommand(*cmd_msg);
+  // Sanity check.
+  if (!u_d.valid()) {
+    ROS_ERROR_STREAM("u_d not valid: " << u_d << ", sending {0.0, 0.0}.");
+    u_d = ControlCommand(0.0, 0.0);
+  }
 
   // Compute SD control.
   const auto u_star = isp_controller_.SD_Control(ISP, u_d);

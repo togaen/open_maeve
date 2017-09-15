@@ -41,6 +41,9 @@ struct AR_ISPFieldParams : public ParamsBase {
   /** @brief Soft constraint transform parameters. */
   ShapeParameters soft_constraint_transform;
 
+  /** @brief Guidance control to use absent explicit user input. */
+  ControlCommand default_guidance_control;
+
   /** @brief Print terminal output? */
   bool verbose;
 
@@ -55,6 +58,9 @@ struct AR_ISPFieldParams : public ParamsBase {
 
   /** @brief Size along one edge of AR tag (meters). */
   double ar_tag_size;
+
+  /** @brief Reward measurement value to input into guidance function for soft constraints. */
+  double target_reward;
 
   /** @brief Name of the parameter specifying the AR tag size. */
   std::string marker_size_param_name;

@@ -43,8 +43,10 @@ double ShapeParameters::rangeMidPoint() const {
 
 bool ShapeParameters::valid() const {
   // Perform checks.
-  CHECK_CONTAINS_CLOSED(alpha, 0.0, 1.0);
-  CHECK_CONTAINS_CLOSED(beta, 0.0, 1.0);
+  CHECK_STRICTLY_POSITIVE(alpha);
+  CHECK_STRICTLY_POSITIVE(beta);
+  CHECK_FINITE(alpha);
+  CHECK_FINITE(beta);
   CHECK_LE(range_min, range_max);
   CHECK_FINITE(translation);
 
