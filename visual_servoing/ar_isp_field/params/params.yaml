@@ -23,11 +23,13 @@ control_command_input_topic: '/joystick_controller_2d/command'
 control_command_output_topic: 'command'
 
 # bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero
-# it makes sense for the lower bound to be equal to the range_min of soft constraint transform
-viz_potential_bounds: [-5.0, 5.0]
+# The upper bound should be the same as soft constraint range_max
+# The lower bound should be less than 0 or the soft constraint range_min, if it is less than zero
+viz_potential_bounds: [-25.0, 50.0]
 
 # Print output to terminal during exectution?
-verbose: false
+#verbose: false
+verbose: true
 
 #
 # Image Space Potential field parameters
@@ -38,7 +40,7 @@ target_reward: 50.0
 
 hard_constraint_transform:
   translation: 0.0
-  alpha: 1.0
+  alpha: 25.0
   beta: 1.0
   range_min: 0.0
   range_max: 1.5
@@ -48,7 +50,7 @@ soft_constraint_transform:
   alpha: 1.0
   beta: 1.0
   range_min: 5.0
-  range_max: 10.0
+  range_max: 50.0
 
 #
 # AR tag tracking parameters
@@ -63,7 +65,7 @@ ar_frame_prefix: 'ar_marker_'
 
 # these need to match the set of tags being tracked by ar_track_alvar
 ar_tag_obstacle_ids: [0] #, 1, 2, 3, 4, 5, 6, 7, 8]
-ar_tag_target_ids: []
+ar_tag_target_ids: [0]
 
 #
 # Visual servoing parameters
