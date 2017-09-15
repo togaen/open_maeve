@@ -194,7 +194,7 @@ bool AR_ISPFieldNodeHandler::computePotentialFields(
         // Compute potential values.
         const auto p_value = (constraint_type == ConstraintType::HARD)
                                  ? hc_(cv::Point2d(tau, tau_dot))
-                                 : sc_(cv::Point2d(tau, tau_dot));
+                                 : sc_(cv::Point2d(params_.target_reward, 0.0));
 
         // Print output?
         if (params_.verbose && std::isfinite(tau)) {

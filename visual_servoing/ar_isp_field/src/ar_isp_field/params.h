@@ -59,6 +59,9 @@ struct AR_ISPFieldParams : public ParamsBase {
   /** @brief Size along one edge of AR tag (meters). */
   double ar_tag_size;
 
+  /** @brief Reward measurement value to input into guidance function for soft constraints. */
+  double target_reward;
+
   /** @brief Name of the parameter specifying the AR tag size. */
   std::string marker_size_param_name;
 
