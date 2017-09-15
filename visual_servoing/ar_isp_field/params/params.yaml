@@ -38,7 +38,7 @@ hard_constraint_transform:
   alpha: 1.0
   beta: 1.0
   range_min: 0.0
-  range_max: 1.0
+  range_max: 3.0
 
 soft_constraint_transform:
   translation: 0.0
@@ -51,7 +51,7 @@ soft_constraint_transform:
 # AR tag tracking parameters
 #
 
-ar_tag_max_age: 0.5 # must be >= 0.0
+ar_tag_max_age: 0.1 # must be >= 0.0
 ar_time_queue_size: 10 # number of elements to allocate for circular buffer
 ar_time_queue_max_gap: 0.5 # seconds
 output_frame_param_name: '/ar_track_alvar/output_frame'
@@ -60,7 +60,7 @@ ar_frame_prefix: 'ar_marker_'
 
 # these need to match the set of tags being tracked by ar_track_alvar
 ar_tag_obstacle_ids: [0] #, 1, 2, 3, 4, 5, 6, 7, 8]
-ar_tag_target_ids: []
+ar_tag_target_ids: [0]
 
 #
 # Visual servoing parameters
