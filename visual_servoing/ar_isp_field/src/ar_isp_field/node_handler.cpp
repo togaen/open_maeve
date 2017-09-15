@@ -276,6 +276,12 @@ void AR_ISPFieldNodeHandler::cameraCallback(
     u_d = params_.default_guidance_control;
   }
 
+  // Sanity check.
+  if (!u_d.valid()) {
+    ROS_ERROR_STREAM("u_d not valid: " << u_d << ", sending {0.0, 0.0}.");
+    u_d = ControlCommand(0.0, 0.0);
+  }
+
   // Compute SD control.
   const auto u_star = isp_controller_.SD_Control(ISP, u_d);
   // ROS_INFO_STREAM("u_d: " << u_d << ", u_star: " << u_star);
@@ -305,7 +311,6 @@ cv::Mat AR_ISPFieldNodeHandler::computeISP() const {
 
 void AR_ISPFieldNodeHandler::visualize(const cv::Mat& ISP,
                                        const std_msgs::Header& header) const {
-  return;
   // If no topic, nothing to do.
   if (params_.viz_isp_field_topic.empty()) {
     return;
