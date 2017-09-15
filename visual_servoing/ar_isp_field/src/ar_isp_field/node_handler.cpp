@@ -268,15 +268,13 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   // Do any requested visualization.
   visualize(ISP, msg->header);
 
-  // Get most recent desired control message.
-  const auto cmd_msg = command2d_mgr_.mostRecentMsg();
-  if (!cmd_msg) {
-    // ROS_INFO_STREAM("No available command.");
-    return;
+  // Get most recent desired control.
+  ControlCommand u_d;
+  if (const auto cmd_msg = command2d_mgr_.mostRecentMsg()) {
+    u_d = command2D_Msg2ControlCommand(*cmd_msg);
+  } else {
+    u_d = params_.default_guidance_control;
   }
-
-  // Convert to control command.
-  const auto u_d = command2D_Msg2ControlCommand(*cmd_msg);
 
   // Compute SD control.
   const auto u_star = isp_controller_.SD_Control(ISP, u_d);
@@ -307,6 +305,7 @@ cv::Mat AR_ISPFieldNodeHandler::computeISP() const {
 
 void AR_ISPFieldNodeHandler::visualize(const cv::Mat& ISP,
                                        const std_msgs::Header& header) const {
+  return;
   // If no topic, nothing to do.
   if (params_.viz_isp_field_topic.empty()) {
     return;
