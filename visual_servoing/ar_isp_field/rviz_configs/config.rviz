@@ -5,9 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Camera1
         - /ISP1
-        - /ISP1/Status1
+        - /Camera1
       Splitter Ratio: 0.5
     Tree Height: 1041
   - Class: rviz/Selection
@@ -52,11 +51,11 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /raspicam_node/image_rect
+      Image Topic: /ar_isp_field/viz_isp_field
       Max Value: 1
       Median window: 5
       Min Value: 0
-      Name: Camera
+      Name: ISP
       Normalize Range: true
       Queue Size: 2
       Transport Hint: raw
@@ -64,11 +63,11 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /ar_isp_field/viz_isp_field
+      Image Topic: /raspicam_node/image_rect
       Max Value: 1
       Median window: 5
       Min Value: 0
-      Name: ISP
+      Name: Camera
       Normalize Range: true
       Queue Size: 2
       Transport Hint: raw
