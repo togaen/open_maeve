@@ -45,7 +45,7 @@ cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
   cv::threshold(p_channel, repulsive_forces, 0.0, 0.0, cv::THRESH_TOZERO_INV);
 
   // Set the infinite values to upper bound.
-  repulsive_forces.setTo(upper_bound, inf_mask);
+  repulsive_forces.setTo(lower_bound, inf_mask);
 
   // Storage for color channels.
   std::vector<cv::Mat> color_channels(3);
