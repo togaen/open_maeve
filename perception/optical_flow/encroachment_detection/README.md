@@ -10,12 +10,15 @@ directed either toward or away from the camera. The library is intended to
 serve as a baseline for use in the development of more sophisticated
 algorithms.
 
-The parameter default values assume camera output from:
+## Use ##
 
-    roslaunch maeve_cameras raspicam.launch
-
-If running from different camera input, you'll probably need to make
-adjustments, especially to the scales and filter windows.
+Use of this node requires some experimentation to set the parameters
+appropriately. Notably, the scales are sensitive to relative speed and camera
+frame rate. For example, if your robot tends to travel very fast, the scale
+should probably have larger steps. Conversely, if your camera runs at a high
+frame rate, the scale should probably have lower steps. The bg\_noise\_threshold
+determines how sensitive the detector is; a lower threshold hold induces a
+higher false positive rate.
 
 ## Subscribe ##
 
