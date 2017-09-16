@@ -20,6 +20,8 @@ frame rate, the scale should probably have lower steps. The bg\_noise\_threshold
 determines how sensitive the detector is; a lower threshold hold induces a
 higher false positive rate.
 
+For an example use (in conjunction with the rpi\_piezo\_buzzer package), see: [https://youtu.be/QDZJRk6OJZQ](https://youtu.be/QDZJRk6OJZQ)
+
 ## Subscribe ##
 
 * \[user-defined camera topic\] (see 'camera\_topic' param): The camera image stream over which to perform dilation detection.
