@@ -140,6 +140,7 @@ bool ISP_Controller::Params::valid() const {
   CHECK_NOT_NAN(K_P);
   CHECK_NOT_NAN(K_D);
   CHECK_NOT_NAN(potential_inertia);
+  CHECK_GE(potential_inertia, 0.0);
   return erosion_kernel.valid() && yaw_decay.valid() &&
          guidance_gains.valid() && shape_parameters.valid();
 }
