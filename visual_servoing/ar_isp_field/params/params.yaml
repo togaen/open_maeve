@@ -28,8 +28,8 @@ control_command_output_topic: 'command'
 viz_potential_bounds: [-25.0, 50.0]
 
 # Print output to terminal during exectution?
-#verbose: false
-verbose: true
+verbose: false
+#verbose: true
 
 #
 # Image Space Potential field parameters
@@ -65,7 +65,7 @@ ar_frame_prefix: 'ar_marker_'
 
 # these need to match the set of tags being tracked by ar_track_alvar
 ar_tag_obstacle_ids: [0] #, 1, 2, 3, 4, 5, 6, 7, 8]
-ar_tag_target_ids: [0]
+ar_tag_target_ids: []
 
 #
 # Visual servoing parameters
@@ -79,7 +79,7 @@ default_guidance_control:
 isp_controller_params:
   K_P: 1.0
   K_D: 0.0
-  potential_inertia: 0.0
+  potential_inertia: 0.0 # should be \in [0, Inf]
   erosion_kernel:
     width: 0.05  # \in [0, 1] a proportion of image width
     height: 0.75 # \in [0, 1] a proportion of image height

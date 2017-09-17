@@ -21,6 +21,7 @@
  */
 #include "ar_isp_field/params.h"
 
+#include <cstdlib>
 #include <limits>
 
 namespace maeve_automation_core {
@@ -88,7 +89,22 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
 
   LOAD_NS_PARAM(isp_controller_params, K_P);
   LOAD_NS_PARAM(isp_controller_params, K_D);
-  LOAD_NS_PARAM(isp_controller_params, potential_inertia);
+
+  // This one is tricky because it can be string or double.
+  std::string str_inertia;
+  if (!nh.getParam("isp_controller_params/potential_inertia", str_inertia)) {
+    LOAD_NS_PARAM(isp_controller_params, potential_inertia);
+  } else {
+    char* pEnd = nullptr;
+    isp_controller_params.potential_inertia =
+        std::strtod(str_inertia.c_str(), &pEnd);
+    if (*pEnd != '\0') {
+      // The full string was not consumed by strtod. This is invalid input.
+      ROS_FATAL_STREAM(
+          "Failed processing potential inertia parameter: " << pEnd);
+      return false;
+    }
+  }
 
   // Load AR tag parameters.
   if (!nh.getParam(output_frame_param_name, camera_frame_name)) {
