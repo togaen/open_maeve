@@ -31,10 +31,10 @@
  *
  * @param var The variable to check.
  */
-#define CHECK_NOT_NAN(var)               \
-  if (std::isnan(var)) {                 \
-    ROS_ERROR_STREAM(#var << " is NaN"); \
-    return false;                        \
+#define CHECK_NOT_NAN(var)                                    \
+  if (std::isnan(var)) {                                      \
+    ROS_ERROR_STREAM(#var << " is NaN, which is not valid."); \
+    return false;                                             \
   }
 
 /**

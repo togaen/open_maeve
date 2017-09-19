@@ -272,14 +272,13 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   ControlCommand u_d;
   if (const auto cmd_msg = command2d_mgr_.mostRecentMsg()) {
     u_d = command2D_Msg2ControlCommand(*cmd_msg);
+    if (!u_d.valid()) {
+      u_d = params_.default_guidance_control;
+      ROS_ERROR_STREAM("u_d not valid: "
+                       << u_d << ", sending default guidance control: " << u_d);
+    }
   } else {
     u_d = params_.default_guidance_control;
-  }
-
-  // Sanity check.
-  if (!u_d.valid()) {
-    ROS_ERROR_STREAM("u_d not valid: " << u_d << ", sending {0.0, 0.0}.");
-    u_d = ControlCommand(0.0, 0.0);
   }
 
   // Compute SD control.
