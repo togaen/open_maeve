@@ -44,8 +44,8 @@ immediately create and push feature branches.
 If any code in these libraries is useful for published work, a citation is appreciated. The below bibtex may be used:
 
     @misc{maeve-development-libraries,
-        author       = {Jeffrey Kane Johnson},
-        title        = {Maeve Automation Development Libraries},
-        howpublished = {\url{https://bitbucket.org/maeveautomation/maeve_automation_core}},
-        year         = {2017}
+        author = {Jeffrey Kane Johnson},
+        title  = {Maeve Automation Development Libraries},
+        url    = {https://bitbucket.org/maeveautomation/maeve_automation_core},
+        year   = {2017}
     }
