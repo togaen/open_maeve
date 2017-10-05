@@ -23,12 +23,85 @@
 
 #include <sensor_msgs/Image.h>
 #include <boost/filesystem.hpp>
+#include <boost/optional.hpp>
 
+#include <array>
+#include <iostream>
 #include <map>
 #include <string>
+#include <tuple>
+#include <unordered_map>
 #include <vector>
 
 namespace maeve_automation_core {
+/**
+ * @brief Data structure to store information from meta.yaml.
+ */
+struct MetaInfo {
+  /** @brief The name of the data set. */
+  std::string name;
+  /** @brief The description of the data set. */
+  std::string description;
+  /** @brief The full path of the raw image portion of the data set. */
+  std::string raw_image_dir;
+  /** @brief The full path of the segmented image portion of the data set. */
+  std::string seg_image_dir;
+  /** @brief The framerate the data were captured at. */
+  double fps;
+};  // struct MetaInfo
+
+/**
+ * @brief Stream overload for meta info struct.
+ *
+ * @param os The stream.
+ * @param meta_info The meta info object.
+ *
+ * @return The stream with meta info added.
+ */
+std::ostream& operator<<(std::ostream& os, const MetaInfo& meta_info);
+
+/**
+ * @brief Convenience function to retrieve all data at once.
+ *
+ * @param raw_image_dir The full path to the directory containing camera images.
+ * @param seg_image_dir The full path to the directory containing segmentations.
+ *
+ * @return A pair of sorted, indexed image sets.
+ */
+boost::optional<std::tuple<std::map<int, sensor_msgs::ImagePtr>,
+                           std::map<int, sensor_msgs::ImagePtr>>>
+getSortedIndexedImageLists(const std::string& raw_image_dir,
+                           const std::string& seg_image_dir);
+
+/**
+ * @brief Convert clock publish frequency from string to double.
+ *
+ * @param str The string parameter for clock publish frequency.
+ *
+ * @return The double version of 'str', or the internally defined default value
+ * if 'str' cannot be converted to double.
+ */
+double getClockHz(const std::string& str);
+
+/**
+ * @brief For a given path, construct the file path to the meta information.
+ *
+ * @param dir The full directory path.
+ *
+ * @return The full path to the meta information file.
+ */
+std::string constructMetaYamlPath(const std::string& dir);
+
+/**
+ * @brief Read in the meta.yaml file and return a corresponding struct.
+ *
+ * @param path The fully path to the meta.yaml file.
+ *
+ * @return A nullable object that either contains the MetaInfo object, or null
+ * if an error was encountered.
+ */
+boost::optional<MetaInfo> getMetaInfo(const std::string& path);
+
 /**
  * @brief Load a set of images given a set of file names.
  *
@@ -41,15 +114,15 @@ std::map<int, sensor_msgs::ImagePtr> getSortedIndexedImages(
     const std::map<int, std::string>& file_list);
 
 /**
-*@brief For a given list of fully qualifed filenames, extract integer portion
-*of each name and index the filename by it.
-*
-*@note Filenames that have no integer portion are ignored.
-*
-*@param file_list The list of fully-qualified filenames.
-*
-*@return A map of integer -> filename.
-*/
+ * @brief For a given list of fully qualifed filenames, extract integer portion
+ * of each name and index the filename by it.
+ *
+ * @note Filenames that have no integer portion are ignored.
+ *
+ * @param file_list The list of fully-qualified filenames.
+ *
+ * @return A map of integer -> filename.
+ */
 std::map<int, std::string> getSortedIndexedFileList(
     const std::vector<boost::filesystem::path>& file_list);
 

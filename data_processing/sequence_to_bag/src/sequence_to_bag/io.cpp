@@ -23,13 +23,89 @@
 
 #include <cv_bridge/cv_bridge.h>
 #include <std_msgs/Header.h>
+#include <yaml-cpp/yaml.h>
 #include <boost/range/iterator_range.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <algorithm>
 #include <cstdlib>
 
+namespace {
+const auto CLOCK_HZ_DEFAULT = 1000;
+}  // namespace
+
 namespace maeve_automation_core {
+std::ostream& operator<<(std::ostream& os, const MetaInfo& meta_info) {
+  os << meta_info.name << "\n";
+  os << meta_info.description << "\n";
+  os << meta_info.raw_image_dir << "\n";
+  os << meta_info.seg_image_dir << "\n";
+  os << meta_info.fps;
+  return os;
+}
+
+boost::optional<std::tuple<std::map<int, sensor_msgs::ImagePtr>,
+                           std::map<int, sensor_msgs::ImagePtr>>>
+getSortedIndexedImageLists(const std::string& raw_image_dir,
+                           const std::string& seg_image_dir) {
+  const auto raw_files = maeve_automation_core::getFileList(raw_image_dir);
+  const auto raw_files_idx =
+      maeve_automation_core::getSortedIndexedFileList(raw_files);
+  const auto raw_images_idx =
+      maeve_automation_core::getSortedIndexedImages(raw_files_idx);
+
+  const auto seg_files = maeve_automation_core::getFileList(seg_image_dir);
+  const auto seg_files_idx =
+      maeve_automation_core::getSortedIndexedFileList(seg_files);
+  const auto seg_images_idx =
+      maeve_automation_core::getSortedIndexedImages(seg_files_idx);
+
+  if (raw_files_idx.size() != seg_images_idx.size()) {
+    return boost::none;
+  }
+
+  return std::make_tuple(std::move(raw_images_idx), std::move(seg_images_idx));
+}
+
+double getClockHz(const std::string& str) {
+  char* pEnd = nullptr;
+  const auto hz = std::strtod(str.c_str(), &pEnd);
+  if (str.empty() || (*pEnd != '\0')) {
+    return CLOCK_HZ_DEFAULT;
+  }
+  return hz;
+}
+
+std::string constructMetaYamlPath(const std::string& dir) {
+  return dir + "/meta.yaml";
+}
+
+boost::optional<MetaInfo> getMetaInfo(const std::string& path) {
+  // Read meta info from data set.
+  YAML::Node config;
+  const auto meta_path = constructMetaYamlPath(path);
+  try {
+    config = YAML::LoadFile(meta_path);
+  } catch (...) {
+    return boost::none;
+  }
+
+  // \TODO(me) Maybe check that the keys exist.
+
+  // Get meta info.
+  MetaInfo meta_info;
+  meta_info.name = config["sequence_meta"]["name"].as<std::string>();
+  meta_info.description =
+      config["sequence_meta"]["description"].as<std::string>();
+  meta_info.raw_image_dir =
+      path + "/" + config["sequence_meta"]["raw"].as<std::string>();
+  meta_info.seg_image_dir =
+      path + "/" + config["sequence_meta"]["segmented"].as<std::string>();
+  meta_info.fps = config["sequence_meta"]["fps"].as<double>();
+
+  return meta_info;
+}
+
 std::map<int, sensor_msgs::ImagePtr> getSortedIndexedImages(
     const std::map<int, std::string>& file_list) {
   std::map<int, sensor_msgs::ImagePtr> image_list;

@@ -145,8 +145,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}
-  src/sequence_to_bag.cpp
+add_executable(${PROJECT_NAME}_separate_topics
+  src/sequence_to_bag_separate_topics.cpp
   src/sequence_to_bag/io.cpp
 )
 
@@ -161,7 +161,7 @@ add_executable(${PROJECT_NAME}
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME}_separate_topics
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   yaml-cpp
