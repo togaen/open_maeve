@@ -21,6 +21,7 @@
  */
 #include "sequence_to_bag/io.h"
 
+#include <perception_interface_msgs/ImagePair.h>
 #include <ros/console.h>
 #include <rosbag/bag.h>
 #include <rosgraph_msgs/Clock.h>
@@ -35,22 +36,20 @@ int main(int argc, char** argv) {
     ROS_FATAL_STREAM(
         "Provided "
         << (argc - 1)
-        << " arguments. Must provide at least four arguments: "
-           "'data-set-path' 'bag-output-path' 'image-1-topic' 'image-2-topic'");
+        << " arguments. Must provide at least three arguments: "
+           "'data-set-path' 'bag-output-path' 'image-pair-topic'");
     return EXIT_FAILURE;
   }
   const auto data_set_path = std::string(argv[1]);
   const auto output_path = std::string(argv[2]);
-  const auto image_1_topic = std::string(argv[3]);
-  const auto image_2_topic = std::string(argv[4]);
+  const auto image_pair_topic = std::string(argv[3]);
   const auto clock_hz_param = maeve_automation_core::getClockHz(
-      (argc > 5) ? std::string(argv[5]) : std::string(""));
+      (argc > 4) ? std::string(argv[4]) : std::string(""));
 
   // Let people know what's going on.
   ROS_INFO_STREAM("\nUsing data set path: "
                   << data_set_path << "\nUsing output path: " << output_path
-                  << "\nUsing image 1 topic: " << image_1_topic
-                  << "\nUsing image 2 topic: " << image_2_topic
+                  << "\nUsing image pair topic: " << image_pair_topic
                   << "\nClock hz: " << clock_hz_param);
 
   // Get meta information.
@@ -82,7 +81,7 @@ int main(int argc, char** argv) {
   rosbag::Bag bag;
   ros::Time::init();
   auto t = ros::Time::now();
-  bag.open(output_path + "/" + meta_info->name + "_separate_topics.bag",
+  bag.open(output_path + "/" + meta_info->name + "_pair_topic.bag",
            rosbag::bagmode::Write);
   auto elapsed_time = 0.0;
   std::for_each(std::begin(raw_images_idx), std::end(raw_images_idx),
@@ -101,8 +100,12 @@ int main(int argc, char** argv) {
                   msg1->header.stamp = timestamp;
                   msg2->header.stamp = timestamp;
 
-                  bag.write(image_1_topic, timestamp, *msg1);
-                  bag.write(image_2_topic, timestamp, *msg2);
+                  perception_interface_msgs::ImagePair msg;
+                  msg.header.stamp = timestamp;
+                  msg.image1 = *msg1;
+                  msg.image2 = *msg2;
+
+                  bag.write(image_pair_topic, timestamp, msg);
 
                   elapsed_time += frame_duration;
                 });

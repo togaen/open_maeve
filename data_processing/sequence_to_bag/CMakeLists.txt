@@ -149,6 +149,10 @@ add_executable(${PROJECT_NAME}_separate_topics
   src/sequence_to_bag_separate_topics.cpp
   src/sequence_to_bag/io.cpp
 )
+add_executable(${PROJECT_NAME}_pair_topic
+  src/sequence_to_bag_pair_topic.cpp
+  src/sequence_to_bag/io.cpp
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -162,6 +166,11 @@ add_executable(${PROJECT_NAME}_separate_topics
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_separate_topics
+  ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
+  yaml-cpp
+)
+target_link_libraries(${PROJECT_NAME}_pair_topic
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   yaml-cpp
