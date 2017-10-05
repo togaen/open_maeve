@@ -21,7 +21,6 @@
  */
 #include "sequence_to_bag/io.h"
 
-#include <perception_interface_msgs/ImagePair.h>
 #include <ros/console.h>
 #include <rosbag/bag.h>
 #include <rosgraph_msgs/Clock.h>
@@ -36,7 +35,7 @@ int main(int argc, char** argv) {
     ROS_FATAL_STREAM(
         "Provided "
         << (argc - 1)
-        << " arguments. Must provide at least three arguments: "
+        << " arguments. Must provide at least four arguments: "
            "'data-set-path' 'bag-output-path' 'image-1-topic' 'image-2-topic'");
     return EXIT_FAILURE;
   }
