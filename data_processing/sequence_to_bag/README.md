@@ -26,8 +26,19 @@ file and two sub-directories containing the camera and segmented images:
 
 The camera and segmentation frames shall have the same dimensions, and there
 shall be a one-to-one correspondence between the files indicated by the number
-in their names. The text portion of their names is arbitrary and only useful for
-human readability.
+in their names. The numbering shall be integral, one indexed, and sequential.
+The number intended to act as the index shall be the last sub-string in the
+basename. For example, the following files have indices 3, 4, and 9,
+respectively:
+
+    path/to/file-003.png
+    path/to/01-file-004.png
+    path/to/9.png
+
+It is not required that indexing be sequential nor that it start with one
+(i.e., "1, 2, 3" in the above example instead of "3, 4, 9"), but it is
+encouraged. The reset of the filename is arbitrary and only useful for human
+readability.
 
 The meta file shall have the format given below. The label map is defined by
 string/RGB-value pairs, where the pairs are defined by each data set. A small

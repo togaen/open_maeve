@@ -43,6 +43,9 @@
   <depend>cv_bridge</depend>
   <depend>rosbag</depend>
   <depend>ros_parameter_loading</depend>
+  <depend>perception_interface_msgs</depend>
+  <depend>rosgraph_msgs</depend>
+  <depend>yaml-cpp</depend>
 
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
