@@ -34,5 +34,26 @@ string/RGB-value pairs, where the pairs are defined by each data set. A small
 example map is defined below:
 
 ```yaml
+# Meta information about image/feature data set.
+sequence_meta:
+  # Brief description of the data set.
+  description: "This is an example data set."
+  
+  # Name of the data set; should also be name of root folder.
+  name: "data-set"
 
+  # Name of the raw image sequence for the data set; should also be the name of the folder containing the images.
+  raw: "camera-frames"
+
+  # Name of the segmented image sequence for the data set; should also be the name of the folder containing the images.
+  segmented: "segmented-frames"
+
+  # Used to determine time delta between frames.
+  fps: 30.0
+
+  # In the segmented images, the objects are identified by their pixel RGB values.
+  label_map:
+    road:           [123, 123, 123]
+    lane_marker:    [169, 169, 169]
+    lane_boundary:  [143, 142, 89]
 ```
