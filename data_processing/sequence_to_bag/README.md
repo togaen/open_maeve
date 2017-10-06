@@ -43,9 +43,9 @@ respectively:
     path/to/01-file-004.png
     path/to/9.png
 
-It is not required that indexing be sequential nor that it start with one
+It is not required that indexing be gapless nor that it start with one
 (i.e., "1, 2, 3" in the above example instead of "3, 4, 9"), but it is
-encouraged. The reset of the filename is arbitrary and only useful for human
+encouraged. The rest of the filename is arbitrary and only useful for human
 readability.
 
 The meta file shall have the format given below, and provides information useful
