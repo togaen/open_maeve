@@ -16,8 +16,8 @@ To use the converter, issue a command like this:
 The data set consists of a sequence of image frames and corresponding sequence
 of segmentation frames. The image frames are the images that the camera creates,
 and the segmentation frames are per-pixel labeled versions of the camera frames.
-The data set is a directory containing a [YAML](http://www.yaml.org/start.html)
-file and two sub-directories containing the camera and segmented images:
+The data set is a directory containing [YAML](http://www.yaml.org/start.html)
+files and two sub-directories containing the camera and segmented images:
 
     data-set
      |
