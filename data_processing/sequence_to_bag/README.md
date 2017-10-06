@@ -4,6 +4,13 @@ This package is a command line utility for converting sequence image
 segmentation sequence data sets into bag files. The specification for the data
 set structure is given below.
 
+## Usage ##
+
+To use the converter, issue a command like this:
+
+    rosrun sequence_to_bag sequence_to_bag data-set-path bag-output-dir camera-image-topic-name segmented-image-topic-name
+
+
 ## Image Segmentation Sequence Data Set ##
 
 The data set consists of a sequence of image frames and corresponding sequence
