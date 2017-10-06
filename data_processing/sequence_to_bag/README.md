@@ -1,8 +1,8 @@
 # README #
 
-This package is a command line utility for converting sequence image
-segmentation sequence data sets into bag files. The specification for the data
-set structure is given below.
+This package is a command line utility for converting image segmentation
+sequence data sets into bag files. Usage and the specification for the data set
+structure is given below.
 
 ## Usage ##
 
