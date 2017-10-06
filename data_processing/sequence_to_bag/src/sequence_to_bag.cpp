@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
   rosbag::Bag bag;
   ros::Time::init();
   auto t = ros::Time::now();
-  bag.open(output_path + "/" + meta_info->name + "_separate_topics.bag",
+  bag.open(output_path + "/" + meta_info->name + ".bag",
            rosbag::bagmode::Write);
   auto elapsed_time = 0.0;
   std::for_each(std::begin(raw_images_idx), std::end(raw_images_idx),
