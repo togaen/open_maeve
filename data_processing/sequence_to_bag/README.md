@@ -15,6 +15,7 @@ file and two sub-directories containing the camera and segmented images:
     data-set
      |
      |- meta.yaml
+     |- label_map.yaml
      |- camera-frames
         |- frame-01.png
         |- frame-02.png
@@ -40,9 +41,8 @@ It is not required that indexing be sequential nor that it start with one
 encouraged. The reset of the filename is arbitrary and only useful for human
 readability.
 
-The meta file shall have the format given below. The label map is defined by
-string/RGB-value pairs, where the pairs are defined by each data set. A small
-example map is defined below:
+The meta file shall have the format given below, and provides information useful
+for data processing purposes:
 
 ```yaml
 # Meta information about image/feature data set.
@@ -61,7 +61,15 @@ sequence_meta:
 
   # Used to determine time delta between frames.
   fps: 30.0
+```
 
+The label map file defines string/RGB-value pairs that enable interpretation of
+the segmented images. The map is defined for each data set. A small example
+map is defined below:
+
+```yaml
+# This key should match the name specified in meta.yaml
+data-set:
   # In the segmented images, the objects are identified by their pixel RGB values.
   label_map:
     road:           [123, 123, 123]
