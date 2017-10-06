@@ -52,6 +52,8 @@ The meta file shall have the format given below, and provides information useful
 for data processing purposes:
 
 ```yaml
+# meta.yaml
+
 # Meta information about image/feature data set.
 sequence_meta:
   # Brief description of the data set.
@@ -75,6 +77,8 @@ the segmented images. The map is defined for each data set. A small example
 map is defined below:
 
 ```yaml
+# label_map.yaml
+
 # This key should match the name specified in meta.yaml
 data-set:
   # In the segmented images, the objects are identified by their pixel RGB values.
