@@ -34,10 +34,9 @@ files and two sub-directories containing the camera and segmented images:
 
 The camera and segmentation frames shall have the same dimensions, and there
 shall be a one-to-one correspondence between the files indicated by the number
-in their names. The numbering shall be integral, one indexed, and sequential.
-The number intended to act as the index shall be the last sub-string in the
-basename. For example, the following files have indices 3, 4, and 9,
-respectively:
+in their names. The numbering shall be integral and sequential. The number
+intended to act as the index shall be the last sub-string in the basename. For
+example, the following files have indices 3, 4, and 9, respectively:
 
     path/to/file-003.png
     path/to/01-file-004.png
