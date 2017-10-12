@@ -1,1 +1,9 @@
 segmentation_sequence_topic: '/segmentation_sequence'
+
+viz_isp_field_topic: 'isp_field_viz'
+
+# absolute topic name for desired command input
+control_command_input_topic: '/joystick_controller_2d/command'
+
+# node-relative topic for control command output
+control_command_output_topic: 'command'

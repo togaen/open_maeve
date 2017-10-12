@@ -30,6 +30,7 @@
 
 #include "maeve_automation_core/controller_interface_msgs/command2d_manager.h"
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
+#include "segmentation_isp_field/params.h"
 
 namespace maeve_automation_core {
 /**
@@ -45,6 +46,13 @@ class SegmentationFieldNodeHandler {
   explicit SegmentationFieldNodeHandler(const std::string& node_name);
 
  private:
+  /**
+   * @brief Callback that fires when a new image segmentation is received.
+   *
+   * @param msg The segmentation image message.
+   */
+  void segmentationSequenceCallback(const sensor_msgs::ImageConstPtr& msg);
+
   /** @brief Manager for retrieving most recent control commands. */
   Command2D_Manager command2d_mgr_;
 
@@ -57,9 +65,13 @@ class SegmentationFieldNodeHandler {
   image_transport::Publisher viz_isp_field_pub_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
+  /** @brief The ROS image transport object. */
+  image_transport::ImageTransport it_;
   /** @brief Desired control command subscriber. */
   ros::Subscriber control_command_input_sub_;
   /** @brief Control command publisher. */
   ros::Publisher control_command_output_pub_;
+  /** @brief Node params. */
+  SegmentationFieldParams params_;
 };  // class SegmentationFieldNodeHandler
 }  // namespace maeve_automation_core

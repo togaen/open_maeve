@@ -148,6 +148,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
   src/segmentation_isp_field_node.cpp
+  src/segmentation_isp_field/params.cpp
   src/segmentation_isp_field/node_handler.cpp
 )
 
