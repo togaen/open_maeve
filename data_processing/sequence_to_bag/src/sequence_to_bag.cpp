@@ -32,11 +32,12 @@
 int main(int argc, char** argv) {
   // Make sure all required arguments are specified.
   if (argc < 4) {
-    ROS_FATAL_STREAM("Provided "
-                     << (argc - 1)
-                     << " arguments. Must provide at least four arguments: "
-                        "'data-set-path' 'bag-output-dir' 'camera-image-topic-name' "
-                        "'segmented-image-topic-name'");
+    ROS_FATAL_STREAM(
+        "Provided "
+        << (argc - 1)
+        << " arguments. Must provide at least four arguments: "
+           "'data-set-path' 'bag-output-dir' 'camera-image-topic-name' "
+           "'segmented-image-topic-name'");
     return EXIT_FAILURE;
   }
   const auto data_set_path = std::string(argv[1]);
