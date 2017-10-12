@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   maeve_macros
   cv_bridge
   roscpp
+  ros_parameter_loading
 )
 
 ## System dependencies are found with CMake's conventions
@@ -112,8 +113,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
  INCLUDE_DIRS include
- LIBRARIES ${PROJECT_NAME}
- CATKIN_DEPENDS roscpp cv_bridge
+ LIBRARIES ${PROJECT_NAME} ${PROJECT_NAME}_ros_interface
+ CATKIN_DEPENDS roscpp cv_bridge ros_parameter_loading
 #  DEPENDS system_lib
 )
 
@@ -134,6 +135,9 @@ add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/tau.cpp
   src/${PROJECT_NAME}/visualize.cpp
   src/${PROJECT_NAME}/potential_transforms.cpp
+)
+add_library(${PROJECT_NAME}_ros_interface
+  src/${PROJECT_NAME}/ros_interface.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -158,7 +162,11 @@ add_library(${PROJECT_NAME}
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}
-   ${catkin_LIBRARIES}
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(${PROJECT_NAME}_ros_interface
+  ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
 )
 
 #############
