@@ -19,20 +19,29 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/isp_controller/ros_interface.h"
+#pragma once
+
+#include "controller_interface_msgs/Command2D.h"
+#include "std_msgs/Header.h"
+
+#include "maeve_automation_core/isp_controller_2d/control_command.h"
 
 namespace maeve_automation_core {
+/**
+ * @brief Serialize and return this object.
+ *
+ * @return The serialized version of this object.
+ */
 controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
-    const ControlCommand& cmd, const std_msgs::Header& header) {
-  controller_interface_msgs::Command2D msg;
-  msg.header = header;
-  msg.x = cmd.throttle;
-  msg.y = cmd.yaw;
-  return msg;
-}
+    const ControlCommand& cmd, const std_msgs::Header& header);
 
+/**
+ * @brief Deserialize and return a control command object.
+ *
+ * @param msg The serialized version.
+ *
+ * @return The deserialized version.
+ */
 ControlCommand command2D_Msg2ControlCommand(
-    const controller_interface_msgs::Command2D& msg) {
-  return ControlCommand(msg.x, msg.y);
-}
+    const controller_interface_msgs::Command2D& msg);
 }  // namespace maeve_automation_core

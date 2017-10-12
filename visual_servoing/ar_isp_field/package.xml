@@ -43,7 +43,7 @@
   <exec_depend>joystick_controller_2d</exec_depend>
   <depend>controller_interface_msgs</depend>
   <depend>isp_field</depend>
-  <depend>isp_controller</depend>
+  <depend>isp_controller_2d</depend>
   <depend>ros_parameter_loading</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>

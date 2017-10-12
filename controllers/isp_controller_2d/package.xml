@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>isp_controller</name>
+  <name>isp_controller_2d</name>
   <version>0.0.0</version>
   <description>A 2dof controller that operates over ISP fields</description>
 

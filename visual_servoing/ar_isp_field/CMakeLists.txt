@@ -22,7 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   tf2_eigen
   isp_field
-  isp_controller
+  isp_controller_2d
   ros_parameter_loading
   maeve_time_queue
   image_geometry

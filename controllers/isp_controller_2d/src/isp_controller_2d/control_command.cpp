@@ -19,29 +19,35 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#pragma once
+#include "maeve_automation_core/isp_controller_2d/control_command.h"
+
+#include <cmath>
+#include <iostream>
+#include <limits>
 
 #include "controller_interface_msgs/Command2D.h"
-#include "std_msgs/Header.h"
-
-#include "maeve_automation_core/isp_controller/control_command.h"
+#include "maeve_automation_core/maeve_macros/checks.h"
 
 namespace maeve_automation_core {
-/**
- * @brief Serialize and return this object.
- *
- * @return The serialized version of this object.
- */
-controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
-    const ControlCommand& cmd, const std_msgs::Header& header);
+namespace {
+static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+}  // namespace
 
-/**
- * @brief Deserialize and return a control command object.
- *
- * @param msg The serialized version.
- *
- * @return The deserialized version.
- */
-ControlCommand command2D_Msg2ControlCommand(
-    const controller_interface_msgs::Command2D& msg);
+std::ostream& operator<<(std::ostream& o, const ControlCommand& u) {
+  return o << "{" << u.throttle << ", " << u.yaw << "}";
+}
+
+bool ControlCommand::valid() const {
+  // Control value checks.
+  CHECK_CONTAINS_CLOSED(throttle, -1.0, 1.0);
+  CHECK_CONTAINS_CLOSED(yaw, -1.0, 1.0);
+
+  // All good.
+  return true;
+}
+
+ControlCommand::ControlCommand() : throttle(NaN), yaw(NaN) {}
+
+ControlCommand::ControlCommand(const double t, const double y)
+    : throttle(t), yaw(y) {}
 }  // namespace maeve_automation_core

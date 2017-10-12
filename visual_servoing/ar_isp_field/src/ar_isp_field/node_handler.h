@@ -40,7 +40,7 @@
 #include "ar_isp_field/geometry.h"
 #include "ar_isp_field/params.h"
 #include "maeve_automation_core/controller_interface_msgs/command2d_manager.h"
-#include "maeve_automation_core/isp_controller/isp_controller.h"
+#include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 #include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
 

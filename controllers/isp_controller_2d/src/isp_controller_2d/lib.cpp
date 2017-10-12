@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "isp_controller/lib.h"
+#include "isp_controller_2d/lib.h"
 
 #include <opencv2/opencv.hpp>
 

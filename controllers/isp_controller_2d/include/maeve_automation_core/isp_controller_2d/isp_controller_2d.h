@@ -23,7 +23,7 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "maeve_automation_core/isp_controller/control_command.h"
+#include "maeve_automation_core/isp_controller_2d/control_command.h"
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 
 namespace maeve_automation_core {

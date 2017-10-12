@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(isp_controller)
+project(isp_controller_2d)
 
 ## Set build type
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
@@ -129,7 +129,7 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/control_command.cpp
   src/${PROJECT_NAME}/lib.cpp
-  src/${PROJECT_NAME}/isp_controller.cpp
+  src/${PROJECT_NAME}/isp_controller_2d.cpp
 )
 add_library(${PROJECT_NAME}_ros_interface
   src/${PROJECT_NAME}/ros_interface.cpp
@@ -204,7 +204,7 @@ target_link_libraries(${PROJECT_NAME}_ros_interface
 #############
 
 ## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_isp_controller.cpp)
+catkin_add_gtest(${PROJECT_NAME}-test test/test_isp_controller_2d.cpp)
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME} ${catkin_LIBRARIES})
 endif()
