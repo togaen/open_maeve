@@ -27,67 +27,6 @@
 #include <iostream>
 #include <string>
 
-#include "maeve_automation_core/maeve_macros/checks.h"
-
-/**
- * @brief Convenience macro for loading params into a ParamsBase object.
- *
- * 'var' is a member variable of the ParamsBase object, and it must have
- * 'exactly' the same name as the ROS parameter. Return false immediately if
- * loading fails. Otherwise, append the name and value of var to the
- * loaded_param_set string in the ParamsBase object.
- *
- * @param var The name of the parameter and of the variable that holds it.
- */
-#define LOAD_PARAM(var)                                            \
-  if (!nh.getParam(#var, var)) {                                   \
-    ROS_ERROR_STREAM("Failed to load parameter '" << #var << "'"); \
-    return false;                                                  \
-  }
-
-/**
- * @brief Convenience macro for loading params into a ParamsBase object.
- *
- * 'var' is a member variable of a struct named 'struct_name', which belongs to
- * the ParamsBase object. 'var' must have 'exactly' the same name as the ROS
- * parameter. Return false immediately if loading fails. Otherwise, append the
- * name and value of var to the loaded_param_set string in the ParamsBase
- * object.
- *
- * @param struct_name The name of the struct that 'var' belongs to.
- * @param var The name of the parameter and of the variable that holds it.
- */
-#define LOAD_STRUCT_PARAM(struct_name, var)                              \
-  if (!nh.getParam(#var, struct_name.var)) {                             \
-    ROS_ERROR_STREAM("Failed to load parameter '" << #struct_name << "." \
-                                                  << #var << "'");       \
-    return false;                                                        \
-  }
-
-/**
- * @brief Convenience macro for loading scoped params into a ParamsBase object.
- *
- * 'var' is a member of an object 'ns' in the ParamsBase object, where 'var'
- * must have 'exactly' the same name as the ROS parameter, and 'ns' must have
- * 'exactly' the same name as the namespace of the 'var' parameter. Return
- * false immediately if loading fails. Otherwise, append the name and value of
- * ns.var to the loaded_param_set string in the ParamsBase object.
-
- * @param ns The namespace (or scope) of var in the parameter server.
- * @param var The name of the parameter and of the variable that holds it.
- */
-#define LOAD_NS_PARAM(ns, var)                                                \
-  {                                                                           \
-    auto ns_name = std::string(#ns);                                          \
-    std::replace(ns_name.begin(), ns_name.end(), '.', '/');                   \
-    if (!nh.getParam(ns_name + std::string("/") + std::string(#var),          \
-                     ns.var)) {                                               \
-      ROS_ERROR_STREAM("Failed to load parameter '" << ns_name << "/" << #var \
-                                                    << "'");                  \
-      return false;                                                           \
-    }                                                                         \
-  }
-
 namespace maeve_automation_core {
 
 /** @brief An interface for objects that load and contain ROS parameters.*/

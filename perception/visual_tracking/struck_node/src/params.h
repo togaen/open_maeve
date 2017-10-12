@@ -33,7 +33,7 @@
 
 #include "./bb_params.h"
 
-#include "maeve_automation_core/ros_parameter_loading/params_base.h"
+#include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
 #include "maeve_automation_core/struck/Config.h"
 
 namespace maeve_automation_core {

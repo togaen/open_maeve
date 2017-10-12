@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "maeve_automation_core/maeve_expansion_segmentation/connected_component_tracking.h"
-#include "maeve_automation_core/ros_parameter_loading/params_base.h"
+#include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
 
 namespace maeve_automation_core {
 
