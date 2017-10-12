@@ -172,6 +172,8 @@ class AR_ISPFieldNodeHandler {
   image_transport::Publisher viz_isp_field_pub_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
+  /** @brief The ROS image transport object. */
+  image_transport::ImageTransport it_;
   /** @brief Desired control command subscriber. */
   ros::Subscriber control_command_input_sub_;
   /** @brief Control command publisher. */

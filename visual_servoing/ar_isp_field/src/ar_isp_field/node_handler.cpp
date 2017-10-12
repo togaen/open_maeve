@@ -58,7 +58,7 @@ std::vector<std::string> AR_ISPFieldNodeHandler::initializeTimeQueues(
 }
 
 AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
-    : nh_(node_name), tf2_listener_(tf2_buffer_) {
+    : nh_(node_name), it_(nh_), tf2_listener_(tf2_buffer_) {
   if (!params_.load(nh_)) {
     ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
     return;
@@ -81,11 +81,8 @@ AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
   sc_ = PotentialTransform<ConstraintType::SOFT>(
       params_.soft_constraint_transform);
 
-  // Image transport interface.
-  image_transport::ImageTransport it(nh_);
-
   // Register callback.
-  camera_sub_ = it.subscribeCamera(
+  camera_sub_ = it_.subscribeCamera(
       params_.camera_topic, 1, &AR_ISPFieldNodeHandler::cameraCallback, this);
 
   // Set up command handler.
@@ -98,7 +95,7 @@ AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
 
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
-    viz_isp_field_pub_ = it.advertise(params_.viz_isp_field_topic, 1);
+    viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
   }
 }
 
