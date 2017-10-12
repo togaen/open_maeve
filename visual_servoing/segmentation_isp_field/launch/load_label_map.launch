@@ -1,0 +1,8 @@
+<launch>
+  <arg name="data_set_path"/>
+  <arg name="data_set_name"/>
+  <arg name="label_map_name"/>
+  <rosparam
+    command="load"
+    file="$(arg data_set_path)/$(arg data_set_name)/$(arg label_map_name)"/>
+</launch>
