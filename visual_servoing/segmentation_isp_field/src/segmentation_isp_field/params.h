@@ -22,7 +22,7 @@
 #pragma once
 
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
-#include "maeve_automation_core/ros_parameter_loading/params_base.h"
+#include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
 
 namespace maeve_automation_core {
 /** @brief Parameter object to load ROS params.*/
