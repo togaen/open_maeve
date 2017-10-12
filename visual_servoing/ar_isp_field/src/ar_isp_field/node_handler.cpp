@@ -234,7 +234,7 @@ void AR_ISPFieldNodeHandler::cameraCallback(
     // Initialize ISP controller.
     params_.isp_controller_params.principal_point_x = camera_model_.cx();
     params_.isp_controller_params.focal_length_x = camera_model_.fx();
-    isp_controller_ = ISP_Controller(params_.isp_controller_params);
+    isp_controller_ = ISP_Controller2D(params_.isp_controller_params);
 
     // Initialize storage.
     initFieldStorage(camera_model_.fullResolution(), ar_obstacle_tag_frames_,

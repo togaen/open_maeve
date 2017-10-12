@@ -28,7 +28,7 @@ namespace maeve_automation_core {
 /** @brief Parameter object to load ROS params.*/
 struct SegmentationFieldParams : public ParamsBase {
   /** @brief ISP controller parameters. */
-  ISP_Controller::Params isp_controller_params;
+  ISP_Controller2D::Params isp_controller_params;
 
   /** @brief Guidance control to use absent explicit user input. */
   ControlCommand default_guidance_control;

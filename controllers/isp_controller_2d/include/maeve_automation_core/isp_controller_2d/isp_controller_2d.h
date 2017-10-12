@@ -27,7 +27,7 @@
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 
 namespace maeve_automation_core {
-class ISP_Controller {
+class ISP_Controller2D {
  public:
   /**
    * @brief Container for controller parameters.
@@ -167,14 +167,14 @@ class ISP_Controller {
   /**
    * @brief Constructor: default.
    */
-  ISP_Controller() = default;
+  ISP_Controller2D() = default;
 
   /**
    * @brief Constructor: initialize with shape parameters.
    *
    * @param params Parameters for control computation from ISP field.
    */
-  explicit ISP_Controller(const Params& params);
+  explicit ISP_Controller2D(const Params& params);
 
   /**
    * @brief For a given ISP field compute a selective determinism control.
@@ -196,7 +196,7 @@ class ISP_Controller {
   Params p_;
   /** @brief Projection function onto control space. */
   PotentialTransform<ConstraintType::SOFT> C_u_;
-};  // class ISP_Controller
+};  // class ISP_Controller2D
 
 /**
  * @brief Overload output stream operator for controller parameter set.
@@ -206,18 +206,7 @@ class ISP_Controller {
  *
  * @return The stream.
  */
-std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p);
-
-/**
- * @brief Overload output stream operator for controller parameter set.
- *
- * @param o The output stream.
- * @param sp The controller parameters object.
- *
- * @return The stream.
- */
-std::ostream& operator<<(std::ostream& o,
-                         const ISP_Controller::Params::HorizonDecay& hd);
+std::ostream& operator<<(std::ostream& o, const ISP_Controller2D::Params& p);
 
 /**
  * @brief Overload output stream operator for controller parameter set.
@@ -228,7 +217,7 @@ std::ostream& operator<<(std::ostream& o,
  * @return The stream.
  */
 std::ostream& operator<<(std::ostream& o,
-                         const ISP_Controller::Params::GuidanceGains& gg);
+                         const ISP_Controller2D::Params::HorizonDecay& hd);
 
 /**
  * @brief Overload output stream operator for controller parameter set.
@@ -239,5 +228,16 @@ std::ostream& operator<<(std::ostream& o,
  * @return The stream.
  */
 std::ostream& operator<<(std::ostream& o,
-                         const ISP_Controller::Params::ErosionKernel& ek);
+                         const ISP_Controller2D::Params::GuidanceGains& gg);
+
+/**
+ * @brief Overload output stream operator for controller parameter set.
+ *
+ * @param o The output stream.
+ * @param sp The controller parameters object.
+ *
+ * @return The stream.
+ */
+std::ostream& operator<<(std::ostream& o,
+                         const ISP_Controller2D::Params::ErosionKernel& ek);
 }  // namespace maeve_automation_core

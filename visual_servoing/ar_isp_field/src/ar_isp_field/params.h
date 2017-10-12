@@ -33,7 +33,7 @@ namespace maeve_automation_core {
 /** @brief Parameter object to load ROS params.*/
 struct AR_ISPFieldParams : public ParamsBase {
   /** @brief ISP controller parameters. */
-  ISP_Controller::Params isp_controller_params;
+  ISP_Controller2D::Params isp_controller_params;
 
   /** @brief Hard constraint transform parameters. */
   ShapeParameters hard_constraint_transform;
@@ -59,7 +59,8 @@ struct AR_ISPFieldParams : public ParamsBase {
   /** @brief Size along one edge of AR tag (meters). */
   double ar_tag_size;
 
-  /** @brief Reward measurement value to input into guidance function for soft constraints. */
+  /** @brief Reward measurement value to input into guidance function for soft
+   * constraints. */
   double target_reward;
 
   /** @brief Name of the parameter specifying the AR tag size. */

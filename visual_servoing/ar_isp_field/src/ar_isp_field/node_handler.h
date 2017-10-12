@@ -164,7 +164,7 @@ class AR_ISPFieldNodeHandler {
   AR_ISPFieldParams params_;
 
   /** @brief Compute control commands from ISP field. */
-  ISP_Controller isp_controller_;
+  ISP_Controller2D isp_controller_;
 
   /** @brief Camera image subscriber. */
   image_transport::CameraSubscriber camera_sub_;

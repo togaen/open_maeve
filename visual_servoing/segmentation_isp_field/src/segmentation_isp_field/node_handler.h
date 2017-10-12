@@ -57,7 +57,7 @@ class SegmentationFieldNodeHandler {
   Command2D_Manager command2d_mgr_;
 
   /** @brief Compute control commands from ISP field. */
-  ISP_Controller isp_controller_;
+  ISP_Controller2D isp_controller_;
 
   /** @brief Camera image subscriber. */
   image_transport::Subscriber segmentation_sub_;

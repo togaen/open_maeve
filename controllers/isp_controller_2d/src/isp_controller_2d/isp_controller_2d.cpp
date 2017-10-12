@@ -33,21 +33,21 @@ static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 std::ostream& operator<<(std::ostream& o,
-                         const ISP_Controller::Params::ErosionKernel& ek) {
+                         const ISP_Controller2D::Params::ErosionKernel& ek) {
   return o << "[width: " << ek.width << ", height: " << ek.height
            << ", horizon: " << ek.horizon << "]";
 }
 std::ostream& operator<<(std::ostream& o,
-                         const ISP_Controller::Params::HorizonDecay& hd) {
+                         const ISP_Controller2D::Params::HorizonDecay& hd) {
   return o << "[left: " << hd.left << ", right: " << hd.right << "]";
 }
 std::ostream& operator<<(std::ostream& o,
-                         const ISP_Controller::Params::GuidanceGains& gg) {
+                         const ISP_Controller2D::Params::GuidanceGains& gg) {
   return o << "[throttle: " << gg.throttle << ", yaw: " << gg.yaw
            << ", control_set: " << gg.control_set << "]";
 }
 
-std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p) {
+std::ostream& operator<<(std::ostream& o, const ISP_Controller2D::Params& p) {
   o << "focal_length_x: " << p.focal_length_x << "\n";
   o << "principal_point_x: " << p.principal_point_x << "\n";
   o << "K_P: " << p.K_P << "\n";
@@ -60,15 +60,15 @@ std::ostream& operator<<(std::ostream& o, const ISP_Controller::Params& p) {
   return o;
 }
 
-ISP_Controller::Params::GuidanceGains::GuidanceGains()
+ISP_Controller2D::Params::GuidanceGains::GuidanceGains()
     : GuidanceGains(NaN, NaN, NaN) {}
 
-ISP_Controller::Params::GuidanceGains::GuidanceGains(const double t,
-                                                     const double y,
-                                                     const double c)
+ISP_Controller2D::Params::GuidanceGains::GuidanceGains(const double t,
+                                                       const double y,
+                                                       const double c)
     : throttle(t), yaw(y), control_set(c) {}
 
-bool ISP_Controller::Params::GuidanceGains::valid() const {
+bool ISP_Controller2D::Params::GuidanceGains::valid() const {
   // Perform checks.
   CHECK_STRICTLY_POSITIVE(throttle);
   CHECK_STRICTLY_POSITIVE(yaw);
@@ -81,13 +81,14 @@ bool ISP_Controller::Params::GuidanceGains::valid() const {
   return true;
 }
 
-ISP_Controller::Params::HorizonDecay::HorizonDecay() : HorizonDecay(NaN, NaN) {}
+ISP_Controller2D::Params::HorizonDecay::HorizonDecay()
+    : HorizonDecay(NaN, NaN) {}
 
-ISP_Controller::Params::HorizonDecay::HorizonDecay(const double l,
-                                                   const double r)
+ISP_Controller2D::Params::HorizonDecay::HorizonDecay(const double l,
+                                                     const double r)
     : left(l), right(r) {}
 
-bool ISP_Controller::Params::HorizonDecay::valid() const {
+bool ISP_Controller2D::Params::HorizonDecay::valid() const {
   // Perform checks.
   CHECK_CONTAINS_CLOSED(left, 0.0, 1.0);
   CHECK_CONTAINS_CLOSED(right, 0.0, 1.0);
@@ -96,15 +97,15 @@ bool ISP_Controller::Params::HorizonDecay::valid() const {
   return true;
 }
 
-ISP_Controller::Params::ErosionKernel::ErosionKernel()
+ISP_Controller2D::Params::ErosionKernel::ErosionKernel()
     : ErosionKernel(NaN, NaN, NaN) {}
 
-ISP_Controller::Params::ErosionKernel::ErosionKernel(const double w,
-                                                     const double ht,
-                                                     const double hr)
+ISP_Controller2D::Params::ErosionKernel::ErosionKernel(const double w,
+                                                       const double ht,
+                                                       const double hr)
     : width(w), height(ht), horizon(hr) {}
 
-bool ISP_Controller::Params::ErosionKernel::valid() const {
+bool ISP_Controller2D::Params::ErosionKernel::valid() const {
   // Perform checks.
   CHECK_CONTAINS_CLOSED(width, 0.0, 1.0);
   CHECK_CONTAINS_CLOSED(height, 0.0, 1.0);
@@ -114,15 +115,16 @@ bool ISP_Controller::Params::ErosionKernel::valid() const {
   return true;
 }
 
-ISP_Controller::Params::Params()
+ISP_Controller2D::Params::Params()
     : Params(ShapeParameters(), ErosionKernel(), HorizonDecay(),
              GuidanceGains(), NaN, NaN, NaN, NaN, NaN) {}
 
-ISP_Controller::Params::Params(const ShapeParameters& sp,
-                               const ErosionKernel& ek, const HorizonDecay& yd,
-                               const GuidanceGains& gg, const double fx,
-                               const double px, const double kp,
-                               const double kd, const double pi)
+ISP_Controller2D::Params::Params(const ShapeParameters& sp,
+                                 const ErosionKernel& ek,
+                                 const HorizonDecay& yd,
+                                 const GuidanceGains& gg, const double fx,
+                                 const double px, const double kp,
+                                 const double kd, const double pi)
     : focal_length_x(fx),
       principal_point_x(px),
       K_P(kp),
@@ -133,7 +135,7 @@ ISP_Controller::Params::Params(const ShapeParameters& sp,
       guidance_gains(gg),
       shape_parameters(sp) {}
 
-bool ISP_Controller::Params::valid() const {
+bool ISP_Controller2D::Params::valid() const {
   // Perform checks.
   CHECK_STRICTLY_POSITIVE(focal_length_x);
   CHECK_NOT_NAN(principal_point_x);
@@ -145,11 +147,11 @@ bool ISP_Controller::Params::valid() const {
          guidance_gains.valid() && shape_parameters.valid();
 }
 
-ISP_Controller::ISP_Controller(const Params& params)
+ISP_Controller2D::ISP_Controller2D(const Params& params)
     : p_(params), C_u_(p_.shape_parameters) {}
 
-ControlCommand ISP_Controller::SD_Control(const cv::Mat& ISP,
-                                          const ControlCommand& u_d) {
+ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
+                                            const ControlCommand& u_d) {
   // Reserve return value.
   ControlCommand cmd;
 
