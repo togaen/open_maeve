@@ -21,42 +21,6 @@
  */
 #pragma once
 
-#include <string>
-
-#include "maeve_automation_core/feature_flow/feature_flow.h"
-
-#include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
-
-namespace maeve_automation_core {
-
-/** @brief Parameter object to load ROS params.*/
-struct FeatureFlowParams : public ParamsBase {
-  /** @brief Feature Flow parameters. */
-  FeatureFlow::Params ff;
-
-  /** @brief Artificially reduce the frame rate of incoming video. */
-  int skip_frames;
-
-  /** @brief Ignore homographies within this distance of identity. */
-  double identity_threshold;
-
-  /** @brief Ignore homographies within this magnitude of scaling. */
-  double scale_threshold;
-
-  /** @brief Ignore homographies within this magnitude of translation. */
-  double translation_threshold;
-
-  /** @brief The camera image topic. */
-  std::string camera_topic;
-
-  /** @brief The visualization topic. */
-  std::string viz_topic;
-
-  /**
-   * @copydoc ParamsBase::ParamsBase()
-   */
-  __attribute__((warn_unused_result)) bool load(
-      const ros::NodeHandle& nh) override;
-};  // struct FeatureFlowParams
-
-}  // namespace maeve_automation_core
+#include "maeve_automation_core/maeve_macros/checks.h"
+#include "maeve_automation_core/ros_parameter_loading/macros.h"
+#include "maeve_automation_core/ros_parameter_loading/params_base.h"
