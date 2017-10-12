@@ -19,22 +19,12 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include <ros/ros.h>
 
 #include "segmentation_isp_field/node_handler.h"
 
-int main(int argc, char* argv[]) {
-  const auto node_name = std::string("segmentation_isp_field");
-
-  // Initialize ROS node.
-  ros::init(argc, argv, node_name);
-
-  // Create handler.
-  maeve_automation_core::SegmentationFieldNodeHandler handler(node_name);
-
-  // Kick it off.
-  ros::spin();
-
-  // Done.
-  return EXIT_SUCCESS;
+namespace maeve_automation_core {
+SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
+    const std::string& node_name) : nh_(node_name) {
+  // TODO(me)
 }
+}  // namespace maeve_automation_core
