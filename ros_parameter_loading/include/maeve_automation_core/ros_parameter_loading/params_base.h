@@ -32,19 +32,6 @@ namespace maeve_automation_core {
 /** @brief An interface for objects that load and contain ROS parameters.*/
 struct ParamsBase {
   /**
-   * @brief Write a parameter object to a string stream.
-   *
-   * @param os The output stream.
-   * @param params The parameter object.
-   *
-   * @return The stream with the serialized parameter object.
-   */
-  friend std::ostream& operator<<(std::ostream& os, const ParamsBase& params) {
-    return os << "[stream overload is ParamsBase is deprecated; please define "
-                 "class-specific overloads]";
-  }
-
-  /**
    * @brief Load parameters from the ROS parameter server.
    *
    * @param nh The ROS node handle.

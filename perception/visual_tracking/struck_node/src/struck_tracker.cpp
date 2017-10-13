@@ -39,7 +39,6 @@ StruckTracker::StruckTracker(ros::NodeHandle& nh)
       initialized_successfully(false),
       it(nh) {
   if (params.load(nh)) {
-    ROS_INFO_STREAM("Loaded params:\n" << params);
     conf = params.toStruckConfig();
     if (StruckVisualTrackingParams::SanityCheckStruckConfig(conf)) {
       srand(conf.seed);
