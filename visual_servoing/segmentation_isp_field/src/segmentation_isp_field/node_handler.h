@@ -30,6 +30,7 @@
 
 #include "maeve_automation_core/controller_interface_msgs/command2d_manager.h"
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
+#include "maeve_automation_core/segmentation_taxonomy/segmentation_taxonomy.h"
 #include "segmentation_isp_field/params.h"
 
 namespace maeve_automation_core {
@@ -59,6 +60,8 @@ class SegmentationFieldNodeHandler {
   /** @brief Compute control commands from ISP field. */
   ISP_Controller2D isp_controller_;
 
+  /** @brief Parser for loading data set taxonomy. */
+  SegmentationTaxonomy taxonomy_;
   /** @brief Camera image subscriber. */
   image_transport::Subscriber segmentation_sub_;
   /** @brief ISP field visualization publisher. */

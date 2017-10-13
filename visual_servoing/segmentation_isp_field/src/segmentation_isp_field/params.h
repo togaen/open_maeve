@@ -45,6 +45,12 @@ struct SegmentationFieldParams : public ParamsBase {
   /** @brief Desired control command input topic. */
   std::string control_command_input_topic;
 
+  /** @brief Path to the label map file. */
+  std::string label_map_path;
+
+  /** @brief Name of the data set to load a taxonomy for. */
+  std::string data_set_name;
+
   /**
    * @brief Default constructor.
    */

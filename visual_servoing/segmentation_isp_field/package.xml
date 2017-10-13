@@ -56,6 +56,7 @@
   <depend>isp_controller_2d</depend> 
   <depend>maeve_time_queue</depend>
   <depend>ros_parameter_loading</depend>
+  <depend>segmentation_taxonomy</depend>
 
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>

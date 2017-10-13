@@ -2,10 +2,14 @@ segmentation_sequence_topic: '/segmentation_sequence'
 
 viz_isp_field_topic: 'isp_field_viz'
 
-# absolute topic name for desired command input
+# Absolute topic name for desired command input.
 control_command_input_topic: '/joystick_controller_2d/command'
 
-# node-relative topic for control command output
+# Node-relative topic for control command output.
 control_command_output_topic: 'command'
 
+# Name of the data set to load taxonomy for.
+data_set_name: 's01'
 
+# Path to the label map yaml file.
+label_map_path: '/home/jj56/data/sequences/s01/label_map.yaml'

@@ -23,6 +23,7 @@ find_package(catkin REQUIRED COMPONENTS
   joystick_controller_2d
   maeve_time_queue
   ros_parameter_loading
+  segmentation_taxonomy
 )
 
 ## System dependencies are found with CMake's conventions

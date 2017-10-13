@@ -32,6 +32,8 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(viz_isp_field_topic);
   LOAD_PARAM(control_command_input_topic);
   LOAD_PARAM(control_command_output_topic);
+  LOAD_PARAM(label_map_path);
+  LOAD_PARAM(data_set_name);
 
   // Load controller parameters.
   if (!loadISP_ControllerROS_Params(nh, "isp_controller_params",
@@ -49,6 +51,8 @@ bool SegmentationFieldParams::valid() const {
   CHECK_NONEMPTY(viz_isp_field_topic);
   CHECK_NONEMPTY(control_command_output_topic);
   CHECK_NONEMPTY(control_command_input_topic);
+  CHECK_NONEMPTY(label_map_path);
+  CHECK_NONEMPTY(data_set_name);
 
   // All good.
   return true;

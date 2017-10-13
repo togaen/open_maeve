@@ -47,6 +47,12 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
       nh_.advertise<controller_interface_msgs::Command2D>(
           params_.control_command_output_topic, 1);
 
+  // Load the data set taxonomy.
+  if (!taxonomy_.load(params_.label_map_path, params_.data_set_name)) {
+    ROS_FATAL_STREAM("Failed to load data set taxonomy. Fatal error.");
+    return;
+  }
+
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
     viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
