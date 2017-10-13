@@ -50,27 +50,30 @@ bool loadISP_ControllerROS_Params(const ros::NodeHandle& nh,
 
   // Load controller parameters.
   auto& ek = params.erosion_kernel;
-  LOAD_NS_NAME_PARAM(ns, ek.width);
-  LOAD_NS_NAME_PARAM(ns, ek.height);
-  LOAD_NS_NAME_PARAM(ns, ek.horizon);
+  const auto ek_ns = ns + "/erosion_kernel";
+  LOAD_NAMED_PARAM(ek_ns + "/width", ek.width);
+  LOAD_NAMED_PARAM(ek_ns + "/height", ek.height);
+  LOAD_NAMED_PARAM(ek_ns + "/horizon", ek.horizon);
 
   auto& yd = params.yaw_decay;
-  LOAD_NS_NAME_PARAM(ns, yd.left);
-  LOAD_NS_NAME_PARAM(ns, yd.right);
+  const auto yd_ns = ns + "/yaw_decay";
+  LOAD_NAMED_PARAM(yd_ns + "/left", yd.left);
+  LOAD_NAMED_PARAM(yd_ns + "/right", yd.right);
 
   auto& gg = params.guidance_gains;
-  LOAD_NS_NAME_PARAM(ns, gg.throttle);
-  LOAD_NS_NAME_PARAM(ns, gg.yaw);
-  LOAD_NS_NAME_PARAM(ns, gg.control_set);
+  const auto gg_ns = ns + "/guidance_gains";
+  LOAD_NAMED_PARAM(gg_ns + "/throttle", gg.throttle);
+  LOAD_NAMED_PARAM(gg_ns + "/yaw", gg.yaw);
+  LOAD_NAMED_PARAM(gg_ns + "/control_set", gg.control_set);
 
-  LOAD_NS_NAME_PARAM(ns, params.K_P);
-  LOAD_NS_NAME_PARAM(ns, params.K_D);
+  LOAD_NAMED_PARAM(ns + "/K_P", params.K_P);
+  LOAD_NAMED_PARAM(ns + "/K_D", params.K_D);
 
   // This one is tricky because it can be string or double.
   std::string str_inertia;
   if (!nh.getParam("params/potential_inertia", str_inertia)) {
     // If string version of the param fails to load, try to load as a double.
-    LOAD_NS_NAME_PARAM(ns, params.potential_inertia);
+    LOAD_NAMED_PARAM(ns + "/potential_inertia", params.potential_inertia);
   } else {
     char* pEnd = nullptr;
     params.potential_inertia = std::strtod(str_inertia.c_str(), &pEnd);

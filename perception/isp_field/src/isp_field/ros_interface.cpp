@@ -27,11 +27,11 @@ namespace maeve_automation_core {
 bool loadShapeParamsROS_Params(const ros::NodeHandle& nh, const std::string& ns,
                                ShapeParameters& shape_params) {
   // Attempt to load params.
-  LOAD_NS_NAME_PARAM(ns, shape_params.translation);
-  LOAD_NS_NAME_PARAM(ns, shape_params.range_min);
-  LOAD_NS_NAME_PARAM(ns, shape_params.range_max);
-  LOAD_NS_NAME_PARAM(ns, shape_params.alpha);
-  LOAD_NS_NAME_PARAM(ns, shape_params.beta);
+  LOAD_NAMED_PARAM(ns + "/translation", shape_params.translation);
+  LOAD_NAMED_PARAM(ns + "/range_min", shape_params.range_min);
+  LOAD_NAMED_PARAM(ns + "/range_max", shape_params.range_max);
+  LOAD_NAMED_PARAM(ns + "/alpha", shape_params.alpha);
+  LOAD_NAMED_PARAM(ns + "/beta", shape_params.beta);
 
   // All good.
   return true;
