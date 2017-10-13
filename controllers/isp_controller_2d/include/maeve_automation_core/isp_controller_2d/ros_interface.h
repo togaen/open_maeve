@@ -22,9 +22,11 @@
 #pragma once
 
 #include "controller_interface_msgs/Command2D.h"
+#include "ros/ros.h"
 #include "std_msgs/Header.h"
 
 #include "maeve_automation_core/isp_controller_2d/control_command.h"
+#include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
 
 namespace maeve_automation_core {
 /**
@@ -44,4 +46,22 @@ controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
  */
 ControlCommand command2D_Msg2ControlCommand(
     const controller_interface_msgs::Command2D& msg);
+
+/**
+ * @brief Convenience method for filling a parameter object from the ROS
+ * parameter server.
+ *
+ * @note Shape parameters for the ISP controller must live in a namespace
+ * 'shape_parameters' that is relative to ns.
+ *
+ * @param nh ROS node handle.
+ * @param ns The node-relative namespace that contains the controller params.
+ * @param isp_controller_params The parameter object to fill out.
+ *
+ * @return True if 'isp_controller_params' was successfully filled out;
+ * otherwise false.
+ */
+bool loadISP_ControllerROS_Params(const ros::NodeHandle& nh,
+                                  const std::string& ns,
+                                  ISP_Controller2D::Params& params);
 }  // namespace maeve_automation_core
