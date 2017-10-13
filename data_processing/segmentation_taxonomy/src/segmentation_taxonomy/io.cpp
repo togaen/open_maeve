@@ -24,17 +24,18 @@
 #include <yaml-cpp/yaml.h>
 
 namespace maeve_automation_core {
-std::tuple<LabelClasses, LabelInstances> loadLabels(
+std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
     const std::string& label_map_path, const std::string& data_set_name) {
   LabelClasses classes;
   LabelInstances instances;
+  LabelInstanceClasses instance_classes;
 
   // Load YAML file.
   YAML::Node config;
   try {
     config = YAML::LoadFile(label_map_path);
   } catch (...) {
-    return std::make_tuple(classes, instances);
+    return std::make_tuple(classes, instances, instance_classes);
   }
 
   {  // Load classes.
@@ -75,7 +76,23 @@ std::tuple<LabelClasses, LabelInstances> loadLabels(
     }
   }
 
+  {  // Load instance classes.
+    YAML::Node instances_node = config[data_set_name]["label_instance_classes"];
+    if (instances_node.IsSequence()) {
+      for (auto it = instances_node.begin(); it != instances_node.end(); ++it) {
+        if (it->IsSequence() && (it->size() > 0)) {
+          ClassSet class_set;
+          for (auto it_classes = it->begin(); it_classes != it->end();
+               ++it_classes) {
+            class_set.insert(it_classes->as<std::string>());
+          }
+          instance_classes.push_back(class_set);
+        }
+      }
+    }
+  }
+
   // Done.
-  return std::make_tuple(classes, instances);
+  return std::make_tuple(classes, instances, instance_classes);
 }
 }  // namespace maeve_automation_core

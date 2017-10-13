@@ -21,17 +21,17 @@
  */
 #pragma once
 
-#include "maeve_automation_core/segmentation_taxonomy/types.h"
+#include <array>
+#include <set>
+#include <string>
+#include <tuple>
+#include <unordered_map>
+#include <vector>
 
 namespace maeve_automation_core {
-/**
- * @brief Load a taxonomy from a yaml file.
- *
- * @param label_map_path The path to the yaml file.
- * @param data_set_name The name of the data set.
- *
- * @return The label class, label instance, and label instance classes sets.
- */
-std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
-    const std::string& label_map_path, const std::string& data_set_name);
+typedef std::array<int, 3> RGB;
+typedef std::unordered_map<std::string, RGB> LabelClasses;
+typedef std::vector<RGB> LabelInstances;
+typedef std::set<std::string> ClassSet;
+typedef std::vector<ClassSet> LabelInstanceClasses;
 }  // namespace maeve_automation_core

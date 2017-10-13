@@ -26,35 +26,19 @@
 #include <string>
 #include <unordered_map>
 
+#include "maeve_automation_core/segmentation_taxonomy/types.h"
+
 namespace maeve_automation_core {
 /**
  * @brief Struct to capture segmentation label information.
  */
-class SegmentationTaxonomy {
- public:
-  /** @brief Constant to denote invalid identifiers. */
-  static const int INVALID_ID;
-
-  /**
-   * @brief A label (class or instance) in the segmentation taxonomy.
-   */
-  struct Label {
-    /** @brief Integer object class. */
-    int label_id;
-    /** @brief The RGB specification of class/id. */
-    cv::Vec3b label_raw;
-    /** @brief Name of this label. */
-    std::string label_name;
-    /**
-     * @brief Default constructor: initialize to bad values.
-     */
-    Label();
-  };  // struct Label
-
-  /** @brief Typedef for the label map: Label Id -> Label */
-  typedef std::unordered_map<int, Label> LabelMap;
-  /** @brief Typedef for the instance label map: Class Id -> Instances */
-  typedef std::unordered_map<int, LabelMap> InstanceMap;
+struct SegmentationTaxonomy {
+  /** @brief Map of string name to RGB label value (std::array<int, 3>) */
+  LabelClasses classes;
+  /** @brief Vector of RGB label instance IDs. */
+  LabelInstances instances;
+  /** @brief Vector of string class name sets that match instance IDs. */
+  LabelInstanceClasses instance_classes;
 
   /**
    * @brief Load a label map from a YAML file.
@@ -66,24 +50,12 @@ class SegmentationTaxonomy {
       const std::string& label_map_path, const std::string& data_set_name);
 
   /**
-   * @brief Const ref accessor to the internal class map.
+   * @brief Whether the loaded parameters pass basic sanity checks.
    *
-   * @return A const ref to the class map.
+   * @return True if taxonomy information is consistent; otherwise false.
    */
-  const LabelMap& classMap() const;
+  __attribute__((warn_unused_result)) bool valid() const;
 
-  /**
-   * @brief Const ref accessor to the internal label map.
-   *
-   * @return A const ref to the instance map.
-   */
-  const InstanceMap& instanceMap() const;
-
- private:
-  /** @brief Internal taxonomy data structure containing classes. */
-  LabelMap class_map_;
-  /** @brief Internal taxonomy data structure containing instances. */
-  InstanceMap instance_map_;
   /**
    * @brief Convert a 3-tuple of type uchar to an integer.
    *

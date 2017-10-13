@@ -27,26 +27,43 @@
 #include "segmentation_taxonomy/io.h"
 
 namespace maeve_automation_core {
-const int SegmentationTaxonomy::INVALID_ID = 0;
-
-SegmentationTaxonomy::Label::Label() : label_id(INVALID_ID) {}
-
 bool SegmentationTaxonomy::load(const std::string& label_map_path,
                                 const std::string& data_set_name) {
-  LabelClasses label_classes;
-  LabelInstances label_instances;
-  std::tie(label_classes, label_instances) =
+  // Retrieve information from yaml file.
+  std::tie(classes, instances, instance_classes) =
       loadLabels(label_map_path, data_set_name);
+
+  // All good.
+  return valid();
+}
+
+bool SegmentationTaxonomy::valid() const {
+  // There must be at least one class.
+  if (classes.empty()) {
+    return false;
+  }
+
+  // Instances and instance classes must be lists of the same size.
+  if (instances.size() != instance_classes.size()) {
+    return false;
+  }
+
+  // Each instance must have at least one class.
+  for (const auto& s : instance_classes) {
+    if (s.empty()) {
+      return false;
+    }
+
+    // Each instance class must exist in the class set.
+    for (const auto& cs : s) {
+      if (classes.find(cs) == classes.end()) {
+        return false;
+      }
+    }
+  }
+
+  // All checks pass.
   return true;
-}
-
-const SegmentationTaxonomy::LabelMap& SegmentationTaxonomy::classMap() const {
-  return class_map_;
-}
-
-const SegmentationTaxonomy::InstanceMap& SegmentationTaxonomy::instanceMap()
-    const {
-  return instance_map_;
 }
 
 int SegmentationTaxonomy::cvVec3bToInt(const cv::Vec3b& v) {
