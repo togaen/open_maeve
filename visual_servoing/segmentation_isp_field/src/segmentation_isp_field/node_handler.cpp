@@ -55,6 +55,14 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
 
 void SegmentationFieldNodeHandler::segmentationSequenceCallback(
     const sensor_msgs::ImageConstPtr& msg) {
-  // TODO(me)
+  // Construct ISP field.
+
+  // Run through label map, construct guidance field.
+
+  // Feed guidance field to controller.
+
+  // Compute control.
+
+  // Publish control.
 }
 }  // namespace maeve_automation_core
