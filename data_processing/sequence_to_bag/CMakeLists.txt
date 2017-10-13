@@ -18,7 +18,6 @@ add_definitions(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   rosbag
-  ros_parameter_loading
   rosgraph_msgs
 )
 

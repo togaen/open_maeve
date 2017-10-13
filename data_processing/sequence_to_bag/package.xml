@@ -42,7 +42,6 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>cv_bridge</depend>
   <depend>rosbag</depend>
-  <depend>ros_parameter_loading</depend>
   <depend>rosgraph_msgs</depend>
   <depend>yaml-cpp</depend>
 
