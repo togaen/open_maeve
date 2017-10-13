@@ -21,15 +21,23 @@
  */
 #include "segmentation_isp_field/params.h"
 
+#include "maeve_automation_core/isp_controller_2d/ros_interface.h"
+
 namespace maeve_automation_core {
 SegmentationFieldParams::SegmentationFieldParams() {}
 
 bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
-  // Load parameters.
+  // Load node parameters.
   LOAD_PARAM(segmentation_sequence_topic);
   LOAD_PARAM(viz_isp_field_topic);
   LOAD_PARAM(control_command_input_topic);
   LOAD_PARAM(control_command_output_topic);
+
+  // Load controller parameters.
+  if (!loadISP_ControllerROS_Params(nh, "isp_controller_params",
+                                    isp_controller_params)) {
+    return false;
+  }
 
   // Done.
   return valid();

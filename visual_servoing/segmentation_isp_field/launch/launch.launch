@@ -4,8 +4,15 @@
     pkg="segmentation_isp_field"
     type="segmentation_isp_field_node"
     output="screen"> 
+
+    <!-- Node parameters. -->
     <rosparam
       command="load"
-      file="$(find segmentation_isp_field)/params/params.yaml"/>
+      file="$(find segmentation_isp_field)/params/node_params.yaml"/>
+
+    <!-- Controller parameters. -->
+    <rosparam
+      command="load"
+      file="$(find segmentation_isp_field)/params/controller_params.yaml"/>
   </node>
 </launch>

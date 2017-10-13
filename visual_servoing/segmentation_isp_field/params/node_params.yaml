@@ -1,0 +1,40 @@
+segmentation_sequence_topic: '/segmentation_sequence'
+
+viz_isp_field_topic: 'isp_field_viz'
+
+# absolute topic name for desired command input
+control_command_input_topic: '/joystick_controller_2d/command'
+
+# node-relative topic for control command output
+control_command_output_topic: 'command'
+
+#
+# Visual servoing parameters
+#
+
+# Use these values if the controller launches before any explicit guidance is available.
+default_guidance_control:
+  throttle: 0.0
+  yaw: 0.0
+
+isp_controller_params:
+  K_P: 1.0
+  K_D: 0.0
+  potential_inertia: 0.0 # should be \in [0, Inf]
+  erosion_kernel:
+    width: 0.05  # \in [0, 1] a proportion of image width
+    height: 0.75 # \in [0, 1] a proportion of image height
+    horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
+  yaw_decay:
+    left: 0.95
+    right: 0.95
+  shape_parameters: # These shape parameters define the output control space.
+    translation: 0.0
+    range_min: -1.0 # This is taken as the minimum of the control range for output
+    range_max: 1.0  # This is taken as the maximum of the control range for output
+    alpha: 1.0
+    beta: 1.0
+  guidance_gains:
+    throttle: 1.0
+    yaw: 1.0
+    control_set: 1.0
