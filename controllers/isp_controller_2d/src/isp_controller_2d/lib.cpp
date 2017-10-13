@@ -27,6 +27,8 @@
 #include <limits>
 #include <vector>
 
+#include "maeve_automation_core/isp_field/isp_field.h"
+
 namespace maeve_automation_core {
 namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -56,7 +58,7 @@ double yaw2Column(const cv::Mat& image_plane, const double yaw,
 }
 
 cv::Mat controlSetGuidance(const cv::Mat& controls) {
-  cv::Mat biasing_horizon = cv::Mat::zeros(1, controls.cols, CV_64FC2);
+  cv::Mat biasing_horizon = zeroISP_Field(1, controls.cols);
   // \TODO(me) Formulate this to behave like a balloon being pushed: suppression
   // of potential values in one area result in proportional expansion of
   // potential values elsewhere.

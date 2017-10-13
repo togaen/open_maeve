@@ -35,6 +35,7 @@
 #include "maeve_automation_core/isp_controller_2d/ros_interface.h"
 #include "maeve_automation_core/isp_field/tau.h"
 #include "maeve_automation_core/isp_field/visualize.h"
+#include "maeve_automation_core/isp_field/isp_field.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -218,7 +219,7 @@ void AR_ISPFieldNodeHandler::initFieldStorage(
     FieldMap& field_map) {
   std::for_each(std::begin(frame_list), std::end(frame_list),
                 [&](const std::string& frame_name) {
-                  field_map[frame_name] = cv::Mat::zeros(size, CV_64FC2);
+                  field_map[frame_name] = zeroISP_Field(size);
                 });
 }
 
@@ -289,7 +290,7 @@ void AR_ISPFieldNodeHandler::cameraCallback(
 
 cv::Mat AR_ISPFieldNodeHandler::computeISP() const {
   // Initialize to zeroed field.
-  cv::Mat ISP = cv::Mat::zeros(camera_model_.fullResolution(), CV_64FC2);
+  cv::Mat ISP = zeroISP_Field(camera_model_.fullResolution());
 
   // Compose hard constraint field.
   std::for_each(

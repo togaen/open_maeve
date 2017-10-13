@@ -131,6 +131,7 @@ include_directories(
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
+  src/${PROJECT_NAME}/isp_field.cpp
   src/${PROJECT_NAME}/shape_parameters.cpp
   src/${PROJECT_NAME}/tau.cpp
   src/${PROJECT_NAME}/visualize.cpp
