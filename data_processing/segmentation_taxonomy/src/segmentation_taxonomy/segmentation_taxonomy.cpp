@@ -35,7 +35,8 @@ bool SegmentationTaxonomy::load(const std::string& label_map_path,
                                 const std::string& data_set_name) {
   LabelClasses label_classes;
   LabelInstances label_instances;
-  std::tie(label_classes, label_instances) = loadLabels(label_map_path, data_set_name);
+  std::tie(label_classes, label_instances) =
+      loadLabels(label_map_path, data_set_name);
   return true;
 }
 

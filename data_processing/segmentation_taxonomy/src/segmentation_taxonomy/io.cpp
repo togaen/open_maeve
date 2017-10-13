@@ -47,7 +47,7 @@ std::tuple<LabelClasses, LabelInstances> loadLabels(
         const auto class_name = childKey.as<std::string>();
         if (childValue.IsSequence() && (childValue.size() == 3)) {
           RGB rgb;
-          auto idx = 0; 
+          auto idx = 0;
           for (auto it_rgb = childValue.begin(); it_rgb != childValue.end();
                ++it_rgb, ++idx) {
             rgb[idx] = it_rgb->as<int>();
