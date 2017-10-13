@@ -42,6 +42,18 @@
 /**
  * @brief Convenience macro for loading params into a ParamsBase object.
  *
+ * @param param The address of the parameter on the parameter server.
+ * @param var The name of the parameter and of the variable that holds it.
+ */
+#define LOAD_NAMED_PARAM(param, var)                                \
+  if (!nh.getParam(param, var)) {                                   \
+    ROS_ERROR_STREAM("Failed to load parameter '" << param << "'"); \
+    return false;                                                   \
+  }
+
+/**
+ * @brief Convenience macro for loading params into a ParamsBase object.
+ *
  * 'var' is a member variable of a struct named 'struct_name', which belongs to
  * the ParamsBase object. 'var' must have 'exactly' the same name as the ROS
  * parameter. Return false immediately if loading fails. Otherwise, append the
@@ -61,25 +73,6 @@
 /**
  * @brief Convenience macro for loading scoped params into a ParamsBase object.
  *
- * 'var' is a parameter in namespace 'ns_name' on the parameter server. Return
- * false immediately if loading fails. Otherwise, append the name and value of
- * ns.var to the loaded_param_set string in the ParamsBase object.
-
- * @param ns_name The namespace (or scope) of var in the parameter server.
- * @param var The name of the parameter and of the variable that holds it.
- */
-#define LOAD_NS_NAME_PARAM(ns_name, var)                                      \
-  {                                                                           \
-    if (!nh.getParam(ns_name + std::string("/") + std::string(#var), var)) {  \
-      ROS_ERROR_STREAM("Failed to load parameter '" << ns_name << "/" << #var \
-                                                    << "'");                  \
-      return false;                                                           \
-    }                                                                         \
-  }
-
-/**
- * @brief Convenience macro for loading scoped params into a ParamsBase object.
- *
  * 'var' is a member of an object 'ns' in the ParamsBase object, where 'var'
  * must have 'exactly' the same name as the ROS parameter, and 'ns' must have
  * 'exactly' the same name as the namespace of the 'var' parameter. Return
@@ -89,9 +82,14 @@
  * @param ns The namespace (or scope) of var in the parameter server.
  * @param var The name of the parameter and of the variable that holds it.
  */
-#define LOAD_NS_PARAM(ns, var)                              \
-  {                                                         \
-    auto ns_name = std::string(#ns);                        \
-    std::replace(ns_name.begin(), ns_name.end(), '.', '/'); \
-    LOAD_NS_NAME_PARAM(ns_name, ns.var);                    \
+#define LOAD_NS_PARAM(ns, var)                                                \
+  {                                                                           \
+    auto ns_name = std::string(#ns);                                          \
+    std::replace(ns_name.begin(), ns_name.end(), '.', '/');                   \
+    if (!nh.getParam(ns_name + std::string("/") + std::string(#var),          \
+                     ns.var)) {                                               \
+      ROS_ERROR_STREAM("Failed to load parameter '" << ns_name << "/" << #var \
+                                                    << "'");                  \
+      return false;                                                           \
+    }                                                                         \
   }
