@@ -24,6 +24,9 @@
 #include <cstdlib>
 #include <limits>
 
+#include "maeve_automation_core/isp_controller_2d/ros_interface.h"
+#include "maeve_automation_core/isp_field/ros_interface.h"
+
 namespace maeve_automation_core {
 namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -58,52 +61,20 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(default_guidance_control, throttle);
   LOAD_NS_PARAM(default_guidance_control, yaw);
 
-  LOAD_NS_PARAM(hard_constraint_transform, translation);
-  LOAD_NS_PARAM(hard_constraint_transform, alpha);
-  LOAD_NS_PARAM(hard_constraint_transform, beta);
-  LOAD_NS_PARAM(hard_constraint_transform, range_min);
-  LOAD_NS_PARAM(hard_constraint_transform, range_max);
+  // Load potential transform parameters.
+  if (!loadShapeParamsROS_Params(nh, "hard_constraint_transform",
+                                 hard_constraint_transform)) {
+    return false;
+  }
+  if (!loadShapeParamsROS_Params(nh, "soft_constraint_transform",
+                                 soft_constraint_transform)) {
+    return false;
+  }
 
-  LOAD_NS_PARAM(soft_constraint_transform, translation);
-  LOAD_NS_PARAM(soft_constraint_transform, alpha);
-  LOAD_NS_PARAM(soft_constraint_transform, beta);
-  LOAD_NS_PARAM(soft_constraint_transform, range_min);
-  LOAD_NS_PARAM(soft_constraint_transform, range_max);
-
-  LOAD_NS_PARAM(isp_controller_params.shape_parameters, translation);
-  LOAD_NS_PARAM(isp_controller_params.shape_parameters, range_min);
-  LOAD_NS_PARAM(isp_controller_params.shape_parameters, range_max);
-  LOAD_NS_PARAM(isp_controller_params.shape_parameters, alpha);
-  LOAD_NS_PARAM(isp_controller_params.shape_parameters, beta);
-
-  LOAD_NS_PARAM(isp_controller_params.erosion_kernel, width);
-  LOAD_NS_PARAM(isp_controller_params.erosion_kernel, height);
-  LOAD_NS_PARAM(isp_controller_params.erosion_kernel, horizon);
-
-  LOAD_NS_PARAM(isp_controller_params.yaw_decay, left);
-  LOAD_NS_PARAM(isp_controller_params.yaw_decay, right);
-
-  LOAD_NS_PARAM(isp_controller_params.guidance_gains, throttle);
-  LOAD_NS_PARAM(isp_controller_params.guidance_gains, yaw);
-  LOAD_NS_PARAM(isp_controller_params.guidance_gains, control_set);
-
-  LOAD_NS_PARAM(isp_controller_params, K_P);
-  LOAD_NS_PARAM(isp_controller_params, K_D);
-
-  // This one is tricky because it can be string or double.
-  std::string str_inertia;
-  if (!nh.getParam("isp_controller_params/potential_inertia", str_inertia)) {
-    LOAD_NS_PARAM(isp_controller_params, potential_inertia);
-  } else {
-    char* pEnd = nullptr;
-    isp_controller_params.potential_inertia =
-        std::strtod(str_inertia.c_str(), &pEnd);
-    if (*pEnd != '\0') {
-      // The full string was not consumed by strtod. This is invalid input.
-      ROS_FATAL_STREAM(
-          "Failed processing potential inertia parameter: " << pEnd);
-      return false;
-    }
+  // Load ISP controller params.
+  if (!loadISP_ControllerROS_Params(nh, "isp_controller_params",
+                                    isp_controller_params)) {
+    return false;
   }
 
   // Load AR tag parameters.
