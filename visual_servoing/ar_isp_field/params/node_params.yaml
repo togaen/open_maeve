@@ -3,7 +3,7 @@
 #
 
 #
-# These camera parameters should correspond to those in markers.launc
+# These camera parameters should correspond to those in markers.launch
 # TODO(me): Unify parameters between these nodes.
 #
 camera_topic: '/cv_camera_node/image_raw'
@@ -32,27 +32,6 @@ verbose: false
 #verbose: true
 
 #
-# Image Space Potential field parameters
-#
-
-# Arbitrary measurement value to assign as reward for targets.
-target_reward: 50.0
-
-hard_constraint_transform:
-  translation: 0.0
-  alpha: 25.0
-  beta: 1.0
-  range_min: 0.0
-  range_max: 1.5
-
-soft_constraint_transform:
-  translation: 0.0
-  alpha: 1.0
-  beta: 1.0
-  range_min: 5.0
-  range_max: 50.0
-
-#
 # AR tag tracking parameters
 #
 
@@ -66,34 +45,3 @@ ar_frame_prefix: 'ar_marker_'
 # these need to match the set of tags being tracked by ar_track_alvar
 ar_tag_obstacle_ids: [0] #, 1, 2, 3, 4, 5, 6, 7, 8]
 ar_tag_target_ids: []
-
-#
-# Visual servoing parameters
-#
-
-# Use these values if the controller launches before any explicit guidance is available.
-default_guidance_control:
-  throttle: 0.0
-  yaw: 0.0
-
-isp_controller_params:
-  K_P: 1.0
-  K_D: 0.0
-  potential_inertia: 0.0 # should be \in [0, Inf]
-  erosion_kernel:
-    width: 0.05  # \in [0, 1] a proportion of image width
-    height: 0.75 # \in [0, 1] a proportion of image height
-    horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
-  yaw_decay:
-    left: 0.95
-    right: 0.95
-  shape_parameters: # These shape parameters define the output control space.
-    translation: 0.0
-    range_min: -1.0 # This is taken as the minimum of the control range for output
-    range_max: 1.0  # This is taken as the maximum of the control range for output
-    alpha: 1.0
-    beta: 1.0
-  guidance_gains:
-    throttle: 1.0
-    yaw: 1.0
-    control_set: 1.0
