@@ -19,37 +19,26 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
+#include <ros/ros.h>
+
 #include "maeve_automation_core/segmentation_taxonomy/segmentation_taxonomy.h"
 
-#include <array>
-#include <vector>
+int main(int argc, char* argv[]) {
+  const auto node_name = std::string("segmentation_taxonomy");
 
-#include "segmentation_taxonomy/io.h"
+  // Initialize ROS node.
+  ros::init(argc, argv, node_name);
 
-namespace maeve_automation_core {
-const int SegmentationTaxonomy::INVALID_ID = 0;
+  maeve_automation_core::SegmentationTaxonomy t;
+  if (!t.load("/home/jj56/data/sequences/s01/label_map.yaml", "s01")) {
+    ROS_ERROR_STREAM("Failed to load parameters.");
+    return EXIT_FAILURE;
+  }
+  ROS_INFO_STREAM("Loaded parameters.");
 
-SegmentationTaxonomy::Label::Label() : label_id(INVALID_ID) {}
+  // Kick it off.
+  ros::spin();
 
-bool SegmentationTaxonomy::load(const std::string& label_map_path,
-                                const std::string& data_set_name) {
-  LabelClasses label_classes;
-  LabelInstances label_instances;
-  std::tie(label_classes, label_instances) = loadLabels(label_map_path, data_set_name);
-  return true;
+  // Done.
+  return EXIT_SUCCESS;
 }
-
-const SegmentationTaxonomy::LabelMap& SegmentationTaxonomy::classMap() const {
-  return class_map_;
-}
-
-const SegmentationTaxonomy::InstanceMap& SegmentationTaxonomy::instanceMap()
-    const {
-  return instance_map_;
-}
-
-int SegmentationTaxonomy::cvVec3bToInt(const cv::Vec3b& v) {
-  return static_cast<int>(v[0]) + (255 * static_cast<int>(v[1])) +
-         (255 * 255 * static_cast<int>(v[2]));
-}
-}  // namespace maeve_automation_core

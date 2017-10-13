@@ -21,17 +21,76 @@
  */
 #pragma once
 
-#include <ros/ros.h>
+#include <opencv2/opencv.hpp>
 
-#include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
+#include <string>
+#include <unordered_map>
 
 namespace maeve_automation_core {
-class SegmentationTaxonomy : public ParamsBase {
+/**
+ * @brief Struct to capture segmentation label information.
+ */
+class SegmentationTaxonomy {
+ public:
+  /** @brief Constant to denote invalid identifiers. */
+  static const int INVALID_ID;
+
   /**
-   * @copydoc ParamsBase::ParamsBase()
+   * @brief A label (class or instance) in the segmentation taxonomy.
+   */
+  struct Label {
+    /** @brief Integer object class. */
+    int label_id;
+    /** @brief The RGB specification of class/id. */
+    cv::Vec3b label_raw;
+    /** @brief Name of this label. */
+    std::string label_name;
+    /**
+     * @brief Default constructor: initialize to bad values.
+     */
+    Label();
+  };  // struct Label
+
+  /** @brief Typedef for the label map: Label Id -> Label */
+  typedef std::unordered_map<int, Label> LabelMap;
+  /** @brief Typedef for the instance label map: Class Id -> Instances */
+  typedef std::unordered_map<int, LabelMap> InstanceMap;
+
+  /**
+   * @brief Load a label map from a YAML file.
+   *
+   * @param label_map_path The path to the label map file.
+   * @param data_set_name The name of the data set being loaded.
    */
   __attribute__((warn_unused_result)) bool load(
-      const ros::NodeHandle& nh) override;
+      const std::string& label_map_path, const std::string& data_set_name);
 
+  /**
+   * @brief Const ref accessor to the internal class map.
+   *
+   * @return A const ref to the class map.
+   */
+  const LabelMap& classMap() const;
+
+  /**
+   * @brief Const ref accessor to the internal label map.
+   *
+   * @return A const ref to the instance map.
+   */
+  const InstanceMap& instanceMap() const;
+
+ private:
+  /** @brief Internal taxonomy data structure containing classes. */
+  LabelMap class_map_;
+  /** @brief Internal taxonomy data structure containing instances. */
+  InstanceMap instance_map_;
+  /**
+   * @brief Convert a 3-tuple of type uchar to an integer.
+   *
+   * @param v The 3-tuple of type uchar.
+   *
+   * @return The integer value of three digit base 255 cv::Vec3b object.
+   */
+  static int cvVec3bToInt(const cv::Vec3b& v);
 };  // class SegmentationTaxonomy
 }  // namespace maeve_automation_core

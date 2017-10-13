@@ -19,37 +19,19 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/segmentation_taxonomy/segmentation_taxonomy.h"
+#pragma once
 
 #include <array>
+#include <string>
+#include <tuple>
+#include <unordered_map>
 #include <vector>
 
-#include "segmentation_taxonomy/io.h"
-
 namespace maeve_automation_core {
-const int SegmentationTaxonomy::INVALID_ID = 0;
+typedef std::array<int, 3> RGB;
+typedef std::unordered_map<std::string, RGB> LabelClasses;
+typedef std::vector<RGB> LabelInstances;
 
-SegmentationTaxonomy::Label::Label() : label_id(INVALID_ID) {}
-
-bool SegmentationTaxonomy::load(const std::string& label_map_path,
-                                const std::string& data_set_name) {
-  LabelClasses label_classes;
-  LabelInstances label_instances;
-  std::tie(label_classes, label_instances) = loadLabels(label_map_path, data_set_name);
-  return true;
-}
-
-const SegmentationTaxonomy::LabelMap& SegmentationTaxonomy::classMap() const {
-  return class_map_;
-}
-
-const SegmentationTaxonomy::InstanceMap& SegmentationTaxonomy::instanceMap()
-    const {
-  return instance_map_;
-}
-
-int SegmentationTaxonomy::cvVec3bToInt(const cv::Vec3b& v) {
-  return static_cast<int>(v[0]) + (255 * static_cast<int>(v[1])) +
-         (255 * 255 * static_cast<int>(v[2]));
-}
+std::tuple<LabelClasses, LabelInstances> loadLabels(
+    const std::string& label_map_path, const std::string& data_set_name);
 }  // namespace maeve_automation_core
