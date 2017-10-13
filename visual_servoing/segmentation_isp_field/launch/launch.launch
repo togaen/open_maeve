@@ -14,5 +14,10 @@
     <rosparam
       command="load"
       file="$(find segmentation_isp_field)/params/controller_params.yaml"/>
+
+    <!-- Guidance parameters. -->
+    <rosparam
+      command="load"
+      file="$(find segmentation_isp_field)/params/guidance_weights.yaml"/>
   </node>
 </launch>

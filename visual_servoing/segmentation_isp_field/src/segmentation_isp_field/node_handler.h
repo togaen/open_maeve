@@ -27,6 +27,7 @@
 #include <std_msgs/Header.h>
 
 #include <string>
+#include <unordered_map>
 
 #include "maeve_automation_core/controller_interface_msgs/command2d_manager.h"
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
@@ -59,6 +60,9 @@ class SegmentationFieldNodeHandler {
 
   /** @brief Compute control commands from ISP field. */
   ISP_Controller2D isp_controller_;
+
+  /** @brief Set of guidance weights. */
+  std::unordered_map<std::string, double> guidance_weights_;
 
   /** @brief Parser for loading data set taxonomy. */
   SegmentationTaxonomy taxonomy_;

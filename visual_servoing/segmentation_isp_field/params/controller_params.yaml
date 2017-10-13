@@ -7,6 +7,7 @@ default_guidance_control:
   throttle: 0.0
   yaw: 0.0
 
+# Controller params.
 isp_controller_params:
   K_P: 1.0
   K_D: 0.0

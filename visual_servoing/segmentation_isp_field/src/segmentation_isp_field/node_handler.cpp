@@ -22,9 +22,18 @@
 
 #include "segmentation_isp_field/node_handler.h"
 
+#include <algorithm>
+#include <limits>
+
 #include "maeve_automation_core/isp_controller_2d/ros_interface.h"
+#include "maeve_automation_core/isp_field/isp_field.h"
+#include "maeve_automation_core/segmentation_taxonomy/types.h"
 
 namespace maeve_automation_core {
+namespace {
+const auto NaN = std::numeric_limits<double>::quiet_NaN();
+}  // namespace
+
 SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
     const std::string& node_name)
     : nh_(node_name), it_(nh_) {
@@ -53,6 +62,19 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
     return;
   }
 
+  // Load guidance weights.
+  std::for_each(std::begin(taxonomy_.classes), std::end(taxonomy_.classes),
+                [&](const LabelClasses::value_type& p) {
+                  const auto& class_name = p.first;
+                  auto weight = NaN;
+                  if (nh_.getParam("guidance_weights/" + class_name, weight)) {
+                    guidance_weights_[class_name] = weight;
+                  } else {
+                    ROS_WARN_STREAM("Guidance weight for class '"
+                                    << class_name << "' not found.");
+                  }
+                });
+
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
     viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
@@ -62,6 +84,7 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
 void SegmentationFieldNodeHandler::segmentationSequenceCallback(
     const sensor_msgs::ImageConstPtr& msg) {
   // Construct ISP field.
+  auto guidance_field = zeroISP_Field(msg->width, msg->height);
 
   // Run through label map, construct guidance field.
 
