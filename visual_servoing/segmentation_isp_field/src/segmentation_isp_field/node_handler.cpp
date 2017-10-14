@@ -23,12 +23,14 @@
 #include "segmentation_isp_field/node_handler.h"
 
 #include <cv_bridge/cv_bridge.h>
+#include <std_msgs/Header.h>
 
 #include <algorithm>
 #include <limits>
 
 #include "maeve_automation_core/isp_controller_2d/ros_interface.h"
 #include "maeve_automation_core/isp_field/isp_field.h"
+#include "maeve_automation_core/isp_field/visualize.h"
 #include "maeve_automation_core/segmentation_taxonomy/types.h"
 #include "segmentation_isp_field/lib.h"
 
@@ -118,11 +120,22 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   std::for_each(std::begin(guidance_potentials_),
                 std::end(guidance_potentials_),
                 [&](const GuidancePotentials::value_type& p) {
+                std::cout << "label: " << p.first << ", " << p.second << std::endl;
                   guidance_field =
                       guidance_field +
                       extractGuidanceField(
                           cv_ptr->image, taxonomy_.classes[p.first], p.second);
                 });
+
+  // Visualize?
+  if (!params_.viz_isp_field_topic.empty()) {
+    auto viz_field = computeISPFieldVisualization(
+        guidance_field, params_.viz_potential_bounds[0],
+        params_.viz_potential_bounds[1]);
+    sensor_msgs::ImagePtr viz_msg =
+        cv_bridge::CvImage(std_msgs::Header(), "bgr8", viz_field).toImageMsg();
+    viz_isp_field_pub_.publish(viz_msg);
+  }
 
   // Feed guidance field to controller.
 

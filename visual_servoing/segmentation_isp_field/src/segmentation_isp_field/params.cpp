@@ -35,6 +35,7 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(control_command_output_topic);
   LOAD_PARAM(label_map_path);
   LOAD_PARAM(data_set_name);
+  LOAD_PARAM(viz_potential_bounds);
 
   // Load potential transform parameters.
   if (!loadShapeParamsROS_Params(nh, "hard_constraint_transform",
@@ -65,6 +66,9 @@ bool SegmentationFieldParams::valid() const {
   CHECK_NONEMPTY(control_command_input_topic);
   CHECK_NONEMPTY(label_map_path);
   CHECK_NONEMPTY(data_set_name);
+  CHECK_EQ(viz_potential_bounds.size(), 2);
+  CHECK_FINITE(viz_potential_bounds[0]);
+  CHECK_FINITE(viz_potential_bounds[1]);
 
   // All good.
   return true;

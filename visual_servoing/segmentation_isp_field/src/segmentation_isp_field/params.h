@@ -21,6 +21,8 @@
  */
 #pragma once
 
+#include <vector>
+
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
 #include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
 
@@ -50,6 +52,9 @@ struct SegmentationFieldParams : public ParamsBase {
 
   /** @brief Name of the data set to load a taxonomy for. */
   std::string data_set_name;
+
+  /** @brief The scaling bounds for visualizing potential values. */
+  std::vector<double> viz_potential_bounds;
 
   /** @brief Hard constraint transform parameters. */
   ShapeParameters hard_constraint_transform;

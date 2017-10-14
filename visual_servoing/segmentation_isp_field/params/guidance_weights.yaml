@@ -1,11 +1,11 @@
 # Guidance weights.
 guidance_weights:
-  road:           2.0
-  lane_marker:    -2.0
-  lane_boundary:  -10.0
+  road:           20.0
+  lane_marker:    -150.0
+  lane_boundary:  -1000.0
   curb_shoulder:  -100
   sidewalk:       -100
   grass:          -100
-  tree:           -1000
-  building:       -1000
-  infrastructure: -1000
+  tree:           -100
+  building:       -100
+  infrastructure: -100
