@@ -78,6 +78,14 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
   // Load any guidance weights that live on the parameter server.
   loadGuidancePotentials(nh_, taxonomy_, sc_, guidance_potentials_);
 
+  // Set up command handler.
+  command2d_mgr_.initialize(nh_, params_.control_command_input_topic);
+
+  // Control command output publisher.
+  control_command_output_pub_ =
+      nh_.advertise<controller_interface_msgs::Command2D>(
+          params_.control_command_output_topic, 1);
+
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
     viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
@@ -104,6 +112,16 @@ void SegmentationFieldNodeHandler::loadGuidancePotentials(
 
 void SegmentationFieldNodeHandler::segmentationSequenceCallback(
     const sensor_msgs::ImageConstPtr& msg) {
+  // Make sure field maps have storage allocated, but do it only once.
+  static auto init = true;
+  if (init) {
+    // Initialize ISP controller.
+    params_.isp_controller_params.principal_point_x = msg->width / 2;
+    params_.isp_controller_params.focal_length_x = 1;
+    isp_controller_ = ISP_Controller2D(params_.isp_controller_params);
+    init = false;
+  }
+
   // Convert ROS image to OpenCV.
   cv_bridge::CvImagePtr cv_ptr;
   try {
@@ -136,10 +154,29 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
     viz_isp_field_pub_.publish(viz_msg);
   }
 
-  // Feed guidance field to controller.
+  // Get desired control.
+  ControlCommand u_d;
+  if (const auto cmd_msg = command2d_mgr_.mostRecentMsg()) {
+    u_d = command2D_Msg2ControlCommand(*cmd_msg);
+    if (!u_d.valid()) {
+      u_d = params_.default_guidance_control;
+      ROS_ERROR_STREAM("u_d not valid: "
+                       << u_d << ", sending default guidance control: " << u_d);
+    }
+  } else {
+    u_d = params_.default_guidance_control;
+  }
 
-  // Compute control.
+  // Compute SD control.
+  if (!isp_controller_.isInitialized()) {
+    ROS_ERROR_STREAM("ISP controller not initialized.");
+    return;
+  }
+  const auto u_star = isp_controller_.SD_Control(guidance_field, u_d);
+  // ROS_INFO_STREAM("u_d: " << u_d << ", u_star: " << u_star);
 
   // Publish control.
+  control_command_output_pub_.publish(
+      controlCommand2Command2D_Msg(u_star, msg->header));
 }
 }  // namespace maeve_automation_core

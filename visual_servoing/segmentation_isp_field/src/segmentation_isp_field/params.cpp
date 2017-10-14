@@ -36,6 +36,8 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(label_map_path);
   LOAD_PARAM(data_set_name);
   LOAD_PARAM(viz_potential_bounds);
+  LOAD_NS_PARAM(default_guidance_control, throttle);
+  LOAD_NS_PARAM(default_guidance_control, yaw);
 
   // Load potential transform parameters.
   if (!loadShapeParamsROS_Params(nh, "hard_constraint_transform",
@@ -53,9 +55,25 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
     return false;
   }
 
+  // These parameters are set at run time by the camera callback. To bypass
+  // validity checking, set them temporarily to valid values.
+  const auto org_focal_length_x = isp_controller_params.focal_length_x;
+  isp_controller_params.focal_length_x = 1.0;
+  const auto org_principal_point_x = isp_controller_params.principal_point_x;
+  isp_controller_params.principal_point_x = 1.0;
+
+  // Get parameter validity.
+  const auto all_valid = default_guidance_control.valid() &&
+                         isp_controller_params.valid() &&
+                         hard_constraint_transform.valid() &&
+                         soft_constraint_transform.valid() && valid();
+
+  // Reset run-time parameters.
+  isp_controller_params.focal_length_x = org_focal_length_x;
+  isp_controller_params.principal_point_x = org_principal_point_x;
+
   // Done.
-  return hard_constraint_transform.valid() &&
-         soft_constraint_transform.valid() && valid();
+  return all_valid;
 }
 
 bool SegmentationFieldParams::valid() const {
