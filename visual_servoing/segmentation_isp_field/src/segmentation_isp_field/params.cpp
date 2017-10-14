@@ -22,6 +22,7 @@
 #include "segmentation_isp_field/params.h"
 
 #include "maeve_automation_core/isp_controller_2d/ros_interface.h"
+#include "maeve_automation_core/isp_field/ros_interface.h"
 
 namespace maeve_automation_core {
 SegmentationFieldParams::SegmentationFieldParams() {}
@@ -35,6 +36,16 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(label_map_path);
   LOAD_PARAM(data_set_name);
 
+  // Load potential transform parameters.
+  if (!loadShapeParamsROS_Params(nh, "hard_constraint_transform",
+                                 hard_constraint_transform)) {
+    return false;
+  }
+  if (!loadShapeParamsROS_Params(nh, "soft_constraint_transform",
+                                 soft_constraint_transform)) {
+    return false;
+  }
+
   // Load controller parameters.
   if (!loadISP_ControllerROS_Params(nh, "isp_controller_params",
                                     isp_controller_params)) {
@@ -42,7 +53,8 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   }
 
   // Done.
-  return valid();
+  return hard_constraint_transform.valid() &&
+         soft_constraint_transform.valid() && valid();
 }
 
 bool SegmentationFieldParams::valid() const {

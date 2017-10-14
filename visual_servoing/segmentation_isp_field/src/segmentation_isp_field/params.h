@@ -51,6 +51,12 @@ struct SegmentationFieldParams : public ParamsBase {
   /** @brief Name of the data set to load a taxonomy for. */
   std::string data_set_name;
 
+  /** @brief Hard constraint transform parameters. */
+  ShapeParameters hard_constraint_transform;
+
+  /** @brief Soft constraint transform parameters. */
+  ShapeParameters soft_constraint_transform;
+
   /**
    * @brief Default constructor.
    */

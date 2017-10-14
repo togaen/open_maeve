@@ -65,6 +65,12 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
   // Load any guidance weights that live on the parameter server.
   loadGuidanceWeights(nh_, taxonomy_, guidance_weights_);
 
+  // Instantiate transforms.
+  hc_ = PotentialTransform<ConstraintType::HARD>(
+      params_.hard_constraint_transform);
+  sc_ = PotentialTransform<ConstraintType::SOFT>(
+      params_.soft_constraint_transform);
+
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
     viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);

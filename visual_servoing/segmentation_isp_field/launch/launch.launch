@@ -15,6 +15,11 @@
       command="load"
       file="$(find segmentation_isp_field)/params/controller_params.yaml"/>
 
+    <!-- ISP transform parameters. -->
+    <rosparam
+      command="load"
+      file="$(find segmentation_isp_field)/params/isp_field_params.yaml"/>
+
     <!-- Guidance parameters. -->
     <rosparam
       command="load"
