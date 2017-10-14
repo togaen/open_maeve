@@ -63,7 +63,7 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
         YAML::Node childValue = it->second;
 
         const auto class_name = childKey.as<std::string>();
-        if (auto rgb = yaml_rgb_to_cvvec3b(childValue)) {
+        if (const auto rgb = yaml_rgb_to_cvvec3b(childValue)) {
           classes[class_name] = *rgb;
         }
       }
@@ -74,7 +74,7 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
     YAML::Node instances_node = config[data_set_name]["label_instances"];
     if (instances_node.IsSequence()) {
       for (auto it = instances_node.begin(); it != instances_node.end(); ++it) {
-        if (auto rgb = yaml_rgb_to_cvvec3b(*it)) {
+        if (const auto rgb = yaml_rgb_to_cvvec3b(*it)) {
           instances.push_back(*rgb);
         }
       }
