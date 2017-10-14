@@ -21,7 +21,8 @@
  */
 #pragma once
 
-#include <array>
+#include <opencv2/opencv.hpp>
+
 #include <set>
 #include <string>
 #include <tuple>
@@ -29,9 +30,8 @@
 #include <vector>
 
 namespace maeve_automation_core {
-typedef std::array<int, 3> RGB;
-typedef std::unordered_map<std::string, RGB> LabelClasses;
-typedef std::vector<RGB> LabelInstances;
+typedef std::unordered_map<std::string, cv::Vec3b> LabelClasses;
+typedef std::vector<cv::Vec3b> LabelInstances;
 typedef std::set<std::string> ClassSet;
 typedef std::vector<ClassSet> LabelInstanceClasses;
 }  // namespace maeve_automation_core

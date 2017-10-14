@@ -22,8 +22,25 @@
 #include "segmentation_taxonomy/io.h"
 
 #include <yaml-cpp/yaml.h>
+#include <boost/optional.hpp>
 
 namespace maeve_automation_core {
+namespace {
+boost::optional<cv::Vec3b> yaml3tuple_to_cvvec3b(const YAML::Node& node) {
+  if (!node.IsSequence() || (node.size() != 3)) {
+    return boost::none;
+  }
+
+  cv::Vec3b v;
+  auto idx = 0;
+  for (auto it = node.begin(); it != node.end(); ++it, ++idx) {
+    // yaml-cpp won't allow casting directly to unsigned char
+    v[idx] = static_cast<unsigned char>(it->as<unsigned int>());
+  }
+  return v;
+}
+}  // namespace
+
 std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
     const std::string& label_map_path, const std::string& data_set_name) {
   LabelClasses classes;
@@ -46,14 +63,8 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
         YAML::Node childValue = it->second;
 
         const auto class_name = childKey.as<std::string>();
-        if (childValue.IsSequence() && (childValue.size() == 3)) {
-          RGB rgb;
-          auto idx = 0;
-          for (auto it_rgb = childValue.begin(); it_rgb != childValue.end();
-               ++it_rgb, ++idx) {
-            rgb[idx] = it_rgb->as<int>();
-          }
-          classes[class_name] = rgb;
+        if (auto rgb = yaml3tuple_to_cvvec3b(childValue)) {
+          classes[class_name] = *rgb;
         }
       }
     }
@@ -63,14 +74,8 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
     YAML::Node instances_node = config[data_set_name]["label_instances"];
     if (instances_node.IsSequence()) {
       for (auto it = instances_node.begin(); it != instances_node.end(); ++it) {
-        if (it->IsSequence() && (it->size() == 3)) {
-          RGB rgb;
-          auto idx = 0;
-          for (auto it_rgb = it->begin(); it_rgb != it->end();
-               ++it_rgb, ++idx) {
-            rgb[idx] = it_rgb->as<int>();
-          }
-          instances.push_back(rgb);
+        if (auto rgb = yaml3tuple_to_cvvec3b(*it)) {
+          instances.push_back(*rgb);
         }
       }
     }

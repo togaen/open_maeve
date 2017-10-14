@@ -21,11 +21,6 @@
  */
 #pragma once
 
-#include <opencv2/opencv.hpp>
-
-#include <string>
-#include <unordered_map>
-
 #include "maeve_automation_core/segmentation_taxonomy/types.h"
 
 namespace maeve_automation_core {
@@ -33,7 +28,7 @@ namespace maeve_automation_core {
  * @brief Struct to capture segmentation label information.
  */
 struct SegmentationTaxonomy {
-  /** @brief Map of string name to RGB label value (std::array<int, 3>) */
+  /** @brief Map of string name to RGB label value (cv::Vec3b) */
   LabelClasses classes;
   /** @brief Vector of RGB label instance IDs. */
   LabelInstances instances;
