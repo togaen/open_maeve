@@ -28,18 +28,23 @@ An example label map is given below:
 
 # This key should match the name specified in meta.yaml
 data-set:
-  # In the segmented images, the objects are identified by their pixel RGB values.
+  # In the segmentations, the semantic classes are indicated by per-pixel RGB
+  # values.
   label_classes:
     car:            [255, 0,   0]
     road:           [123, 123, 123]
     lane_marker:    [169, 169, 169]
     lane_boundary:  [143, 142, 89]
-  # Each of these labels uniquely identifies an entity in the sequence.
+  # Each of these labels uniquely identifies an entity, or class instance, in
+  # the segmentation.
   label_instances: [
     [255, 1, 1],
     [255, 1, 2]
   ]
-  # These class names correspond, in order, to the unique identifiers above.
+  # These class names correspond, in order, to the class instances above, e.g.,
+  # the entity indicated by [255, 1, 1] has class membership to 'lane_boundary'
+  # and 'lane_marker', and the entity indicated by [255, 1, 1] has class
+  # membership to 'tree'.
   label_instance_classes: [
     ['lane_boundary', 'lane_marker'],
     ['tree']
