@@ -147,8 +147,12 @@ bool ISP_Controller2D::Params::valid() const {
          guidance_gains.valid() && shape_parameters.valid();
 }
 
+ISP_Controller2D::ISP_Controller2D() : init_(false) {}
+
 ISP_Controller2D::ISP_Controller2D(const Params& params)
-    : p_(params), C_u_(p_.shape_parameters) {}
+    : init_(true), p_(params), C_u_(p_.shape_parameters) {}
+
+bool ISP_Controller2D::isInitialized() const { return init_ && p_.valid(); }
 
 ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
                                             const ControlCommand& u_d) {

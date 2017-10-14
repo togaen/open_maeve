@@ -280,6 +280,10 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   }
 
   // Compute SD control.
+  if (!isp_controller_.isInitialized()) {
+    ROS_ERROR_STREAM("ISP controller is not initialized.");
+    return;
+  }
   const auto u_star = isp_controller_.SD_Control(ISP, u_d);
   // ROS_INFO_STREAM("u_d: " << u_d << ", u_star: " << u_star);
 

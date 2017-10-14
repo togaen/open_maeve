@@ -165,9 +165,9 @@ class ISP_Controller2D {
   };  // struct Params
 
   /**
-   * @brief Constructor: default.
+   * @brief Constructor: do not mark as initialized.
    */
-  ISP_Controller2D() = default;
+  ISP_Controller2D();
 
   /**
    * @brief Constructor: initialize with shape parameters.
@@ -191,7 +191,16 @@ class ISP_Controller2D {
    */
   ControlCommand SD_Control(const cv::Mat& ISP, const ControlCommand& u_d);
 
+  /**
+   * @brief Whether the controller has been initialized with its parameters.
+   *
+   * @return True if the controller is initialized; otherwise false.
+   */
+  bool isInitialized() const;
+
  private:
+  /** @brief Whether the object has been initialied. */
+  bool init_;
   /** @brief Controller parameters. */
   Params p_;
   /** @brief Projection function onto control space. */
