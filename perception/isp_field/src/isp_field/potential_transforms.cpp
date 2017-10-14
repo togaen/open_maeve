@@ -79,17 +79,21 @@ cv::Point2d PotentialTransform<ConstraintType::SOFT>::operator()(
     const cv::Point2d& pixel_value) const {
   auto return_value = pixel_value;
 
-  // Exponential term.
-  const auto e_term = std::exp(
-      -p_.alpha * (pixel_value.x - p_.translation - p_.rangeMidPoint()));
+  // Exponential term: make sure e_term doesn't take an infinite value.
+  const auto e_term =
+      std::min(std::numeric_limits<double>::max(),
+               std::exp(-p_.alpha *
+                        (pixel_value.x - p_.translation - p_.rangeMidPoint())));
 
   // Compute 0th order potential.
   return_value.x =
       p_.range_min +
       (p_.range_max - p_.range_min) / std::pow(1.0 + e_term, 1.0 / p_.beta);
 
-  // Compute 1st order potential.
-  const auto numerator = p_.alpha * (p_.range_max - p_.range_min) * e_term;
+  // Compute 1st order potential: make sure num. doesn't take an infinite value.
+  const auto numerator =
+      p_.alpha * std::min(std::numeric_limits<double>::max(),
+                          (p_.range_max - p_.range_min) * e_term);
   const auto denominator =
       p_.beta * std::pow(1.0 + e_term, 1.0 + 1.0 / p_.beta);
   return_value.y = pixel_value.y * numerator / denominator;
