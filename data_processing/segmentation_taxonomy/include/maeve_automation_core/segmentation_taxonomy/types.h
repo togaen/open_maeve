@@ -30,8 +30,12 @@
 #include <vector>
 
 namespace maeve_automation_core {
+/** @brief Map of string class name to RGB label value. */
 typedef std::unordered_map<std::string, cv::Vec3b> LabelClasses;
+/** @brief Ordered set of instance label values. */
 typedef std::vector<cv::Vec3b> LabelInstances;
+/** @brief Set of string class names. */
 typedef std::set<std::string> ClassSet;
+/** @brief Ordered set of instance class sets. */
 typedef std::vector<ClassSet> LabelInstanceClasses;
 }  // namespace maeve_automation_core
