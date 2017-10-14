@@ -21,6 +21,8 @@
  */
 #pragma once
 
+#include <iostream>
+
 #include "maeve_automation_core/segmentation_taxonomy/types.h"
 
 namespace maeve_automation_core {
@@ -60,4 +62,14 @@ struct SegmentationTaxonomy {
    */
   static int cvVec3bToInt(const cv::Vec3b& v);
 };  // class SegmentationTaxonomy
+
+/**
+ * @brief Stream overload to segmentation taxonomy struct.
+ *
+ * @param os The output stream.
+ * @param t The segmentation taxonomy.
+ *
+ * @return The serialized segmentation taxonomy.
+ */
+std::ostream& operator<<(std::ostream& os, const SegmentationTaxonomy& t);
 }  // namespace maeve_automation_core

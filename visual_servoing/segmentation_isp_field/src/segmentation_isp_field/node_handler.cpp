@@ -62,6 +62,8 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
     return;
   }
 
+  ROS_INFO_STREAM("Loaded Taxonomy:\n" << taxonomy_);
+
   // Load any guidance weights that live on the parameter server.
   loadGuidanceWeights(nh_, taxonomy_, guidance_weights_);
 
