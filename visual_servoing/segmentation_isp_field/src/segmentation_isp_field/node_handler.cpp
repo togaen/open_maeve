@@ -22,12 +22,15 @@
 
 #include "segmentation_isp_field/node_handler.h"
 
+#include <cv_bridge/cv_bridge.h>
+
 #include <algorithm>
 #include <limits>
 
 #include "maeve_automation_core/isp_controller_2d/ros_interface.h"
 #include "maeve_automation_core/isp_field/isp_field.h"
 #include "maeve_automation_core/segmentation_taxonomy/types.h"
+#include "segmentation_isp_field/lib.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -64,14 +67,14 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
 
   ROS_INFO_STREAM("Loaded Taxonomy:\n" << taxonomy_);
 
-  // Load any guidance weights that live on the parameter server.
-  loadGuidanceWeights(nh_, taxonomy_, guidance_weights_);
-
   // Instantiate transforms.
   hc_ = PotentialTransform<ConstraintType::HARD>(
       params_.hard_constraint_transform);
   sc_ = PotentialTransform<ConstraintType::SOFT>(
       params_.soft_constraint_transform);
+
+  // Load any guidance weights that live on the parameter server.
+  loadGuidancePotentials(nh_, taxonomy_, sc_, guidance_potentials_);
 
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
@@ -79,15 +82,17 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
   }
 }
 
-void SegmentationFieldNodeHandler::loadGuidanceWeights(
+void SegmentationFieldNodeHandler::loadGuidancePotentials(
     const ros::NodeHandle& nh, const SegmentationTaxonomy& taxonomy,
-    std::unordered_map<std::string, double>& guidance_weights) {
+    const PotentialTransform<ConstraintType::SOFT>& sc,
+    GuidancePotentials& guidance_potentials) {
   std::for_each(std::begin(taxonomy.classes), std::end(taxonomy.classes),
                 [&](const LabelClasses::value_type& p) {
                   const auto& class_name = p.first;
                   auto weight = NaN;
                   if (nh.getParam("guidance_weights/" + class_name, weight)) {
-                    guidance_weights[class_name] = weight;
+                    guidance_potentials[class_name] =
+                        sc(cv::Point2d(weight, 0.0));
                   } else {
                     ROS_WARN_STREAM("Guidance weight for class '"
                                     << class_name << "' not found.");
@@ -97,10 +102,27 @@ void SegmentationFieldNodeHandler::loadGuidanceWeights(
 
 void SegmentationFieldNodeHandler::segmentationSequenceCallback(
     const sensor_msgs::ImageConstPtr& msg) {
+  // Convert ROS image to OpenCV.
+  cv_bridge::CvImagePtr cv_ptr;
+  try {
+    cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+  } catch (const cv_bridge::Exception& e) {
+    ROS_ERROR_STREAM("cv_bridge exception: " << e.what());
+    return;
+  }
+
   // Construct ISP field.
   auto guidance_field = zeroISP_Field(msg->width, msg->height);
 
   // Run through label map, construct guidance field.
+  std::for_each(std::begin(guidance_potentials_),
+                std::end(guidance_potentials_),
+                [&](const GuidancePotentials::value_type& p) {
+                  guidance_field =
+                      guidance_field +
+                      extractGuidanceField(
+                          cv_ptr->image, taxonomy_.classes[p.first], p.second);
+                });
 
   // Feed guidance field to controller.
 

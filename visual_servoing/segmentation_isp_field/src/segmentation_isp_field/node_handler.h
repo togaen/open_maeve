@@ -49,6 +49,9 @@ class SegmentationFieldNodeHandler {
   explicit SegmentationFieldNodeHandler(const std::string& node_name);
 
  private:
+  /** @brief Map of class name to guidance potential value. */
+  typedef std::unordered_map<std::string, cv::Point2d> GuidancePotentials;
+
   /**
    * @brief Callback that fires when a new image segmentation is received.
    *
@@ -66,11 +69,13 @@ class SegmentationFieldNodeHandler {
    * @param nh The ROS node handle used for interacting with the parameter
    * server.
    * @param taxonomy The taxonomy to load guidance weights for.
-   * @param guidance_weights The set of guidance weights to fill.
+   * @param sc The soft constraint transform to apply to the guidance weights.
+   * @param guidance_potentials The set of guidance weights to fill.
    */
-  static void loadGuidanceWeights(
+  static void loadGuidancePotentials(
       const ros::NodeHandle& nh, const SegmentationTaxonomy& taxonomy,
-      std::unordered_map<std::string, double>& guidance_weights);
+      const PotentialTransform<ConstraintType::SOFT>& sc,
+      GuidancePotentials& guidance_potentials);
 
   /** @brief Manager for retrieving most recent control commands. */
   Command2D_Manager command2d_mgr_;
@@ -78,8 +83,8 @@ class SegmentationFieldNodeHandler {
   /** @brief Compute control commands from ISP field. */
   ISP_Controller2D isp_controller_;
 
-  /** @brief Set of guidance weights. */
-  std::unordered_map<std::string, double> guidance_weights_;
+  /** @brief Set of guidance pontentials. */
+  GuidancePotentials guidance_potentials_;
 
   /** @brief Parser for loading data set taxonomy. */
   SegmentationTaxonomy taxonomy_;
