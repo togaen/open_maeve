@@ -53,6 +53,7 @@
   <depend>controller_interface_msgs</depend>
   <depend>image_geometry</depend>
   <depend>image_transport</depend>
+  <depend>isp_field</depend>
   <depend>isp_controller_2d</depend> 
   <depend>maeve_time_queue</depend>
   <depend>ros_parameter_loading</depend>

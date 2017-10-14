@@ -120,7 +120,6 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   std::for_each(std::begin(guidance_potentials_),
                 std::end(guidance_potentials_),
                 [&](const GuidancePotentials::value_type& p) {
-                std::cout << "label: " << p.first << ", " << p.second << std::endl;
                   guidance_field =
                       guidance_field +
                       extractGuidanceField(

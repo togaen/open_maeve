@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   controller_interface_msgs
   image_geometry
   image_transport
+  isp_field
   isp_controller_2d
   joystick_controller_2d
   maeve_time_queue
