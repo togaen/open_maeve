@@ -55,6 +55,22 @@ class SegmentationFieldNodeHandler {
    */
   void segmentationSequenceCallback(const sensor_msgs::ImageConstPtr& msg);
 
+  /**
+   * @brief For a given taxonomy, load any specified guidance weights from the
+   * parameter server.
+   *
+   * @note Guidance weights must live in a node-relative namespace called
+   * 'guidance_weights'.
+   *
+   * @param nh The ROS node handle used for interacting with the parameter
+   * server.
+   * @param taxonomy The taxonomy to load guidance weights for.
+   * @param guidance_weights The set of guidance weights to fill.
+   */
+  static void loadGuidanceWeights(
+      const ros::NodeHandle& nh, const SegmentationTaxonomy& taxonomy,
+      std::unordered_map<std::string, double>& guidance_weights);
+
   /** @brief Manager for retrieving most recent control commands. */
   Command2D_Manager command2d_mgr_;
 

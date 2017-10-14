@@ -62,23 +62,29 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
     return;
   }
 
-  // Load guidance weights.
-  std::for_each(std::begin(taxonomy_.classes), std::end(taxonomy_.classes),
-                [&](const LabelClasses::value_type& p) {
-                  const auto& class_name = p.first;
-                  auto weight = NaN;
-                  if (nh_.getParam("guidance_weights/" + class_name, weight)) {
-                    guidance_weights_[class_name] = weight;
-                  } else {
-                    ROS_WARN_STREAM("Guidance weight for class '"
-                                    << class_name << "' not found.");
-                  }
-                });
+  // Load any guidance weights that live on the parameter server.
+  loadGuidanceWeights(nh_, taxonomy_, guidance_weights_);
 
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
     viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
   }
+}
+
+void SegmentationFieldNodeHandler::loadGuidanceWeights(
+    const ros::NodeHandle& nh, const SegmentationTaxonomy& taxonomy,
+    std::unordered_map<std::string, double>& guidance_weights) {
+  std::for_each(std::begin(taxonomy.classes), std::end(taxonomy.classes),
+                [&](const LabelClasses::value_type& p) {
+                  const auto& class_name = p.first;
+                  auto weight = NaN;
+                  if (nh.getParam("guidance_weights/" + class_name, weight)) {
+                    guidance_weights[class_name] = weight;
+                  } else {
+                    ROS_WARN_STREAM("Guidance weight for class '"
+                                    << class_name << "' not found.");
+                  }
+                });
 }
 
 void SegmentationFieldNodeHandler::segmentationSequenceCallback(
