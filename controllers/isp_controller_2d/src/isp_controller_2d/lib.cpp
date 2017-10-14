@@ -58,7 +58,7 @@ double yaw2Column(const cv::Mat& image_plane, const double yaw,
 }
 
 cv::Mat controlSetGuidance(const cv::Mat& controls) {
-  cv::Mat biasing_horizon = zeroISP_Field(1, controls.cols);
+  cv::Mat biasing_horizon = zeroISP_Field(controls.size());
   // \TODO(me) Formulate this to behave like a balloon being pushed: suppression
   // of potential values in one area result in proportional expansion of
   // potential values elsewhere.
