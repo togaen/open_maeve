@@ -227,7 +227,7 @@ void AR_ISPFieldNodeHandler::cameraCallback(
     const sensor_msgs::Image::ConstPtr& msg,
     const sensor_msgs::CameraInfoConstPtr& info_msg) {
   // Make sure field maps have storage allocated, but do it only once.
-  static bool init = true;
+  static auto init = true;
   if (init) {
     // Initialize camera model.
     camera_model_.fromCameraInfo(info_msg);
