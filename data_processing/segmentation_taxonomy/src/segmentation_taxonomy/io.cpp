@@ -26,18 +26,18 @@
 
 namespace maeve_automation_core {
 namespace {
-boost::optional<cv::Vec3b> yaml3tuple_to_cvvec3b(const YAML::Node& node) {
+boost::optional<cv::Vec3b> yaml_rgb_to_cvvec3b(const YAML::Node& node) {
   if (!node.IsSequence() || (node.size() != 3)) {
     return boost::none;
   }
 
-  cv::Vec3b v;
-  auto idx = 0;
-  for (auto it = node.begin(); it != node.end(); ++it, ++idx) {
-    // yaml-cpp won't allow casting directly to unsigned char
-    v[idx] = static_cast<unsigned char>(it->as<unsigned int>());
+  cv::Vec3b bgr;
+  auto idx = 2;  // Count backwards to convert RGB to BGR for OpenCV.
+  for (auto it = node.begin(); it != node.end(); ++it, --idx) {
+    // yaml-cpp won't allow casting directly to unsigned char.
+    bgr[idx] = static_cast<unsigned char>(it->as<unsigned int>());
   }
-  return v;
+  return bgr;
 }
 }  // namespace
 
@@ -63,7 +63,7 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
         YAML::Node childValue = it->second;
 
         const auto class_name = childKey.as<std::string>();
-        if (auto rgb = yaml3tuple_to_cvvec3b(childValue)) {
+        if (auto rgb = yaml_rgb_to_cvvec3b(childValue)) {
           classes[class_name] = *rgb;
         }
       }
@@ -74,7 +74,7 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
     YAML::Node instances_node = config[data_set_name]["label_instances"];
     if (instances_node.IsSequence()) {
       for (auto it = instances_node.begin(); it != instances_node.end(); ++it) {
-        if (auto rgb = yaml3tuple_to_cvvec3b(*it)) {
+        if (auto rgb = yaml_rgb_to_cvvec3b(*it)) {
           instances.push_back(*rgb);
         }
       }
