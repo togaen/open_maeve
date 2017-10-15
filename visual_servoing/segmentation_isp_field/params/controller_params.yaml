@@ -11,11 +11,11 @@ default_guidance_control:
 isp_controller_params:
   K_P: 1.0
   K_D: 0.0
-  potential_inertia: 0.0 # should be \in [0, Inf]
+  potential_inertia: 0.25 # should be \in [0, Inf]
   erosion_kernel:
     width: 0.05  # \in [0, 1] a proportion of image width
     height: 0.75 # \in [0, 1] a proportion of image height
-    horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
+    horizon: 0.75 # \in [0, 1] with 0 - top and 1 - bottom of image
   yaw_decay:
     left: 0.95
     right: 0.95

@@ -93,15 +93,16 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
   // Allocate horizon.
   cv::Mat reduced_ISP;
 
-  // Compute horizon row.
-  const auto horizon_row = static_cast<int>(kernel_horizon * ISP.rows);
-
+  // Compute horizon row: prevent the kernel from exceeding image bounds.
   const auto kernel_pixel_height = static_cast<int>(kernel_height * ISP.rows);
+  const auto half_height = kernel_pixel_height / 2;
+  const auto horizon_row_raw = static_cast<int>(kernel_horizon * ISP.rows);
+  const auto horizon_row =
+      std::max(half_height, std::min(horizon_row_raw, ISP.rows - half_height));
 
   // Set ROI.
-  auto half_height = kernel_pixel_height / 2;
-  auto top_left_row = horizon_row - half_height;
-  auto top_left_col = 0;
+  const auto top_left_row = horizon_row - half_height;
+  const auto top_left_col = 0;
   cv::Rect ROI =
       cv::Rect(top_left_col, top_left_row, ISP.cols, kernel_pixel_height);
   cv::Mat masked_ISP = ISP(ROI);

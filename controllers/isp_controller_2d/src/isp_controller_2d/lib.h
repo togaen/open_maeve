@@ -157,6 +157,10 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
  *
  * @pre kernel_height shall correspond to at least one whole pixel.
  *
+ * @note The kernel_horizon is a suggestion, not a guaranteed position: it is
+ * altered, if necessary, to ensure that the kernel remains within the bounds of
+ * the image.
+ *
  * @param ISP The input image space potential field.
  * @param kernel_height Min filter kernel height from 0 - top, to 1 - bottom.
  * @param kernel_horizon Location of horizon line from 0 - top, to 1 - bottom.
