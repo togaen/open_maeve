@@ -3,14 +3,24 @@
 This package defines libraries for loading data set taxonomies from YAML files.
 The YAML file specification is given below.
 
-## Segmentation Taxonomy ##
+## Segmentation Image ##
 
-The label map file defines string/RGB-value pairs that enable interpretation of
-the segmented images, where each label defines a class. A class with all
-non-zero RGB values does not allow unique instances. A class with zero RGB
-values allows unique instances by setting the zero values to non-zero values.
+The segmentation image is a standard RGB image where each pixel value is
+interpreted as a class or instance label. A pixel value that does not exist in
+either set of class or instance lables is ignored.
 
-## Schema ##
+A label map file defines RGB-valued labels that enable interpretation of the
+segmentation images. These labels are used to define 'classes', which are
+string/lable pairs, and 'instances' which are uniquely identified entites in the
+segmentations.
+
+An instance must have membership to at least one class, but not all classes must
+have instances. This distinction is useful for cases where it may not be useful
+to assign unique identifiers, e.g., uniquely identifying all instances of a
+'lane\_marker' class may not be meaningful, whereas uniquely identifying all
+instances of 'car' may be.
+
+## Segmentation Schema ##
 
 The taxonomy contains labels for object classes and unique IDs. The labels are
 represented as RGB values in [0, 255]. The schema has the following rules:
@@ -20,6 +30,7 @@ represented as RGB values in [0, 255]. The schema has the following rules:
 1. The label\_classes key has children where each has an RGB value, and the child key is the class name, and the child value is the class label.
 1. The label\_instances is a list of RGB values that contains all unique IDs in the data set.
 1. The label\_instance\_classes is a list of class name lists, where each list defines the class membership of the ID at the same index in label\_instances.
+1. Labels used for classes and instances must be unique, i.e., the same label may not exist as both a class and an instance.
 
 An example label map is given below: 
 
@@ -35,8 +46,12 @@ data-set:
     road:           [123, 123, 123]
     lane_marker:    [169, 169, 169]
     lane_boundary:  [143, 142, 89]
+    building:       [123, 123, 123]
+    infrastructure: [100, 100, 100]
   # Each of these labels uniquely identifies an entity, or class instance, in
-  # the segmentation.
+  # the segmentation. Each instance belongs to at least one class from the
+  # 'label_classes' set above, and class membership is defined in the
+  # 'label_instances_classes' list below.
   label_instances: [
     [255, 1, 1],
     [255, 1, 2]
@@ -46,7 +61,7 @@ data-set:
   # class membership to 'lane_boundary' and 'lane_marker', and the entity
   # indicated by [255, 1, 1] has class membership to 'tree'.
   label_instance_classes: [
-    ['lane_boundary', 'lane_marker'],
+    ['infrastructure', 'building'],
     ['tree']
   ]
 ```
