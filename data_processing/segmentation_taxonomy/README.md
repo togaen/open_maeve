@@ -41,10 +41,10 @@ data-set:
     [255, 1, 1],
     [255, 1, 2]
   ]
-  # These class names correspond, in order, to the class instances above, e.g.,
-  # the entity indicated by [255, 1, 1] has class membership to 'lane_boundary'
-  # and 'lane_marker', and the entity indicated by [255, 1, 1] has class
-  # membership to 'tree'.
+  # These class names are taken from 'label_classes' and correspond, in order,
+  # to the class instances above, e.g., the entity indicated by [255, 1, 1] has
+  # class membership to 'lane_boundary' and 'lane_marker', and the entity
+  # indicated by [255, 1, 1] has class membership to 'tree'.
   label_instance_classes: [
     ['lane_boundary', 'lane_marker'],
     ['tree']
