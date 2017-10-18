@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <string>
 
 #include "maeve_automation_core/isp_controller_2d/ros_interface.h"
 #include "maeve_automation_core/isp_field/isp_field.h"

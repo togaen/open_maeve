@@ -21,6 +21,8 @@
  */
 #include <ros/ros.h>
 
+#include <string>
+
 #include "segmentation_isp_field/node_handler.h"
 
 int main(int argc, char* argv[]) {

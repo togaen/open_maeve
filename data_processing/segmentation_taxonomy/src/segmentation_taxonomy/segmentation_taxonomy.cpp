@@ -21,6 +21,8 @@
  */
 #include "maeve_automation_core/segmentation_taxonomy/segmentation_taxonomy.h"
 
+#include <string>
+
 #include "segmentation_taxonomy/io.h"
 
 namespace maeve_automation_core {

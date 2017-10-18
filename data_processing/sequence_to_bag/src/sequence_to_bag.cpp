@@ -19,15 +19,16 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "sequence_to_bag/io.h"
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <string>
 
 #include <ros/console.h>
 #include <rosbag/bag.h>
 #include <rosgraph_msgs/Clock.h>
 
-#include <algorithm>
-#include <cstdlib>
-#include <string>
+#include "sequence_to_bag/io.h"
 
 int main(int argc, char** argv) {
   // Make sure all required arguments are specified.

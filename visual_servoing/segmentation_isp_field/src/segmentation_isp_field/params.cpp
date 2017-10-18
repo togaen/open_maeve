@@ -91,4 +91,4 @@ bool SegmentationFieldParams::valid() const {
   // All good.
   return true;
 }
-}
+}  // namespace maeve_automation_core

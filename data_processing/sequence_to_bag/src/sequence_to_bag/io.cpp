@@ -29,6 +29,10 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <map>
+#include <string>
+#include <tuple>
+#include <vector>
 
 namespace {
 const auto CLOCK_HZ_DEFAULT = 1000;

@@ -21,6 +21,9 @@
  */
 #include "segmentation_taxonomy/io.h"
 
+#include <string>
+#include <tuple>
+
 #include <yaml-cpp/yaml.h>
 #include <boost/optional.hpp>
 
