@@ -36,7 +36,7 @@ namespace maeve_automation_core {
  * @param horizon_viz_height The visualization height of the control horizon.
  * @param window_viz_height  The height of the visualization window.
  *
- * @return The visualization image.
+ * @return The visualization image, a monochrome image.
  */
 cv::Mat computeControlHorizonVisualization(const cv::Mat& control_horizon,
                                            const int horizon_viz_height,
@@ -44,6 +44,8 @@ cv::Mat computeControlHorizonVisualization(const cv::Mat& control_horizon,
 
 /**
  * @brief Compute a visualization of an Image Space Potential field.
+ *
+ * @pre The input ISP field is negatively affinely extended.
  *
  * This function maps repulsive forces to the red channel and attractive forces
  * to the blue channel. The parameters 'lower_bound' and 'upper_bound' specify
