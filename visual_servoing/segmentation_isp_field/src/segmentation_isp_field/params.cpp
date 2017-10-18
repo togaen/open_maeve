@@ -31,6 +31,7 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   // Load node parameters.
   LOAD_PARAM(segmentation_sequence_topic);
   LOAD_PARAM(viz_isp_field_topic);
+  LOAD_PARAM(viz_control_horizon_topic);
   LOAD_PARAM(control_command_input_topic);
   LOAD_PARAM(control_command_output_topic);
   LOAD_PARAM(label_map_path);

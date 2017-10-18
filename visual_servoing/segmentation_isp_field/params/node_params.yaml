@@ -1,6 +1,7 @@
 segmentation_sequence_topic: '/segmentation'
 
 viz_isp_field_topic: 'isp_field_viz'
+viz_control_horizon_topic: 'control_horizon_viz'
 
 # bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero
 # The upper bound should be the same as soft constraint range_max
