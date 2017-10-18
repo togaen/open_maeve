@@ -22,6 +22,7 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 
 #include "maeve_automation_core/segmentation_taxonomy/types.h"
 

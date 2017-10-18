@@ -106,6 +106,5 @@ class SegmentationFieldNodeHandler {
   PotentialTransform<ConstraintType::HARD> hc_;
   /** @brief The soft constraint transform. */
   PotentialTransform<ConstraintType::SOFT> sc_;
-
 };  // class SegmentationFieldNodeHandler
 }  // namespace maeve_automation_core

@@ -21,6 +21,9 @@
  */
 #pragma once
 
+#include <string>
+#include <tuple>
+
 #include "maeve_automation_core/segmentation_taxonomy/types.h"
 
 namespace maeve_automation_core {
