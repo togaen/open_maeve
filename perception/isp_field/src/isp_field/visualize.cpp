@@ -32,7 +32,39 @@ const auto INF = std::numeric_limits<double>::infinity();
 cv::Mat computeControlHorizonVisualization(const cv::Mat& control_horizon,
                                            const int horizon_viz_height,
                                            const int window_viz_height) {
-  return cv::Mat();
+  // Convert control horizon to single channel, 8-bit unsigned.
+  std::vector<cv::Mat> channels(2);
+  cv::split(control_horizon, channels);
+  auto& control_horizon_sc = channels.front();
+  cv::Mat control_horizon_sc_8u;
+  control_horizon_sc.convertTo(control_horizon_sc_8u, CV_8U, 255.0);
+
+  // Create viz window.
+  cv::Mat viz =
+      cv::Mat::zeros(window_viz_height, control_horizon_sc_8u.cols, CV_8U);
+
+  // Resize control horizon viz.
+  cv::Mat control_horizon_viz;
+  cv::Size control_horizon_viz_size(
+      control_horizon_sc_8u.cols,
+      std::min(horizon_viz_height, window_viz_height));
+  cv::resize(control_horizon_sc_8u, control_horizon_viz,
+             control_horizon_viz_size, 0.0, 0.0, cv::INTER_NEAREST);
+
+  // Get region of interest in viz window.
+  const auto window_mid_row = window_viz_height / 2;
+  const auto horizon_half_height = control_horizon_viz.rows / 2;
+  const auto top_left_x = 0;
+  const auto top_left_y = window_mid_row - horizon_half_height;
+  cv::Rect roi(top_left_x, top_left_y, control_horizon_viz_size.width,
+               control_horizon_viz_size.height);
+
+  // Apply control horizon viz to viz window.
+  cv::Mat tmp = viz(roi);
+  control_horizon_viz.copyTo(tmp);
+
+  // Done.
+  return viz;
 }
 
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
