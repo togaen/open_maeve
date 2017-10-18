@@ -3,10 +3,22 @@
     name="ar_isp_field"
     pkg="ar_isp_field"
     type="ar_isp_field_node"
-    output="screen"> 
+    output="screen">
+
+    <!-- Node parameters. -->
     <rosparam
       command="load"
-      file="$(find ar_isp_field)/params/params.yaml"/>
+      file="$(find ar_isp_field)/params/node_params.yaml"/>
+
+    <!-- Visual servoing controller parameters. -->
+    <rosparam
+      command="load"
+      file="$(find ar_isp_field)/params/controller_params.yaml"/>
+
+    <!-- ISP field transform parameters. -->
+    <rosparam
+      command="load"
+      file="$(find ar_isp_field)/params/isp_field_params.yaml"/>
   </node>
   <include file="$(find ar_isp_field)/launch/markers.launch"/>
 </launch>

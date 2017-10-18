@@ -19,45 +19,23 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "ar_isp_field/params.h"
-
-#include <cstdlib>
-#include <limits>
+#include "segmentation_isp_field/params.h"
 
 #include "maeve_automation_core/isp_controller_2d/ros_interface.h"
 #include "maeve_automation_core/isp_field/ros_interface.h"
 
 namespace maeve_automation_core {
-namespace {
-static const auto NaN = std::numeric_limits<double>::quiet_NaN();
-}  // namespace
+SegmentationFieldParams::SegmentationFieldParams() {}
 
-AR_ISPFieldParams::AR_ISPFieldParams()
-    : verbose(false),
-      ar_time_queue_size(-1),
-      ar_time_queue_max_gap(NaN),
-      ar_tag_max_age(NaN),
-      ar_tag_size(NaN),
-      target_reward(NaN) {}
-
-bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
-  // Load parameters.
-  LOAD_PARAM(camera_topic);
+bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
+  // Load node parameters.
+  LOAD_PARAM(segmentation_sequence_topic);
   LOAD_PARAM(viz_isp_field_topic);
   LOAD_PARAM(control_command_input_topic);
   LOAD_PARAM(control_command_output_topic);
-  LOAD_PARAM(ar_tag_obstacle_ids);
-  LOAD_PARAM(ar_tag_target_ids);
-  LOAD_PARAM(ar_frame_prefix);
-  LOAD_PARAM(output_frame_param_name);
-  LOAD_PARAM(marker_size_param_name);
-  LOAD_PARAM(ar_time_queue_size);
-  LOAD_PARAM(ar_time_queue_max_gap);
+  LOAD_PARAM(label_map_path);
+  LOAD_PARAM(data_set_name);
   LOAD_PARAM(viz_potential_bounds);
-  LOAD_PARAM(verbose);
-  LOAD_PARAM(ar_tag_max_age);
-  LOAD_PARAM(target_reward);
-
   LOAD_NS_PARAM(default_guidance_control, throttle);
   LOAD_NS_PARAM(default_guidance_control, yaw);
 
@@ -71,22 +49,11 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
     return false;
   }
 
-  // Load ISP controller params.
+  // Load controller parameters.
   if (!loadISP_ControllerROS_Params(nh, "isp_controller_params",
                                     isp_controller_params)) {
     return false;
   }
-
-  // Load AR tag parameters.
-  if (!nh.getParam(output_frame_param_name, camera_frame_name)) {
-    return false;
-  }
-  if (!nh.getParam(marker_size_param_name, ar_tag_size)) {
-    return false;
-  }
-
-  // Convert cm -> m
-  ar_tag_size /= 100.0;
 
   // These parameters are set at run time by the camera callback. To bypass
   // validity checking, set them temporarily to valid values.
@@ -96,7 +63,10 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   isp_controller_params.principal_point_x = 1.0;
 
   // Get parameter validity.
-  const auto all_valid = valid();
+  const auto all_valid = default_guidance_control.valid() &&
+                         isp_controller_params.valid() &&
+                         hard_constraint_transform.valid() &&
+                         soft_constraint_transform.valid() && valid();
 
   // Reset run-time parameters.
   isp_controller_params.focal_length_x = org_focal_length_x;
@@ -106,28 +76,19 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   return all_valid;
 }
 
-bool AR_ISPFieldParams::valid() const {
+bool SegmentationFieldParams::valid() const {
   // Check this object's parameters.
-  CHECK_STRICTLY_POSITIVE(ar_time_queue_size);
-  CHECK_STRICTLY_POSITIVE(ar_time_queue_max_gap);
-  CHECK_STRICTLY_POSITIVE(ar_tag_max_age);
-  CHECK_STRICTLY_POSITIVE(ar_tag_size);
-  CHECK_NOT_NAN(target_reward);
-  CHECK_NONEMPTY(ar_frame_prefix);
-  CHECK_NONEMPTY(camera_frame_name);
-  CHECK_NONEMPTY(camera_topic);
+  CHECK_NONEMPTY(segmentation_sequence_topic);
   CHECK_NONEMPTY(viz_isp_field_topic);
   CHECK_NONEMPTY(control_command_output_topic);
   CHECK_NONEMPTY(control_command_input_topic);
+  CHECK_NONEMPTY(label_map_path);
+  CHECK_NONEMPTY(data_set_name);
   CHECK_EQ(viz_potential_bounds.size(), 2);
-  for (const auto b : viz_potential_bounds) {
-    CHECK_FINITE(b);
-  }
+  CHECK_FINITE(viz_potential_bounds[0]);
+  CHECK_FINITE(viz_potential_bounds[1]);
 
-  // Return okay if all members are ok.
-  return default_guidance_control.valid() &&
-         hard_constraint_transform.valid() &&
-         soft_constraint_transform.valid() && isp_controller_params.valid();
+  // All good.
+  return true;
 }
-
-}  // namespace maeve_automation_core
+}

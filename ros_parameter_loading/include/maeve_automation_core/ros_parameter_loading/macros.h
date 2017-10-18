@@ -42,6 +42,18 @@
 /**
  * @brief Convenience macro for loading params into a ParamsBase object.
  *
+ * @param param The address of the parameter on the parameter server.
+ * @param var The name of the parameter and of the variable that holds it.
+ */
+#define LOAD_NAMED_PARAM(param, var)                                \
+  if (!nh.getParam(param, var)) {                                   \
+    ROS_ERROR_STREAM("Failed to load parameter '" << param << "'"); \
+    return false;                                                   \
+  }
+
+/**
+ * @brief Convenience macro for loading params into a ParamsBase object.
+ *
  * 'var' is a member variable of a struct named 'struct_name', which belongs to
  * the ParamsBase object. 'var' must have 'exactly' the same name as the ROS
  * parameter. Return false immediately if loading fails. Otherwise, append the

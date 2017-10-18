@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ar_isp_field</name>
+  <name>isp_controller_2d</name>
   <version>0.0.0</version>
-  <description>Generate ISP fields from given AR tags</description>
+  <description>A 2dof controller that operates over ISP fields</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
   <maintainer email="contact@maeveautomation.com">Jeffrey Kane Johnson</maintainer>
+
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
@@ -19,13 +20,18 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
+  <!-- <url type="website">http://wiki.ros.org/isp_controller</url> -->
   <url type="repository">https://bitbucket.org/maeveautomation/maeve_automation_core/src</url>
+
+
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
   <!-- Authors do not have to be maintainers, but could be -->
   <!-- Example: -->
   <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
   <author email="contact@maeveautomation.com">Jeffrey Kane Johnson</author>
+
+
 
   <!-- The *_depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
@@ -39,23 +45,17 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <exec_depend>ar_track_alvar</exec_depend>
-  <exec_depend>joystick_controller_2d</exec_depend>
+  <depend>isp_field</depend>
   <depend>controller_interface_msgs</depend>
-  <depend>isp_controller_2d</depend>
+  <depend>maeve_macros</depend>
   <depend>ros_parameter_loading</depend>
-  <depend>std_msgs</depend>
-  <depend>geometry_msgs</depend>
-  <depend>tf2</depend>
-  <depend>tf2_ros</depend>
-  <depend>tf2_eigen</depend>
-  <depend>maeve_time_queue</depend>
-  <depend>image_geometry</depend>
-  <depend>image_transport</depend>
+
+  <!-- This is to add a dependency on OpenCV:
+       http://wiki.ros.org/opencv3#package.xml -->
+  <depend>cv_bridge</depend>
 
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
-
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

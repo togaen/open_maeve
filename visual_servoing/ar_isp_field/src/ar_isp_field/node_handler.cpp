@@ -32,10 +32,10 @@
 #include <vector>
 
 #include "ar_isp_field/geometry.h"
-#include "maeve_automation_core/isp_controller/ros_interface.h"
+#include "maeve_automation_core/isp_controller_2d/ros_interface.h"
+#include "maeve_automation_core/isp_field/isp_field.h"
 #include "maeve_automation_core/isp_field/tau.h"
 #include "maeve_automation_core/isp_field/visualize.h"
-#include "maeve_automation_core/isp_field/isp_field.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -59,7 +59,7 @@ std::vector<std::string> AR_ISPFieldNodeHandler::initializeTimeQueues(
 }
 
 AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
-    : nh_(node_name), tf2_listener_(tf2_buffer_) {
+    : nh_(node_name), it_(nh_), tf2_listener_(tf2_buffer_) {
   if (!params_.load(nh_)) {
     ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
     return;
@@ -82,11 +82,8 @@ AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
   sc_ = PotentialTransform<ConstraintType::SOFT>(
       params_.soft_constraint_transform);
 
-  // Image transport interface.
-  image_transport::ImageTransport it(nh_);
-
   // Register callback.
-  camera_sub_ = it.subscribeCamera(
+  camera_sub_ = it_.subscribeCamera(
       params_.camera_topic, 1, &AR_ISPFieldNodeHandler::cameraCallback, this);
 
   // Set up command handler.
@@ -99,7 +96,7 @@ AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
 
   // Visualize?
   if (!params_.viz_isp_field_topic.empty()) {
-    viz_isp_field_pub_ = it.advertise(params_.viz_isp_field_topic, 1);
+    viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
   }
 }
 
@@ -230,7 +227,7 @@ void AR_ISPFieldNodeHandler::cameraCallback(
     const sensor_msgs::Image::ConstPtr& msg,
     const sensor_msgs::CameraInfoConstPtr& info_msg) {
   // Make sure field maps have storage allocated, but do it only once.
-  static bool init = true;
+  static auto init = true;
   if (init) {
     // Initialize camera model.
     camera_model_.fromCameraInfo(info_msg);
@@ -238,7 +235,7 @@ void AR_ISPFieldNodeHandler::cameraCallback(
     // Initialize ISP controller.
     params_.isp_controller_params.principal_point_x = camera_model_.cx();
     params_.isp_controller_params.focal_length_x = camera_model_.fx();
-    isp_controller_ = ISP_Controller(params_.isp_controller_params);
+    isp_controller_ = ISP_Controller2D(params_.isp_controller_params);
 
     // Initialize storage.
     initFieldStorage(camera_model_.fullResolution(), ar_obstacle_tag_frames_,
@@ -283,6 +280,10 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   }
 
   // Compute SD control.
+  if (!isp_controller_.isInitialized()) {
+    ROS_ERROR_STREAM("ISP controller is not initialized.");
+    return;
+  }
   const auto u_star = isp_controller_.SD_Control(ISP, u_d);
   // ROS_INFO_STREAM("u_d: " << u_d << ", u_star: " << u_star);
 

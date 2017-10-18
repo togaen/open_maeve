@@ -28,6 +28,7 @@ scoped_params:
   inner_int_param:  3
   inner_bool_param: false
   grouped_params:
+    random_param: 0.03
     grouped_param1: 1.2
     grouped_param2: 3.4
 ```
@@ -87,6 +88,9 @@ struct MyParams : public ParamsBase {
     float other_float_param;
   };
 
+  // Storage for 'random_param'.
+  double random_param;
+
   // Storage for 'string_param'.
   std::string string_param;
 
@@ -125,6 +129,7 @@ bool MyParams::load(const ros::NodeHandle& nh) {
   LOAD_NS_PARAM(scoped_params, inner_bool_param);
   LOAD_NS_PARAM(scoped_params.grouped_params, grouped_param1);
   LOAD_NS_PARAM(scoped_params.grouped_params, grouped_param2);
+  LOAD_NS_NAME_PARAM("scoped_params/grouped_params", random_param);
 
   // All params successfully loaded. Sanity checking can be done if wanted.
   // Below are a few convenience macros defined by this package. See
@@ -136,6 +141,7 @@ bool MyParams::load(const ros::NodeHandle& nh) {
   CHECK_STRICTLY_POSITIVE(float_param);
   CHECK_NONEMPTY(struct_params.other_string_param);
   CHECK_EQ(scoped_params.inner_int_param, 3);
+  CHECK_EQ(random_param, 0.03);
 
   // All params loaded, and all checks passed. Return success.
   return true;

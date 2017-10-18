@@ -1,0 +1,8 @@
+<launch>
+  <node
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    output="screen"
+    args="-d $(find segmentation_isp_field)/rviz_configs/rviz.rviz"/>
+</launch>

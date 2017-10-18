@@ -40,7 +40,7 @@
 #include "ar_isp_field/geometry.h"
 #include "ar_isp_field/params.h"
 #include "maeve_automation_core/controller_interface_msgs/command2d_manager.h"
-#include "maeve_automation_core/isp_controller/isp_controller.h"
+#include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 #include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
 
@@ -164,7 +164,7 @@ class AR_ISPFieldNodeHandler {
   AR_ISPFieldParams params_;
 
   /** @brief Compute control commands from ISP field. */
-  ISP_Controller isp_controller_;
+  ISP_Controller2D isp_controller_;
 
   /** @brief Camera image subscriber. */
   image_transport::CameraSubscriber camera_sub_;
@@ -172,6 +172,8 @@ class AR_ISPFieldNodeHandler {
   image_transport::Publisher viz_isp_field_pub_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
+  /** @brief The ROS image transport object. */
+  image_transport::ImageTransport it_;
   /** @brief Desired control command subscriber. */
   ros::Subscriber control_command_input_sub_;
   /** @brief Control command publisher. */

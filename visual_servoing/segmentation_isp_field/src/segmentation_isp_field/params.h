@@ -21,68 +21,22 @@
  */
 #pragma once
 
-#include <string>
 #include <vector>
 
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
-#include "maeve_automation_core/isp_field/shape_parameters.h"
 #include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
 
 namespace maeve_automation_core {
-
 /** @brief Parameter object to load ROS params.*/
-struct AR_ISPFieldParams : public ParamsBase {
+struct SegmentationFieldParams : public ParamsBase {
   /** @brief ISP controller parameters. */
   ISP_Controller2D::Params isp_controller_params;
-
-  /** @brief Hard constraint transform parameters. */
-  ShapeParameters hard_constraint_transform;
-
-  /** @brief Soft constraint transform parameters. */
-  ShapeParameters soft_constraint_transform;
 
   /** @brief Guidance control to use absent explicit user input. */
   ControlCommand default_guidance_control;
 
-  /** @brief Print terminal output? */
-  bool verbose;
-
-  /** @brief Number of elements to reserve for circular buffer. */
-  int ar_time_queue_size;
-
-  /** @brief Max time gap for elements in the time queue. */
-  double ar_time_queue_max_gap;
-
-  /** @brief Max age of an AR tag timestamp to use before signalling error. */
-  double ar_tag_max_age;
-
-  /** @brief Size along one edge of AR tag (meters). */
-  double ar_tag_size;
-
-  /** @brief Reward measurement value to input into guidance function for soft
-   * constraints. */
-  double target_reward;
-
-  /** @brief Name of the parameter specifying the AR tag size. */
-  std::string marker_size_param_name;
-
-  /** @brief Unique IDs for the AR tags corresponding to obstacles. */
-  std::vector<int> ar_tag_obstacle_ids;
-
-  /** @brief Unique IDs for the AR tags corresponding to targets. */
-  std::vector<int> ar_tag_target_ids;
-
-  /** @brief Prefix string for AR tag coordinate frames. */
-  std::string ar_frame_prefix;
-
-  /** @brief Name of the camera's coordinate frame. */
-  std::string camera_frame_name;
-
-  /** @brief Name of the parameter specifying the camera's coordinate frame. */
-  std::string output_frame_param_name;
-
   /** @brief The image sequence topic. */
-  std::string camera_topic;
+  std::string segmentation_sequence_topic;
 
   /** @brief The ISP field visualization topic. */
   std::string viz_isp_field_topic;
@@ -93,8 +47,25 @@ struct AR_ISPFieldParams : public ParamsBase {
   /** @brief Desired control command input topic. */
   std::string control_command_input_topic;
 
+  /** @brief Path to the label map file. */
+  std::string label_map_path;
+
+  /** @brief Name of the data set to load a taxonomy for. */
+  std::string data_set_name;
+
   /** @brief The scaling bounds for visualizing potential values. */
   std::vector<double> viz_potential_bounds;
+
+  /** @brief Hard constraint transform parameters. */
+  ShapeParameters hard_constraint_transform;
+
+  /** @brief Soft constraint transform parameters. */
+  ShapeParameters soft_constraint_transform;
+
+  /**
+   * @brief Default constructor.
+   */
+  SegmentationFieldParams();
 
   /**
    * @brief Check validity of loaded parameter values.
@@ -104,15 +75,10 @@ struct AR_ISPFieldParams : public ParamsBase {
   __attribute__((warn_unused_result)) bool valid() const;
 
   /**
-   * @brief Default constructor: initialize to invalid values.
-   */
-  AR_ISPFieldParams();
-
-  /**
    * @copydoc ParamsBase::ParamsBase()
    */
   __attribute__((warn_unused_result)) bool load(
       const ros::NodeHandle& nh) override;
-};  // struct AR_ISPFieldParams
+};  // struct SegmentationFieldParams
 
 }  // namespace maeve_automation_core

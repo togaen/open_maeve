@@ -70,19 +70,6 @@ sequence_meta:
   # Used to determine time delta between frames.
   fps: 30.0
 ```
+For a description of label\_map.yaml, see the README in the
+segmentation\_taxonomy package.
 
-The label map file defines string/RGB-value pairs that enable interpretation of
-the segmented images. The map is defined for each data set. A small example
-map is defined below:
-
-```yaml
-# label_map.yaml
-
-# This key should match the name specified in meta.yaml
-data-set:
-  # In the segmented images, the objects are identified by their pixel RGB values.
-  label_map:
-    road:           [123, 123, 123]
-    lane_marker:    [169, 169, 169]
-    lane_boundary:  [143, 142, 89]
-```
