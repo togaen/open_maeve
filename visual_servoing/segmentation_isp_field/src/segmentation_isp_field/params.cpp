@@ -25,8 +25,6 @@
 #include "maeve_automation_core/isp_field/ros_interface.h"
 
 namespace maeve_automation_core {
-SegmentationFieldParams::SegmentationFieldParams() {}
-
 bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   // Load node parameters.
   LOAD_PARAM(segmentation_sequence_topic);

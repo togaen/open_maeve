@@ -67,11 +67,6 @@ struct SegmentationFieldParams : public ParamsBase {
   ShapeParameters soft_constraint_transform;
 
   /**
-   * @brief Default constructor.
-   */
-  SegmentationFieldParams();
-
-  /**
    * @brief Check validity of loaded parameter values.
    *
    * @return True if values valid; otherwise false.
