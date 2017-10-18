@@ -26,8 +26,14 @@
 
 namespace maeve_automation_core {
 namespace {
-static const auto INF = std::numeric_limits<double>::infinity();
+const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
+
+cv::Mat computeControlHorizonVisualization(const cv::Mat& control_horizon,
+                                           const int horizon_viz_height,
+                                           const int window_viz_height) {
+  return cv::Mat();
+}
 
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
                                      const double lower_bound,

@@ -25,6 +25,24 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief Compute a visualization of a control horizon.
+ *
+ * The control horizon is a 1xN matrix, so the visualization stretches the
+ * horizon vertically by 'horizon_viz_height' pixels and paints it,
+ * vertically centered, onto a black canvas that is of size
+ * 'window_viz_height'xN.
+ *
+ * @param control_horizon The control horizon that is begin visualized.
+ * @param horizon_viz_height The visualization height of the control horizon.
+ * @param window_viz_height  The height of the visualization window.
+ *
+ * @return The visualization image.
+ */
+cv::Mat computeControlHorizonVisualization(const cv::Mat& control_horizon,
+                                           const int horizon_viz_height,
+                                           const int window_viz_height);
+
+/**
  * @brief Compute a visualization of an Image Space Potential field.
  *
  * This function maps repulsive forces to the red channel and attractive forces
