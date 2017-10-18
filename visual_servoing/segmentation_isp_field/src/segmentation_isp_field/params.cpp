@@ -79,7 +79,6 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
 bool SegmentationFieldParams::valid() const {
   // Check this object's parameters.
   CHECK_NONEMPTY(segmentation_sequence_topic);
-  CHECK_NONEMPTY(viz_isp_field_topic);
   CHECK_NONEMPTY(control_command_output_topic);
   CHECK_NONEMPTY(control_command_input_topic);
   CHECK_NONEMPTY(label_map_path);
