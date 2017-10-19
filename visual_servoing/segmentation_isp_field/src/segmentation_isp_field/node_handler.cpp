@@ -191,8 +191,8 @@ void SegmentationFieldNodeHandler::visualizeHorizon(
     const ISP_Controller2D::HorizonType ht,
     const image_transport::Publisher& publisher) const {
   const auto& horizon = isp_controller_.inspectHorizon(ht);
-  const auto viz_horizon =
-      computeHorizonVisualization(horizon, height / 2, height);
+  const auto viz_horizon = computeHorizonVisualization(
+      horizon, params_.horizon_viz_height, params_.horizon_viz_height);
   sensor_msgs::ImagePtr viz_horizon_msg =
       cv_bridge::CvImage(header, "mono8", viz_horizon).toImageMsg();
   publisher.publish(viz_horizon_msg);

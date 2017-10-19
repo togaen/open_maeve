@@ -13,6 +13,10 @@ visualize_horizons: [
   'guidance'
 ]
 
+# horizon structures are 1xN row vectors; to make visualization more useful, artificially stretch the visualization vertically
+# must be > 0
+horizon_viz_height: 10
+
 # bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero
 # The upper bound should be the same as soft constraint range_max
 # The lower bound should be less than 0 or the soft constraint range_min, if it is less than zero

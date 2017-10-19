@@ -60,6 +60,9 @@ struct SegmentationFieldParams : public ParamsBase {
   /** @brief The scaling bounds for visualizing potential values. */
   std::vector<double> viz_potential_bounds;
 
+  /** @brief Height of horizon visualization. */
+  int horizon_viz_height;
+
   /** @brief Hard constraint transform parameters. */
   ShapeParameters hard_constraint_transform;
 

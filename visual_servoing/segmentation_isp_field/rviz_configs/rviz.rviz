@@ -5,11 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Camera1
-        - /Segmentation1
-        - /ISP Guidance Field1
-        - /Control Horizon1
-        - /Eroded Control Horizon1
       Splitter Ratio: 0.5
     Tree Height: 335
   - Class: rviz/Selection
