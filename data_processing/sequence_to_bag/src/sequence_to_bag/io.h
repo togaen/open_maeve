@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
@@ -49,6 +50,19 @@ struct MetaInfo {
   /** @brief The framerate the data were captured at. */
   double fps;
 };  // struct MetaInfo
+
+/**
+ * @brief Synthesize a camera info message from an image message.
+ *
+ * This message assumes unit focal lengths, no distortion, and perfect optical
+ * center.
+ *
+ * @param img_ptr Image message pointer.
+ *
+ * @return A camera info message.
+ */
+sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
+    const sensor_msgs::ImagePtr& img_ptr);
 
 /**
  * @brief Stream overload for meta info struct.

@@ -19,6 +19,8 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   rosbag
   rosgraph_msgs
+  camera_calibration_parsers
+  sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
