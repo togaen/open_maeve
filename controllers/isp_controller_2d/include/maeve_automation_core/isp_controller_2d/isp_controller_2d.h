@@ -165,7 +165,7 @@ class ISP_Controller2D {
   };  // struct Params
 
   /**
-   * @brief Enumerate control structures that can be inspected.
+   * @brief Enumerate horizon structures that can be inspected.
    */
   enum class HorizonType { CONTROL, ERODED_CONTROL, INVALID };
 
