@@ -159,6 +159,8 @@ const cv::Mat& ISP_Controller2D::inspectHorizon(
   switch (cs) {
     case ControlStructure::CONTROL_HORIZON:
       return h_;
+    case ControlStructure::ERODED_CONTROL_HORIZON:
+      return eroded_h_;
     default:
       // This should never execute.
       assert(false);
@@ -178,7 +180,7 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
   h_ = controlHorizon(ISP, p_.erosion_kernel.height, p_.erosion_kernel.horizon);
 
   // Apply min filter.
-  const cv::Mat eroded_h = erodeHorizon(h_, p_.erosion_kernel.width);
+  eroded_h_ = erodeHorizon(h_, p_.erosion_kernel.width);
 
   // Compute guidance fields.
   const cv::Mat throttle_guidance = throttleGuidance(u_d.throttle, h_.cols);
@@ -187,7 +189,7 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       static_cast<int>(col_d), h_.cols, p_.yaw_decay.left, p_.yaw_decay.right);
 
   // Apply guidance fields.
-  const cv::Mat guided_h = eroded_h +
+  const cv::Mat guided_h = eroded_h_ +
                            p_.guidance_gains.throttle * throttle_guidance +
                            p_.guidance_gains.yaw * yaw_guidance +
                            p_.guidance_gains.control_set * control_set_guidance;

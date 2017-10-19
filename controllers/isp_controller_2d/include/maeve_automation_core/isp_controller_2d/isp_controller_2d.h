@@ -167,9 +167,7 @@ class ISP_Controller2D {
   /**
    * @brief Enumerate control structures that can be inspected.
    */
-  enum class ControlStructure {
-    CONTROL_HORIZON
-  };
+  enum class ControlStructure { CONTROL_HORIZON, ERODED_CONTROL_HORIZON };
 
   /**
    * @brief Constructor: do not mark as initialized.
@@ -217,8 +215,10 @@ class ISP_Controller2D {
   bool init_;
   /** @brief Controller parameters. */
   Params p_;
-  /** @brief Storage for intermidate control horizon computation. */
+  /** @brief Storage for intermediate control horizon computation. */
   cv::Mat h_;
+  /** @brief Storage for intermediate eroded control horizon computation. */
+  cv::Mat eroded_h_;
   /** @brief Projection function onto control space. */
   PotentialTransform<ConstraintType::SOFT> C_u_;
 };  // class ISP_Controller2D
