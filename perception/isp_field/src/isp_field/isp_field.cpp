@@ -29,4 +29,12 @@ cv::Mat zeroISP_Field(const int width, const int height) {
 cv::Mat zeroISP_Field(const cv::Size& size) {
   return cv::Mat::zeros(size, CV_64FC2);
 }
+
+cv::Mat oneISP_Field(const int width, const int height) {
+  return oneISP_Field(cv::Size(width, height));
+}
+
+cv::Mat oneISP_Field(const cv::Size& size) {
+  return cv::Mat::ones(size, CV_64FC2);
+}
 }  // namespace maeve_automation_core

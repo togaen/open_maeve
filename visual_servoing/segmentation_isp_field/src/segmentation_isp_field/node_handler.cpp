@@ -71,8 +71,6 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
   ROS_INFO_STREAM("Loaded Taxonomy:\n" << taxonomy_);
 
   // Instantiate transforms.
-  hc_ = PotentialTransform<ConstraintType::HARD>(
-      params_.hard_constraint_transform);
   sc_ = PotentialTransform<ConstraintType::SOFT>(
       params_.soft_constraint_transform);
 
@@ -88,9 +86,12 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
           params_.control_command_output_topic, 1);
 
   // Visualize?
-  if (!params_.viz_isp_field_topic.empty()) {
-    viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
-  }
+  viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
+  std::for_each(
+      std::begin(params_.visualize_horizons),
+      std::end(params_.visualize_horizons), [&](const std::string& str) {
+        viz_horizon_pubs_[str] = it_.advertise("viz_" + str + "_horizon", 1);
+      });
 }
 
 void SegmentationFieldNodeHandler::loadGuidancePotentials(
@@ -145,16 +146,6 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
                           cv_ptr->image, taxonomy_.classes[p.first], p.second);
                 });
 
-  // Visualize?
-  if (!params_.viz_isp_field_topic.empty()) {
-    auto viz_field = computeISPFieldVisualization(
-        guidance_field, params_.viz_potential_bounds[0],
-        params_.viz_potential_bounds[1]);
-    sensor_msgs::ImagePtr viz_msg =
-        cv_bridge::CvImage(std_msgs::Header(), "bgr8", viz_field).toImageMsg();
-    viz_isp_field_pub_.publish(viz_msg);
-  }
-
   // Get desired control.
   ControlCommand u_d;
   if (const auto cmd_msg = command2d_mgr_.mostRecentMsg()) {
@@ -179,5 +170,43 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   // Publish control.
   control_command_output_pub_.publish(
       controlCommand2Command2D_Msg(u_star, msg->header));
+
+  // Visualize ISP field.
+  const auto viz_field = computeISPFieldVisualization(
+      guidance_field, params_.viz_potential_bounds[0],
+      params_.viz_potential_bounds[1]);
+  sensor_msgs::ImagePtr viz_field_msg =
+      cv_bridge::CvImage(msg->header, "bgr8", viz_field).toImageMsg();
+  viz_isp_field_pub_.publish(viz_field_msg);
+
+  // Horizon visualizations.
+  for (const auto& p : viz_horizon_pubs_) {
+    const auto ht = ISP_Controller2D::stringToHorizonType(p.first);
+    auto lower_bound = sc_.shapeParameters().range_min;
+    auto upper_bound = sc_.shapeParameters().range_max;
+    if ((ht == ISP_Controller2D::HorizonType::YAW_GUIDANCE) ||
+        (ht == ISP_Controller2D::HorizonType::GUIDANCE) ||
+        (ht == ISP_Controller2D::HorizonType::GUIDED_THROTTLE) ||
+        (ht == ISP_Controller2D::HorizonType::CONTROL_SET_GUIDANCE)) {
+      lower_bound = 0.0;
+      upper_bound = 1.0;
+    }
+    visualizeHorizon(msg->header, msg->height, ht, p.second, lower_bound,
+                     upper_bound);
+  }
+}
+
+void SegmentationFieldNodeHandler::visualizeHorizon(
+    const std_msgs::Header& header, const int height,
+    const ISP_Controller2D::HorizonType ht,
+    const image_transport::Publisher& publisher, const double lower_bound,
+    const double upper_bound) const {
+  const auto& horizon = isp_controller_.inspectHorizon(ht);
+  const auto viz_horizon = computeHorizonVisualization(
+      horizon, params_.horizon_viz_height, params_.horizon_viz_height,
+      lower_bound, upper_bound);
+  sensor_msgs::ImagePtr viz_horizon_msg =
+      cv_bridge::CvImage(header, "mono8", viz_horizon).toImageMsg();
+  publisher.publish(viz_horizon_msg);
 }
 }  // namespace maeve_automation_core

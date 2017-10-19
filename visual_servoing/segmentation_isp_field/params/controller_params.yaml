@@ -14,11 +14,11 @@ isp_controller_params:
   potential_inertia: 0.25 # should be \in [0, Inf]
   erosion_kernel:
     width: 0.05  # \in [0, 1] a proportion of image width
-    height: 0.75 # \in [0, 1] a proportion of image height
+    height: 0.10 # \in [0, 1] a proportion of image height
     horizon: 0.75 # \in [0, 1] with 0 - top and 1 - bottom of image
   yaw_decay:
-    left: 0.95
-    right: 0.95
+    left: 0.995
+    right: 0.995
   shape_parameters: # These shape parameters define the output control space.
     translation: 0.0
     range_min: -1.0 # This is taken as the minimum of the control range for output
@@ -26,6 +26,5 @@ isp_controller_params:
     alpha: 1.0
     beta: 1.0
   guidance_gains:
-    throttle: 1.0
     yaw: 1.0
-    control_set: 1.0
+    control_set: 0.0

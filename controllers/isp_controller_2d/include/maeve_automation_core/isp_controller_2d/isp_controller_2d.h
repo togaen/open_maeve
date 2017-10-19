@@ -23,7 +23,10 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <string>
+
 #include "maeve_automation_core/isp_controller_2d/control_command.h"
+#include "maeve_automation_core/isp_controller_2d/enum_class_hash.h"
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 
 namespace maeve_automation_core {
@@ -37,8 +40,6 @@ class ISP_Controller2D {
      * @brief Container for guidance gain values.
      */
     struct GuidanceGains {
-      /** @brief Apply this gain to the throttle guidance horizon. */
-      double throttle;
       /** @brief Apply this gain to the yaw guidance horizon. */
       double yaw;
       /** @brief Apply this gain to the control set guidance horizon. */
@@ -56,11 +57,10 @@ class ISP_Controller2D {
       /**
        * @brief Constructor: explicit initialization.
        *
-       * @param t The throttle gain \in (0, +\infty).
        * @param y The yaw gain \in (0, +\infty).
        * @param c The control_set gain \in (0, +\infty).
        */
-      GuidanceGains(const double t, const double y, const double c);
+      GuidanceGains(const double y, const double c);
     };  // struct GuidanceGains
 
     /**
@@ -165,6 +165,19 @@ class ISP_Controller2D {
   };  // struct Params
 
   /**
+   * @brief Enumerate horizon structures that can be inspected.
+   */
+  enum class HorizonType {
+    CONTROL,
+    ERODED_CONTROL,
+    YAW_GUIDANCE,
+    CONTROL_SET_GUIDANCE,
+    GUIDED_THROTTLE,
+    GUIDANCE,
+    INVALID
+  };
+
+  /**
    * @brief Constructor: do not mark as initialized.
    */
   ISP_Controller2D();
@@ -198,11 +211,41 @@ class ISP_Controller2D {
    */
   bool isInitialized() const;
 
+  /**
+   * @brief Accessor for most recently computed horizon data structures.
+   *
+   * @return A const ref to the desired horizon structure.
+   */
+  const cv::Mat& inspectHorizon(const HorizonType cs) const;
+
+  /**
+   * @brief Get string representation of horizon type enum.
+   *
+   * @param ht The horizon type enum.
+   *
+   * @return The string version of 'ht'.
+   */
+  static std::string horizonTypeToString(const HorizonType ht);
+
+  /**
+   * @brief Get horizon type enum corresponding to given string
+   *
+   * @param str The string version of the desired horizon type.
+   *
+   * @return The horizon type corresponding to the given string.
+   */
+  static HorizonType stringToHorizonType(const std::string& str);
+
  private:
+  /** @brief Map of horizon type to horizon data structure. */
+  typedef std::unordered_map<HorizonType, cv::Mat, EnumClassHash> HorizonMap;
+
   /** @brief Whether the object has been initialied. */
   bool init_;
   /** @brief Controller parameters. */
   Params p_;
+  /** @brief Storage for intermediate horizon computations. */
+  HorizonMap horizons_;
   /** @brief Projection function onto control space. */
   PotentialTransform<ConstraintType::SOFT> C_u_;
 };  // class ISP_Controller2D

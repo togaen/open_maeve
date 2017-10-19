@@ -26,8 +26,48 @@
 
 namespace maeve_automation_core {
 namespace {
-static const auto INF = std::numeric_limits<double>::infinity();
+const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
+
+cv::Mat computeHorizonVisualization(const cv::Mat& horizon,
+                                    const int horizon_viz_height,
+                                    const int window_viz_height,
+                                    const double lower_bound,
+                                    const double upper_bound) {
+  // Convert control horizon to single channel, 8-bit unsigned.
+  std::vector<cv::Mat> channels(2);
+  cv::split(horizon, channels);
+  auto& horizon_sc = channels.front();
+  cv::Mat horizon_sc_8u;
+  cv::Mat horizon_zeroed = -lower_bound + horizon_sc;
+  horizon_zeroed.convertTo(horizon_sc_8u, CV_8U,
+                           255.0 / (upper_bound - lower_bound));
+
+  // Create viz window.
+  cv::Mat viz = cv::Mat::zeros(window_viz_height, horizon_sc_8u.cols, CV_8U);
+
+  // Resize control horizon viz.
+  cv::Mat horizon_viz;
+  cv::Size horizon_viz_size(horizon_sc_8u.cols,
+                            std::min(horizon_viz_height, window_viz_height));
+  cv::resize(horizon_sc_8u, horizon_viz, horizon_viz_size, 0.0, 0.0,
+             cv::INTER_NEAREST);
+
+  // Get region of interest in viz window.
+  const auto window_mid_row = window_viz_height / 2;
+  const auto horizon_half_height = horizon_viz.rows / 2;
+  const auto top_left_x = 0;
+  const auto top_left_y = window_mid_row - horizon_half_height;
+  cv::Rect roi(top_left_x, top_left_y, horizon_viz_size.width,
+               horizon_viz_size.height);
+
+  // Apply control horizon viz to viz window.
+  cv::Mat tmp = viz(roi);
+  horizon_viz.copyTo(tmp);
+
+  // Done.
+  return viz;
+}
 
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
                                      const double lower_bound,

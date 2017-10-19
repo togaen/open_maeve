@@ -21,8 +21,8 @@
  */
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
 #include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
@@ -42,6 +42,9 @@ struct SegmentationFieldParams : public ParamsBase {
   /** @brief The ISP field visualization topic. */
   std::string viz_isp_field_topic;
 
+  /** @brief The horizon structures to visualize. */
+  std::vector<std::string> visualize_horizons;
+
   /** @brief Control command output topic. */
   std::string control_command_output_topic;
 
@@ -57,16 +60,14 @@ struct SegmentationFieldParams : public ParamsBase {
   /** @brief The scaling bounds for visualizing potential values. */
   std::vector<double> viz_potential_bounds;
 
+  /** @brief Height of horizon visualization. */
+  int horizon_viz_height;
+
   /** @brief Hard constraint transform parameters. */
   ShapeParameters hard_constraint_transform;
 
   /** @brief Soft constraint transform parameters. */
   ShapeParameters soft_constraint_transform;
-
-  /**
-   * @brief Default constructor.
-   */
-  SegmentationFieldParams();
 
   /**
    * @brief Check validity of loaded parameter values.

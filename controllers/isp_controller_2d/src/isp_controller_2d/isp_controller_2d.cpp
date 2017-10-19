@@ -23,6 +23,7 @@
 
 #include <array>
 #include <limits>
+#include <string>
 
 #include "isp_controller_2d/lib.h"
 #include "maeve_automation_core/maeve_macros/checks.h"
@@ -43,8 +44,7 @@ std::ostream& operator<<(std::ostream& o,
 }
 std::ostream& operator<<(std::ostream& o,
                          const ISP_Controller2D::Params::GuidanceGains& gg) {
-  return o << "[throttle: " << gg.throttle << ", yaw: " << gg.yaw
-           << ", control_set: " << gg.control_set << "]";
+  return o << "[yaw: " << gg.yaw << ", control_set: " << gg.control_set << "]";
 }
 
 std::ostream& operator<<(std::ostream& o, const ISP_Controller2D::Params& p) {
@@ -61,19 +61,16 @@ std::ostream& operator<<(std::ostream& o, const ISP_Controller2D::Params& p) {
 }
 
 ISP_Controller2D::Params::GuidanceGains::GuidanceGains()
-    : GuidanceGains(NaN, NaN, NaN) {}
+    : GuidanceGains(NaN, NaN) {}
 
-ISP_Controller2D::Params::GuidanceGains::GuidanceGains(const double t,
-                                                       const double y,
+ISP_Controller2D::Params::GuidanceGains::GuidanceGains(const double y,
                                                        const double c)
-    : throttle(t), yaw(y), control_set(c) {}
+    : yaw(y), control_set(c) {}
 
 bool ISP_Controller2D::Params::GuidanceGains::valid() const {
   // Perform checks.
-  CHECK_STRICTLY_POSITIVE(throttle);
-  CHECK_STRICTLY_POSITIVE(yaw);
-  CHECK_STRICTLY_POSITIVE(control_set);
-  CHECK_FINITE(throttle);
+  CHECK_GE(yaw, 0.0);
+  CHECK_GE(control_set, 0.0);
   CHECK_FINITE(yaw);
   CHECK_FINITE(control_set);
 
@@ -154,6 +151,64 @@ ISP_Controller2D::ISP_Controller2D(const Params& params)
 
 bool ISP_Controller2D::isInitialized() const { return init_ && p_.valid(); }
 
+const cv::Mat& ISP_Controller2D::inspectHorizon(const HorizonType cs) const {
+  static const cv::Mat empty;
+
+  // Get horizon structure.
+  const auto it = horizons_.find(cs);
+
+  // The find should never fail. If it does, implementation is inconsistent.
+  if (it == std::end(horizons_)) {
+    assert(false);
+    return empty;
+  }
+
+  // Done.
+  return it->second;
+}
+
+std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
+  switch (cs) {
+    case HorizonType::CONTROL:
+      return "control";
+    case HorizonType::ERODED_CONTROL:
+      return "eroded_control";
+    case HorizonType::CONTROL_SET_GUIDANCE:
+      return "control_set_guidance";
+    case HorizonType::GUIDED_THROTTLE:
+      return "guided_throttle";
+    case HorizonType::YAW_GUIDANCE:
+      return "yaw_guidance";
+    case HorizonType::GUIDANCE:
+      return "guidance";
+    default:
+      return "invalid";
+  }
+}
+
+ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
+    const std::string& str) {
+  if (str == "control") {
+    return HorizonType::CONTROL;
+  }
+  if (str == "eroded_control") {
+    return HorizonType::ERODED_CONTROL;
+  }
+  if (str == "control_set_guidance") {
+    return HorizonType::CONTROL_SET_GUIDANCE;
+  }
+  if (str == "guided_throttle") {
+    return HorizonType::GUIDED_THROTTLE;
+  }
+  if (str == "yaw_guidance") {
+    return HorizonType::YAW_GUIDANCE;
+  }
+  if (str == "guidance") {
+    return HorizonType::GUIDANCE;
+  }
+  return HorizonType::INVALID;
+}
+
 ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
                                             const ControlCommand& u_d) {
   // Reserve return value.
@@ -164,31 +219,43 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       yaw2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
 
   // Get control horizon.
-  const cv::Mat h =
+  horizons_[HorizonType::CONTROL] =
       controlHorizon(ISP, p_.erosion_kernel.height, p_.erosion_kernel.horizon);
+  const auto& ch = horizons_[HorizonType::CONTROL];
 
   // Apply min filter.
-  const cv::Mat eroded_h = erodeHorizon(h, p_.erosion_kernel.width);
+  horizons_[HorizonType::ERODED_CONTROL] =
+      erodeHorizon(ch, p_.erosion_kernel.width);
+  const auto& ech = horizons_[HorizonType::ERODED_CONTROL];
 
-  // Compute guidance fields.
-  const cv::Mat throttle_guidance = throttleGuidance(u_d.throttle, h.cols);
-  const cv::Mat control_set_guidance = controlSetGuidance(throttle_guidance);
-  const cv::Mat yaw_guidance = yawGuidance(
-      static_cast<int>(col_d), h.cols, p_.yaw_decay.left, p_.yaw_decay.right);
+  // Compute guidance field.
+  horizons_[HorizonType::CONTROL_SET_GUIDANCE] = controlSetGuidance(ech);
+  const auto& control_set_guidance =
+      horizons_[HorizonType::CONTROL_SET_GUIDANCE];
 
-  // Apply guidance fields.
-  const cv::Mat guided_h = eroded_h +
-                           p_.guidance_gains.throttle * throttle_guidance +
-                           p_.guidance_gains.yaw * yaw_guidance +
-                           p_.guidance_gains.control_set * control_set_guidance;
+  horizons_[HorizonType::YAW_GUIDANCE] =
+      p_.guidance_gains.yaw * yawGuidance(static_cast<int>(col_d), ch.cols,
+                                          p_.yaw_decay.left,
+                                          p_.yaw_decay.right);
+  const auto& yaw_guidance = horizons_[HorizonType::YAW_GUIDANCE];
+
+  // horizons_[HorizonType::GUIDANCE] =
+  //  0.5 * (yaw_guidance + control_set_guidance);
+  horizons_[HorizonType::GUIDANCE] = yaw_guidance;
+  const auto& guidance_h = horizons_[HorizonType::GUIDANCE];
 
   // Project throttles onto [r_min, r_max].
   const cv::Mat throttle_h =
-      projectThrottlesToControlSpace(guided_h, C_u_, p_.K_P, p_.K_D);
+      projectThrottlesToControlSpace(ech, C_u_, p_.K_P, p_.K_D);
+
+  // Compute guided throttle horizon.
+  horizons_[HorizonType::GUIDED_THROTTLE] =
+      throttleGuidance(throttle_h, guidance_h);
+  const auto& guided_throttle_h = horizons_[HorizonType::GUIDED_THROTTLE];
 
   // Find the index of the desired control command.
   const auto control_idx = dampedMaxThrottleIndex(
-      throttle_h, guided_h, p_.potential_inertia, static_cast<int>(col_d));
+      guided_throttle_h, p_.potential_inertia, static_cast<int>(col_d));
 
   // Compute yaw control command.
   const auto yaw =

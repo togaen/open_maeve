@@ -25,17 +25,17 @@
 #include "maeve_automation_core/isp_field/ros_interface.h"
 
 namespace maeve_automation_core {
-SegmentationFieldParams::SegmentationFieldParams() {}
-
 bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   // Load node parameters.
   LOAD_PARAM(segmentation_sequence_topic);
   LOAD_PARAM(viz_isp_field_topic);
+  LOAD_PARAM(visualize_horizons);
   LOAD_PARAM(control_command_input_topic);
   LOAD_PARAM(control_command_output_topic);
   LOAD_PARAM(label_map_path);
   LOAD_PARAM(data_set_name);
   LOAD_PARAM(viz_potential_bounds);
+  LOAD_PARAM(horizon_viz_height);
   LOAD_NS_PARAM(default_guidance_control, throttle);
   LOAD_NS_PARAM(default_guidance_control, yaw);
 
@@ -83,6 +83,7 @@ bool SegmentationFieldParams::valid() const {
   CHECK_NONEMPTY(control_command_input_topic);
   CHECK_NONEMPTY(label_map_path);
   CHECK_NONEMPTY(data_set_name);
+  CHECK_STRICTLY_POSITIVE(horizon_viz_height);
   CHECK_EQ(viz_potential_bounds.size(), 2);
   CHECK_FINITE(viz_potential_bounds[0]);
   CHECK_FINITE(viz_potential_bounds[1]);

@@ -126,16 +126,6 @@ double yaw2Column(const cv::Mat& image_plane, const double yaw,
 cv::Mat controlSetGuidance(const cv::Mat& controls);
 
 /**
- * @brief Compute a throttle guidance horizon.
- *
- * @param throttle The throttle value to guide towards.
- * @param width The width of the guidance horizon.
- *
- * @return A row vector containing guidance factors.
- */
-cv::Mat throttleGuidance(const double throttle, const int width);
-
-/**
  * @brief Compute a yaw-based guidance horizon for choosing controls.
  *
  * This horizon is used by the control law to bias direction towards `center'.
@@ -223,6 +213,16 @@ double projectYawToControlSpace(
     const double fx, const double px, const double yaw);
 
 /**
+ * @brief Compute a throttle guidance horizon.
+ *
+ * @param throttle_h The horizon of throttle values.
+ * @param guidance_h The guidance horizon to apply to the throttle horizon.
+ *
+ * @return The guided throttle horizon.
+ */
+cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h);
+
+/**
  * @brief Compute the index of the throttle horizon is the greatest range.
  *
  * @pre Horizons shall be non-empty and of the same size. Damping index shall be
@@ -232,14 +232,12 @@ double projectYawToControlSpace(
  * defined control set. If the potential value for the found index does not
  * exceed the given inertia, the index is set to the damping index.
  *
- * @param throttle_h The horizon of throttle values.
- * @param potential_h The horizon of potential values.
+ * @param guided_throttle_h The horizon of guided throttle values.
  * @param inertia The inertia to overcome.
  * @param damp_idx The damping index.
  *
  * @return The throttle horizon index.
  */
-int dampedMaxThrottleIndex(const cv::Mat& throttle_h,
-                           const cv::Mat& potential_h, const double inertia,
-                           const int damp_idx);
+int dampedMaxThrottleIndex(const cv::Mat& guided_throttle_h,
+                           const double inertia, const int damp_idx);
 }  // namespace maeve_automation_core

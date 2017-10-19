@@ -62,7 +62,6 @@ bool loadISP_ControllerROS_Params(const ros::NodeHandle& nh,
 
   auto& gg = params.guidance_gains;
   const auto gg_ns = ns + "/guidance_gains";
-  LOAD_NAMED_PARAM(gg_ns + "/throttle", gg.throttle);
   LOAD_NAMED_PARAM(gg_ns + "/yaw", gg.yaw);
   LOAD_NAMED_PARAM(gg_ns + "/control_set", gg.control_set);
 

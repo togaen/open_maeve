@@ -53,6 +53,22 @@ class SegmentationFieldNodeHandler {
   typedef std::unordered_map<std::string, cv::Point2d> GuidancePotentials;
 
   /**
+   * @brief Helper function for visualizing horizon structures.
+   *
+   * @param header Message header for published horizon visualization.
+   * @param height Height of the visualization image.
+   * @param cs Which of the horizon structures to visualize.
+   * @param publisher The publisher to use to publish the visualization.
+   * @param lower_bound The lower saturation bound.
+   * @param upper_bound The upper saturation bound.
+   */
+  void visualizeHorizon(const std_msgs::Header& header, const int height,
+                        const ISP_Controller2D::HorizonType ht,
+                        const image_transport::Publisher& publisher,
+                        const double lower_bound,
+                        const double upper_bound) const;
+
+  /**
    * @brief Callback that fires when a new image segmentation is received.
    *
    * @param msg The segmentation image message.
@@ -92,6 +108,8 @@ class SegmentationFieldNodeHandler {
   image_transport::Subscriber segmentation_sub_;
   /** @brief ISP field visualization publisher. */
   image_transport::Publisher viz_isp_field_pub_;
+  /** @brief Horizon visualization publishers. */
+  std::unordered_map<std::string, image_transport::Publisher> viz_horizon_pubs_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
   /** @brief The ROS image transport object. */
@@ -102,8 +120,6 @@ class SegmentationFieldNodeHandler {
   ros::Publisher control_command_output_pub_;
   /** @brief Node params. */
   SegmentationFieldParams params_;
-  /** @brief The hard constraint transform. */
-  PotentialTransform<ConstraintType::HARD> hc_;
   /** @brief The soft constraint transform. */
   PotentialTransform<ConstraintType::SOFT> sc_;
 };  // class SegmentationFieldNodeHandler

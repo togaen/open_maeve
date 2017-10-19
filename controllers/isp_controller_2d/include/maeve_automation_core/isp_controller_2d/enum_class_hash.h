@@ -21,45 +21,28 @@
  */
 #pragma once
 
-#include <opencv2/opencv.hpp>
+#include <cstddef>
 
 namespace maeve_automation_core {
 /**
- * @brief Construct and return a zero-filled ISP field.
+ * @brief Hash functor to allow strongly typed enums to be used as hash table
+ * keys.
  *
- * @param width The width of the desired field.
- * @param height The height of the desired field.
- *
- * @return The zeroed ISP field.
+ * @note:
+ * https://stackoverflow.com/questions/18837857/cant-use-enum-class-as-unordered-map-key
  */
-cv::Mat zeroISP_Field(const int width, const int height);
-
-/**
- * @brief Construct and return a zero-filled ISP field.
- *
- * @param size The desired size.
- *
- * @return The zeroed ISP field.
- */
-cv::Mat zeroISP_Field(const cv::Size& size);
-
-/**
- * @brief Construct and return a one-filled ISP field.
- *
- * @param width The width of the desired field.
- * @param height The height of the desired field.
- *
- * @return The one-filled ISP field.
- */
-cv::Mat oneISP_Field(const int width, const int height);
-
-/**
- * @brief Construct and return a one-filled ISP field.
- *
- * @param size The desired size.
- *
- * @return The one-filled ISP field.
- */
-cv::Mat oneISP_Field(const cv::Size& size);
-
+struct EnumClassHash {
+  /**
+   * @brief Cast enum object to hashable value.
+   *
+   * @tparam T The enum type.
+   * @param t The enum object.
+   *
+   * @return An integer value of the enum.
+   */
+  template <typename T>
+  std::size_t operator()(T t) const {
+    return static_cast<std::size_t>(t);
+  }
+};
 }  // namespace maeve_automation_core

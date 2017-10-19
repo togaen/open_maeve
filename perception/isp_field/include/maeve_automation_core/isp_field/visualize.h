@@ -25,7 +25,36 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief Compute a visualization of a horizon.
+ *
+ * @pre horizon_viz_height and window_viz_height are both > 0.
+ *
+ * The horizon is a 1xN matrix, so the visualization stretches the
+ * horizon vertically by 'horizon_viz_height' pixels and paints it,
+ * vertically centered, onto a black canvas that is of size
+ * 'window_viz_height'xN.
+ *
+ * @note If horizon_viz_height is greater than window_viz_height,
+ * horizon_viz_height is resized to window_viz_height.
+ *
+ * @param horizon The horizon that is begin visualized.
+ * @param horizon_viz_height The visualization height of the control horizon.
+ * @param window_viz_height  The height of the visualization window.
+ * @param lower_bound The lower saturation bound.
+ * @param upper_bound The upper saturation bound.
+ *
+ * @return The visualization image, a monochrome image.
+ */
+cv::Mat computeHorizonVisualization(const cv::Mat& horizon,
+                                    const int horizon_viz_height,
+                                    const int window_viz_height,
+                                    const double lower_bound,
+                                    const double upper_bound);
+
+/**
  * @brief Compute a visualization of an Image Space Potential field.
+ *
+ * @pre The input ISP field is negatively affinely extended.
  *
  * This function maps repulsive forces to the red channel and attractive forces
  * to the blue channel. The parameters 'lower_bound' and 'upper_bound' specify
