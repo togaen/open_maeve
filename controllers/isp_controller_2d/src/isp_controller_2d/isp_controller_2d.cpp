@@ -156,6 +156,7 @@ bool ISP_Controller2D::isInitialized() const { return init_ && p_.valid(); }
 
 const cv::Mat& ISP_Controller2D::inspectHorizon(
     const ControlStructure cs) const {
+  static cv::Mat empty;
   switch (cs) {
     case ControlStructure::CONTROL_HORIZON:
       return h_;
@@ -164,7 +165,31 @@ const cv::Mat& ISP_Controller2D::inspectHorizon(
     default:
       // This should never execute.
       assert(false);
+      return empty;
   }
+}
+
+std::string ISP_Controller2D::controlStructureToString(
+    const ControlStructure cs) {
+  switch (cs) {
+    case ControlStructure::CONTROL_HORIZON:
+      return "control_horizon";
+    case ControlStructure::ERODED_CONTROL_HORIZON:
+      return "eroded_control_horizon";
+    default:
+      return "invalid";
+  }
+}
+
+ISP_Controller2D::ControlStructure ISP_Controller2D::stringToControlStructure(
+    const std::string& str) {
+  if (str == "control_horizon") {
+    return ControlStructure::CONTROL_HORIZON;
+  }
+  if (str == "eroded_control_horizon") {
+    return ControlStructure::ERODED_CONTROL_HORIZON;
+  }
+  return ControlStructure::INVALID;
 }
 
 ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
