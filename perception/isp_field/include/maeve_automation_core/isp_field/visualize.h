@@ -40,12 +40,16 @@ namespace maeve_automation_core {
  * @param horizon The horizon that is begin visualized.
  * @param horizon_viz_height The visualization height of the control horizon.
  * @param window_viz_height  The height of the visualization window.
+ * @param lower_bound The lower saturation bound.
+ * @param upper_bound The upper saturation bound.
  *
  * @return The visualization image, a monochrome image.
  */
 cv::Mat computeHorizonVisualization(const cv::Mat& horizon,
                                     const int horizon_viz_height,
-                                    const int window_viz_height);
+                                    const int window_viz_height,
+                                    const double lower_bound,
+                                    const double upper_bound);
 
 /**
  * @brief Compute a visualization of an Image Space Potential field.

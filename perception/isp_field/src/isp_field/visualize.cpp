@@ -31,13 +31,17 @@ const auto INF = std::numeric_limits<double>::infinity();
 
 cv::Mat computeHorizonVisualization(const cv::Mat& horizon,
                                     const int horizon_viz_height,
-                                    const int window_viz_height) {
+                                    const int window_viz_height,
+                                    const double lower_bound,
+                                    const double upper_bound) {
   // Convert control horizon to single channel, 8-bit unsigned.
   std::vector<cv::Mat> channels(2);
   cv::split(horizon, channels);
   auto& horizon_sc = channels.front();
   cv::Mat horizon_sc_8u;
-  horizon_sc.convertTo(horizon_sc_8u, CV_8U, 255.0);
+  cv::Mat horizon_zeroed = -lower_bound + horizon_sc;
+  horizon_zeroed.convertTo(horizon_sc_8u, CV_8U,
+                           255.0 / (upper_bound - lower_bound));
 
   // Create viz window.
   cv::Mat viz = cv::Mat::zeros(window_viz_height, horizon_sc_8u.cols, CV_8U);
