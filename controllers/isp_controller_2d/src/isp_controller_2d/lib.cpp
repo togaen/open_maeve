@@ -104,7 +104,7 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
   cv::Mat masked_ISP = ISP(ROI);
 
   // Reduce to single row.
-  cv::reduce(masked_ISP, reduced_ISP, 0 /* 0: row, 1: column */, CV_REDUCE_MIN);
+  cv::reduce(masked_ISP, reduced_ISP, 0 /* 0: row, 1: column */, CV_REDUCE_AVG);
 
   // Done.
   return reduced_ISP;
