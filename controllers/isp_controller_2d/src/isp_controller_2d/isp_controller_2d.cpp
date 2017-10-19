@@ -70,8 +70,8 @@ ISP_Controller2D::Params::GuidanceGains::GuidanceGains(const double y,
 
 bool ISP_Controller2D::Params::GuidanceGains::valid() const {
   // Perform checks.
-  CHECK_STRICTLY_POSITIVE(yaw);
-  CHECK_STRICTLY_POSITIVE(control_set);
+  CHECK_GE(yaw, 0.0);
+  CHECK_GE(control_set, 0.0);
   CHECK_FINITE(yaw);
   CHECK_FINITE(control_set);
 
