@@ -42,4 +42,24 @@ cv::Mat zeroISP_Field(const int width, const int height);
  * @return The zeroed ISP field.
  */
 cv::Mat zeroISP_Field(const cv::Size& size);
+
+/**
+ * @brief Construct and return a one-filled ISP field.
+ *
+ * @param width The width of the desired field.
+ * @param height The height of the desired field.
+ *
+ * @return The one-filled ISP field.
+ */
+cv::Mat oneISP_Field(const int width, const int height);
+
+/**
+ * @brief Construct and return a one-filled ISP field.
+ *
+ * @param size The desired size.
+ *
+ * @return The one-filled ISP field.
+ */
+cv::Mat oneISP_Field(const cv::Size& size);
+
 }  // namespace maeve_automation_core
