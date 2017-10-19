@@ -65,10 +65,6 @@ cv::Mat controlSetGuidance(const cv::Mat& controls) {
   return biasing_horizon;
 }
 
-cv::Mat throttleGuidance(const double throttle, const int width) {
-  return cv::Mat::ones(1, width, CV_64FC2) * throttle;
-}
-
 cv::Mat yawGuidance(const int center, const int width, const double left_decay,
                     const double right_decay) {
   cv::Mat biasing_horizon(1, width, CV_64FC2);

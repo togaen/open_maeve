@@ -40,8 +40,6 @@ class ISP_Controller2D {
      * @brief Container for guidance gain values.
      */
     struct GuidanceGains {
-      /** @brief Apply this gain to the throttle guidance horizon. */
-      double throttle;
       /** @brief Apply this gain to the yaw guidance horizon. */
       double yaw;
       /** @brief Apply this gain to the control set guidance horizon. */
@@ -59,11 +57,10 @@ class ISP_Controller2D {
       /**
        * @brief Constructor: explicit initialization.
        *
-       * @param t The throttle gain \in (0, +\infty).
        * @param y The yaw gain \in (0, +\infty).
        * @param c The control_set gain \in (0, +\infty).
        */
-      GuidanceGains(const double t, const double y, const double c);
+      GuidanceGains(const double y, const double c);
     };  // struct GuidanceGains
 
     /**
@@ -173,7 +170,6 @@ class ISP_Controller2D {
   enum class HorizonType {
     CONTROL,
     ERODED_CONTROL,
-    THROTTLE_GUIDANCE,
     YAW_GUIDANCE,
     CONTROL_SET_GUIDANCE,
     GUIDANCE,

@@ -44,7 +44,7 @@ std::ostream& operator<<(std::ostream& o,
 }
 std::ostream& operator<<(std::ostream& o,
                          const ISP_Controller2D::Params::GuidanceGains& gg) {
-  return o << "[throttle: " << gg.throttle << ", yaw: " << gg.yaw
+  return o << "[yaw: " << gg.yaw
            << ", control_set: " << gg.control_set << "]";
 }
 
@@ -62,19 +62,16 @@ std::ostream& operator<<(std::ostream& o, const ISP_Controller2D::Params& p) {
 }
 
 ISP_Controller2D::Params::GuidanceGains::GuidanceGains()
-    : GuidanceGains(NaN, NaN, NaN) {}
+    : GuidanceGains(NaN, NaN) {}
 
-ISP_Controller2D::Params::GuidanceGains::GuidanceGains(const double t,
-                                                       const double y,
+ISP_Controller2D::Params::GuidanceGains::GuidanceGains(const double y,
                                                        const double c)
-    : throttle(t), yaw(y), control_set(c) {}
+    : yaw(y), control_set(c) {}
 
 bool ISP_Controller2D::Params::GuidanceGains::valid() const {
   // Perform checks.
-  CHECK_STRICTLY_POSITIVE(throttle);
   CHECK_STRICTLY_POSITIVE(yaw);
   CHECK_STRICTLY_POSITIVE(control_set);
-  CHECK_FINITE(throttle);
   CHECK_FINITE(yaw);
   CHECK_FINITE(control_set);
 
@@ -177,8 +174,6 @@ std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
       return "control";
     case HorizonType::ERODED_CONTROL:
       return "eroded_control";
-    case HorizonType::THROTTLE_GUIDANCE:
-      return "throttle_guidance";
     case HorizonType::CONTROL_SET_GUIDANCE:
       return "control_set_guidance";
     case HorizonType::YAW_GUIDANCE:
@@ -197,9 +192,6 @@ ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
   }
   if (str == "eroded_control") {
     return HorizonType::ERODED_CONTROL;
-  }
-  if (str == "throttle_guidance") {
-    return HorizonType::THROTTLE_GUIDANCE;
   }
   if (str == "control_set_guidance") {
     return HorizonType::CONTROL_SET_GUIDANCE;
@@ -232,13 +224,7 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       erodeHorizon(ch, p_.erosion_kernel.width);
   const auto& ech = horizons_[HorizonType::ERODED_CONTROL];
 
-  // Compute guidance fields.
-  horizons_[HorizonType::THROTTLE_GUIDANCE] =
-      throttleGuidance(u_d.throttle, ch.cols);
-  const auto& throttle_guidance = horizons_[HorizonType::THROTTLE_GUIDANCE];
-
-  horizons_[HorizonType::CONTROL_SET_GUIDANCE] =
-      controlSetGuidance(throttle_guidance);
+  horizons_[HorizonType::CONTROL_SET_GUIDANCE] = controlSetGuidance(ech);
   const auto& control_set_guidance =
       horizons_[HorizonType::CONTROL_SET_GUIDANCE];
 
@@ -248,8 +234,7 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
 
   // Apply guidance fields.
   horizons_[HorizonType::GUIDANCE] =
-      ech + p_.guidance_gains.throttle * throttle_guidance +
-      p_.guidance_gains.yaw * yaw_guidance +
+      ech + p_.guidance_gains.yaw * yaw_guidance +
       p_.guidance_gains.control_set * control_set_guidance;
   const auto& guided_h = horizons_[HorizonType::GUIDANCE];
 

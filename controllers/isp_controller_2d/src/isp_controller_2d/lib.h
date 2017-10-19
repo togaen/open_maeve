@@ -126,16 +126,6 @@ double yaw2Column(const cv::Mat& image_plane, const double yaw,
 cv::Mat controlSetGuidance(const cv::Mat& controls);
 
 /**
- * @brief Compute a throttle guidance horizon.
- *
- * @param throttle The throttle value to guide towards.
- * @param width The width of the guidance horizon.
- *
- * @return A row vector containing guidance factors.
- */
-cv::Mat throttleGuidance(const double throttle, const int width);
-
-/**
  * @brief Compute a yaw-based guidance horizon for choosing controls.
  *
  * This horizon is used by the control law to bias direction towards `center'.

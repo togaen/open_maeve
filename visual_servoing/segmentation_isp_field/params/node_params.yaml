@@ -7,7 +7,6 @@ viz_isp_field_topic: 'isp_field_viz'
 visualize_horizons: [
   'control',
   'eroded_control',
-  'throttle_guidance',
   'yaw_guidance',
   'control_set_guidance',
   'guidance'

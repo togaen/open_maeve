@@ -26,6 +26,5 @@ isp_controller_params:
     alpha: 1.0
     beta: 1.0
   guidance_gains:
-    throttle: 1.0
     yaw: 1.0
     control_set: 1.0
