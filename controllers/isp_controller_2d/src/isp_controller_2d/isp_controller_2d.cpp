@@ -23,6 +23,7 @@
 
 #include <array>
 #include <limits>
+#include <string>
 
 #include "isp_controller_2d/lib.h"
 #include "maeve_automation_core/maeve_macros/checks.h"
@@ -155,25 +156,35 @@ ISP_Controller2D::ISP_Controller2D(const Params& params)
 bool ISP_Controller2D::isInitialized() const { return init_ && p_.valid(); }
 
 const cv::Mat& ISP_Controller2D::inspectHorizon(const HorizonType cs) const {
-  static cv::Mat empty;
-  switch (cs) {
-    case HorizonType::CONTROL:
-      return h_;
-    case HorizonType::ERODED_CONTROL:
-      return eroded_h_;
-    default:
-      // This should never execute.
-      assert(false);
-      return empty;
+  static const cv::Mat empty;
+
+  // Get horizon structure.
+  const auto it = horizons_.find(cs);
+
+  // The find should never fail. If it does, implementation is inconsistent.
+  if (it == std::end(horizons_)) {
+    assert(false);
+    return empty;
   }
+
+  // Done.
+  return it->second;
 }
 
 std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
   switch (cs) {
     case HorizonType::CONTROL:
-      return "control_horizon";
+      return "control";
     case HorizonType::ERODED_CONTROL:
-      return "eroded_control_horizon";
+      return "eroded_control";
+    case HorizonType::THROTTLE_GUIDANCE:
+      return "throttle_guidance";
+    case HorizonType::CONTROL_SET_GUIDANCE:
+      return "control_set_guidance";
+    case HorizonType::YAW_GUIDANCE:
+      return "yaw_guidance";
+    case HorizonType::GUIDANCE:
+      return "guidance";
     default:
       return "invalid";
   }
@@ -181,11 +192,23 @@ std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
 
 ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
     const std::string& str) {
-  if (str == "control_horizon") {
+  if (str == "control") {
     return HorizonType::CONTROL;
   }
-  if (str == "eroded_control_horizon") {
+  if (str == "eroded_control") {
     return HorizonType::ERODED_CONTROL;
+  }
+  if (str == "throttle_guidance") {
+    return HorizonType::THROTTLE_GUIDANCE;
+  }
+  if (str == "control_set_guidance") {
+    return HorizonType::CONTROL_SET_GUIDANCE;
+  }
+  if (str == "yaw_guidance") {
+    return HorizonType::YAW_GUIDANCE;
+  }
+  if (str == "guidance") {
+    return HorizonType::GUIDANCE;
   }
   return HorizonType::INVALID;
 }
@@ -200,22 +223,35 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       yaw2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
 
   // Get control horizon.
-  h_ = controlHorizon(ISP, p_.erosion_kernel.height, p_.erosion_kernel.horizon);
+  horizons_[HorizonType::CONTROL] =
+      controlHorizon(ISP, p_.erosion_kernel.height, p_.erosion_kernel.horizon);
+  const auto& ch = horizons_[HorizonType::CONTROL];
 
   // Apply min filter.
-  eroded_h_ = erodeHorizon(h_, p_.erosion_kernel.width);
+  horizons_[HorizonType::ERODED_CONTROL] =
+      erodeHorizon(ch, p_.erosion_kernel.width);
+  const auto& ech = horizons_[HorizonType::ERODED_CONTROL];
 
   // Compute guidance fields.
-  const cv::Mat throttle_guidance = throttleGuidance(u_d.throttle, h_.cols);
-  const cv::Mat control_set_guidance = controlSetGuidance(throttle_guidance);
-  const cv::Mat yaw_guidance = yawGuidance(
-      static_cast<int>(col_d), h_.cols, p_.yaw_decay.left, p_.yaw_decay.right);
+  horizons_[HorizonType::THROTTLE_GUIDANCE] =
+      throttleGuidance(u_d.throttle, ch.cols);
+  const auto& throttle_guidance = horizons_[HorizonType::THROTTLE_GUIDANCE];
+
+  horizons_[HorizonType::CONTROL_SET_GUIDANCE] =
+      controlSetGuidance(throttle_guidance);
+  const auto& control_set_guidance =
+      horizons_[HorizonType::CONTROL_SET_GUIDANCE];
+
+  horizons_[HorizonType::YAW_GUIDANCE] = yawGuidance(
+      static_cast<int>(col_d), ch.cols, p_.yaw_decay.left, p_.yaw_decay.right);
+  const auto& yaw_guidance = horizons_[HorizonType::YAW_GUIDANCE];
 
   // Apply guidance fields.
-  const cv::Mat guided_h = eroded_h_ +
-                           p_.guidance_gains.throttle * throttle_guidance +
-                           p_.guidance_gains.yaw * yaw_guidance +
-                           p_.guidance_gains.control_set * control_set_guidance;
+  horizons_[HorizonType::GUIDANCE] =
+      ech + p_.guidance_gains.throttle * throttle_guidance +
+      p_.guidance_gains.yaw * yaw_guidance +
+      p_.guidance_gains.control_set * control_set_guidance;
+  const auto& guided_h = horizons_[HorizonType::GUIDANCE];
 
   // Project throttles onto [r_min, r_max].
   const cv::Mat throttle_h =

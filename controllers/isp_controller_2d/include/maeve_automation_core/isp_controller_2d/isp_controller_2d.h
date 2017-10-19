@@ -23,7 +23,10 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <string>
+
 #include "maeve_automation_core/isp_controller_2d/control_command.h"
+#include "maeve_automation_core/isp_controller_2d/enum_class_hash.h"
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 
 namespace maeve_automation_core {
@@ -167,7 +170,15 @@ class ISP_Controller2D {
   /**
    * @brief Enumerate horizon structures that can be inspected.
    */
-  enum class HorizonType { CONTROL, ERODED_CONTROL, INVALID };
+  enum class HorizonType {
+    CONTROL,
+    ERODED_CONTROL,
+    THROTTLE_GUIDANCE,
+    YAW_GUIDANCE,
+    CONTROL_SET_GUIDANCE,
+    GUIDANCE,
+    INVALID
+  };
 
   /**
    * @brief Constructor: do not mark as initialized.
@@ -229,14 +240,15 @@ class ISP_Controller2D {
   static HorizonType stringToHorizonType(const std::string& str);
 
  private:
+  /** @brief Map of horizon type to horizon data structure. */
+  typedef std::unordered_map<HorizonType, cv::Mat, EnumClassHash> HorizonMap;
+
   /** @brief Whether the object has been initialied. */
   bool init_;
   /** @brief Controller parameters. */
   Params p_;
-  /** @brief Storage for intermediate control horizon computation. */
-  cv::Mat h_;
-  /** @brief Storage for intermediate eroded control horizon computation. */
-  cv::Mat eroded_h_;
+  /** @brief Storage for intermediate horizon computations. */
+  HorizonMap horizons_;
   /** @brief Projection function onto control space. */
   PotentialTransform<ConstraintType::SOFT> C_u_;
 };  // class ISP_Controller2D
