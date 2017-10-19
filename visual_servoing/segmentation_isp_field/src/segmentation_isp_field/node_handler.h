@@ -94,6 +94,8 @@ class SegmentationFieldNodeHandler {
   image_transport::Publisher viz_isp_field_pub_;
   /** @brief Control horizon visualization publisher. */
   image_transport::Publisher viz_control_horizon_pub_;
+  /** @brief Control horizon visualization publisher. */
+  image_transport::Publisher viz_eroded_control_horizon_pub_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
   /** @brief The ROS image transport object. */

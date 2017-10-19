@@ -93,6 +93,10 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
     viz_control_horizon_pub_ =
         it_.advertise(params_.viz_control_horizon_topic, 1);
   }
+  if (!params_.viz_eroded_control_horizon_topic.empty()) {
+    viz_eroded_control_horizon_pub_ =
+        it_.advertise(params_.viz_eroded_control_horizon_topic, 1);
+  }
 }
 
 void SegmentationFieldNodeHandler::loadGuidancePotentials(
@@ -192,6 +196,17 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
         cv_bridge::CvImage(msg->header, "mono8", viz_control_horizon)
             .toImageMsg();
     viz_control_horizon_pub_.publish(viz_control_horizon_msg);
+  }
+  if (!params_.viz_eroded_control_horizon_topic.empty()) {
+    // Eroded control horizon visualization.
+    const auto& eroded_control_horizon = isp_controller_.inspectHorizon(
+        ISP_Controller2D::ControlStructure::ERODED_CONTROL_HORIZON);
+    const auto viz_eroded_control_horizon = computeHorizonVisualization(
+        eroded_control_horizon, msg->height / 2, msg->height);
+    sensor_msgs::ImagePtr viz_eroded_control_horizon_msg =
+        cv_bridge::CvImage(msg->header, "mono8", viz_eroded_control_horizon)
+            .toImageMsg();
+    viz_eroded_control_horizon_pub_.publish(viz_eroded_control_horizon_msg);
   }
 }
 }  // namespace maeve_automation_core

@@ -45,6 +45,9 @@ struct SegmentationFieldParams : public ParamsBase {
   /** @brief The control horizon visualization topic. */
   std::string viz_control_horizon_topic;
 
+  /** @brief The control horizon visualization topic. */
+  std::string viz_eroded_control_horizon_topic;
+
   /** @brief Control command output topic. */
   std::string control_command_output_topic;
 
