@@ -165,6 +165,13 @@ class ISP_Controller2D {
   };  // struct Params
 
   /**
+   * @brief Enumerate control structures that can be inspected.
+   */
+  enum class ControlStructure {
+    CONTROL_HORIZON
+  };
+
+  /**
    * @brief Constructor: do not mark as initialized.
    */
   ISP_Controller2D();
@@ -198,11 +205,20 @@ class ISP_Controller2D {
    */
   bool isInitialized() const;
 
+  /**
+   * @brief Accessor for most recently computed control data structures.
+   *
+   * @return A const ref to the desired control structure.
+   */
+  const cv::Mat& inspectControlHorizon(const ControlStructure cs) const;
+
  private:
   /** @brief Whether the object has been initialied. */
   bool init_;
   /** @brief Controller parameters. */
   Params p_;
+  /** @brief Storage for intermidate control horizon computation. */
+  cv::Mat h_;
   /** @brief Projection function onto control space. */
   PotentialTransform<ConstraintType::SOFT> C_u_;
 };  // class ISP_Controller2D

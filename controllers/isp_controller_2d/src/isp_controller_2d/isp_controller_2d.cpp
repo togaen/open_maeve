@@ -154,6 +154,17 @@ ISP_Controller2D::ISP_Controller2D(const Params& params)
 
 bool ISP_Controller2D::isInitialized() const { return init_ && p_.valid(); }
 
+const cv::Mat& ISP_Controller2D::inspectControlHorizon(
+    const ControlStructure cs) const {
+  switch (cs) {
+    case ControlStructure::CONTROL_HORIZON:
+      return h_;
+    default:
+      // This should never execute.
+      assert(false);
+  }
+}
+
 ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
                                             const ControlCommand& u_d) {
   // Reserve return value.
@@ -164,17 +175,16 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       yaw2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
 
   // Get control horizon.
-  const cv::Mat h =
-      controlHorizon(ISP, p_.erosion_kernel.height, p_.erosion_kernel.horizon);
+  h_ = controlHorizon(ISP, p_.erosion_kernel.height, p_.erosion_kernel.horizon);
 
   // Apply min filter.
-  const cv::Mat eroded_h = erodeHorizon(h, p_.erosion_kernel.width);
+  const cv::Mat eroded_h = erodeHorizon(h_, p_.erosion_kernel.width);
 
   // Compute guidance fields.
-  const cv::Mat throttle_guidance = throttleGuidance(u_d.throttle, h.cols);
+  const cv::Mat throttle_guidance = throttleGuidance(u_d.throttle, h_.cols);
   const cv::Mat control_set_guidance = controlSetGuidance(throttle_guidance);
   const cv::Mat yaw_guidance = yawGuidance(
-      static_cast<int>(col_d), h.cols, p_.yaw_decay.left, p_.yaw_decay.right);
+      static_cast<int>(col_d), h_.cols, p_.yaw_decay.left, p_.yaw_decay.right);
 
   // Apply guidance fields.
   const cv::Mat guided_h = eroded_h +
