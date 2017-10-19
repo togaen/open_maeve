@@ -87,11 +87,11 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
 
   // Visualize?
   viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
-  std::for_each(std::begin(params_.visualize_horizons),
-                std::end(params_.visualize_horizons),
-                [&](const std::string& str) {
-                  viz_horizon_pubs_[str] = it_.advertise("viz_" + str, 1);
-                });
+  std::for_each(
+      std::begin(params_.visualize_horizons),
+      std::end(params_.visualize_horizons), [&](const std::string& str) {
+        viz_horizon_pubs_[str] = it_.advertise("viz_" + str + "_horizon", 1);
+      });
 }
 
 void SegmentationFieldNodeHandler::loadGuidancePotentials(
@@ -182,8 +182,7 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   // Horizon visualizations.
   for (const auto& p : viz_horizon_pubs_) {
     visualizeHorizon(msg->header, msg->height,
-                     ISP_Controller2D::stringToHorizonType(p.first),
-                     p.second);
+                     ISP_Controller2D::stringToHorizonType(p.first), p.second);
   }
 }
 

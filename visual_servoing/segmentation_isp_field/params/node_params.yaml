@@ -1,9 +1,16 @@
 segmentation_sequence_topic: '/segmentation'
 
 viz_isp_field_topic: 'isp_field_viz'
+
+# Visualize zero or more intermediate horizon data structures computed by isp_controller_2d.
+# The horizon types specified here should match the string versions of the HorizonType enums in the isp_controller_2d package.
 visualize_horizons: [
-  'control_horizon',
-  'eroded_control_horizon'
+  'control',
+  'eroded_control',
+  'throttle_guidance',
+  'yaw_guidance',
+  'control_set_guidance',
+  'guidance'
 ]
 
 # bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero
