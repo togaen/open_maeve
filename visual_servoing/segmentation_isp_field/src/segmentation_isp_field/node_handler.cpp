@@ -91,6 +91,10 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
   if (!params_.viz_isp_field_topic.empty()) {
     viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
   }
+  if (!params_.viz_control_horizon_topic.empty()) {
+    viz_control_horizon_pub_ =
+        it_.advertise(params_.viz_control_horizon_topic, 1);
+  }
 }
 
 void SegmentationFieldNodeHandler::loadGuidancePotentials(
@@ -145,16 +149,6 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
                           cv_ptr->image, taxonomy_.classes[p.first], p.second);
                 });
 
-  // Visualize?
-  if (!params_.viz_isp_field_topic.empty()) {
-    auto viz_field = computeISPFieldVisualization(
-        guidance_field, params_.viz_potential_bounds[0],
-        params_.viz_potential_bounds[1]);
-    sensor_msgs::ImagePtr viz_msg =
-        cv_bridge::CvImage(std_msgs::Header(), "bgr8", viz_field).toImageMsg();
-    viz_isp_field_pub_.publish(viz_msg);
-  }
-
   // Get desired control.
   ControlCommand u_d;
   if (const auto cmd_msg = command2d_mgr_.mostRecentMsg()) {
@@ -179,5 +173,27 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   // Publish control.
   control_command_output_pub_.publish(
       controlCommand2Command2D_Msg(u_star, msg->header));
+
+  // Visualize?
+  if (!params_.viz_isp_field_topic.empty()) {
+    // ISP field.
+    const auto viz_field = computeISPFieldVisualization(
+        guidance_field, params_.viz_potential_bounds[0],
+        params_.viz_potential_bounds[1]);
+    sensor_msgs::ImagePtr viz_field_msg =
+        cv_bridge::CvImage(msg->header, "bgr8", viz_field).toImageMsg();
+    viz_isp_field_pub_.publish(viz_field_msg);
+  }
+  if (!params_.viz_control_horizon_topic.empty()) {
+    // Control horizon visualization.
+    const auto& control_horizon = isp_controller_.inspectControlHorizon(
+        ISP_Controller2D::ControlStructure::CONTROL_HORIZON);
+    const auto viz_control_horizon = computeControlHorizonVisualization(
+        control_horizon, msg->height / 2, msg->height);
+    sensor_msgs::ImagePtr viz_control_horizon_msg =
+        cv_bridge::CvImage(msg->header, "mono8", viz_control_horizon)
+            .toImageMsg();
+    viz_control_horizon_pub_.publish(viz_control_horizon_msg);
+  }
 }
 }  // namespace maeve_automation_core
