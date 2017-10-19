@@ -154,7 +154,7 @@ ISP_Controller2D::ISP_Controller2D(const Params& params)
 
 bool ISP_Controller2D::isInitialized() const { return init_ && p_.valid(); }
 
-const cv::Mat& ISP_Controller2D::inspectControlHorizon(
+const cv::Mat& ISP_Controller2D::inspectHorizon(
     const ControlStructure cs) const {
   switch (cs) {
     case ControlStructure::CONTROL_HORIZON:

@@ -184,9 +184,9 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   }
   if (!params_.viz_control_horizon_topic.empty()) {
     // Control horizon visualization.
-    const auto& control_horizon = isp_controller_.inspectControlHorizon(
+    const auto& control_horizon = isp_controller_.inspectHorizon(
         ISP_Controller2D::ControlStructure::CONTROL_HORIZON);
-    const auto viz_control_horizon = computeControlHorizonVisualization(
+    const auto viz_control_horizon = computeHorizonVisualization(
         control_horizon, msg->height / 2, msg->height);
     sensor_msgs::ImagePtr viz_control_horizon_msg =
         cv_bridge::CvImage(msg->header, "mono8", viz_control_horizon)

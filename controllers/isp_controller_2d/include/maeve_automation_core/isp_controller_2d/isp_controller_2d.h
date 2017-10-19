@@ -206,11 +206,11 @@ class ISP_Controller2D {
   bool isInitialized() const;
 
   /**
-   * @brief Accessor for most recently computed control data structures.
+   * @brief Accessor for most recently computed horizon data structures.
    *
-   * @return A const ref to the desired control structure.
+   * @return A const ref to the desired horizon structure.
    */
-  const cv::Mat& inspectControlHorizon(const ControlStructure cs) const;
+  const cv::Mat& inspectHorizon(const ControlStructure cs) const;
 
  private:
   /** @brief Whether the object has been initialied. */
