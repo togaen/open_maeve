@@ -61,7 +61,7 @@ class SegmentationFieldNodeHandler {
    * @param publisher The publisher to use to publish the visualization.
    */
   void visualizeHorizon(const std_msgs::Header& header, const int height,
-                        const ISP_Controller2D::ControlStructure cs,
+                        const ISP_Controller2D::HorizonType ht,
                         const image_transport::Publisher& publisher) const;
 
   /**

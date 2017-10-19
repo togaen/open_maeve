@@ -154,13 +154,12 @@ ISP_Controller2D::ISP_Controller2D(const Params& params)
 
 bool ISP_Controller2D::isInitialized() const { return init_ && p_.valid(); }
 
-const cv::Mat& ISP_Controller2D::inspectHorizon(
-    const ControlStructure cs) const {
+const cv::Mat& ISP_Controller2D::inspectHorizon(const HorizonType cs) const {
   static cv::Mat empty;
   switch (cs) {
-    case ControlStructure::CONTROL_HORIZON:
+    case HorizonType::CONTROL:
       return h_;
-    case ControlStructure::ERODED_CONTROL_HORIZON:
+    case HorizonType::ERODED_CONTROL:
       return eroded_h_;
     default:
       // This should never execute.
@@ -169,27 +168,26 @@ const cv::Mat& ISP_Controller2D::inspectHorizon(
   }
 }
 
-std::string ISP_Controller2D::controlStructureToString(
-    const ControlStructure cs) {
+std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
   switch (cs) {
-    case ControlStructure::CONTROL_HORIZON:
+    case HorizonType::CONTROL:
       return "control_horizon";
-    case ControlStructure::ERODED_CONTROL_HORIZON:
+    case HorizonType::ERODED_CONTROL:
       return "eroded_control_horizon";
     default:
       return "invalid";
   }
 }
 
-ISP_Controller2D::ControlStructure ISP_Controller2D::stringToControlStructure(
+ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
     const std::string& str) {
   if (str == "control_horizon") {
-    return ControlStructure::CONTROL_HORIZON;
+    return HorizonType::CONTROL;
   }
   if (str == "eroded_control_horizon") {
-    return ControlStructure::ERODED_CONTROL_HORIZON;
+    return HorizonType::ERODED_CONTROL;
   }
-  return ControlStructure::INVALID;
+  return HorizonType::INVALID;
 }
 
 ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,

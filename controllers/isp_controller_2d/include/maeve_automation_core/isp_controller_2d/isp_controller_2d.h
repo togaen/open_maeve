@@ -167,11 +167,7 @@ class ISP_Controller2D {
   /**
    * @brief Enumerate control structures that can be inspected.
    */
-  enum class ControlStructure {
-    CONTROL_HORIZON,
-    ERODED_CONTROL_HORIZON,
-    INVALID
-  };
+  enum class HorizonType { CONTROL, ERODED_CONTROL, INVALID };
 
   /**
    * @brief Constructor: do not mark as initialized.
@@ -212,25 +208,25 @@ class ISP_Controller2D {
    *
    * @return A const ref to the desired horizon structure.
    */
-  const cv::Mat& inspectHorizon(const ControlStructure cs) const;
+  const cv::Mat& inspectHorizon(const HorizonType cs) const;
 
   /**
-   * @brief Get string representation of control structure enum.
+   * @brief Get string representation of horizon type enum.
    *
-   * @param cs The control structure enum.
+   * @param ht The horizon type enum.
    *
-   * @return The string version of 'cs'.
+   * @return The string version of 'ht'.
    */
-  static std::string controlStructureToString(const ControlStructure cs);
+  static std::string horizonTypeToString(const HorizonType ht);
 
   /**
-   * @brief Get control sequence enum corresponding to given string
+   * @brief Get horizon type enum corresponding to given string
    *
-   * @param str
+   * @param str The string version of the desired horizon type.
    *
-   * @return
+   * @return The horizon type corresponding to the given string.
    */
-  static ControlStructure stringToControlStructure(const std::string& str);
+  static HorizonType stringToHorizonType(const std::string& str);
 
  private:
   /** @brief Whether the object has been initialied. */

@@ -182,16 +182,16 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   // Horizon visualizations.
   for (const auto& p : viz_horizon_pubs_) {
     visualizeHorizon(msg->header, msg->height,
-                     ISP_Controller2D::stringToControlStructure(p.first),
+                     ISP_Controller2D::stringToHorizonType(p.first),
                      p.second);
   }
 }
 
 void SegmentationFieldNodeHandler::visualizeHorizon(
     const std_msgs::Header& header, const int height,
-    const ISP_Controller2D::ControlStructure cs,
+    const ISP_Controller2D::HorizonType ht,
     const image_transport::Publisher& publisher) const {
-  const auto& horizon = isp_controller_.inspectHorizon(cs);
+  const auto& horizon = isp_controller_.inspectHorizon(ht);
   const auto viz_horizon =
       computeHorizonVisualization(horizon, height / 2, height);
   sensor_msgs::ImagePtr viz_horizon_msg =
