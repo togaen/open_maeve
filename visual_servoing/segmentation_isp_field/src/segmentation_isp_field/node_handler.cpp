@@ -71,8 +71,6 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
   ROS_INFO_STREAM("Loaded Taxonomy:\n" << taxonomy_);
 
   // Instantiate transforms.
-  hc_ = PotentialTransform<ConstraintType::HARD>(
-      params_.hard_constraint_transform);
   sc_ = PotentialTransform<ConstraintType::SOFT>(
       params_.soft_constraint_transform);
 

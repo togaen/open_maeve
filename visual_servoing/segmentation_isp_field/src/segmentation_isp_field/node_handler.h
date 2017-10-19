@@ -104,8 +104,6 @@ class SegmentationFieldNodeHandler {
   ros::Publisher control_command_output_pub_;
   /** @brief Node params. */
   SegmentationFieldParams params_;
-  /** @brief The hard constraint transform. */
-  PotentialTransform<ConstraintType::HARD> hc_;
   /** @brief The soft constraint transform. */
   PotentialTransform<ConstraintType::SOFT> sc_;
 };  // class SegmentationFieldNodeHandler
