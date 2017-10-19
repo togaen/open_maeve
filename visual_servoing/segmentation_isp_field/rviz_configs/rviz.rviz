@@ -90,7 +90,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /segmentation_isp_field/control_horizon_viz
+      Image Topic: /segmentation_isp_field/viz_control_horizon
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -102,7 +102,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /segmentation_isp_field/eroded_control_horizon_viz
+      Image Topic: /segmentation_isp_field/viz_eroded_control_horizon
       Max Value: 1
       Median window: 5
       Min Value: 0

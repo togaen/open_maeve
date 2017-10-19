@@ -104,10 +104,8 @@ class SegmentationFieldNodeHandler {
   image_transport::Subscriber segmentation_sub_;
   /** @brief ISP field visualization publisher. */
   image_transport::Publisher viz_isp_field_pub_;
-  /** @brief Control horizon visualization publisher. */
-  image_transport::Publisher viz_control_horizon_pub_;
-  /** @brief Control horizon visualization publisher. */
-  image_transport::Publisher viz_eroded_control_horizon_pub_;
+  /** @brief Horizon visualization publishers. */
+  std::unordered_map<std::string, image_transport::Publisher> viz_horizon_pubs_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
   /** @brief The ROS image transport object. */

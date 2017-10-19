@@ -87,10 +87,11 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
 
   // Visualize?
   viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
-  viz_control_horizon_pub_ =
-      it_.advertise(params_.viz_control_horizon_topic, 1);
-  viz_eroded_control_horizon_pub_ =
-      it_.advertise(params_.viz_eroded_control_horizon_topic, 1);
+  std::for_each(std::begin(params_.visualize_horizons),
+                std::end(params_.visualize_horizons),
+                [&](const std::string& str) {
+                  viz_horizon_pubs_[str] = it_.advertise("viz_" + str, 1);
+                });
 }
 
 void SegmentationFieldNodeHandler::loadGuidancePotentials(
@@ -178,15 +179,12 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
       cv_bridge::CvImage(msg->header, "bgr8", viz_field).toImageMsg();
   viz_isp_field_pub_.publish(viz_field_msg);
 
-  // Control horizon visualization.
-  visualizeHorizon(msg->header, msg->height,
-                   ISP_Controller2D::ControlStructure::CONTROL_HORIZON,
-                   viz_control_horizon_pub_);
-
-  // Eroded control horizon visualization.
-  visualizeHorizon(msg->header, msg->height,
-                   ISP_Controller2D::ControlStructure::ERODED_CONTROL_HORIZON,
-                   viz_eroded_control_horizon_pub_);
+  // Horizon visualizations.
+  for (const auto& p : viz_horizon_pubs_) {
+    visualizeHorizon(msg->header, msg->height,
+                     ISP_Controller2D::stringToControlStructure(p.first),
+                     p.second);
+  }
 }
 
 void SegmentationFieldNodeHandler::visualizeHorizon(

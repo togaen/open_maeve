@@ -21,8 +21,8 @@
  */
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
 #include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
@@ -42,11 +42,8 @@ struct SegmentationFieldParams : public ParamsBase {
   /** @brief The ISP field visualization topic. */
   std::string viz_isp_field_topic;
 
-  /** @brief The control horizon visualization topic. */
-  std::string viz_control_horizon_topic;
-
-  /** @brief The control horizon visualization topic. */
-  std::string viz_eroded_control_horizon_topic;
+  /** @brief The horizon structures to visualize. */
+  std::vector<std::string> visualize_horizons;
 
   /** @brief Control command output topic. */
   std::string control_command_output_topic;
