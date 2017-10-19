@@ -86,17 +86,11 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
           params_.control_command_output_topic, 1);
 
   // Visualize?
-  if (!params_.viz_isp_field_topic.empty()) {
-    viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
-  }
-  if (!params_.viz_control_horizon_topic.empty()) {
-    viz_control_horizon_pub_ =
-        it_.advertise(params_.viz_control_horizon_topic, 1);
-  }
-  if (!params_.viz_eroded_control_horizon_topic.empty()) {
-    viz_eroded_control_horizon_pub_ =
-        it_.advertise(params_.viz_eroded_control_horizon_topic, 1);
-  }
+  viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
+  viz_control_horizon_pub_ =
+      it_.advertise(params_.viz_control_horizon_topic, 1);
+  viz_eroded_control_horizon_pub_ =
+      it_.advertise(params_.viz_eroded_control_horizon_topic, 1);
 }
 
 void SegmentationFieldNodeHandler::loadGuidancePotentials(
@@ -176,37 +170,34 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   control_command_output_pub_.publish(
       controlCommand2Command2D_Msg(u_star, msg->header));
 
-  // Visualize?
-  if (!params_.viz_isp_field_topic.empty()) {
-    // ISP field.
-    const auto viz_field = computeISPFieldVisualization(
-        guidance_field, params_.viz_potential_bounds[0],
-        params_.viz_potential_bounds[1]);
-    sensor_msgs::ImagePtr viz_field_msg =
-        cv_bridge::CvImage(msg->header, "bgr8", viz_field).toImageMsg();
-    viz_isp_field_pub_.publish(viz_field_msg);
-  }
-  if (!params_.viz_control_horizon_topic.empty()) {
-    // Control horizon visualization.
-    const auto& control_horizon = isp_controller_.inspectHorizon(
-        ISP_Controller2D::ControlStructure::CONTROL_HORIZON);
-    const auto viz_control_horizon = computeHorizonVisualization(
-        control_horizon, msg->height / 2, msg->height);
-    sensor_msgs::ImagePtr viz_control_horizon_msg =
-        cv_bridge::CvImage(msg->header, "mono8", viz_control_horizon)
-            .toImageMsg();
-    viz_control_horizon_pub_.publish(viz_control_horizon_msg);
-  }
-  if (!params_.viz_eroded_control_horizon_topic.empty()) {
-    // Eroded control horizon visualization.
-    const auto& eroded_control_horizon = isp_controller_.inspectHorizon(
-        ISP_Controller2D::ControlStructure::ERODED_CONTROL_HORIZON);
-    const auto viz_eroded_control_horizon = computeHorizonVisualization(
-        eroded_control_horizon, msg->height / 2, msg->height);
-    sensor_msgs::ImagePtr viz_eroded_control_horizon_msg =
-        cv_bridge::CvImage(msg->header, "mono8", viz_eroded_control_horizon)
-            .toImageMsg();
-    viz_eroded_control_horizon_pub_.publish(viz_eroded_control_horizon_msg);
-  }
+  // Visualize ISP field.
+  const auto viz_field = computeISPFieldVisualization(
+      guidance_field, params_.viz_potential_bounds[0],
+      params_.viz_potential_bounds[1]);
+  sensor_msgs::ImagePtr viz_field_msg =
+      cv_bridge::CvImage(msg->header, "bgr8", viz_field).toImageMsg();
+  viz_isp_field_pub_.publish(viz_field_msg);
+
+  // Control horizon visualization.
+  visualizeHorizon(msg->header, msg->height,
+                   ISP_Controller2D::ControlStructure::CONTROL_HORIZON,
+                   viz_control_horizon_pub_);
+
+  // Eroded control horizon visualization.
+  visualizeHorizon(msg->header, msg->height,
+                   ISP_Controller2D::ControlStructure::ERODED_CONTROL_HORIZON,
+                   viz_eroded_control_horizon_pub_);
+}
+
+void SegmentationFieldNodeHandler::visualizeHorizon(
+    const std_msgs::Header& header, const int height,
+    const ISP_Controller2D::ControlStructure cs,
+    const image_transport::Publisher& publisher) const {
+  const auto& horizon = isp_controller_.inspectHorizon(cs);
+  const auto viz_horizon =
+      computeHorizonVisualization(horizon, height / 2, height);
+  sensor_msgs::ImagePtr viz_horizon_msg =
+      cv_bridge::CvImage(header, "mono8", viz_horizon).toImageMsg();
+  publisher.publish(viz_horizon_msg);
 }
 }  // namespace maeve_automation_core

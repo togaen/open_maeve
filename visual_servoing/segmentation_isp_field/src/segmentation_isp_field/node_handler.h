@@ -53,6 +53,18 @@ class SegmentationFieldNodeHandler {
   typedef std::unordered_map<std::string, cv::Point2d> GuidancePotentials;
 
   /**
+   * @brief Helper function for visualizing horizon structures.
+   *
+   * @param header Message header for published horizon visualization.
+   * @param height Height of the visualization image.
+   * @param cs Which of the horizon structures to visualize.
+   * @param publisher The publisher to use to publish the visualization.
+   */
+  void visualizeHorizon(const std_msgs::Header& header, const int height,
+                        const ISP_Controller2D::ControlStructure cs,
+                        const image_transport::Publisher& publisher) const;
+
+  /**
    * @brief Callback that fires when a new image segmentation is received.
    *
    * @param msg The segmentation image message.
