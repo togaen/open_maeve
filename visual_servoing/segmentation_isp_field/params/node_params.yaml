@@ -1,4 +1,4 @@
-segmentation_sequence_topic: '/segmentation'
+segmentation_sequence_topic: '/segmentation/image'
 
 viz_isp_field_topic: 'isp_field_viz'
 

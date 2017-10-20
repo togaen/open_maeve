@@ -50,8 +50,8 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
   }
 
   // Register callback.
-  segmentation_sub_ = it_.subscribe(
-      params_.segmentation_sequence_topic, 1,
+  segmentation_sub_ = it_.subscribeCamera(
+      params_.segmentation_sequence_topic, 10,
       &SegmentationFieldNodeHandler::segmentationSequenceCallback, this);
 
   // Set up command handler.
@@ -113,13 +113,17 @@ void SegmentationFieldNodeHandler::loadGuidancePotentials(
 }
 
 void SegmentationFieldNodeHandler::segmentationSequenceCallback(
-    const sensor_msgs::ImageConstPtr& msg) {
+    const sensor_msgs::ImageConstPtr& msg,
+    const sensor_msgs::CameraInfoConstPtr& info_msg) {
   // Make sure field maps have storage allocated, but do it only once.
   static auto init = true;
   if (init) {
+    // Initialize camera model.
+    camera_model_.fromCameraInfo(info_msg);
+
     // Initialize ISP controller.
-    params_.isp_controller_params.principal_point_x = msg->width / 2;
-    params_.isp_controller_params.focal_length_x = 1;
+    params_.isp_controller_params.principal_point_x = camera_model_.cx();
+    params_.isp_controller_params.focal_length_x = camera_model_.fx();
     isp_controller_ = ISP_Controller2D(params_.isp_controller_params);
     init = false;
   }
