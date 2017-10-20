@@ -4,12 +4,24 @@ This package is a command line utility for converting image segmentation
 sequence data sets into bag files. Usage and the specification for the data set
 structure is given below.
 
+The utility looks for camera\_info.yaml in data-set-path in order to record
+camera parameters to the bag file. If the file doesn't exist, the utility
+synthesizes parameters with unit focal lengths, centered optical center, and no
+distortion.
+
 ## Usage ##
 
 To use the converter, issue a command like this:
 
-    rosrun sequence_to_bag sequence_to_bag data-set-path bag-output-dir camera-image-topic-name segmented-image-topic-name
+    rosrun sequence_to_bag sequence_to_bag data-set-path bag-output-dir raw-image-camera-name segmented-image-camera-name
 
+The images in the 'camera-frames' directory will be published to:
+
+    /raw-image-camera-name/image
+
+The images in the 'segmented-frames' directory will be published to:
+
+    /segmented-image-camera-name/image
 
 ## Image Segmentation Sequence Data Set ##
 

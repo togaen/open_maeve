@@ -24,6 +24,7 @@
 #include <map>
 #include <string>
 
+#include <camera_calibration_parsers/parse.h>
 #include <ros/console.h>
 #include <rosbag/bag.h>
 #include <rosgraph_msgs/Clock.h>
@@ -37,8 +38,8 @@ int main(int argc, char** argv) {
         "Provided "
         << (argc - 1)
         << " arguments. Must provide at least four arguments: "
-           "'data-set-path' 'bag-output-dir' 'camera-image-topic-name' "
-           "'segmented-image-topic-name'");
+           "'data-set-path' 'bag-output-dir' 'raw-image-camera-name' "
+           "'segmented-image-camera-name'");
     return EXIT_FAILURE;
   }
   const auto data_set_path = std::string(argv[1]);
@@ -77,6 +78,23 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
+  if (seg_images_idx.empty() || raw_images_idx.empty()) {
+    ROS_FATAL_STREAM("No files found.");
+    return EXIT_FAILURE;
+  }
+
+  // Get camera calibration.
+  std::string camera_name;
+  sensor_msgs::CameraInfo cam_info_msg;
+  const auto success = camera_calibration_parsers::readCalibration(
+      data_set_path + "/camera_info.yaml", camera_name, cam_info_msg);
+  if (!success) {
+    const auto& seg_image_ptr = seg_images_idx.begin()->second;
+    camera_name = "camera";
+    cam_info_msg =
+        maeve_automation_core::synthesizeCameraInfoFromImageMsg(seg_image_ptr);
+  }
+
   // Time between frames.
   const auto frame_duration = 1.0 / meta_info->fps;
 
@@ -87,27 +105,31 @@ int main(int argc, char** argv) {
   bag.open(output_path + "/" + meta_info->name + ".bag",
            rosbag::bagmode::Write);
   auto elapsed_time = 0.0;
-  std::for_each(std::begin(raw_images_idx), std::end(raw_images_idx),
-                [&](const std::map<int, sensor_msgs::ImagePtr>::value_type& p) {
-                  if (seg_images_idx.find(p.first) == seg_images_idx.end()) {
-                    ROS_ERROR_STREAM("Failed to find image index "
-                                     << p.first << " in segmented data set.");
-                    return;
-                  }
+  std::for_each(
+      std::begin(raw_images_idx), std::end(raw_images_idx),
+      [&](const std::map<int, sensor_msgs::ImagePtr>::value_type& p) {
+        if (seg_images_idx.find(p.first) == seg_images_idx.end()) {
+          ROS_ERROR_STREAM("Failed to find image index "
+                           << p.first << " in segmented data set.");
+          return;
+        }
 
-                  const auto msg1 = p.second;
-                  const auto msg2 = seg_images_idx.at(p.first);
+        const auto msg1 = p.second;
+        const auto msg2 = seg_images_idx.at(p.first);
 
-                  const auto timestamp = t + ros::Duration(elapsed_time);
+        const auto timestamp = t + ros::Duration(elapsed_time);
 
-                  msg1->header.stamp = timestamp;
-                  msg2->header.stamp = timestamp;
+        msg1->header.stamp = timestamp;
+        msg2->header.stamp = timestamp;
+        cam_info_msg.header.stamp = timestamp;
 
-                  bag.write(image_1_topic, timestamp, *msg1);
-                  bag.write(image_2_topic, timestamp, *msg2);
+        bag.write(image_1_topic + "/image", timestamp, *msg1);
+        bag.write(image_1_topic + "/camera_info", timestamp, cam_info_msg);
+        bag.write(image_2_topic + "/image", timestamp, *msg2);
+        bag.write(image_2_topic + "/camera_info", timestamp, cam_info_msg);
 
-                  elapsed_time += frame_duration;
-                });
+        elapsed_time += frame_duration;
+      });
 
   // Generate bag file.
   bag.close();

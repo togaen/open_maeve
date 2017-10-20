@@ -48,7 +48,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /camera
+      Image Topic: /camera/image
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -60,7 +60,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /segmentation
+      Image Topic: /segmentation/image
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -202,7 +202,7 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1812
-  X: 739
-  Y: 348
+  X: 989
+  Y: 338
   Yaw Guidance Horizon:
     collapsed: false

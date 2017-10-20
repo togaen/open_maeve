@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include <image_geometry/pinhole_camera_model.h>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
@@ -73,7 +74,9 @@ class SegmentationFieldNodeHandler {
    *
    * @param msg The segmentation image message.
    */
-  void segmentationSequenceCallback(const sensor_msgs::ImageConstPtr& msg);
+  void segmentationSequenceCallback(
+      const sensor_msgs::ImageConstPtr& msg,
+      const sensor_msgs::CameraInfoConstPtr& info_msg);
 
   /**
    * @brief For a given taxonomy, load any specified guidance weights from the
@@ -104,8 +107,11 @@ class SegmentationFieldNodeHandler {
 
   /** @brief Parser for loading data set taxonomy. */
   SegmentationTaxonomy taxonomy_;
+
+  /** @brief Camera model used for interpreting images. */
+  image_geometry::PinholeCameraModel camera_model_;
   /** @brief Camera image subscriber. */
-  image_transport::Subscriber segmentation_sub_;
+  image_transport::CameraSubscriber segmentation_sub_;
   /** @brief ISP field visualization publisher. */
   image_transport::Publisher viz_isp_field_pub_;
   /** @brief Horizon visualization publishers. */

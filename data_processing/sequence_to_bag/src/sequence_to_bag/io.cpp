@@ -48,6 +48,69 @@ std::ostream& operator<<(std::ostream& os, const MetaInfo& meta_info) {
   return os;
 }
 
+sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
+    const sensor_msgs::ImagePtr& img_ptr) {
+  sensor_msgs::CameraInfo cam_info_msg;
+
+  cam_info_msg.header = img_ptr->header;
+  cam_info_msg.width = img_ptr->width;
+  cam_info_msg.height = img_ptr->height;
+  cam_info_msg.distortion_model = "plumb_bob";
+
+  cam_info_msg.D.resize(5);
+  cam_info_msg.D[0] = 0.0;
+  cam_info_msg.D[1] = 0.0;
+  cam_info_msg.D[2] = 0.0;
+  cam_info_msg.D[3] = 0.0;
+  cam_info_msg.D[4] = 0.0;
+
+  cam_info_msg.K[0] = 1.0;
+  cam_info_msg.K[1] = 0.0;
+  cam_info_msg.K[2] = static_cast<double>(img_ptr->width) / 2.0;
+  cam_info_msg.K[3] = 0.0;
+  cam_info_msg.K[4] = 1.0;
+  cam_info_msg.K[5] = static_cast<double>(img_ptr->height) / 2.0;
+  cam_info_msg.K[6] = 0.0;
+  cam_info_msg.K[7] = 0.0;
+  cam_info_msg.K[8] = 1.0;
+
+  cam_info_msg.R[0] = 1.0;
+  cam_info_msg.R[1] = 0.0;
+  cam_info_msg.R[2] = 0.0;
+  cam_info_msg.R[3] = 0.0;
+  cam_info_msg.R[4] = 1.0;
+  cam_info_msg.R[5] = 0.0;
+  cam_info_msg.R[6] = 0.0;
+  cam_info_msg.R[7] = 0.0;
+  cam_info_msg.R[8] = 1.0;
+
+  cam_info_msg.P[0] = 1.0;
+  cam_info_msg.P[1] = 0.0;
+  cam_info_msg.P[2] = static_cast<double>(img_ptr->width) / 2.0;
+  cam_info_msg.P[3] = 0.0;
+
+  cam_info_msg.P[4] = 1.0;
+  cam_info_msg.P[5] = static_cast<double>(img_ptr->height) / 2.0;
+  cam_info_msg.P[6] = 0.0;
+  cam_info_msg.P[7] = 0.0;
+
+  cam_info_msg.P[8] = 0.0;
+  cam_info_msg.P[9] = 0.0;
+  cam_info_msg.P[10] = 1.0;
+  cam_info_msg.P[11] = 0.0;
+
+  cam_info_msg.binning_x = 1;
+  cam_info_msg.binning_y = 1;
+
+  cam_info_msg.roi.width = img_ptr->width;
+  cam_info_msg.roi.height = img_ptr->height;
+  cam_info_msg.roi.x_offset = 0;
+  cam_info_msg.roi.y_offset = 0;
+  cam_info_msg.roi.do_rectify = false;
+
+  return cam_info_msg;
+}
+
 boost::optional<std::tuple<std::map<int, sensor_msgs::ImagePtr>,
                            std::map<int, sensor_msgs::ImagePtr>>>
 getSortedIndexedImageLists(const std::string& raw_image_dir,
