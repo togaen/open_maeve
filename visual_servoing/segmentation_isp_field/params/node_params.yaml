@@ -20,6 +20,7 @@ horizon_viz_height: 10
 # bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero
 # The upper bound should be the same as soft constraint range_max
 # The lower bound should be less than 0 or the soft constraint range_min, if it is less than zero
+# See isp_field_params.yaml for soft constraint values
 viz_potential_bounds: [-50.0, 50.0]
 
 # Absolute topic name for desired command input.
