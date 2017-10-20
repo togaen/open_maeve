@@ -38,34 +38,16 @@ In order to use the node:
 * ~/viz\_isp\_field (sensor\_msgs/Image): The ISP field visualization
 * ~/command (controller\_interface\_msgs/Command2D): The output control command
 
-## Parameters: params/params.yaml ##
+## Parameters ##
+
+This node has several parameter files, described below. For information about
+the individual parameters in the files, see the comments in those files.
+
+* params/node\_params.yaml: These parameters specify topics that are published to and subscribed, as well as visualization and node parameters and path to taxonomy
+* params/controller\_params.yaml: These parameters specify behavior for the ISP controller (see the README in the isp\_controller\_2d package for more information about these parameters)
+* params/isp\_field\_params.yaml: These parameters defined the potential transforms used to project guidance weights into ISP space (see the README in the isp\_field package for more information about these parameters)
 
 Note that there are also camera parameters specified in the markers.launch launch file. These need to correspond to the camera parameters in params.yaml. At some point parameters should be unified between nodes.
-
-The below parameters govern node behavior:
-
-* camera\_topic (default '/cv\_camera\_node/image\_raw'): The input camera topic.
-* viz\_isp\_field\_topic (default 'viz\_isp\_field'): Node-relative topic for visualizing output, leave empty to disable visualization.
-* viz\_potential\_bounds: Bounds for scaling potential values for visualization; must be two elements with first less than zero and second greater than zero.
-* verbose (default 'false'): Print output to terminal during exectution.
-* control\_command\_input\_topic (default: '/joystick\_controller\_2d/command'): Absolute topic name for desired command input.
-* control\_command\_output\_topic (default: 'command'): Node-relative topic for control command output.
-
-The below values govern AR tag tracking behavior:
-
-* ar\_tag\_max\_age (default 0.5): Maximum age of an AR tag transform to consider the transform valid (seconds).
-* ar\_time\_queue\_size (default 10): Number of measurements for each tag to maintain
-* ar\_time\_queue\_max\_gap (default 0.5): Maximum age to consider a measurement for a given tag to be connected to a previous measurement of the same tag.
-* output\_frame\_param\_name (default '/ar\_track\_alvar/output\_frame'): Get the AR pose frame parent from this parameter.
-* marker\_size\_param\_name (default '/ar\_track\_alvar/marker\_size'): Get the size of the AR tags from this parameter.
-* ar\_frame\_prefix (default 'ar\_marker\_'): Prefix shared by frame names for AR tags.
-* ar\_tag\_ids: A list of AR tag IDs that are to be tracked.
-
-See the isp\_field README for a description of hard/soft constraint transform
-parameters.
-
-See the isp\_controller\_2d README for a description of the controller
-parameters.
 
 ## RViz Configs ##
 
