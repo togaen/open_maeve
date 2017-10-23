@@ -4,7 +4,7 @@
 
 #
 # These camera parameters should correspond to those in markers.launch
-# TODO(me): Unify parameters between these nodes.
+# TODO(CD-44): Unify parameters between these nodes.
 #
 camera_topic: '/cv_camera_node/image_raw'
 #camera_topic: '/maeve_video_file/image_raw'
