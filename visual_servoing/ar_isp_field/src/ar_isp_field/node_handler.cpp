@@ -39,8 +39,8 @@
 
 namespace maeve_automation_core {
 namespace {
-static const auto NaN = std::numeric_limits<double>::quiet_NaN();
-static const auto INF = std::numeric_limits<double>::infinity();
+const auto NaN = std::numeric_limits<double>::quiet_NaN();
+const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
 
 std::vector<std::string> AR_ISPFieldNodeHandler::initializeTimeQueues(
