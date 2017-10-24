@@ -172,6 +172,7 @@ class ISP_Controller2D {
     ERODED_CONTROL,
     YAW_GUIDANCE,
     CONTROL_SET_GUIDANCE,
+    THROTTLE,
     GUIDED_THROTTLE,
     GUIDANCE,
     INVALID
@@ -203,6 +204,15 @@ class ISP_Controller2D {
    * indicating minimum and maximum actuation, respectively.
    */
   ControlCommand SD_Control(const cv::Mat& ISP, const ControlCommand& u_d);
+
+  /**
+   * @brief For a given ISP field, compute the control with highest potential.
+   *
+   * @param ISP The input ISP field.
+   *
+   * @return The control that is "most desirable" according to the ISP field.
+   */
+  ControlCommand potentialControl(const cv::Mat& ISP);
 
   /**
    * @brief Whether the controller has been initialized with its parameters.
@@ -239,6 +249,13 @@ class ISP_Controller2D {
  private:
   /** @brief Map of horizon type to horizon data structure. */
   typedef std::unordered_map<HorizonType, cv::Mat, EnumClassHash> HorizonMap;
+
+  /**
+   * @brief Compute horizon representing available control sets.
+   *
+   * @param ISP The input ISP field.
+   */
+  void computeControlSelectionHorizon(const cv::Mat& ISP);
 
   /** @brief Whether the object has been initialied. */
   bool init_;
