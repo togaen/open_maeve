@@ -3,13 +3,13 @@
        Camera Parameters: These should match corresponding parameters in params.yaml
        TODO(CD-44): Unify parameters between nodes
   -->
-  <arg name="cam_image_topic" default="/cv_camera_node/image_raw" />
+  <!--arg name="cam_image_topic" default="/cv_camera_node/image_raw" />
   <arg name="cam_info_topic" default="/cv_camera_node/camera_info" />
-	<arg name="output_frame" default="camera"/>
+	<arg name="output_frame" default="camera"/-->
 
-  <!--arg name="cam_image_topic" default="/raspicam_node/image_rect" />
+  <arg name="cam_image_topic" default="/raspicam_node/image_rect" />
   <arg name="cam_info_topic" default="/raspicam_node/camera_info" />
-	<arg name="output_frame" default="raspicam"/-->
+	<arg name="output_frame" default="raspicam"/>
 
   <!-- Marker Parameters -->
 	<arg name="marker_size" default="4.1" />
