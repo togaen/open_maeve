@@ -16,8 +16,8 @@ isp_controller_params:
     height: 0.75 # \in [0, 1] a proportion of image height
     horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
   yaw_decay:
-    left: 0.95
-    right: 0.95
+    left: 0.0
+    right: 0.0
   shape_parameters: # These shape parameters define the output control space.
     translation: 0.0
     range_min: -1.0 # This is taken as the minimum of the control range for output
