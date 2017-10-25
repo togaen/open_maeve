@@ -257,6 +257,15 @@ class ISP_Controller2D {
    */
   void computeControlSelectionHorizon(const cv::Mat& ISP);
 
+  /**
+   * @brief Utility for remembering a computed control command.
+   *
+   * @param cmd The command to remember.
+   *
+   * @return The remembered command.
+   */
+  ControlCommand rememberCommand(const ControlCommand& cmd);
+
   /** @brief Whether the object has been initialied. */
   bool init_;
   /** @brief Controller parameters. */
@@ -265,6 +274,8 @@ class ISP_Controller2D {
   HorizonMap horizons_;
   /** @brief Projection function onto control space. */
   PotentialTransform<ConstraintType::SOFT> C_u_;
+  /** @brief Keep track of last computed control command. */
+  ControlCommand last_computed_cmd_;
 };  // class ISP_Controller2D
 
 /**

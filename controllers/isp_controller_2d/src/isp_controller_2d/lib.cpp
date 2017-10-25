@@ -199,7 +199,7 @@ int dampedMaxThrottleIndex(const cv::Mat& guided_throttle_h,
   // exceed potential inertia, revert control index to bias column.
   const auto index_potential_val =
       guided_throttle_h.at<cv::Point2d>(damp_idx).x;
-  if (std::abs(index_potential_val - max_val) <= inertia) {
+  if ((damp_idx >= 0) && std::abs(index_potential_val - max_val) <= inertia) {
     max_idx[1] = damp_idx;
   }
 

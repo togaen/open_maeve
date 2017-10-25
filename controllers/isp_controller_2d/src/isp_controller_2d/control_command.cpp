@@ -30,7 +30,7 @@
 
 namespace maeve_automation_core {
 namespace {
-static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 std::ostream& operator<<(std::ostream& o, const ControlCommand& u) {

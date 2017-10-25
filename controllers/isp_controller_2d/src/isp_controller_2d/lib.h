@@ -234,7 +234,7 @@ cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h);
  *
  * @param guided_throttle_h The horizon of guided throttle values.
  * @param inertia The inertia to overcome.
- * @param damp_idx The damping index.
+ * @param damp_idx The damping index; if < 0, no damping occurs.
  *
  * @return The throttle horizon index.
  */

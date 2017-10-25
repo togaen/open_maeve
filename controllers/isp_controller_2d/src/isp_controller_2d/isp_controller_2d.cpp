@@ -215,16 +215,36 @@ ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
 }
 
 ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP) {
-  // Reserve return value.
-  ControlCommand cmd;
-
   // Compute generic horizons.
   computeControlSelectionHorizon(ISP);
 
-  // TODO(me)
+  // If previously computed control available, bias control to it.
+  if (last_computed_cmd_.valid()) {
+    return SD_Control(ISP, last_computed_cmd_);
+  }
+
+  // Otherwise, compute an initial biasing control.
+  ControlCommand u_d;
+
+  // Find the index of the desired control command.
+  const auto& throttle_h = horizons_[HorizonType::THROTTLE];
+  const auto control_idx =
+      dampedMaxThrottleIndex(throttle_h, p_.potential_inertia, -1);
+
+  // Compute yaw control command.
+  const auto yaw =
+      column2Yaw(throttle_h, static_cast<double>(control_idx) + 0.5,
+                 p_.focal_length_x, p_.principal_point_x);
+  u_d.yaw = projectYawToControlSpace(throttle_h, C_u_, p_.focal_length_x,
+                                     p_.principal_point_x, yaw);
+
+  // Compute throttle control command (it is already projected by C_u_).
+  const cv::Point2d throttle_set = throttle_h.at<cv::Point2d>(control_idx);
+  u_d.throttle =
+      projectToInterval(throttle_set.x, throttle_set.y, u_d.throttle);
 
   // Done.
-  return cmd;
+  return SD_Control(ISP, u_d);
 }
 
 void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP) {
@@ -244,6 +264,11 @@ void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP) {
   // Project throttles onto [r_min, r_max].
   horizons_[HorizonType::THROTTLE] =
       projectThrottlesToControlSpace(ech, C_u_, p_.K_P, p_.K_D);
+}
+
+ControlCommand ISP_Controller2D::rememberCommand(const ControlCommand& cmd) {
+  last_computed_cmd_ = cmd;
+  return last_computed_cmd_;
 }
 
 ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
@@ -304,6 +329,6 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       projectToInterval(throttle_set.x, throttle_set.y, u_d.throttle);
 
   // Done.
-  return cmd;
+  return rememberCommand(cmd);
 }
 }  // namespace maeve_automation_core
