@@ -37,9 +37,11 @@ struct ControlCommand {
   /**
    * @brief Whether members are set to valid control command values.
    *
+   * @param log_errors Whether to log errors detected during validity check.
+   *
    * @return True if the numbers are meaningful; otherwise false.
    */
-  bool valid() const;
+  bool valid(bool log_errors = true) const;
 
   /**
    * @brief Constructor: initialize to invalid values.
