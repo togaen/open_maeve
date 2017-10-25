@@ -215,21 +215,20 @@ ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
 }
 
 ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP) {
+  // Reserve return value.
+  ControlCommand u_d;
+
   // Compute generic horizons.
   computeControlSelectionHorizon(ISP);
 
-  // If previously computed control available, bias control to it.
-  if (last_computed_cmd_.valid()) {
-    return SD_Control(ISP, last_computed_cmd_);
-  }
-
-  // Otherwise, compute an initial biasing control.
-  ControlCommand u_d;
+  // Map desired yaw image plane column.
+  const auto col_d =
+      yaw2Column(ISP, 0.0, p_.focal_length_x, p_.principal_point_x);
 
   // Find the index of the desired control command.
   const auto& throttle_h = horizons_[HorizonType::THROTTLE];
   const auto control_idx =
-      dampedMaxThrottleIndex(throttle_h, p_.potential_inertia, -1);
+      dampedMaxThrottleIndex(throttle_h, p_.potential_inertia, col_d);
 
   // Compute yaw control command.
   const auto yaw =
@@ -240,11 +239,10 @@ ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP) {
 
   // Compute throttle control command (it is already projected by C_u_).
   const cv::Point2d throttle_set = throttle_h.at<cv::Point2d>(control_idx);
-  u_d.throttle =
-      projectToInterval(throttle_set.x, throttle_set.y, u_d.throttle);
+  u_d.throttle = throttle_set.y;
 
   // Done.
-  return SD_Control(ISP, u_d);
+  return u_d;
 }
 
 void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP) {
