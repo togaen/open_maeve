@@ -175,6 +175,8 @@ std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
       return "eroded_control";
     case HorizonType::CONTROL_SET_GUIDANCE:
       return "control_set_guidance";
+    case HorizonType::THROTTLE:
+      return "throttle";
     case HorizonType::GUIDED_THROTTLE:
       return "guided_throttle";
     case HorizonType::YAW_GUIDANCE:
@@ -197,6 +199,9 @@ ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
   if (str == "control_set_guidance") {
     return HorizonType::CONTROL_SET_GUIDANCE;
   }
+  if (str == "throttle") {
+    return HorizonType::THROTTLE;
+  }
   if (str == "guided_throttle") {
     return HorizonType::GUIDED_THROTTLE;
   }
@@ -209,27 +214,80 @@ ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
   return HorizonType::INVALID;
 }
 
-ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
-                                            const ControlCommand& u_d) {
+ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP) {
   // Reserve return value.
-  ControlCommand cmd;
+  ControlCommand u_d;
+
+  // Compute generic horizons.
+  computeControlSelectionHorizon(ISP);
 
   // Map desired yaw image plane column.
   const auto col_d =
-      yaw2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
+      yaw2Column(ISP, 0.0, p_.focal_length_x, p_.principal_point_x);
 
+  // Find the index of the desired control command.
+  const auto& throttle_h = horizons_[HorizonType::THROTTLE];
+  const auto control_idx =
+      dampedMaxThrottleIndex(throttle_h, p_.potential_inertia, col_d);
+
+  // Compute yaw control command.
+  const auto yaw =
+      column2Yaw(throttle_h, static_cast<double>(control_idx) + 0.5,
+                 p_.focal_length_x, p_.principal_point_x);
+  u_d.yaw = projectYawToControlSpace(throttle_h, C_u_, p_.focal_length_x,
+                                     p_.principal_point_x, yaw);
+
+  // Compute throttle control command (it is already projected by C_u_).
+  const cv::Point2d throttle_set = throttle_h.at<cv::Point2d>(control_idx);
+  u_d.throttle = throttle_set.y;
+
+  // Done.
+  return u_d;
+}
+
+void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP) {
   // Get control horizon.
   horizons_[HorizonType::CONTROL] =
       controlHorizon(ISP, p_.erosion_kernel.height, p_.erosion_kernel.horizon);
   const auto& ch = horizons_[HorizonType::CONTROL];
 
-  // Apply min filter.
+  // Apply filter.
   horizons_[HorizonType::ERODED_CONTROL] =
       erodeHorizon(ch, p_.erosion_kernel.width);
   const auto& ech = horizons_[HorizonType::ERODED_CONTROL];
 
   // Compute guidance field.
   horizons_[HorizonType::CONTROL_SET_GUIDANCE] = controlSetGuidance(ech);
+
+  // Project throttles onto [r_min, r_max].
+  horizons_[HorizonType::THROTTLE] =
+      projectThrottlesToControlSpace(ech, C_u_, p_.K_P, p_.K_D);
+}
+
+ControlCommand ISP_Controller2D::rememberCommand(const ControlCommand& cmd) {
+  last_computed_cmd_ = cmd;
+  return last_computed_cmd_;
+}
+
+ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
+                                            const ControlCommand& u_d) {
+  // Reserve return value.
+  ControlCommand cmd;
+
+  // Compute generic horizons.
+  computeControlSelectionHorizon(ISP);
+
+  // Map desired yaw image plane column.
+  const auto col_d =
+      yaw2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
+
+  // Get control horizon.
+  const auto& ch = horizons_[HorizonType::CONTROL];
+
+  // Apply filter.
+  const auto& ech = horizons_[HorizonType::ERODED_CONTROL];
+
+  // Compute guidance field.
   const auto& control_set_guidance =
       horizons_[HorizonType::CONTROL_SET_GUIDANCE];
 
@@ -245,8 +303,7 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
   const auto& guidance_h = horizons_[HorizonType::GUIDANCE];
 
   // Project throttles onto [r_min, r_max].
-  const cv::Mat throttle_h =
-      projectThrottlesToControlSpace(ech, C_u_, p_.K_P, p_.K_D);
+  const auto& throttle_h = horizons_[HorizonType::THROTTLE];
 
   // Compute guided throttle horizon.
   horizons_[HorizonType::GUIDED_THROTTLE] =
@@ -270,6 +327,6 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       projectToInterval(throttle_set.x, throttle_set.y, u_d.throttle);
 
   // Done.
-  return cmd;
+  return rememberCommand(cmd);
 }
 }  // namespace maeve_automation_core

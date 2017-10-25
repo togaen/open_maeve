@@ -162,20 +162,25 @@ cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h) {
   // Convert throttle values to unit intervals.
   cv::Mat unit_throttle_h = 0.5 * (cv::Scalar(1.0, 1.0) + throttle_h);
 
-  // Get proper dim of guidance horizon.
+  // Get channel of guidance horizon: it's a potential horizon, so channel 1.
   std::vector<cv::Mat> guidance_channels(2);
   cv::split(guidance_h, guidance_channels);
+  const auto& guidance_channel = guidance_channels[0];
 
-  // Get channel with throttle max values.
+  // Get channel with throttle max values: it's a control horizon, so channel 2.
   std::vector<cv::Mat> throttle_channels(2);
   cv::split(unit_throttle_h, throttle_channels);
+  const auto& throttle_channel = throttle_channels[1];
 
-  // Apply guidance field to throttle max values.
-  cv::Mat guided_throttle_h = zeroISP_Field(throttle_h.cols, 1);
+  // Set up throttle guidance storage.
+  cv::Mat guided_throttle_h =
+      cv::Scalar(-1.0, 0.0) + zeroISP_Field(throttle_h.cols, 1);
   std::vector<cv::Mat> guided_throttle_channels(2);
   cv::split(guided_throttle_h, guided_throttle_channels);
-  cv::multiply(throttle_channels[1], guidance_channels[0],
-               guided_throttle_channels[0]);
+  const auto& guided_throttle_max_channel = guided_throttle_channels[1];
+
+  // Apply guidance field.
+  cv::multiply(throttle_channel, guidance_channel, guided_throttle_max_channel);
 
   // Done.
   cv::merge(guided_throttle_channels, guided_throttle_h);
@@ -184,7 +189,7 @@ cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h) {
 
 int dampedMaxThrottleIndex(const cv::Mat& guided_throttle_h,
                            const double inertia, const int damp_idx) {
-  std::vector<cv::Mat> guided_throttle_channels;
+  std::vector<cv::Mat> guided_throttle_channels(2);
   cv::split(guided_throttle_h, guided_throttle_channels);
 
   // Find max of available controls.
@@ -192,14 +197,13 @@ int dampedMaxThrottleIndex(const cv::Mat& guided_throttle_h,
   auto max_val = NaN;
   std::array<int, 2> min_idx;
   std::array<int, 2> max_idx;
-  cv::minMaxIdx(guided_throttle_channels[0], &min_val, &max_val, min_idx.data(),
+  cv::minMaxIdx(guided_throttle_channels[1], &min_val, &max_val, min_idx.data(),
                 max_idx.data());
 
   // Perform damping: If potential value at maximum control index does not
   // exceed potential inertia, revert control index to bias column.
-  const auto index_potential_val =
-      guided_throttle_h.at<cv::Point2d>(damp_idx).x;
-  if (std::abs(index_potential_val - max_val) <= inertia) {
+  const auto damp_idx_val = guided_throttle_h.at<cv::Point2d>(damp_idx).y;
+  if ((damp_idx >= 0) && std::abs(damp_idx_val - max_val) <= inertia) {
     max_idx[1] = damp_idx;
   }
 

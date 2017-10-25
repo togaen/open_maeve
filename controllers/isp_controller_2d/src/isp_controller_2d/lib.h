@@ -179,13 +179,13 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
 cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width);
 
 /**
- * @brief For each column, project to throttle controls \in [r_min, r_max].
+ * @brief For each column, project a potential tuple into control space.
  *
  * The dot product <p, \dot{p}> \cdot <K_P, K_D> is taken as the raw
  * maximum acceptable control value at each column index. These raw values are
  * projected into [-1, 1] using the potential transform C_u.
  *
- * @param h The control horizon to perform projection on.
+ * @param h The potential horizon to project.
  * @param C_u The potential transform for mapping controls onto [r_min, r_max]
  * @param K_P The proportional gain for computing max control.
  * @param K_D The derivative gain for computing max control.
@@ -234,7 +234,7 @@ cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h);
  *
  * @param guided_throttle_h The horizon of guided throttle values.
  * @param inertia The inertia to overcome.
- * @param damp_idx The damping index.
+ * @param damp_idx The damping index; if < 0, no damping occurs.
  *
  * @return The throttle horizon index.
  */

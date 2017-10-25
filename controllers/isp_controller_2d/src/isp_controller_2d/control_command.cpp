@@ -30,17 +30,22 @@
 
 namespace maeve_automation_core {
 namespace {
-static const auto NaN = std::numeric_limits<double>::quiet_NaN();
+const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 std::ostream& operator<<(std::ostream& o, const ControlCommand& u) {
   return o << "{" << u.throttle << ", " << u.yaw << "}";
 }
 
-bool ControlCommand::valid() const {
+bool ControlCommand::valid(bool log_errors) const {
   // Control value checks.
-  CHECK_CONTAINS_CLOSED(throttle, -1.0, 1.0);
-  CHECK_CONTAINS_CLOSED(yaw, -1.0, 1.0);
+  if (log_errors) {
+    CHECK_CONTAINS_CLOSED(throttle, -1.0, 1.0);
+    CHECK_CONTAINS_CLOSED(yaw, -1.0, 1.0);
+  } else {
+    LOG_CHECK_CONTAINS_CLOSED(throttle, -1.0, 1.0, LOG_SILENT);
+    LOG_CHECK_CONTAINS_CLOSED(yaw, -1.0, 1.0, LOG_SILENT);
+  }
 
   // All good.
   return true;
