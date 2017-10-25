@@ -31,6 +31,9 @@ viz_potential_bounds: [-25.0, 50.0]
 #verbose: false
 verbose: true
 
+# Whether to derive a guidance control from the ISP field.
+potential_only_guidance: true
+
 #
 # AR tag tracking parameters
 #

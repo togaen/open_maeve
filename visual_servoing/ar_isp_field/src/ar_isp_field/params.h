@@ -47,6 +47,9 @@ struct AR_ISPFieldParams : public ParamsBase {
   /** @brief Print terminal output? */
   bool verbose;
 
+  /** @brief Whether only potential field should be used for guidance. */
+  bool potential_only_guidance;
+
   /** @brief Number of elements to reserve for circular buffer. */
   int ar_time_queue_size;
 

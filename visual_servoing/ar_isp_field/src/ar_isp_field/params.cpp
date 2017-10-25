@@ -55,6 +55,7 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(ar_time_queue_max_gap);
   LOAD_PARAM(viz_potential_bounds);
   LOAD_PARAM(verbose);
+  LOAD_PARAM(potential_only_guidance);
   LOAD_PARAM(ar_tag_max_age);
   LOAD_PARAM(target_reward);
 
