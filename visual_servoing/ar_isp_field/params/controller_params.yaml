@@ -19,7 +19,7 @@ isp_controller_params:
     left: 0.0
     right: 0.0
   shape_parameters: # These shape parameters define the output control space.
-    translation: 0.0
+    translation: -1.0
     range_min: -1.0 # This is taken as the minimum of the control range for output
     range_max: 1.0  # This is taken as the maximum of the control range for output
     alpha: 1.0

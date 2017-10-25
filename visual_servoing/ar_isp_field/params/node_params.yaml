@@ -28,11 +28,10 @@ control_command_output_topic: 'command'
 viz_potential_bounds: [-25.0, 50.0]
 
 # Print output to terminal during exectution?
-#verbose: false
-verbose: true
+verbose: false
 
 # Whether to derive a guidance control from the ISP field.
-potential_only_guidance: true
+potential_only_guidance: false
 
 #
 # AR tag tracking parameters
@@ -47,4 +46,4 @@ ar_frame_prefix: 'ar_marker_'
 
 # these need to match the set of tags being tracked by ar_track_alvar
 ar_tag_obstacle_ids: [0] #, 1, 2, 3, 4, 5, 6, 7, 8]
-ar_tag_target_ids: [0]
+ar_tag_target_ids: []
