@@ -26,27 +26,36 @@
 
 #include <ros/console.h>
 
+/** @brief Define a silencer for use when logging is not desired. */
+#ifdef LOG_SILENT
+static_assert(false, "Macro LOG_SILENT already defined. Cannot continue.");
+#else
+#define LOG_SILENT(str)
+#endif
+
 /**
  * @brief Check whether a varaible is NaN; return false immediately if so.
  *
  * @param var The variable to check.
  */
-#define CHECK_NOT_NAN(var)                                    \
-  if (std::isnan(var)) {                                      \
-    ROS_ERROR_STREAM(#var << " is NaN, which is not valid."); \
-    return false;                                             \
+#define LOG_CHECK_NOT_NAN(var, logger)              \
+  if (std::isnan(var)) {                            \
+    logger(#var << " is NaN, which is not valid."); \
+    return false;                                   \
   }
+#define CHECK_NOT_NAN(var) LOG_CHECK_NOT_NAN(var, ROS_ERROR_STREAM)
 
 /**
  * @brief Checks whether a value is finite; return false immediately on failure.
  *
  * @param var The variable to check.
  */
-#define CHECK_FINITE(var)                                                 \
-  if (!std::isfinite(var)) {                                              \
-    ROS_ERROR_STREAM(#var << " is not finite: " << #var << " = " << var); \
-    return false;                                                         \
+#define LOG_CHECK_FINITE(var, logger)                           \
+  if (!std::isfinite(var)) {                                    \
+    logger(#var << " is not finite: " << #var << " = " << var); \
+    return false;                                               \
   }
+#define CHECK_FINITE(var) LOG_CHECK_FINITE(var, ROS_ERROR_STREAM)
 
 /**
  * @brief Checks whether a value is infinite; return false immediately on
@@ -54,12 +63,13 @@
  *
  * @param var The variable to check.
  */
-#define CHECK_INFINITE(var)                                                  \
-  CHECK_NOT_NAN(var);                                                        \
-  if (std::isfinite(var)) {                                                  \
-    ROS_ERROR_STREAM(#var << " is finite or NaN: " << #var << " = " << var); \
-    return false;                                                            \
+#define LOG_CHECK_INFINITE(var, logger)                            \
+  LOG_CHECK_NOT_NAN(var, logger);                                  \
+  if (std::isfinite(var)) {                                        \
+    logger(#var << " is finite or NaN: " << #var << " = " << var); \
+    return false;                                                  \
   }
+#define CHECK_INFINITE(var) LOG_CHECK_INFINITE(var, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that the value of 'var' is not equal to the value of 'val';
@@ -68,12 +78,13 @@
  * @param var The value to be checked.
  * @param val The value used to check 'var'.
  */
-#define CHECK_NE(var, val)                                                     \
-  if (var == val) {                                                            \
-    ROS_ERROR_STREAM(#var << " != " << #val << ": check failed for " << #var   \
-                          << " = " << var << " and " << #val << " = " << val); \
-    return false;                                                              \
+#define LOG_CHECK_NE(var, val, logger)                                      \
+  if (var == val) {                                                         \
+    logger(#var << " != " << #val << ": check failed for " << #var << " = " \
+                << var << " and " << #val << " = " << val);                 \
+    return false;                                                           \
   }
+#define CHECK_NE(var, val) LOG_CHECK_NE(var, val, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that the value of 'var' is equal to the value of 'val'; return
@@ -82,12 +93,13 @@
  * @param var The value to be checked.
  * @param val The value used to check 'var'.
  */
-#define CHECK_EQ(var, val)                                                     \
-  if (var != val) {                                                            \
-    ROS_ERROR_STREAM(#var << " == " << #val << ": check failed for " << #var   \
-                          << " = " << var << " and " << #val << " = " << val); \
-    return false;                                                              \
+#define LOG_CHECK_EQ(var, val, logger)                                      \
+  if (var != val) {                                                         \
+    logger(#var << " == " << #val << ": check failed for " << #var << " = " \
+                << var << " and " << #val << " = " << val);                 \
+    return false;                                                           \
   }
+#define CHECK_EQ(var, val) LOG_CHECK_EQ(var, val, ROS_ERROR_STREAM)
 
 /**
  * @brief Check whether the given variable value is even; return false
@@ -95,12 +107,12 @@
  *
  * @param var The variable to check.
  */
-#define CHECK_EVEN(var)                                                      \
-  if ((var % 2) != 0) {                                                      \
-    ROS_ERROR_STREAM(#var << " % 2 == 0: check failed for " << #var << " = " \
-                          << var);                                           \
-    return false;                                                            \
+#define LOG_CHECK_EVEN(var, logger)                                         \
+  if ((var % 2) != 0) {                                                     \
+    logger(#var << " % 2 == 0: check failed for " << #var << " = " << var); \
+    return false;                                                           \
   }
+#define CHECK_EVEN(var) LOG_CHECK_EVEN(var, ROS_ERROR_STREAM)
 
 /**
  * @brief Check whether the given variable value is odd; return false
@@ -108,12 +120,12 @@
  *
  * @param var The variable to check.
  */
-#define CHECK_ODD(var)                                                       \
-  if ((var % 2) == 0) {                                                      \
-    ROS_ERROR_STREAM(#var << " % 2 != 0: check failed for " << #var << " = " \
-                          << var);                                           \
-    return false;                                                            \
+#define LOG_CHECK_ODD(var, logger)                                          \
+  if ((var % 2) == 0) {                                                     \
+    logger(#var << " % 2 != 0: check failed for " << #var << " = " << var); \
+    return false;                                                           \
   }
+#define CHECK_ODD(var) LOG_CHECK_ODD(var, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that var1 < var2; return false immediately if check fails.
@@ -121,13 +133,13 @@
  * @param var1 First argument to comparison.
  * @param var2 Second argument to comparison.
  */
-#define CHECK_LT(var1, var2)                                                   \
-  if (!(var1 < var2)) {                                                        \
-    ROS_ERROR_STREAM(#var1 << " < " << #var2 << ": check failed for " << #var1 \
-                           << " = " << var1 << ", " << #var2 << " = "          \
-                           << var2);                                           \
-    return false;                                                              \
+#define LOG_CHECK_LT(var1, var2, logger)                                      \
+  if (!(var1 < var2)) {                                                       \
+    logger(#var1 << " < " << #var2 << ": check failed for " << #var1 << " = " \
+                 << var1 << ", " << #var2 << " = " << var2);                  \
+    return false;                                                             \
   }
+#define CHECK_LT(var1, var2) LOG_CHECK_LT(var1, var2, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that var1 <= var2; return false immediately if check fails.
@@ -135,13 +147,13 @@
  * @param var1 First argument to comparison.
  * @param var2 Second argument to comparison.
  */
-#define CHECK_LE(var1, var2)                                                   \
+#define LOG_CHECK_LE(var1, var2, logger)                                       \
   if (!(var1 <= var2)) {                                                       \
-    ROS_ERROR_STREAM(#var1 << " <= " << #var2 << ": check failed for "         \
-                           << #var1 << " = " << var1 << ", " << #var2 << " = " \
-                           << var2);                                           \
+    logger(#var1 << " <= " << #var2 << ": check failed for " << #var1 << " = " \
+                 << var1 << ", " << #var2 << " = " << var2);                   \
     return false;                                                              \
   }
+#define CHECK_LE(var1, var2) LOG_CHECK_LE(var1, var2, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that var1 > var2; return false immediately if check fails.
@@ -149,13 +161,13 @@
  * @param var1 First argument to comparison.
  * @param var2 Second argument to comparison.
  */
-#define CHECK_GT(var1, var2)                                                   \
-  if (!(var1 > var2)) {                                                        \
-    ROS_ERROR_STREAM(#var1 << " > " << #var2 << ": check failed for " << #var1 \
-                           << " = " << var1 << ", " << #var2 << " = "          \
-                           << var2);                                           \
-    return false;                                                              \
+#define LOG_CHECK_GT(var1, var2, logger)                                      \
+  if (!(var1 > var2)) {                                                       \
+    logger(#var1 << " > " << #var2 << ": check failed for " << #var1 << " = " \
+                 << var1 << ", " << #var2 << " = " << var2);                  \
+    return false;                                                             \
   }
+#define CHECK_GT(var1, var2) LOG_CHECK_GT(var1, var2, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that var1 >= var2; return false immediately if check fails.
@@ -163,13 +175,13 @@
  * @param var1 First argument to comparison.
  * @param var2 Second argument to comparison.
  */
-#define CHECK_GE(var1, var2)                                                   \
+#define LOG_CHECK_GE(var1, var2, logger)                                       \
   if (!(var1 >= var2)) {                                                       \
-    ROS_ERROR_STREAM(#var1 << " >= " << #var2 << ": check failed for "         \
-                           << #var1 << " = " << var1 << ", " << #var2 << " = " \
-                           << var2);                                           \
+    logger(#var1 << " >= " << #var2 << ": check failed for " << #var1 << " = " \
+                 << var1 << ", " << #var2 << " = " << var2);                   \
     return false;                                                              \
   }
+#define CHECK_GE(var1, var2) LOG_CHECK_GE(var1, var2, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that var \in [r1, r2]; return false immediately if check fails.
@@ -177,9 +189,11 @@
  * @param r1 The initial point in the range.
  * @param r2 The terminal point in the range.
  */
+#define LOG_CHECK_CONTAINS_CLOSED(var, r1, r2, logger) \
+  LOG_CHECK_GE(var, r1, logger);                       \
+  LOG_CHECK_LE(var, r2, logger);
 #define CHECK_CONTAINS_CLOSED(var, r1, r2) \
-  CHECK_GE(var, r1);                       \
-  CHECK_LE(var, r2);
+  LOG_CHECK_CONTAINS_CLOSED(var, r1, r2, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that var \in (r1, r2); return false immediately if check fails.
@@ -187,21 +201,24 @@
  * @param r1 The initial point in the range.
  * @param r2 The terminal point in the range.
  */
+#define LOG_CHECK_CONTAINS_OPEN(var, r1, r2, logger) \
+  LOG_CHECK_GT(var, r1, logger);                     \
+  LOG_CHECK_LT(var, r2, logger);
 #define CHECK_CONTAINS_OPEN(var, r1, r2) \
-  CHECK_GT(var, r1);                     \
-  CHECK_LT(var, r2);
+  LOG_CHECK_CONTAINS_OPEN(var, r1, r2, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that var > 0; return false immediately if check fails.
  *
  * @param var The value to check.
  */
-#define CHECK_STRICTLY_POSITIVE(var)                                     \
-  if (var <= 0) {                                                        \
-    ROS_ERROR_STREAM(#var << " >= 0: check failed for " << #var << " = " \
-                          << var);                                       \
-    return false;                                                        \
+#define LOG_CHECK_STRICTLY_POSITIVE(var, logger)                        \
+  if (var <= 0) {                                                       \
+    logger(#var << " >= 0: check failed for " << #var << " = " << var); \
+    return false;                                                       \
   }
+#define CHECK_STRICTLY_POSITIVE(var) \
+  LOG_CHECK_STRICTLY_POSITIVE(var, ROS_ERROR_STREAM)
 
 /**
  * @brief Check that container var is non-empty; return false immediately if
@@ -209,8 +226,9 @@
  *
  * @param var
  */
-#define CHECK_NONEMPTY(var)                             \
-  if (var.empty()) {                                    \
-    ROS_ERROR_STREAM(#var << ".empty(): check failed"); \
-    return false;                                       \
+#define LOG_CHECK_NONEMPTY(var, logger)       \
+  if (var.empty()) {                          \
+    logger(#var << ".empty(): check failed"); \
+    return false;                             \
   }
+#define CHECK_NONEMPTY(var) LOG_CHECK_NONEMPTY(var, ROS_ERROR_STREAM)
