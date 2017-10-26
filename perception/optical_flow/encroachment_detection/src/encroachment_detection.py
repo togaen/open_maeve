@@ -46,7 +46,7 @@ def Dilate(img, scale):
 # @param img The base image of the pyramid.
 # @param scales The ordered list of scales.
 #
-# @return The scale pyramid: a dictionary of scale dialted images with scale values as keys.
+# @return The scale pyramid: dilated images with scale values as keys.
 def BuildScalePyramid(img, scales):
     scale_pyramid = {}
     for scale in scales:
