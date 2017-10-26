@@ -5,5 +5,5 @@
     pkg="rviz"
     type="rviz"
     output="screen"
-    args="-d $(find segmentation_isp_field)/rviz_configs/rviz.rviz"/>
+    args="-d $(find segmentation_isp_field)/rviz_configs/config.rviz"/>
 </launch>
