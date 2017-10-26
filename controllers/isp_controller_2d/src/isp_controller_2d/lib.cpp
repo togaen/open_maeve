@@ -34,13 +34,16 @@ namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
-void printHorizon(const cv::Mat& h) {
+void printISP(const cv::Mat& ISP) {
   std::cout << "\n>>>\n";
-  for (auto i = 0; i < h.cols; ++i) {
-    const auto p = h.at<cv::Point2d>(i);
-    std::cout << "(" << p.x << ", " << p.y << ") ";
+  for (auto i = 0; i < ISP.rows; ++i) {
+    for (auto j = 0; j < ISP.cols; ++j) {
+      const auto p = ISP.at<cv::Point2d>(i, j);
+      std::cout << "(" << p.x << ", " << p.y << ") ";
+    }
+    std::cout << "\n";
   }
-  std::cout << "\n<<<\n";
+  std::cout << "<<<\n";
 }
 
 double column2Yaw(const cv::Mat& image_plane, const double col,

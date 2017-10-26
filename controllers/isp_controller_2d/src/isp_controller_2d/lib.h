@@ -29,13 +29,11 @@
 
 namespace maeve_automation_core {
 /**
- * @brief Print a horizon matrix to console. Useful for debugging.
+ * @brief Print an ISP field to console. Useful for debugging.
  *
- * @pre 'h' shall be a non-empty row vector.
- *
- * @param h The horizon matrix.
+ * @param ISP The ISP field.
  */
-void printHorizon(const cv::Mat& h);
+void printISP(const cv::Mat& ISP);
 
 /**
  * @brief Given a number line interval, find the nearrest point in the interval
