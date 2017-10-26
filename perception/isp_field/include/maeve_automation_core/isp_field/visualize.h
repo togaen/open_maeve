@@ -27,7 +27,8 @@ namespace maeve_automation_core {
 /**
  * @brief Compute a visualization of a horizon.
  *
- * @pre horizon_viz_height and window_viz_height are both > 0.
+ * @pre horizon_viz_height and window_viz_height are both > 0; 'channel'
+ * specifies a valid channel in 'horizon'.
  *
  * The horizon is a 1xN matrix, so the visualization stretches the
  * horizon vertically by 'horizon_viz_height' pixels and paints it,
@@ -38,6 +39,7 @@ namespace maeve_automation_core {
  * horizon_viz_height is resized to window_viz_height.
  *
  * @param horizon The horizon that is begin visualized.
+ * @param channel Which channel in the horizon image to visualize.
  * @param horizon_viz_height The visualization height of the control horizon.
  * @param window_viz_height  The height of the visualization window.
  * @param lower_bound The lower saturation bound.
@@ -45,7 +47,7 @@ namespace maeve_automation_core {
  *
  * @return The visualization image, a monochrome image.
  */
-cv::Mat computeHorizonVisualization(const cv::Mat& horizon,
+cv::Mat computeHorizonVisualization(const cv::Mat& horizon, const int channel,
                                     const int horizon_viz_height,
                                     const int window_viz_height,
                                     const double lower_bound,

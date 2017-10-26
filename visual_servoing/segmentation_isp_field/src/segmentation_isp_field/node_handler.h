@@ -60,14 +60,10 @@ class SegmentationFieldNodeHandler {
    * @param height Height of the visualization image.
    * @param cs Which of the horizon structures to visualize.
    * @param publisher The publisher to use to publish the visualization.
-   * @param lower_bound The lower saturation bound.
-   * @param upper_bound The upper saturation bound.
    */
   void visualizeHorizon(const std_msgs::Header& header, const int height,
                         const ISP_Controller2D::HorizonType ht,
-                        const image_transport::Publisher& publisher,
-                        const double lower_bound,
-                        const double upper_bound) const;
+                        const image_transport::Publisher& publisher) const;
 
   /**
    * @brief Callback that fires when a new image segmentation is received.

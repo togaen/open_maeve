@@ -186,28 +186,35 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   // Horizon visualizations.
   for (const auto& p : viz_horizon_pubs_) {
     const auto ht = ISP_Controller2D::stringToHorizonType(p.first);
-    auto lower_bound = sc_.shapeParameters().range_min;
-    auto upper_bound = sc_.shapeParameters().range_max;
-    if ((ht == ISP_Controller2D::HorizonType::YAW_GUIDANCE) ||
-        (ht == ISP_Controller2D::HorizonType::GUIDANCE) ||
-        (ht == ISP_Controller2D::HorizonType::GUIDED_THROTTLE) ||
-        (ht == ISP_Controller2D::HorizonType::CONTROL_SET_GUIDANCE)) {
-      lower_bound = 0.0;
-      upper_bound = 1.0;
-    }
-    visualizeHorizon(msg->header, msg->height, ht, p.second, lower_bound,
-                     upper_bound);
+    visualizeHorizon(msg->header, msg->height, ht, p.second);
   }
 }
 
 void SegmentationFieldNodeHandler::visualizeHorizon(
     const std_msgs::Header& header, const int height,
     const ISP_Controller2D::HorizonType ht,
-    const image_transport::Publisher& publisher, const double lower_bound,
-    const double upper_bound) const {
+    const image_transport::Publisher& publisher) const {
+  // Set visualization bounds according to horizon type.
+  auto lower_bound = sc_.shapeParameters().range_min;
+  auto upper_bound = sc_.shapeParameters().range_max;
+  if ((ht == ISP_Controller2D::HorizonType::YAW_GUIDANCE) ||
+      (ht == ISP_Controller2D::HorizonType::GUIDANCE) ||
+      (ht == ISP_Controller2D::HorizonType::GUIDED_THROTTLE) ||
+      (ht == ISP_Controller2D::HorizonType::CONTROL_SET_GUIDANCE)) {
+    lower_bound = 0.0;
+    upper_bound = 1.0;
+  }
+
+  // Set visualization channel according to horizon type.
+  auto channel = 0;
+  if (ht == ISP_Controller2D::HorizonType::GUIDED_THROTTLE) {
+    channel = 1;
+  }
+
+  // Compute visualization message.
   const auto& horizon = isp_controller_.inspectHorizon(ht);
   const auto viz_horizon = computeHorizonVisualization(
-      horizon, params_.horizon_viz_height, params_.horizon_viz_height,
+      horizon, channel, params_.horizon_viz_height, params_.horizon_viz_height,
       lower_bound, upper_bound);
   sensor_msgs::ImagePtr viz_horizon_msg =
       cv_bridge::CvImage(header, "mono8", viz_horizon).toImageMsg();

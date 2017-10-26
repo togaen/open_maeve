@@ -29,7 +29,7 @@ namespace {
 const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
 
-cv::Mat computeHorizonVisualization(const cv::Mat& horizon,
+cv::Mat computeHorizonVisualization(const cv::Mat& horizon, const int channel,
                                     const int horizon_viz_height,
                                     const int window_viz_height,
                                     const double lower_bound,
@@ -37,7 +37,7 @@ cv::Mat computeHorizonVisualization(const cv::Mat& horizon,
   // Convert control horizon to single channel, 8-bit unsigned.
   std::vector<cv::Mat> channels(2);
   cv::split(horizon, channels);
-  auto& horizon_sc = channels.front();
+  auto& horizon_sc = channels[channel];
   cv::Mat horizon_sc_8u;
   cv::Mat horizon_zeroed = -lower_bound + horizon_sc;
   horizon_zeroed.convertTo(horizon_sc_8u, CV_8U,
