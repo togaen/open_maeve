@@ -24,9 +24,9 @@
 #include <cmath>
 #include <vector>
 
-#include "isp_controller/lib.h"
-#include "maeve_automation_core/isp_controller/control_command.h"
-#include "maeve_automation_core/isp_controller/isp_controller.h"
+#include "isp_controller_2d/lib.h"
+#include "maeve_automation_core/isp_controller_2d/control_command.h"
+#include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -78,23 +78,23 @@ TEST(ISP_Controller, test) {
   const auto k_w = 0.45;
   const auto k_ht = 0.6;
   const auto k_hr = 0.5;
-  const auto ek = ISP_Controller::Params::ErosionKernel(k_w, k_ht, k_hr);
+  const auto ek = ISP_Controller2D::Params::ErosionKernel(k_w, k_ht, k_hr);
   const auto fx = 1.0;
   const auto px = static_cast<double>(cols) / 2.0;
   const auto ld = 0.95;
   const auto rd = 0.95;
-  const auto yd = ISP_Controller::Params::HorizonDecay(ld, rd);
+  const auto yd = ISP_Controller2D::Params::HorizonDecay(ld, rd);
   const auto tg = 1.0;
   const auto yg = 1.0;
   const auto cg = 1.0;
-  const auto gg = ISP_Controller::Params::GuidanceGains(tg, yg, cg);
+  const auto gg = ISP_Controller2D::Params::GuidanceGains(yg, cg);
   const auto kp = 1.0;
   const auto kd = 1.0;
   const auto pi = epsilon;
-  const ISP_Controller::Params p(sp, ek, yd, gg, fx, px, kp, kd, pi);
+  const ISP_Controller2D::Params p(sp, ek, yd, gg, fx, px, kp, kd, pi);
 
   // Build controller.
-  ISP_Controller controller(p);
+  ISP_Controller2D controller(p);
 
   {
     // Desired control.

@@ -21,7 +21,7 @@
  */
 #include <gtest/gtest.h>
 
-#include "maeve_automation_core/isp_controller/ros_interface.h"
+#include "maeve_automation_core/isp_controller_2d/ros_interface.h"
 
 namespace maeve_automation_core {
 TEST(ISP_Controller_ROS, testROS_Interface) {
