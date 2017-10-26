@@ -38,8 +38,7 @@ void printISP(const cv::Mat& ISP) {
   std::cout << "\n>>>\n";
   for (auto i = 0; i < ISP.rows; ++i) {
     for (auto j = 0; j < ISP.cols; ++j) {
-      const auto p = ISP.at<cv::Point2d>(i, j);
-      std::cout << "(" << p.x << ", " << p.y << ") ";
+      std::cout << ISP.at<cv::Point2d>(i, j) << " ";
     }
     std::cout << "\n";
   }
