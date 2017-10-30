@@ -10,7 +10,7 @@ hard_constraint_transform:
   alpha: 25.0
   beta: 1.0
   range_min: 0.0
-  range_max: 1.5
+  range_max: 3.0
 
 soft_constraint_transform:
   translation: 0.0
