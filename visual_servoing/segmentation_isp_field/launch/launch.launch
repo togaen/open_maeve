@@ -1,4 +1,8 @@
 <launch>
+  <!-- Clear existing parameters. -->
+  <rosparam command="delete" param="segmentation_isp_field"/>
+
+  <!-- Start node. -->
   <node
     name="segmentation_isp_field"
     pkg="segmentation_isp_field"

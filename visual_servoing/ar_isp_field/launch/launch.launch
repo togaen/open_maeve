@@ -1,4 +1,8 @@
 <launch>
+  <!-- Clear existing parameters. -->
+  <rosparam command="delete" param="ar_isp_field"/>
+
+  <!-- Start node. -->
   <node
     name="ar_isp_field"
     pkg="ar_isp_field"
