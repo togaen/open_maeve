@@ -1,9 +1,10 @@
 <launch>
   <!-- node pkg="tf2_ros" type="static_transform_publisher" name="camera_tf_broadcaster" args="0 0 0 0 0 0 map camera" /-->
+  <arg name="type" default="config"/>
   <node
     name="rviz"
     pkg="rviz"
     type="rviz"
     output="screen"
-    args="-d $(find segmentation_isp_field)/rviz_configs/config.rviz"/>
+    args="-d $(find segmentation_isp_field)/rviz_configs/$(arg type).rviz"/>
 </launch>
