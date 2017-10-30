@@ -291,10 +291,8 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
   const auto& control_set_guidance =
       horizons_[HorizonType::CONTROL_SET_GUIDANCE];
 
-  horizons_[HorizonType::YAW_GUIDANCE] =
-      p_.guidance_gains.yaw * yawGuidance(static_cast<int>(col_d), ch.cols,
-                                          p_.yaw_decay.left,
-                                          p_.yaw_decay.right);
+  horizons_[HorizonType::YAW_GUIDANCE] = yawGuidance(
+      static_cast<int>(col_d), ch.cols, p_.yaw_decay.left, p_.yaw_decay.right);
   const auto& yaw_guidance = horizons_[HorizonType::YAW_GUIDANCE];
 
   // horizons_[HorizonType::GUIDANCE] =
@@ -319,7 +317,8 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       column2Yaw(throttle_h, static_cast<double>(control_idx) + 0.5,
                  p_.focal_length_x, p_.principal_point_x);
   cmd.yaw = projectYawToControlSpace(throttle_h, C_u_, p_.focal_length_x,
-                                     p_.principal_point_x, yaw);
+                                     p_.principal_point_x,
+                                     p_.guidance_gains.yaw * yaw);
 
   // Compute throttle control command (it is already projected by C_u_).
   const cv::Point2d throttle_set = throttle_h.at<cv::Point2d>(control_idx);
