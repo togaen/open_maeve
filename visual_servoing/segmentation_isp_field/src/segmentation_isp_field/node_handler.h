@@ -32,6 +32,7 @@
 
 #include "maeve_automation_core/controller_interface_msgs/command2d_manager.h"
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
+#include "maeve_automation_core/isp_controller_2d/ros_interface.h"
 #include "maeve_automation_core/isp_field/potential_transforms.h"
 #include "maeve_automation_core/segmentation_taxonomy/segmentation_taxonomy.h"
 #include "segmentation_isp_field/params.h"
@@ -52,18 +53,6 @@ class SegmentationFieldNodeHandler {
  private:
   /** @brief Map of class name to guidance potential value. */
   typedef std::unordered_map<std::string, cv::Point2d> GuidancePotentials;
-
-  /**
-   * @brief Helper function for visualizing horizon structures.
-   *
-   * @param header Message header for published horizon visualization.
-   * @param height Height of the visualization image.
-   * @param cs Which of the horizon structures to visualize.
-   * @param publisher The publisher to use to publish the visualization.
-   */
-  void visualizeHorizon(const std_msgs::Header& header, const int height,
-                        const ISP_Controller2D::HorizonType ht,
-                        const image_transport::Publisher& publisher) const;
 
   /**
    * @brief Callback that fires when a new image segmentation is received.
@@ -104,14 +93,15 @@ class SegmentationFieldNodeHandler {
   /** @brief Parser for loading data set taxonomy. */
   SegmentationTaxonomy taxonomy_;
 
+  /** @brief Visualizer for the control horizons. */
+  HorizonVisualizer horizon_visualizer_;
+
   /** @brief Camera model used for interpreting images. */
   image_geometry::PinholeCameraModel camera_model_;
   /** @brief Camera image subscriber. */
   image_transport::CameraSubscriber segmentation_sub_;
   /** @brief ISP field visualization publisher. */
   image_transport::Publisher viz_isp_field_pub_;
-  /** @brief Horizon visualization publishers. */
-  std::unordered_map<std::string, image_transport::Publisher> viz_horizon_pubs_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
   /** @brief The ROS image transport object. */
