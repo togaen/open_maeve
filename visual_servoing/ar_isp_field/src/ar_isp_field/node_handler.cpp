@@ -246,19 +246,10 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   }
 
   // Compute a potential field for each tag.
-  static ros::Time time_of_last_update = msg->header.stamp;
-  const auto age = (msg->header.stamp - time_of_last_update).toSec();
-  const auto forget_tracks = (age > params_.ar_tag_max_age);
-  if (!forget_tracks) {
-    const auto obstacles_updated = computePotentialFields(
-        msg->header.stamp, ConstraintType::HARD, obstacle_field_map_);
-    const auto targets_updated = computePotentialFields(
-        msg->header.stamp, ConstraintType::SOFT, target_field_map_);
-    if (!obstacles_updated && !targets_updated) {
-      return;
-    }
-  }
-  time_of_last_update = msg->header.stamp;
+  const auto obstacles_updated = computePotentialFields(
+      msg->header.stamp, ConstraintType::HARD, obstacle_field_map_);
+  const auto targets_updated = computePotentialFields(
+      msg->header.stamp, ConstraintType::SOFT, target_field_map_);
 
   // Compose fields into an ISP.
   cv::Mat ISP = computeISP();
