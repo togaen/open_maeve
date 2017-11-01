@@ -58,6 +58,8 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(potential_only_guidance);
   LOAD_PARAM(ar_tag_max_age);
   LOAD_PARAM(target_reward);
+  LOAD_PARAM(horizon_viz_height);
+  LOAD_PARAM(visualize_horizons);
 
   LOAD_NS_PARAM(default_guidance_control, throttle);
   LOAD_NS_PARAM(default_guidance_control, yaw);
