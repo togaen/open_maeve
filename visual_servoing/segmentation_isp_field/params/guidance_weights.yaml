@@ -1,6 +1,6 @@
 # Guidance weights.
 guidance_weights:
-  road:           1.0
+  road:           3.5
   lane_marker:    -15.0
   lane_boundary:  -5.0
   curb_shoulder:  -5.0

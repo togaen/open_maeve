@@ -1,0 +1,3 @@
+# Guidance weights.
+guidance_weights:
+  road:           3.5
