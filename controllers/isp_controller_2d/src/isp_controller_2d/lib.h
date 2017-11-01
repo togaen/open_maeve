@@ -196,21 +196,6 @@ cv::Mat projectThrottlesToControlSpace(
     const double K_P, const double K_D);
 
 /**
- * @brief Project a given yaw value to [r_min, r_max].
- *
- * @param h The horizon over which the yaw is defined.
- * @param C_u The potential transform for mapping controls onto [r_min, r_max].
- * @param fx The camera focal length (x axis).
- * @param px The camera principal point (x coordinate).
- * @param yaw The yaw value to project.
- *
- * @return The yaw value projected to [r_min, r_max].
- */
-double projectYawToControlSpace(
-    const cv::Mat& h, const PotentialTransform<ConstraintType::SOFT>& C_u,
-    const double fx, const double px, const double yaw);
-
-/**
  * @brief Compute a throttle guidance horizon.
  *
  * @param throttle_h The horizon of throttle values.

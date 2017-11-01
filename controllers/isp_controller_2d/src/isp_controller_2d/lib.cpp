@@ -149,17 +149,6 @@ cv::Mat projectThrottlesToControlSpace(
   return controls;
 }
 
-double projectYawToControlSpace(
-    const cv::Mat& h, const PotentialTransform<ConstraintType::SOFT>& C_u,
-    const double fx, const double px, const double yaw) {
-  const auto yaw_max = column2Yaw(h, 0.5, fx, px);
-  const auto yaw_min = column2Yaw(h, static_cast<double>(h.cols) - 0.5, fx, px);
-  const auto y =
-      projectToRange(yaw, yaw_min, yaw_max, C_u.shapeParameters().range_min,
-                     C_u.shapeParameters().range_max);
-  return y;
-}
-
 cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h) {
   // Convert throttle values to unit intervals.
   cv::Mat unit_throttle_h = 0.5 * (cv::Scalar(1.0, 1.0) + throttle_h);

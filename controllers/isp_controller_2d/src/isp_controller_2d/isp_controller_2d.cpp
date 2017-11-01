@@ -234,8 +234,13 @@ ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP) {
   const auto yaw =
       column2Yaw(throttle_h, static_cast<double>(control_idx) + 0.5,
                  p_.focal_length_x, p_.principal_point_x);
-  u_d.yaw = projectYawToControlSpace(throttle_h, C_u_, p_.focal_length_x,
-                                     p_.principal_point_x, yaw);
+
+  // \TODO(CD-47) make separate constraint projection for yaw; for now, undo
+  // translation.
+  u_d.yaw = C_u_(cv::Point(p_.guidance_gains.yaw * yaw +
+                               p_.shape_parameters.translation,
+                           0.0))
+                .x;
 
   // Compute throttle control command (it is already projected by C_u_).
   const cv::Point2d throttle_set = throttle_h.at<cv::Point2d>(control_idx);
@@ -316,9 +321,13 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
   const auto yaw =
       column2Yaw(throttle_h, static_cast<double>(control_idx) + 0.5,
                  p_.focal_length_x, p_.principal_point_x);
-  cmd.yaw = projectYawToControlSpace(throttle_h, C_u_, p_.focal_length_x,
-                                     p_.principal_point_x,
-                                     p_.guidance_gains.yaw * yaw);
+
+  // \TODO(CD-47) make separate constraint projection for yaw; for now, undo
+  // translation.
+  cmd.yaw = C_u_(cv::Point2d(p_.guidance_gains.yaw * yaw +
+                                 p_.shape_parameters.translation,
+                             0.0))
+                .x;
 
   // Compute throttle control command (it is already projected by C_u_).
   const cv::Point2d throttle_set = throttle_h.at<cv::Point2d>(control_idx);
