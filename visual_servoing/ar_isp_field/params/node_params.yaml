@@ -16,6 +16,21 @@ image_transport: 'compressed' # uncomment this to listen to image_transport topi
 #viz_isp_field_topic: ''
 viz_isp_field_topic: 'viz_isp_field'
 
+# Visualize zero or more intermediate horizon data structures computed by isp_controller_2d.
+# The horizon types specified here should match the string versions of the HorizonType enums in the isp_controller_2d package.
+visualize_horizons: [
+  'control',
+  'eroded_control',
+  'guided_throttle',
+  'yaw_guidance',
+  'control_set_guidance',
+  'guidance'
+]
+
+# horizon structures are 1xN row vectors; to make visualization more useful, artificially stretch the visualization vertically
+# must be > 0
+horizon_viz_height: 10
+
 # absolute topic name for desired command input
 control_command_input_topic: '/joystick_controller_2d/command'
 

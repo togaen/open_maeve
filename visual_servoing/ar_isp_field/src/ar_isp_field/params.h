@@ -66,6 +66,12 @@ struct AR_ISPFieldParams : public ParamsBase {
    * constraints. */
   double target_reward;
 
+  /** @brief The horizon structures to visualize. */
+  std::vector<std::string> visualize_horizons;
+
+  /** @brief Height of horizon visualization. */
+  int horizon_viz_height;
+
   /** @brief Name of the parameter specifying the AR tag size. */
   std::string marker_size_param_name;
 

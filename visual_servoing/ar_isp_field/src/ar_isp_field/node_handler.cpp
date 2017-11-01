@@ -32,7 +32,6 @@
 #include <vector>
 
 #include "ar_isp_field/geometry.h"
-#include "maeve_automation_core/isp_controller_2d/ros_interface.h"
 #include "maeve_automation_core/isp_field/isp_field.h"
 #include "maeve_automation_core/isp_field/tau.h"
 #include "maeve_automation_core/isp_field/visualize.h"
@@ -95,9 +94,12 @@ AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
           params_.control_command_output_topic, 1);
 
   // Visualize?
-  if (!params_.viz_isp_field_topic.empty()) {
-    viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
-  }
+  viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
+  horizon_visualizer_.initialize(
+      HorizonVisualizer::Params(params_.horizon_viz_height,
+                                sc_.shapeParameters().range_min,
+                                sc_.shapeParameters().range_max),
+      params_.visualize_horizons, it_);
 }
 
 std::vector<cv::Point2d> AR_ISPFieldNodeHandler::projectPoints(
@@ -280,6 +282,9 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   const auto u_star = params_.potential_only_guidance
                           ? isp_controller_.potentialControl(ISP)
                           : isp_controller_.SD_Control(ISP, u_d);
+
+  // Visualize controller horizons; do this after computing control.
+  horizon_visualizer_.visualize(msg->header, isp_controller_);
 
   // Publish control.
   control_command_output_pub_.publish(

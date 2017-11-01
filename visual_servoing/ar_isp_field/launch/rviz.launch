@@ -1,8 +1,9 @@
 <launch>
+  <arg name="type" default="config"/>
   <node
     name="rviz"
     pkg="rviz"
     type="rviz"
     output="screen"
-    args="-d $(find ar_isp_field)/rviz_configs/config.rviz"/>
+    args="-d $(find ar_isp_field)/rviz_configs/$(arg type).rviz"/>
 </launch>
