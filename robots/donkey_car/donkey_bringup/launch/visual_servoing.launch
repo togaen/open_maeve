@@ -3,6 +3,7 @@
   <include file="$(find maeve_cameras)/launch/raspicam_node.launch">
     <arg name="width" value="320"/>
     <arg name="height" value="240"/>
+    <arg name="framerate" value="10"/>
   </include>
 
   <!-- Launch the control command listener. -->
