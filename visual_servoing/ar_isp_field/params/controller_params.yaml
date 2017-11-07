@@ -12,9 +12,9 @@ isp_controller_params:
   K_D: 0.0
   potential_inertia: 0.0 # should be \in [0, Inf]
   erosion_kernel:
-    width: 0.05  # \in [0, 1] a proportion of image width
-    height: 0.75 # \in [0, 1] a proportion of image height
-    horizon: 0.5 # \in [0, 1] with 0 - top and 1 - bottom of image
+    width: 0.3  # \in [0, 1] a proportion of image width
+    height: 0.5 # \in [0, 1] a proportion of image height
+    horizon: 0.35 # \in [0, 1] with 0 - top and 1 - bottom of image
   yaw_decay:
     left: 0.995
     right: 0.995
