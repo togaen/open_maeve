@@ -45,9 +45,10 @@ If any code in these libraries is useful for published work, a citation is appre
 
     @misc{maeve-development-libraries,
         author          = {Jeffrey Kane Johnson},
-        title           = {Maeve Automation Development Libraries},
+        title           = {{Maeve Automation Development Libraries}},
         howpublished    = {\url{https://bitbucket.org/maeveautomation/maeve_automation_core}},
-        year            = {2017}
+        year            = {2017},
+        institution     = {{Maeve Automation}}
     }
 
 ## Data Sets ##
