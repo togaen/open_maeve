@@ -49,3 +49,7 @@ If any code in these libraries is useful for published work, a citation is appre
         url    = {https://bitbucket.org/maeveautomation/maeve_automation_core},
         year   = {2017}
     }
+
+## Data Sets ##
+
+Maeve maintains and distributes data sets used and recorded during the development of the libraries. A list of data sets can be found on the [Data Sets](https://maeveautomation.com/data-sets/) web page.
