@@ -42,6 +42,30 @@ boost::optional<cv::Vec3b> yaml_rgb_to_cvvec3b(const YAML::Node& node) {
   }
   return bgr;
 }
+
+boost::optional<LabelRange> load_label_range(const YAML::Node& node) {
+  auto found = false;
+  LabelRange label_range;
+  if (node.size() == 2) {
+    const auto rgb_min = yaml_rgb_to_cvvec3b(node[0]);
+    const auto rgb_max = yaml_rgb_to_cvvec3b(node[1]);
+    if (rgb_min && rgb_max) {
+      label_range = std::make_tuple(*rgb_min, *rgb_max);
+      found = labelRangeValid(label_range);
+    }
+  } else if (node.size() == 3) {
+    if (const auto rgb = yaml_rgb_to_cvvec3b(node)) {
+      label_range = std::make_tuple(*rgb, *rgb);
+      found = true;
+    }
+  }
+
+  if (!found) {
+    return boost::none;
+  }
+
+  return label_range;
+}
 }  // namespace
 
 std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
@@ -65,9 +89,10 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
         YAML::Node childKey = it->first;
         YAML::Node childValue = it->second;
 
+        // Get label information.
         const auto class_name = childKey.as<std::string>();
-        if (const auto rgb = yaml_rgb_to_cvvec3b(childValue)) {
-          classes[class_name] = *rgb;
+        if (const auto label_range = load_label_range(childValue)) {
+          classes[class_name] = *label_range;
         }
       }
     }
@@ -77,8 +102,8 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
     YAML::Node instances_node = config[data_set_name]["label_instances"];
     if (instances_node.IsSequence()) {
       for (auto it = instances_node.begin(); it != instances_node.end(); ++it) {
-        if (const auto rgb = yaml_rgb_to_cvvec3b(*it)) {
-          instances.push_back(*rgb);
+        if (const auto label_range = load_label_range(*it)) {
+          instances.push_back(*label_range);
         }
       }
     }

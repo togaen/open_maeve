@@ -28,20 +28,11 @@
 namespace maeve_automation_core {
 std::ostream& operator<<(std::ostream& os, const SegmentationTaxonomy& t) {
   os << "===Classes===\n";
-  for (const auto& p : t.classes) {
-    os << p.first << ": " << p.second << "\n";
-  }
+  os << t.classes << "\n";
   os << "\n===Instances===\n";
-  for (const auto& i : t.instances) {
-    os << i << "\n";
-  }
+  os << t.instances << "\n";
   os << "\n===Instance Classes===\n";
-  for (const auto& s : t.instance_classes) {
-    for (const auto& str : s) {
-      os << str << " ";
-    }
-    os << "\n";
-  }
+  os << t.instance_classes;
   return os;
 }
 
