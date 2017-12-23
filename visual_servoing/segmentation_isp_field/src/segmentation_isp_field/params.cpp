@@ -21,6 +21,8 @@
  */
 #include "segmentation_isp_field/params.h"
 
+#include <boost/filesystem.hpp>
+
 #include "maeve_automation_core/isp_controller_2d/ros_interface.h"
 #include "maeve_automation_core/isp_field/ros_interface.h"
 
@@ -42,16 +44,19 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   // Load potential transform parameters.
   if (!loadShapeParamsROS_Params(nh, "hard_constraint_transform",
                                  hard_constraint_transform)) {
+    ROS_ERROR_STREAM("Failed to load hard constraint params.");
     return false;
   }
   if (!loadShapeParamsROS_Params(nh, "soft_constraint_transform",
                                  soft_constraint_transform)) {
+    ROS_ERROR_STREAM("Failed to load soft constraint params.");
     return false;
   }
 
   // Load controller parameters.
   if (!loadISP_ControllerROS_Params(nh, "isp_controller_params",
                                     isp_controller_params)) {
+    ROS_ERROR_STREAM("Failed to load ISP controller params.");
     return false;
   }
 
@@ -82,6 +87,12 @@ bool SegmentationFieldParams::valid() const {
   CHECK_NONEMPTY(control_command_output_topic);
   CHECK_NONEMPTY(control_command_input_topic);
   CHECK_NONEMPTY(label_map_path);
+
+  if (!boost::filesystem::exists(label_map_path)) {
+    ROS_ERROR_STREAM("File '" << label_map_path << "' does not exist.");
+    return false;
+  }
+
   CHECK_NONEMPTY(data_set_name);
   CHECK_STRICTLY_POSITIVE(horizon_viz_height);
   CHECK_EQ(viz_potential_bounds.size(), 2);
