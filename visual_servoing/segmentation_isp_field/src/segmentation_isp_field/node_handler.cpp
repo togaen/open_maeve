@@ -45,7 +45,7 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
     : nh_(node_name), it_(nh_) {
   // Load node parameters.
   if (!params_.load(nh_)) {
-    ROS_FATAL_STREAM("Failed to load parameters. Fatal error.");
+    ROS_FATAL_STREAM("Failed to load node parameters. Fatal error.");
     return;
   }
 
@@ -64,7 +64,7 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
 
   // Load the data set taxonomy.
   if (!taxonomy_.load(params_.label_map_path, params_.data_set_name)) {
-    ROS_FATAL_STREAM("Failed to load data set taxonomy. Fatal error.");
+    ROS_FATAL_STREAM("Failed to load data set taxonomy file: " << params_.label_map_path << ". Fatal error.");
     return;
   }
 

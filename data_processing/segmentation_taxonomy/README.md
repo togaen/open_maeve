@@ -30,7 +30,8 @@ represented as RGB values in [0, 255]. The schema has the following rules:
 1. The label\_classes key has children where each has an RGB value, and the child key is the class name, and the child value is the class label.
 1. The label\_instances is a list of RGB values that contains all unique IDs in the data set.
 1. The label\_instance\_classes is a list of class name lists, where each list defines the class membership of the ID at the same index in label\_instances.
-1. Labels used for classes and instances must be unique, i.e., the same label may not exist as both a class and an instance.
+1. Labels used for classes and instances must be unique, i.e., the same label may not exist as both a class and an instance. Program behavior is undefined if this is violated.
+1. RGB values for classes and instances can be specified as [min, max] ranges (see lane\_marker in the example below).
 
 An example label map is given below: 
 
@@ -44,7 +45,7 @@ data-set:
   label_classes:
     car:            [255, 0,   0]
     road:           [123, 123, 123]
-    lane_marker:    [169, 169, 169]
+    lane_marker:    [[166, 168, 167], [170, 171, 170]]
     lane_boundary:  [143, 142, 89]
     building:       [123, 123, 123]
     infrastructure: [100, 100, 100]

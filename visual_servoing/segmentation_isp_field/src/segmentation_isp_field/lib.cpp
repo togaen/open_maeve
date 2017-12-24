@@ -25,14 +25,15 @@
 
 namespace maeve_automation_core {
 cv::Mat extractGuidanceField(const cv::Mat& segmentation,
-                             const cv::Vec3b& label,
+                             const LabelRange& label_range,
                              const cv::Point2d& potential_value) {
   // Instantiate ISP field.
   auto f = zeroISP_Field(segmentation.size());
 
   // Get mask.
   cv::Mat mask;
-  cv::inRange(segmentation, label, label, mask);
+  cv::inRange(segmentation, std::get<0>(label_range), std::get<1>(label_range),
+              mask);
 
   // Fill out field.
   cv::Scalar s(potential_value.x, potential_value.y);

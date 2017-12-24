@@ -132,6 +132,7 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/io.cpp
+  src/${PROJECT_NAME}/types.cpp
   src/${PROJECT_NAME}/segmentation_taxonomy.cpp
 )
 

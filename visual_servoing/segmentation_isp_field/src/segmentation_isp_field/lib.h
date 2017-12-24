@@ -23,18 +23,20 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "maeve_automation_core/segmentation_taxonomy/types.h"
+
 namespace maeve_automation_core {
 /**
  * @brief Compute an ISP field where all pixels of value 'label' in
  * 'segmentation' are set to 'potential_value'.
  *
  * @param segmentation The BGR segmentation image.
- * @param label The BGR value to extract into an ISP field.
+ * @param label_range The BGR value range to extract into an ISP field.
  * @param potential_value The potential value to assign to the ISP field.
  *
  * @return The extracted ISP field.
  */
 cv::Mat extractGuidanceField(const cv::Mat& segmentation,
-                             const cv::Vec3b& label,
+                             const LabelRange& label_range,
                              const cv::Point2d& potential_value);
 }  // namespace maeve_automation_core
