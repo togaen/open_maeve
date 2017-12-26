@@ -200,10 +200,7 @@ ${EIGEN3_INCLUDE_DIRS}
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_maeve_geometry.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+catkin_add_gtest(${PROJECT_NAME}-test test/test_comparisons.cpp)
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
