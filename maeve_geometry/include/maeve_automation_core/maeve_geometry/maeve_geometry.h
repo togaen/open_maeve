@@ -22,3 +22,5 @@
 #pragma once
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
+#include "maeve_automation_core/maeve_geometry/interval.h"
+
