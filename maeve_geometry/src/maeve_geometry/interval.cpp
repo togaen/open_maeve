@@ -30,11 +30,11 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 
 namespace maeve_automation_core {
 
-double Interval::min() const { return min_; }
+double Interval::min(const Interval& interval) { return interval.min_; }
 
-double Interval::max() const { return max_; }
+double Interval::max(const Interval& interval) { return interval.max_; }
 
-bool Interval::empty() const { return empty_; }
+bool Interval::empty(const Interval& interval) { return interval.empty_; }
 
 Interval::Interval() : min_(NaN), max_(NaN), empty_(true) {}
 
@@ -52,20 +52,31 @@ Interval Interval::build(const double min, const double max) {
   return Interval(min, max);
 }
 
+double Interval::length(const Interval& interval) {
+  return Interval::empty(interval)
+             ? 0.0
+             : (Interval::max(interval) - Interval::min(interval));
+}
+
 bool Interval::valid(const Interval& interval) {
-  return (interval.empty() || (interval.min() <= interval.max()));
+  return (Interval::empty(interval) ||
+          (Interval::min(interval) <= Interval::max(interval)));
 }
 
 Interval Interval::convexHull(const Interval& interval1,
                               const Interval& interval2) {
-  return build(std::min(interval1.min(), interval2.min()),
-               std::max(interval1.max(), interval2.max()));
+  auto i = build(std::min(Interval::min(interval1), Interval::min(interval2)),
+                 std::max(Interval::max(interval1), Interval::max(interval2)));
+  i.empty_ = Interval::empty(interval1) && Interval::empty(interval2);
+  return i;
 }
 
 Interval Interval::intersection(const Interval& interval1,
                                 const Interval& interval2) {
-  return build(std::max(interval1.min(), interval2.min()),
-               std::min(interval1.max(), interval2.max()));
+  auto i = build(std::max(Interval::min(interval1), Interval::min(interval2)),
+                 std::min(Interval::max(interval1), Interval::max(interval2)));
+  i.empty_ = Interval::empty(interval1) || Interval::empty(interval2);
+  return i;
 }
 
 }  // namespace maeve_automation_core

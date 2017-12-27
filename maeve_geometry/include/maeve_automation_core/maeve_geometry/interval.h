@@ -30,26 +30,47 @@ class Interval {
   /**
    * @brief The minimum bound of the interval.
    *
+   * @param interval The interval to retrieve the min bound from.
+   *
    * @return The minimum bound.
    */
-  double min() const;
+  static double min(const Interval& interval);
 
   /**
    * @brief The maximum bound of the interval.
    *
+   * @param interval The interval to retrieve the max bound from.
+   *
    * @return The maximum bound.
    */
-  double max() const;
+  static double max(const Interval& interval);
+
+  /**
+   * @brief Return the length of the interval.
+   *
+   * @note For empty or invalid intervals, NaN is returned.
+   *
+   * @param interval
+   *
+   * @return The length of the interval.
+   */
+  static double length(const Interval& interval);
 
   /**
    * @brief Whether the interval is empty or not.
    *
+   * @param interval The interval to test for emptiness.
+   *
    * @return True if the interval is empty; otherwise false.
    */
-  bool empty() const;
+  static bool empty(const Interval& interval);
 
   /**
    * @brief Whether the interval is valid.
+   *
+   * @note An interval with NaN in the bounds is only valid if it is empty.
+   *
+   * @param interval The interval to test for validity.
    *
    * @return True if min <= max; otherwise false.
    */
