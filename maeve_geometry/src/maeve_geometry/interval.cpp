@@ -65,7 +65,7 @@ Interval Interval::convexHull(const Interval& interval1,
 Interval Interval::intersection(const Interval& interval1,
                                 const Interval& interval2) {
   return build(std::max(interval1.min(), interval2.min()),
-               std::min(interval2.max(), interval2.max()));
+               std::min(interval1.max(), interval2.max()));
 }
 
 }  // namespace maeve_automation_core
