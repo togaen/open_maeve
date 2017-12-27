@@ -95,8 +95,3 @@ TEST(Maeve_Geometry, testGreaterThanEqual) {
 }
 
 }  // namespace maeve_automation_core
-
-int main(int argc, char** argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

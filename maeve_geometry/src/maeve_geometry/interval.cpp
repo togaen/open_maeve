@@ -29,9 +29,13 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 namespace maeve_automation_core {
+
 double Interval::min() const { return min_; }
+
 double Interval::max() const { return max_; }
+
 bool Interval::empty() const { return empty_; }
+
 Interval::Interval() : min_(NaN), max_(NaN), empty_(true) {}
 
 Interval::Interval(const double minimum, const double maximum)
