@@ -31,18 +31,18 @@ const auto epsilon = 0.00001;
 
 TEST(Maeve_Geometry, testIntervalContains) {
   {
-    const auto i = Interval::buildEmpty();
+    const auto i = Interval();
     EXPECT_FALSE(Interval::contains(i, 0.0));
   }
 
   {
-    const auto i = Interval::build(-1.0, 1.0);
+    const auto i = Interval(-1.0, 1.0);
     EXPECT_TRUE(Interval::contains(i, 0.0));
     EXPECT_FALSE(Interval::contains(i, 2.0));
   }
 
   {
-    const auto i = Interval::build(1.0, -1.0);
+    const auto i = Interval(1.0, -1.0);
     EXPECT_FALSE(Interval::contains(i, 0.0));
     EXPECT_FALSE(Interval::contains(i, 2.0));
   }
@@ -50,8 +50,8 @@ TEST(Maeve_Geometry, testIntervalContains) {
 
 TEST(Maeve_Geometry, testIntervalEmpty) {
   {
-    const auto i1 = Interval::buildEmpty();
-    const auto i2 = Interval::buildEmpty();
+    const auto i1 = Interval();
+    const auto i2 = Interval();
     const auto i3 = Interval::intersection(i1, i2);
     EXPECT_TRUE(Interval::valid(i3));
     EXPECT_TRUE(Interval::empty(i3));
@@ -61,8 +61,8 @@ TEST(Maeve_Geometry, testIntervalEmpty) {
   }
 
   {
-    const auto i1 = Interval::buildEmpty();
-    const auto i2 = Interval::build(0.0, 1.0);
+    const auto i1 = Interval();
+    const auto i2 = Interval(0.0, 1.0);
     const auto i3 = Interval::intersection(i1, i2);
     EXPECT_TRUE(Interval::valid(i3));
     EXPECT_TRUE(Interval::empty(i3));
@@ -74,8 +74,8 @@ TEST(Maeve_Geometry, testIntervalEmpty) {
 
 TEST(Maeve_Geometry, testIntervalConvexHull) {
   {
-    const auto i1 = Interval::build(-1.0, 1.0);
-    const auto i2 = Interval::build(-2.0, 2.0);
+    const auto i1 = Interval(-1.0, 1.0);
+    const auto i2 = Interval(-2.0, 2.0);
     const auto i = Interval::convexHull(i1, i2);
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_EQ(Interval::min(i), -2.0);
@@ -85,8 +85,8 @@ TEST(Maeve_Geometry, testIntervalConvexHull) {
   }
 
   {
-    const auto i1 = Interval::build(-1.0, 1.0);
-    const auto i2 = Interval::build(-2.0, 0.0);
+    const auto i1 = Interval(-1.0, 1.0);
+    const auto i2 = Interval(-2.0, 0.0);
     const auto i = Interval::convexHull(i1, i2);
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_EQ(Interval::min(i), -2.0);
@@ -96,8 +96,8 @@ TEST(Maeve_Geometry, testIntervalConvexHull) {
   }
 
   {
-    const auto i1 = Interval::build(5.0, 10.0);
-    const auto i2 = Interval::build(-2.0, 0.0);
+    const auto i1 = Interval(5.0, 10.0);
+    const auto i2 = Interval(-2.0, 0.0);
     const auto i = Interval::convexHull(i1, i2);
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_EQ(Interval::min(i), -2.0);
@@ -107,8 +107,8 @@ TEST(Maeve_Geometry, testIntervalConvexHull) {
   }
 
   {
-    const auto i1 = Interval::build(10.0, 5.0);
-    const auto i2 = Interval::build(-2.0, 0.0);
+    const auto i1 = Interval(10.0, 5.0);
+    const auto i2 = Interval(-2.0, 0.0);
     const auto i = Interval::convexHull(i1, i2);
     EXPECT_FALSE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
@@ -120,8 +120,8 @@ TEST(Maeve_Geometry, testIntervalConvexHull) {
 
 TEST(Maeve_Geometry, testIntervalIntersection) {
   {
-    const auto i1 = Interval::build(-1.0, 1.0);
-    const auto i2 = Interval::build(-0.5, 1.5);
+    const auto i1 = Interval(-1.0, 1.0);
+    const auto i2 = Interval(-0.5, 1.5);
     const auto i = Interval::intersection(i1, i2);
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_EQ(Interval::min(i), -0.5);
@@ -130,8 +130,8 @@ TEST(Maeve_Geometry, testIntervalIntersection) {
   }
 
   {
-    const auto i1 = Interval::build(1.0, -1.0);
-    const auto i2 = Interval::build(-0.5, 1.5);
+    const auto i1 = Interval(1.0, -1.0);
+    const auto i2 = Interval(-0.5, 1.5);
     const auto i = Interval::intersection(i1, i2);
     EXPECT_FALSE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
@@ -140,8 +140,8 @@ TEST(Maeve_Geometry, testIntervalIntersection) {
   }
 
   {
-    const auto i1 = Interval::build(1.0, -1.0);
-    const auto i2 = Interval::build(0.5, -1.5);
+    const auto i1 = Interval(1.0, -1.0);
+    const auto i2 = Interval(0.5, -1.5);
     const auto i = Interval::intersection(i1, i2);
     EXPECT_FALSE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
@@ -150,8 +150,8 @@ TEST(Maeve_Geometry, testIntervalIntersection) {
   }
 
   {
-    const auto i1 = Interval::build(1.0, -1.0);
-    const auto i2 = Interval::build(0.5, -0.5);
+    const auto i1 = Interval(1.0, -1.0);
+    const auto i2 = Interval(0.5, -0.5);
     const auto i = Interval::intersection(i1, i2);
     EXPECT_FALSE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
@@ -159,8 +159,8 @@ TEST(Maeve_Geometry, testIntervalIntersection) {
   }
 
   {
-    const auto i1 = Interval::build(-2.0, -1.0);
-    const auto i2 = Interval::build(1.0, 2.0);
+    const auto i1 = Interval(-2.0, -1.0);
+    const auto i2 = Interval(1.0, 2.0);
     const auto i = Interval::intersection(i1, i2);
     EXPECT_FALSE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
@@ -171,7 +171,7 @@ TEST(Maeve_Geometry, testIntervalIntersection) {
 
 TEST(Maeve_Geometry, testIntervalConstruction) {
   {
-    const auto i = Interval::buildEmpty();
+    const auto i = Interval();
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
     EXPECT_TRUE(std::isnan(Interval::max(i)));
@@ -179,7 +179,7 @@ TEST(Maeve_Geometry, testIntervalConstruction) {
   }
 
   {
-    const auto i = Interval::build(-1.0, 1.0);
+    const auto i = Interval(-1.0, 1.0);
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_EQ(Interval::min(i), -1.0);
     EXPECT_EQ(Interval::max(i), 1.0);
@@ -187,7 +187,7 @@ TEST(Maeve_Geometry, testIntervalConstruction) {
   }
 
   {
-    const auto i = Interval::build(0.0, 0.0);
+    const auto i = Interval(0.0, 0.0);
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_EQ(Interval::min(i), 0.0);
     EXPECT_EQ(Interval::max(i), 0.0);
@@ -196,7 +196,7 @@ TEST(Maeve_Geometry, testIntervalConstruction) {
   }
 
   {
-    const auto i = Interval::build(1.0, -1.0);
+    const auto i = Interval(1.0, -1.0);
     EXPECT_FALSE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
     EXPECT_TRUE(std::isnan(Interval::max(i)));

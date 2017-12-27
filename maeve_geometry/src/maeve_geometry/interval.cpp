@@ -50,12 +50,6 @@ Interval::Interval(const double minimum, const double maximum)
   }
 }
 
-Interval Interval::buildEmpty() { return Interval(); }
-
-Interval Interval::build(const double min, const double max) {
-  return Interval(min, max);
-}
-
 bool Interval::contains(const Interval& interval, const double value) {
   return (Interval::valid(interval) && !Interval::empty(interval) &&
           (value >= Interval::min(interval)) &&
@@ -75,16 +69,18 @@ bool Interval::valid(const Interval& interval) {
 
 Interval Interval::convexHull(const Interval& interval1,
                               const Interval& interval2) {
-  auto i = build(std::min(Interval::min(interval1), Interval::min(interval2)),
-                 std::max(Interval::max(interval1), Interval::max(interval2)));
+  auto i =
+      Interval(std::min(Interval::min(interval1), Interval::min(interval2)),
+               std::max(Interval::max(interval1), Interval::max(interval2)));
   i.empty_ = Interval::empty(interval1) && Interval::empty(interval2);
   return i;
 }
 
 Interval Interval::intersection(const Interval& interval1,
                                 const Interval& interval2) {
-  auto i = build(std::max(Interval::min(interval1), Interval::min(interval2)),
-                 std::min(Interval::max(interval1), Interval::max(interval2)));
+  auto i =
+      Interval(std::max(Interval::min(interval1), Interval::min(interval2)),
+               std::min(Interval::max(interval1), Interval::max(interval2)));
   i.empty_ = Interval::empty(interval1) || Interval::empty(interval2);
   return i;
 }

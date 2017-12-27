@@ -132,12 +132,6 @@ class Interval {
   static Interval convexHull(const Interval& interval1,
                              const Interval& interval2);
 
- private:
-  /** @brief Scalar interval minimum bounds: min, max. */
-  std::tuple<double, double> bounds_;
-  /** @brief Whether the interval is empty or not. */
-  bool empty_;
-
   /**
    * @brief Constructor: initialize and empty interval with members set to NaN.
    */
@@ -153,5 +147,11 @@ class Interval {
    * @param maximum The maximum bound.
    */
   Interval(const double minimum, const double maximum);
+
+ private:
+  /** @brief Scalar interval minimum bounds: min, max. */
+  std::tuple<double, double> bounds_;
+  /** @brief Whether the interval is empty or not. */
+  bool empty_;
 };  // class Interval
 }  // namespace maeve_automation_core
