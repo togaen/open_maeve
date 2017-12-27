@@ -30,19 +30,23 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 
 namespace maeve_automation_core {
 
-double Interval::min(const Interval& interval) { return interval.min_; }
+double Interval::min(const Interval& interval) {
+  return std::get<0>(interval.bounds_);
+}
 
-double Interval::max(const Interval& interval) { return interval.max_; }
+double Interval::max(const Interval& interval) {
+  return std::get<1>(interval.bounds_);
+}
 
 bool Interval::empty(const Interval& interval) { return interval.empty_; }
 
-Interval::Interval() : min_(NaN), max_(NaN), empty_(true) {}
+Interval::Interval()
+    : bounds_(std::move(std::make_tuple(NaN, NaN))), empty_(true) {}
 
 Interval::Interval(const double minimum, const double maximum)
-    : min_(minimum), max_(maximum), empty_(false) {
+    : bounds_(std::move(std::make_tuple(minimum, maximum))), empty_(false) {
   if (!Interval::valid(*this)) {
-    min_ = NaN;
-    max_ = NaN;
+    bounds_ = std::move(std::make_tuple(NaN, NaN));
   }
 }
 

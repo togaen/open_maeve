@@ -21,6 +21,8 @@
  */
 #pragma once
 
+#include <tuple>
+
 namespace maeve_automation_core {
 /**
  * @brief Data structure to contain scalar interval bounds.
@@ -131,10 +133,8 @@ class Interval {
                              const Interval& interval2);
 
  private:
-  /** @brief Scalar interval minimum bound. */
-  double min_;
-  /** @brief Scalar interval maximum bound. */
-  double max_;
+  /** @brief Scalar interval minimum bounds: min, max. */
+  std::tuple<double, double> bounds_;
   /** @brief Whether the interval is empty or not. */
   bool empty_;
 
