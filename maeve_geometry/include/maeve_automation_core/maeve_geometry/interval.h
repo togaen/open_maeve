@@ -26,6 +26,7 @@ namespace maeve_automation_core {
  * @brief Data structure to contain scalar interval bounds.
  */
 class Interval {
+ public:
   /**
    * @brief The minimum bound of the interval.
    *
