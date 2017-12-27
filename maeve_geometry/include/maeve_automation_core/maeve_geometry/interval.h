@@ -77,6 +77,16 @@ class Interval {
   static bool valid(const Interval& interval);
 
   /**
+   * @brief Test for whether a given interval contains a given value.
+   *
+   * @param interval The interval.
+   * @param value The value.
+   *
+   * @return True if 'interval' contains 'value'; otherwise false.
+   */
+  static bool contains(const Interval& interval, const double value);
+
+  /**
    * @brief Construct and return an empty interval.
    *
    * @return The empty interval.

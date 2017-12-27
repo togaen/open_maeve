@@ -52,6 +52,12 @@ Interval Interval::build(const double min, const double max) {
   return Interval(min, max);
 }
 
+bool Interval::contains(const Interval& interval, const double value) {
+  return (Interval::valid(interval) && !Interval::empty(interval) &&
+          (value >= Interval::min(interval)) &&
+          (value <= Interval::max(interval)));
+}
+
 double Interval::length(const Interval& interval) {
   return Interval::empty(interval)
              ? 0.0

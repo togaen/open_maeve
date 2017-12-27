@@ -29,6 +29,25 @@ namespace {
 const auto epsilon = 0.00001;
 }  // namespace
 
+TEST(Maeve_Geometry, testIntervalContains) {
+  {
+    const auto i = Interval::buildEmpty();
+    EXPECT_FALSE(Interval::contains(i, 0.0));
+  }
+
+  {
+    const auto i = Interval::build(-1.0, 1.0);
+    EXPECT_TRUE(Interval::contains(i, 0.0));
+    EXPECT_FALSE(Interval::contains(i, 2.0));
+  }
+
+  {
+    const auto i = Interval::build(1.0, -1.0);
+    EXPECT_FALSE(Interval::contains(i, 0.0));
+    EXPECT_FALSE(Interval::contains(i, 2.0));
+  }
+}
+
 TEST(Maeve_Geometry, testIntervalEmpty) {
   {
     const auto i1 = Interval::buildEmpty();
