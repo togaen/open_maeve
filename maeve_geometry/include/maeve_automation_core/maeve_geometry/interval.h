@@ -21,7 +21,6 @@
  */
 #pragma once
 
-#include <initializer_list>
 #include <tuple>
 
 namespace maeve_automation_core {
@@ -80,7 +79,7 @@ class Interval {
    *
    * @param interval The interval to test for validity.
    *
-   * @return True if min <= max; otherwise false.
+   * @return True if empty or min <= max; otherwise false.
    */
   static bool valid(const Interval& interval);
 
