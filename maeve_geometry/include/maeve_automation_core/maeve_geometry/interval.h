@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include <initializer_list>
 #include <tuple>
 
 namespace maeve_automation_core {
@@ -50,7 +51,8 @@ class Interval {
   /**
    * @brief Return the length of the interval.
    *
-   * @note For empty or invalid intervals, NaN is returned.
+   * @note For empty or invalid intervals, NaN is returned. See Interval::empty
+   * for note on distinction between length zero and the emptiness property.
    *
    * @param interval
    *
@@ -60,6 +62,10 @@ class Interval {
 
   /**
    * @brief Whether the interval is empty or not.
+   *
+   * @note Emptiness refers to whether the interval contains any points and is
+   * thus a distinct property from length: an interval is non-empty if contains
+   * only a single point even though its length in that case is zero.
    *
    * @param interval The interval to test for emptiness.
    *
@@ -87,26 +93,6 @@ class Interval {
    * @return True if 'interval' contains 'value'; otherwise false.
    */
   static bool contains(const Interval& interval, const double value);
-
-  /**
-   * @brief Construct and return an empty interval.
-   *
-   * @return The empty interval.
-   */
-  static Interval buildEmpty();
-
-  /**
-   * @brief Construct an interval with specified bounds.
-   *
-   * If the given bounds are invalid, a non-empty, invalid interval is returned
-   * whose bounds are set to NaN.
-   *
-   * @param min The minimum interval bound.
-   * @param max The maximum interval bound.
-   *
-   * @return The constructed interval.
-   */
-  static Interval build(const double min, const double max);
 
   /**
    * @brief Compute the intersection of two intervals as a new interval.
