@@ -29,7 +29,7 @@ namespace {
 const auto epsilon = 0.00001;
 }  // namespace
 
-TEST(Maeve_Geometry, testIntervalContains) {
+TEST(Maeve_Geometry_Interval, testContains) {
   {
     const auto i = Interval();
     EXPECT_FALSE(Interval::contains(i, 0.0));
@@ -48,7 +48,7 @@ TEST(Maeve_Geometry, testIntervalContains) {
   }
 }
 
-TEST(Maeve_Geometry, testIntervalEmpty) {
+TEST(Maeve_Geometry_Interval, testEmpty) {
   {
     const auto i1 = Interval();
     const auto i2 = Interval();
@@ -72,7 +72,7 @@ TEST(Maeve_Geometry, testIntervalEmpty) {
   }
 }
 
-TEST(Maeve_Geometry, testIntervalConvexHull) {
+TEST(Maeve_Geometry_Interval, testConvexHull) {
   {
     const auto i1 = Interval(-1.0, 1.0);
     const auto i2 = Interval(-2.0, 2.0);
@@ -118,7 +118,7 @@ TEST(Maeve_Geometry, testIntervalConvexHull) {
   }
 }
 
-TEST(Maeve_Geometry, testIntervalIntersection) {
+TEST(Maeve_Geometry_Interval, testIntersection) {
   {
     const auto i1 = Interval(-1.0, 1.0);
     const auto i2 = Interval(-0.5, 1.5);
@@ -169,13 +169,13 @@ TEST(Maeve_Geometry, testIntervalIntersection) {
   }
 }
 
-TEST(Maeve_Geometry, testIntervalConstruction) {
+TEST(Maeve_Geometry_Interval, testConstruction) {
   {
     const auto i = Interval();
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
     EXPECT_TRUE(std::isnan(Interval::max(i)));
-    EXPECT_EQ(Interval::length(i), 0.0);
+    EXPECT_TRUE(std::isnan(Interval::length(i)));
   }
 
   {

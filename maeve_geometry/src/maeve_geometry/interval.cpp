@@ -58,7 +58,7 @@ bool Interval::contains(const Interval& interval, const double value) {
 
 double Interval::length(const Interval& interval) {
   return Interval::empty(interval)
-             ? 0.0
+             ? NaN
              : (Interval::max(interval) - Interval::min(interval));
 }
 
