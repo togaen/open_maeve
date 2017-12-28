@@ -35,7 +35,7 @@ const auto epsilon = 0.0001;
 
 namespace maeve_automation_core {
 
-TEST(Maeve_Geometry, testEquality) {
+TEST(Maeve_Geometry_Comparisons, testEquality) {
   EXPECT_TRUE(approxEq(c, e, epsilon));
   EXPECT_TRUE(approxEq(e, c, epsilon));
   EXPECT_FALSE(approxEq(c, e, 0.0));
@@ -44,7 +44,7 @@ TEST(Maeve_Geometry, testEquality) {
   EXPECT_FALSE(approxEq(b, a, epsilon));
 }
 
-TEST(Maeve_Geometry, testInequality) {
+TEST(Maeve_Geometry_Comparisons, testInequality) {
   EXPECT_FALSE(approxNe(c, e, epsilon));
   EXPECT_FALSE(approxNe(e, c, epsilon));
   EXPECT_TRUE(approxNe(c, e, 0.0));
@@ -53,7 +53,7 @@ TEST(Maeve_Geometry, testInequality) {
   EXPECT_TRUE(approxNe(b, a, epsilon));
 }
 
-TEST(Maeve_Geometry, testLessThan) {
+TEST(Maeve_Geometry_Comparisons, testLessThan) {
   EXPECT_TRUE(approxLt(f, c, 0.0));
   EXPECT_TRUE(approxLt(f, c, epsilon));
   EXPECT_FALSE(approxLt(c, f, epsilon));
@@ -61,7 +61,7 @@ TEST(Maeve_Geometry, testLessThan) {
   EXPECT_FALSE(approxLt(d, d, 0.0));
 }
 
-TEST(Maeve_Geometry, testLessThanEqual) {
+TEST(Maeve_Geometry_Comparisons, testLessThanEqual) {
   EXPECT_TRUE(approxLe(c, e, epsilon));
   EXPECT_TRUE(approxLe(e, c, epsilon));
   EXPECT_FALSE(approxLe(c, e, 0.0));
@@ -74,7 +74,7 @@ TEST(Maeve_Geometry, testLessThanEqual) {
   EXPECT_TRUE(approxLe(d, d, 0.0));
 }
 
-TEST(Maeve_Geometry, testGreaterThan) {
+TEST(Maeve_Geometry_Comparisons, testGreaterThan) {
   EXPECT_TRUE(approxGt(c, e, 0.0));
   EXPECT_FALSE(approxGt(c, e, epsilon));
   EXPECT_FALSE(approxGt(f, c, epsilon));
@@ -83,7 +83,7 @@ TEST(Maeve_Geometry, testGreaterThan) {
   EXPECT_FALSE(approxGt(d, d, 0.0));
 }
 
-TEST(Maeve_Geometry, testGreaterThanEqual) {
+TEST(Maeve_Geometry_Comparisons, testGreaterThanEqual) {
   EXPECT_TRUE(approxGe(c, e, 0.0));
   EXPECT_FALSE(approxGe(e, c, 0.0));
   EXPECT_TRUE(approxGe(c, e, epsilon));
