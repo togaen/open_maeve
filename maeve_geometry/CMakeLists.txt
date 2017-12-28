@@ -203,6 +203,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_main.cpp
   test/test_comparisons.cpp
   test/test_interval.cpp
+  test/test_aabb.cpp
   )
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME} ${catkin_LIBRARIES})
