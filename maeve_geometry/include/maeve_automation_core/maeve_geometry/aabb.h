@@ -21,6 +21,8 @@
  */
 #pragma once
 
+#include <Eigen/Core>
+
 #include <algorithm>
 #include <array>
 #include <functional>
@@ -32,17 +34,18 @@ namespace maeve_automation_core {
 /**
  * @brief Axis-aligned Bounding Box with compile-tome specified dimensionality.
  *
- * @note This class simply generalizes the Interval type to higher dimensions.
+ * @note Behavior is undefined for Dim = 0. This class simply generalizes the
+ * Interval type to higher dimensions.
  *
  * @tparam Dim Dimensionality of box specified at compile time.
  */
-template <unsigned int Dim>
+template <int Dim>
 class AABB {
  public:
   /**
    * @brief Default constructor: rely on default constructor of Interval.
    */
-  AABB() = default;
+  AABB();
 
   /**
    * @brief Explicit constructor: Pass an array of intervals.
@@ -119,11 +122,12 @@ class AABB {
    * @brief Test for whether a given AABB contains a given value.
    *
    * @param aabb The AABB.
-   * @param value The value.
+   * @param point The point to check for containment.
    *
    * @return True if 'aabb' contains 'value'; otherwise false.
    */
-  static bool contains(const AABB& aabb, const double value);
+  static bool contains(const AABB& aabb,
+                       const Eigen::Matrix<double, Dim, 1>& point);
 
   /**
    * @brief Compute the intersection of two AABBs as a new AABB.
@@ -136,69 +140,90 @@ class AABB {
   static AABB intersection(const AABB& aabb1, const AABB& aabb2);
 
  private:
+  /** @brief An array of axis bounds that define the AABB. */
   std::array<Interval, Dim> axis_bounds_;
 };  // class AABB
 
-template <unsigned int Dim>
-AABB<Dim>::AABB(std::array<Interval, Dim>&& bounds)
-    : axis_bounds_(std::move(bounds)) {}
+template <int Dim>
+AABB<Dim>::AABB() {
+  static_assert(Dim > 0, "AABBs must have strictly positive dimensionality.");
+}
 
-template <unsigned int Dim>
+template <int Dim>
+AABB<Dim>::AABB(std::array<Interval, Dim>&& bounds)
+    : axis_bounds_(std::move(bounds)) {
+  static_assert(Dim > 0, "AABBs must have strictly positive dimensionality.");
+}
+
+template <int Dim>
 double AABB<Dim>::min(const AABB<Dim>& aabb, const int axis) {
   // Use 'at' accessor do enforce bounds checking.
   return Interval::min(aabb.axis_bounds_.at(axis));
 }
 
-template <unsigned int Dim>
+template <int Dim>
 double AABB<Dim>::max(const AABB<Dim>& aabb, const int axis) {
   // Use 'at' accessor do enforce bounds checking.
   return Interval::max(aabb.axis_bounds_.at(axis));
 }
 
-template <unsigned int Dim>
+template <int Dim>
 double AABB<Dim>::volume(const AABB& aabb) {
   auto v = 1.0;
-  return std::accumulate(aabb.axis_bounds_.begin(), aabb.axis_bound_.end(), v,
-                         [](const Interval& i1, const Interval& i2) {
-                           return Interval::length(i1) * Interval::length(i2);
+  return std::accumulate(aabb.axis_bounds_.begin(), aabb.axis_bounds_.end(), v,
+                         [](const double l, const Interval& i) {
+                           return l * Interval::length(i);
                          });
 }
 
-template <unsigned int Dim>
+template <int Dim>
 bool AABB<Dim>::empty(const AABB<Dim>& aabb) {
-  auto is_empty = false;
+  auto is_empty = aabb.axis_bounds_.empty();
   std::for_each(
       std::begin(aabb.axis_bounds_), std::end(aabb.axis_bounds_),
       [&](const Interval& i) { is_empty = is_empty || Interval::empty(i); });
+  return is_empty;
 }
 
-template <unsigned int Dim>
+template <int Dim>
 bool AABB<Dim>::valid(const AABB<Dim>& aabb) {
   auto is_valid = true;
   std::for_each(
       std::begin(aabb.axis_bounds_), std::end(aabb.axis_bounds_),
       [&](const Interval& i) { is_valid = is_valid && Interval::valid(i); });
+  return is_valid;
 }
 
-template <unsigned int Dim>
-bool AABB<Dim>::contains(const AABB<Dim>& aabb, const double value) {
+template <int Dim>
+bool AABB<Dim>::contains(const AABB<Dim>& aabb,
+                         const Eigen::Matrix<double, Dim, 1>& point) {
   auto interior = true;
-  std::for_each(std::begin(aabb.axis_bounds_), std::end(aabb.axis_bounds_),
-                [&](const Interval& i) {
-                  interior = interior && Interval::contains(i, value);
-                });
+  for (auto i = 0; i < Dim; ++i) {
+    interior = interior && Interval::contains(aabb.axis_bounds_[i], point[i]);
+  }
   return interior;
 }
 
-template <unsigned int Dim>
+template <int Dim>
 AABB<Dim> AABB<Dim>::intersection(const AABB<Dim>& aabb1,
                                   const AABB<Dim>& aabb2) {
-  std::array<Interval, Dim> aabb_i;
+  std::array<Interval, Dim> bounds;
   for (auto i = 0; i < Dim; ++i) {
-    aabb_i.axis_bounds_[i] =
+    bounds[i] =
         Interval::intersection(aabb1.axis_bounds_[i], aabb2.axis_bounds_[i]);
   }
-  return AABB<Dim>(std::move(aabb_i));
+  return AABB<Dim>(std::move(bounds));
+}
+
+template <int Dim>
+AABB<Dim> AABB<Dim>::convexHull(const AABB<Dim>& aabb1,
+                                const AABB<Dim>& aabb2) {
+  std::array<Interval, Dim> bounds;
+  for (auto i = 0; i < Dim; ++i) {
+    bounds[i] =
+        Interval::convexHull(aabb1.axis_bounds_[i], aabb2.axis_bounds_[i]);
+  }
+  return AABB<Dim>(std::move(bounds));
 }
 
 }  // namespace maeve_automation_core
