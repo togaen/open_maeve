@@ -76,6 +76,11 @@ Interval Interval::convexHull(const Interval& interval1,
   return i;
 }
 
+Interval Interval::merge(const Interval& interval1, const Interval& interval2) {
+const auto i = Interval::intersection(interval1, interval2);
+return i;
+}
+
 Interval Interval::intersection(const Interval& interval1,
                                 const Interval& interval2) {
   auto i =

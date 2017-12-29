@@ -161,6 +161,20 @@ class Interval {
                              const Interval& interval2);
 
   /**
+   * @brief Compute the interval that exactly contains the input intervals.
+   *
+   * This method computes and returns a convex hull of two intervals iff they
+   * intersect. If the two intervals do not intersect, there is no interval that
+   * exactly contains the input intervals, so an invalid interval is returned.
+   *
+   * @param interval1 The first interval to merge.
+   * @param interval2 The second interval to merge.
+   *
+   * @return The merged interval.
+   */
+  static Interval merge(const Interval& interval1, const Interval& interval2);
+
+  /**
    * @brief Constructor: initialize and empty interval with members set to NaN.
    */
   Interval();
