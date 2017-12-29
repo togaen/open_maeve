@@ -85,4 +85,132 @@ Interval Interval::intersection(const Interval& interval1,
   return i;
 }
 
+bool Interval::exhibitsOrdering(const Interval& interval) {
+  return !Interval::empty(interval) && Interval::valid(interval);
+}
+
+bool operator==(const Interval& interval1, const Interval& interval2) {
+  // Capture properties.
+  const auto min_eq = (Interval::min(interval1) == Interval::min(interval2));
+  const auto max_eq = (Interval::max(interval1) == Interval::max(interval2));
+  const auto empty = (Interval::empty(interval1) && Interval::empty(interval2));
+
+  // Compute equality.
+  return (empty || (min_eq && max_eq));
+}
+
+bool operator!=(const Interval& interval1, const Interval& interval2) {
+  return !(interval1 == interval2);
+}
+
+bool operator<(const Interval& interval1, const Interval& interval2) {
+  // Capture properties.
+  const auto min_eq = (Interval::min(interval1) == Interval::min(interval2));
+  const auto min_lt = (Interval::min(interval1) < Interval::min(interval2));
+  const auto max_eq = (Interval::max(interval1) == Interval::max(interval2));
+  const auto max_lt = (Interval::max(interval1) < Interval::max(interval2));
+  const auto can_be_ordered = (Interval::exhibitsOrdering(interval1) &&
+                               Interval::exhibitsOrdering(interval2));
+
+  //
+  // The following test all cases for ordering.
+  //
+
+  if (can_be_ordered) {
+    return false;
+  }
+
+  //
+  // From here, both intervals exhibit ordering.
+  //
+
+  if (min_lt) {
+    return true;
+  }
+
+  //
+  // From here, min bound of interval 1 is >= min bound of interval2.
+  //
+
+  if (!min_eq) {
+    return false;
+  }
+
+  //
+  // From here, min bound of interval 1 is == min bound of interval 2.
+  //
+
+  if (max_lt) {
+    return true;
+  }
+
+  //
+  // From here, min bound of interval 1 is == min bound of interval 2, and max
+  // bound of interval 1 is >= max bound of interval 2.
+  //
+
+  return false;
+}
+
+bool operator>=(const Interval& interval1, const Interval& interval2) {
+  const auto can_be_ordered = (Interval::exhibitsOrdering(interval1) &&
+                               Interval::exhibitsOrdering(interval2));
+  return can_be_ordered && !(interval1 < interval2);
+}
+
+bool operator>(const Interval& interval1, const Interval& interval2) {
+  // Capture properties.
+  const auto min_eq = (Interval::min(interval1) == Interval::min(interval2));
+  const auto min_gt = (Interval::min(interval1) > Interval::min(interval2));
+  const auto max_eq = (Interval::max(interval1) == Interval::max(interval2));
+  const auto max_gt = (Interval::max(interval1) > Interval::max(interval2));
+  const auto can_be_ordered = (Interval::exhibitsOrdering(interval1) &&
+                               Interval::exhibitsOrdering(interval2));
+
+  //
+  // The following test all cases for ordering.
+  //
+
+  if (can_be_ordered) {
+    return false;
+  }
+
+  //
+  // From here, both intervals exhibit ordering.
+  //
+
+  if (min_gt) {
+    return true;
+  }
+
+  //
+  // From here, min bound of interval 1 is <= min bound of interval2.
+  //
+
+  if (!min_eq) {
+    return false;
+  }
+
+  //
+  // From here, min bound of interval 1 is == min bound of interval 2.
+  //
+
+  if (max_gt) {
+    return true;
+  }
+
+  //
+  // From here, min bound of interval 1 is == min bound of interval 2, and max
+  // bound of interval 1 is <= max bound of interval 2.
+  //
+
+  return false;
+}
+
+bool operator<=(const Interval& interval1, const Interval& interval2) {
+  const auto can_be_ordered = (Interval::exhibitsOrdering(interval1) &&
+                               Interval::exhibitsOrdering(interval2));
+  return can_be_ordered && !(interval1 > interval2);
+}
+
 }  // namespace maeve_automation_core

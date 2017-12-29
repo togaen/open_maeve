@@ -29,6 +29,49 @@ namespace maeve_automation_core {
  */
 class Interval {
  public:
+  /** @name Comparison operations
+   *
+   * Comparison operations for Interval types. For sorting, these operators sort
+   * first based on the min interval bound, then the max.
+   *
+   * @note Like comparisons of NaN, invalid intervals always compare false.
+   *
+   * @{
+   */
+
+  /**
+   * @brief Compute equality.
+   *
+   * Two intervals compare equal iff they are both valid and they are both
+   * either empty or have equal bounds.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if the intervals compare equal; otherwise false.
+   */
+  friend bool operator==(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Compute inequality.
+   *
+   * This always returns the negation of the == operator.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 the second interval to compare.
+   *
+   * @return True if the intervals do not compare equal; otherwise false.
+   */
+  friend bool operator!=(const Interval& interval1, const Interval& interval2);
+
+  friend bool operator<(const Interval& interval1, const Interval& interval2);
+  friend bool operator<=(const Interval& interval1, const Interval& interval2);
+  friend bool operator>(const Interval& interval1, const Interval& interval2);
+  friend bool operator>=(const Interval& interval1, const Interval& interval2);
+  /**
+   * }@
+   * */
+
   /**
    * @brief The minimum bound of the interval.
    *
@@ -138,5 +181,17 @@ class Interval {
   std::tuple<double, double> bounds_;
   /** @brief Whether the interval is empty or not. */
   bool empty_;
+
+  /**
+   * @brief Test for whether a given interval can be ordered.
+   *
+   * Intervals exhibit ordering iff they are neither empty nor invalid.
+   *
+   * @param interval The interval to test for ordering property.
+   *
+   * @return True if the interval can be ordered; otherwise false.
+   */
+  static bool exhibitsOrdering(const Interval& interval);
 };  // class Interval
+
 }  // namespace maeve_automation_core
