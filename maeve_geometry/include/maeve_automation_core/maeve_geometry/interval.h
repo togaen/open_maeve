@@ -138,5 +138,12 @@ class Interval {
   std::tuple<double, double> bounds_;
   /** @brief Whether the interval is empty or not. */
   bool empty_;
+
+  /**
+   * @brief Construct and return an invalid interval.
+   *
+   * @return The invalid interval.
+   */
+  static Interval buildInvalid();
 };  // class Interval
 }  // namespace maeve_automation_core

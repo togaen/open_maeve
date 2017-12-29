@@ -162,7 +162,8 @@ TEST(Maeve_Geometry_Interval, testIntersection) {
     const auto i1 = Interval(-2.0, -1.0);
     const auto i2 = Interval(1.0, 2.0);
     const auto i = Interval::intersection(i1, i2);
-    EXPECT_FALSE(Interval::valid(i));
+    EXPECT_TRUE(Interval::valid(i));
+    EXPECT_TRUE(Interval::empty(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
     EXPECT_TRUE(std::isnan(Interval::max(i)));
     EXPECT_TRUE(std::isnan(Interval::length(i)));
