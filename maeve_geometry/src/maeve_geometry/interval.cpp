@@ -93,14 +93,18 @@ bool operator==(const Interval& interval1, const Interval& interval2) {
   // Capture properties.
   const auto min_eq = (Interval::min(interval1) == Interval::min(interval2));
   const auto max_eq = (Interval::max(interval1) == Interval::max(interval2));
-  const auto empty = (Interval::empty(interval1) && Interval::empty(interval2));
+  const auto both_empty =
+      (Interval::empty(interval1) && Interval::empty(interval2));
 
-  // Compute equality.
-  return (empty || (min_eq && max_eq));
+  // Compute equality: for invalid intervals min_eq and max_eq are both 'false'
+  // because the bounds are all NaN.
+  return (both_empty || (min_eq && max_eq));
 }
 
 bool operator!=(const Interval& interval1, const Interval& interval2) {
-  return !(interval1 == interval2);
+  const auto both_valid =
+      (Interval::valid(interval1) && Interval::valid(interval2));
+  return both_valid && !(interval1 == interval2);
 }
 
 bool operator<(const Interval& interval1, const Interval& interval2) {
@@ -116,7 +120,7 @@ bool operator<(const Interval& interval1, const Interval& interval2) {
   // The following test all cases for ordering.
   //
 
-  if (can_be_ordered) {
+  if (!can_be_ordered) {
     return false;
   }
 
@@ -171,7 +175,7 @@ bool operator>(const Interval& interval1, const Interval& interval2) {
   // The following test all cases for ordering.
   //
 
-  if (can_be_ordered) {
+  if (!can_be_ordered) {
     return false;
   }
 

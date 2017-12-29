@@ -29,6 +29,107 @@ namespace {
 const auto epsilon = 0.00001;
 }  // namespace
 
+TEST(Maeve_Geometry_Interval, testComparisons) {
+  {
+    const auto i1 = Interval(0.25, 1);
+    const auto i2 = Interval(0, 1);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_TRUE((i1 != i2));
+    EXPECT_TRUE((i1 > i2));
+    EXPECT_TRUE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(-0.25, 0.5);
+    const auto i2 = Interval(0, 1);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_TRUE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_TRUE((i1 < i2));
+    EXPECT_TRUE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(0, 0.5);
+    const auto i2 = Interval(0, 1);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_TRUE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_TRUE((i1 < i2));
+    EXPECT_TRUE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(1, 0);
+    const auto i2 = Interval(0, 1);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(0, 1);
+    const auto i2 = Interval(0, 1);
+    EXPECT_TRUE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_TRUE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_TRUE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(1, 0);
+    const auto i2 = Interval(1, 0);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(1, 0);
+    const auto i2 = Interval();
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(0, 1);
+    const auto i2 = Interval();
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_TRUE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval();
+    const auto i2 = Interval();
+    EXPECT_TRUE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+}
+
 TEST(Maeve_Geometry_Interval, testContains) {
   {
     const auto i = Interval();
