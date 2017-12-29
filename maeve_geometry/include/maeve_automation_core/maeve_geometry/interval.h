@@ -197,6 +197,13 @@ class Interval {
   bool empty_;
 
   /**
+   * @brief Construct and return an invalid interval.
+   *
+   * @return The invalid interval.
+   */
+  static Interval buildInvalid();
+
+  /**
    * @brief Test for whether a given interval can be ordered.
    *
    * Intervals exhibit ordering iff they are neither empty nor invalid.
@@ -205,7 +212,7 @@ class Interval {
    *
    * @return True if the interval can be ordered; otherwise false.
    */
+
   static bool exhibitsOrdering(const Interval& interval);
 };  // class Interval
-
 }  // namespace maeve_automation_core

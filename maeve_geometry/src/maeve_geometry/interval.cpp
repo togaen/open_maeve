@@ -76,6 +76,8 @@ Interval Interval::convexHull(const Interval& interval1,
   return i;
 }
 
+Interval Interval::buildInvalid() { return Interval(1.0, 0.0); }
+
 Interval Interval::merge(const Interval& interval1, const Interval& interval2) {
 const auto i = Interval::intersection(interval1, interval2);
 return i;
@@ -83,11 +85,28 @@ return i;
 
 Interval Interval::intersection(const Interval& interval1,
                                 const Interval& interval2) {
+  // Cannot intersect with an invalid interval.
+  if (!Interval::valid(interval1) || !Interval::valid(interval2)) {
+    return Interval::buildInvalid();
+  }
+
+  // Handle empty intervals.
+  if (Interval::empty(interval1) || Interval::empty(interval2)) {
+    return Interval();
+  }
+
+  // Handle non-empty intervals.
   auto i =
       Interval(std::max(Interval::min(interval1), Interval::min(interval2)),
                std::min(Interval::max(interval1), Interval::max(interval2)));
-  i.empty_ = Interval::empty(interval1) || Interval::empty(interval2);
-  return i;
+
+  // If the result of the above is valid, return it.
+  if (Interval::valid(i)) {
+    return i;
+  }
+
+  // Otherwise, the intersection is empty.
+  return Interval();
 }
 
 bool Interval::exhibitsOrdering(const Interval& interval) {
