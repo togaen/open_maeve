@@ -132,6 +132,7 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/interval.cpp
+  src/${PROJECT_NAME}/disjoint_interval.cpp
 )
 
 ## Add cmake target dependencies of the library
