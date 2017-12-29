@@ -21,7 +21,16 @@
  */
 #pragma once
 
-#include <Eigen/Dense>
+#include "maeve_automation_core/maeve_geometry/maeve_geometry.h"
 
 namespace maeve_automation_core {
+class PST_Planning {
+ public:
+  template <typename T_Obstacle>
+  static std::vector<Interval> computeReachability(
+      const AlignedVector& pst_points,
+      const std::vector<T_Obstacle>& pst_obstacles,
+      const Interval& incoming_interval,
+      const Interval& goal_interval /*, Constraint Set */);
+};  // class PST_Planning
 }  // namespace maeve_automation_core

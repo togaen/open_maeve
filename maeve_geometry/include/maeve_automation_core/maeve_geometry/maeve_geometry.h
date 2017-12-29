@@ -21,7 +21,13 @@
  */
 #pragma once
 
+#include <Eigen/StdVector>
+
+#include "maeve_automation_core/maeve_geometry/aabb.h"
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 #include "maeve_automation_core/maeve_geometry/interval.h"
-#include "maeve_automation_core/maeve_geometry/aabb.h"
 
+namespace maeve_automation_core {
+typedef std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d>>
+    AlignedVector;
+}  // maeve_automation_core
