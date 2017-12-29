@@ -79,8 +79,37 @@ Interval Interval::convexHull(const Interval& interval1,
 Interval Interval::buildInvalid() { return Interval(1.0, 0.0); }
 
 Interval Interval::merge(const Interval& interval1, const Interval& interval2) {
-const auto i = Interval::intersection(interval1, interval2);
-return i;
+  // If either interval is invalid, the result is invalid.
+  if (!Interval::valid(interval1) || !Interval::valid(interval2)) {
+    return Interval::buildInvalid();
+  }
+
+  // If either interval is empty, the merge is trivially the other interval.
+  if (Interval::empty(interval1)) {
+    return interval2;
+  }
+  if (Interval::empty(interval2)) {
+    return interval1;
+  }
+
+  //
+  // From here, both intervals are valid and non-empty.
+  //
+
+  // If the intersection is empty, the intervals do not overlap and cannot be
+  // merged.
+  const auto i = Interval::intersection(interval1, interval2);
+  if (Interval::empty(i)) {
+    return Interval::buildInvalid();
+  }
+
+  //
+  // From here, bother intervals are valid, non-empty, and they overlap. The
+  // merge is now the convex hull.
+  //
+
+  // Done.
+  return Interval::convexHull(interval1, interval2);
 }
 
 Interval Interval::intersection(const Interval& interval1,
