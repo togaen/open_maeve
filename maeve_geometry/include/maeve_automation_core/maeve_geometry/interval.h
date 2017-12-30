@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include <iostream>
 #include <tuple>
 
 namespace maeve_automation_core {
@@ -29,6 +30,16 @@ namespace maeve_automation_core {
  */
 class Interval {
  public:
+  /**
+   * @brief Stream overload for Interval types.
+   *
+   * @param os The output stream.
+   * @param interval The interval to serialize.
+   *
+   * @return The output stream with the serialized interval.
+   */
+  friend std::ostream& operator<<(std::ostream& os, const Interval& interval);
+
   /**
    * @brief The minimum bound of the interval.
    *

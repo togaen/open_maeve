@@ -104,4 +104,14 @@ Interval Interval::intersection(const Interval& interval1,
   return Interval();
 }
 
+std::ostream& operator<<(std::ostream& os, const Interval& interval) {
+  if (!Interval::valid(interval)) {
+    return os << "[(invalid)]";
+  }
+  if (Interval::empty(interval)) {
+    return os << "[(empty)]";
+  }
+  return os << "[" << Interval::min(interval) << ", " << Interval::max(interval)
+            << "]";
+}
 }  // namespace maeve_automation_core
