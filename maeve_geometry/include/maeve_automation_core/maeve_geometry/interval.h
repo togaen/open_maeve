@@ -64,9 +64,62 @@ class Interval {
    */
   friend bool operator!=(const Interval& interval1, const Interval& interval2);
 
+  /**
+   * @brief Compute whether an interval is strictly less than another.
+   *
+   * An interval is strictly less than another if its minimum bound is strictly
+   * less than the other's, or, if the min bound is equal, its max bound is
+   * strictly less than the other's.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if 'interval1' is strictly less than 'interval2'; otherwise
+   * false.
+   */
   friend bool operator<(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Compute whether an interval is less than or equal to another.
+   *
+   * An interval is less than or equal to another if it is not strictly greater
+   * than the other.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if 'interval1' is less than or equal to 'interval2'; otherwise
+   * false.
+   */
   friend bool operator<=(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Compute whether an interval is strictly greater than another.
+   *
+   * An interval is strictly greater than another if its minimum bound is
+   * strictly greater than the other's, or, if the min bound is equal, its max
+   * bound is strictly greater than the other's.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if 'interval1' is strictly greater than 'interval2'; otherwise
+   * false.
+   */
   friend bool operator>(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Compute whether an interval is greater than or equal to another.
+   *
+   * And interval is greater than or equal to another if it is not strictly less
+   * than the other.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if 'interval1' is greater than or equal to 'interval2';
+   * otherwise false.
+   */
   friend bool operator>=(const Interval& interval1, const Interval& interval2);
   /**
    * }@
