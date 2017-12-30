@@ -270,4 +270,14 @@ bool operator<=(const Interval& interval1, const Interval& interval2) {
   return can_be_ordered && !(interval1 > interval2);
 }
 
+std::ostream& operator<<(std::ostream& os, const Interval& interval) {
+  if (!Interval::valid(interval)) {
+    return os << "[(invalid)]";
+  }
+  if (Interval::empty(interval)) {
+    return os << "[(empty)]";
+  }
+  return os << "[" << Interval::min(interval) << ", " << Interval::max(interval)
+            << "]";
+}
 }  // namespace maeve_automation_core
