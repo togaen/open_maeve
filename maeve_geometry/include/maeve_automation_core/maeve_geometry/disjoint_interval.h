@@ -41,15 +41,17 @@ class DisjointInterval {
    * exactly the set of points contained by all inserted intervals, and each
    * individual interval is disjoint from all others.
    *
-   * @note Invalid intervals will not be inserted into the set.
+   * @note Invalid or empty intervals will not be inserted into the set.
    *
    * @param disjoint_interval The target disjoint interval.
    * @param interval The interval to be inserted (passed by value to give the
    * function a copy it can modify).
    *
-   * @return See std::set<T>::insert(std::set<T>::value_type&& val)
+   * @return An iterator to the inserted element, or to the element equivalent
+   * to the insertion interval. If insertion fails, std::set<T>::end() is
+   * returned.
    */
-  static std::pair<std::set<Interval>::iterator, bool> insert(
+  static std::set<Interval>::const_iterator insert(
       DisjointInterval& disjoint_interval, Interval interval);
 
   /**
@@ -70,6 +72,17 @@ class DisjointInterval {
    * @return The end iterator for the disjoint interval set.
    */
   static std::set<Interval>::const_iterator end(
+      const DisjointInterval& disjoint_interval);
+
+  /**
+   * @brief Get the size of the disjoint interval, i.e., the count of disjoint
+   * intervals.
+   *
+   * @param disjoint_interval The disjoint interval set.
+   *
+   * @return The count of disjoint intervals in the set.
+   */
+  static std::set<Interval>::size_type size(
       const DisjointInterval& disjoint_interval);
 
  private:

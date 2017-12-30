@@ -32,9 +32,123 @@ const auto epsilon = 0.00001;
 TEST(Maeve_Geometry_Disjoint_Interval, testInsert) {
   {
     auto di = DisjointInterval();
+    {
+      const auto i = Interval(0, 1);
+      const auto p = DisjointInterval::insert(di, i);
+      auto it_insert = DisjointInterval::begin(di);
+      EXPECT_EQ(p, it_insert);
+      EXPECT_EQ(DisjointInterval::size(di), 1);
+
+      auto it_begin = DisjointInterval::begin(di);
+      EXPECT_EQ(*it_begin, i);
+    }
+    {
+      const auto i = Interval(3, 4);
+      const auto p = DisjointInterval::insert(di, i);
+      auto it_insert = DisjointInterval::begin(di);
+      EXPECT_EQ(++it_insert, p);
+      EXPECT_EQ(DisjointInterval::size(di), 2);
+
+      auto it_begin = DisjointInterval::begin(di);
+      EXPECT_EQ(*it_begin, Interval(0, 1));
+      EXPECT_EQ(*(++it_begin), i);
+    }
+    {
+      const auto i = Interval(0.5, 2);
+      const auto p = DisjointInterval::insert(di, i);
+      auto it_insert = DisjointInterval::begin(di);
+      EXPECT_EQ(p, it_insert);
+      EXPECT_EQ(DisjointInterval::size(di), 2);
+
+      auto it_begin = DisjointInterval::begin(di);
+      EXPECT_EQ(*it_begin, Interval(0, 2));
+      EXPECT_EQ(*(++it_begin), Interval(3, 4));
+    }
+    {
+      const auto i = Interval(4, 5);
+      const auto p = DisjointInterval::insert(di, i);
+      auto it_insert = DisjointInterval::begin(di);
+      EXPECT_EQ(++it_insert, p);
+      EXPECT_EQ(DisjointInterval::size(di), 2);
+
+      auto it_begin = DisjointInterval::begin(di);
+      EXPECT_EQ(*it_begin, Interval(0, 2));
+      EXPECT_EQ(*(++it_begin), Interval(3, 5));
+    }
+    {
+      const auto i = Interval(5.0 + epsilon, 6);
+      const auto p = DisjointInterval::insert(di, i);
+      auto it_insert = ++(++DisjointInterval::begin(di));
+      EXPECT_EQ(it_insert, p);
+      EXPECT_EQ(DisjointInterval::size(di), 3);
+
+      auto it_begin = DisjointInterval::begin(di);
+      EXPECT_EQ(*it_begin, Interval(0, 2));
+      EXPECT_EQ(*(++it_begin), Interval(3, 4));
+      EXPECT_EQ(*(++it_begin), i);
+    }
+    {
+      const auto i = Interval(-10, 10);
+      const auto p = DisjointInterval::insert(di, i);
+      auto it_insert = DisjointInterval::begin(di);
+      EXPECT_EQ(it_insert, p);
+      EXPECT_EQ(DisjointInterval::size(di), 3);
+
+      auto it_begin = DisjointInterval::begin(di);
+      EXPECT_EQ(*it_begin, Interval(0, 2));
+      EXPECT_EQ(*(++it_begin), Interval(3, 4));
+      EXPECT_EQ(*(++it_begin), i);
+    }
+  }
+
+  {
+    auto di = DisjointInterval();
+    {
+      const auto i = Interval(0, 1);
+      const auto p = DisjointInterval::insert(di, i);
+      EXPECT_EQ(p, DisjointInterval::begin(di));
+      EXPECT_EQ(DisjointInterval::size(di), 1);
+    }
+    {
+      const auto i = Interval(3, 4);
+      const auto p = DisjointInterval::insert(di, i);
+      EXPECT_EQ(++DisjointInterval::begin(di), p);
+      EXPECT_EQ(DisjointInterval::size(di), 2);
+    }
+    {
+      const auto i = Interval(0.5, 2);
+      const auto p = DisjointInterval::insert(di, i);
+      EXPECT_EQ(p, DisjointInterval::begin(di));
+      EXPECT_EQ(DisjointInterval::size(di), 2);
+    }
+  }
+
+  {
+    auto di = DisjointInterval();
+    {
+      const auto i = Interval(0, 1);
+      const auto p = DisjointInterval::insert(di, i);
+      EXPECT_EQ(p, DisjointInterval::begin(di));
+      EXPECT_EQ(DisjointInterval::size(di), 1);
+    }
+    {
+      const auto i = Interval(0.5, 2);
+      const auto p = DisjointInterval::insert(di, i);
+      EXPECT_EQ(p, DisjointInterval::begin(di));
+      EXPECT_EQ(DisjointInterval::size(di), 1);
+    }
+    {
+      const auto i = Interval(3, 4);
+      const auto p = DisjointInterval::insert(di, i);
+      EXPECT_EQ(++DisjointInterval::begin(di), p);
+      EXPECT_EQ(DisjointInterval::size(di), 2);
+    }
+  }
+
+  {
+    auto di = DisjointInterval();
     const auto p = DisjointInterval::insert(di, Interval());
-    EXPECT_FALSE(p.second);
-    EXPECT_EQ(DisjointInterval::end(di), p.first);
+    EXPECT_EQ(DisjointInterval::end(di), p);
   }
 }
 

@@ -24,16 +24,17 @@
 #include <cassert>
 
 namespace maeve_automation_core {
-std::pair<std::set<Interval>::iterator, bool> DisjointInterval::insert(
+std::set<Interval>::const_iterator DisjointInterval::insert(
     DisjointInterval& disjoint_interval, Interval interval) {
   // Don't insert invalid or empty intervals.
   if (!Interval::valid(interval) || Interval::empty(interval)) {
-    return std::make_pair(std::end(disjoint_interval.set_), false);
+    return std::end(disjoint_interval.set_);
   }
 
   // If set is empty, no merging is possible. Done.
   if (disjoint_interval.set_.empty()) {
-    return disjoint_interval.set_.insert(std::move(interval));
+    return disjoint_interval.set_.insert(std::end(disjoint_interval.set_),
+                                         std::move(interval));
   }
 
   // Find first element greater than or equal to 'interval'.
@@ -43,7 +44,7 @@ std::pair<std::set<Interval>::iterator, bool> DisjointInterval::insert(
   // will point to that element. In this case, 'interval' contains no extra
   // information, so it won't merge with any existing intervals. Done.
   if (*it == interval) {
-    return std::make_pair(it, false);
+    return it;
   }
 
   // Attempt merging of previous intervals.
@@ -113,7 +114,7 @@ std::pair<std::set<Interval>::iterator, bool> DisjointInterval::insert(
   //
 
   // Done.
-  return disjoint_interval.set_.insert(std::move(interval));
+  return disjoint_interval.set_.insert(it, std::move(interval));
 }
 
 std::set<Interval>::const_iterator DisjointInterval::begin(
@@ -124,6 +125,11 @@ std::set<Interval>::const_iterator DisjointInterval::begin(
 std::set<Interval>::const_iterator DisjointInterval::end(
     const DisjointInterval& disjoint_interval) {
   return std::end(disjoint_interval.set_);
+}
+
+std::set<Interval>::size_type DisjointInterval::size(
+    const DisjointInterval& disjoint_interval) {
+  return disjoint_interval.set_.size();
 }
 
 }  // namespace maeve_automation_core
