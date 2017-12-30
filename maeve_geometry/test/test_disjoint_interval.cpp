@@ -19,9 +19,23 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#pragma once
+#include <gtest/gtest.h>
+#include <cmath>
 
-#include "maeve_automation_core/maeve_geometry/comparisons.h"
-#include "maeve_automation_core/maeve_geometry/interval.h"
-#include "maeve_automation_core/maeve_geometry/aabb.h"
 #include "maeve_automation_core/maeve_geometry/disjoint_interval.h"
+
+namespace maeve_automation_core {
+namespace {
+const auto epsilon = 0.00001;
+}  // namespace
+
+TEST(Maeve_Geometry_Disjoint_Interval, testInsert) {
+  {
+    auto di = DisjointInterval();
+    const auto p = DisjointInterval::insert(di, Interval());
+    EXPECT_FALSE(p.second);
+    EXPECT_EQ(DisjointInterval::end(di), p.first);
+  }
+}
+
+}  // namespace maeve_automation_core

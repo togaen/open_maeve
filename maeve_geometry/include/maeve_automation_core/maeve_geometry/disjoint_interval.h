@@ -27,6 +27,9 @@
 #include "maeve_automation_core/maeve_geometry/interval.h"
 
 namespace maeve_automation_core {
+/**
+ * @brief This class is a container for maintaining disjoint interval sets.
+ */
 class DisjointInterval {
  public:
   /**
@@ -41,15 +44,36 @@ class DisjointInterval {
    * @note Invalid intervals will not be inserted into the set.
    *
    * @param disjoint_interval The target disjoint interval.
-   * @param interval The interval to be inserted.
+   * @param interval The interval to be inserted (passed by value to give the
+   * function a copy it can modify).
    *
    * @return See std::set<T>::insert(std::set<T>::value_type&& val)
    */
   static std::pair<std::set<Interval>::iterator, bool> insert(
-      DisjointInterval& disjoint_interval, Interval&& interval);
+      DisjointInterval& disjoint_interval, Interval interval);
+
+  /**
+   * @brief Get a begin iterator for a given disjoint interval set.
+   *
+   * @param disjoint_interval The disjoint interval set.
+   *
+   * @return The begin iterator for the disjoint interval.
+   */
+  static std::set<Interval>::const_iterator begin(
+      const DisjointInterval& disjoint_interval);
+
+  /**
+   * @brief Get an end iterator for a given disjoint interval set.
+   *
+   * @param disjoint_interval The disjoint interval set.
+   *
+   * @return The end iterator for the disjoint interval set.
+   */
+  static std::set<Interval>::const_iterator end(
+      const DisjointInterval& disjoint_interval);
 
  private:
-  /** @brief The container for all disjoint intervals. */ 
+  /** @brief The container for all disjoint intervals. */
   std::set<Interval> set_;
 };  // class DisjointInterval
 }  // namespace maeve_automation_core
