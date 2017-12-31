@@ -21,8 +21,10 @@
  */
 #pragma once
 
+#include <iostream>
 #include <set>
 #include <utility>
+#include <vector>
 
 #include "maeve_automation_core/maeve_geometry/interval.h"
 
@@ -32,6 +34,61 @@ namespace maeve_automation_core {
  */
 class DisjointInterval {
  public:
+  /**
+   * @brief Stream overload for DisjointInterval types.
+   *
+   * @param os The output stream.
+   * @param disjoint_interval The disjoint interval to serialize.
+   *
+   * @return The output stream with the serialized disjoint interval.
+   */
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const DisjointInterval& disjoint_interval);
+
+  /**
+   * @brief Compute equality.
+   *
+   * Two disjoint interval sets compare equal iff all member intervals compare
+   * equal.
+   *
+   * @param disjoint_interval1 The first disjoint interval set to compare.
+   * @param disjoint_interval2 The second disjoint interval set to compare.
+   *
+   * @return True if the disjoint interval sets compare equal; otherwise false.
+   */
+  friend bool operator==(const DisjointInterval& disjoint_interval1,
+                         const DisjointInterval& disjoint_interval2);
+
+  /**
+   * @brief Compute inequality.
+   *
+   * Two disjoint interval sets compare equal iff the disjoint intervals do not
+   * compare equal.
+   *
+   * @param disjoint_interval1 The first disjoint interval set to compare.
+   * @param disjoint_interval2 The second disjoint interval set to compare.
+   *
+   * @return True if the disjoint interval sets compare not equal; otherwise
+   * false.
+   */
+  friend bool operator!=(const DisjointInterval& disjoint_interval1,
+                         const DisjointInterval& disjoint_interval2);
+
+  /**
+   * @brief Compute inequality.
+   *
+   * This always returns the negation of the == operator.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 the second interval to compare.
+   *
+   * @return True if the intervals do not compare equal; otherwise false.
+   */
+  friend bool operator!=(const Interval& interval1, const Interval& interval2);
+
+  DisjointInterval() = default;
+  DisjointInterval(const std::vector<Interval>& intervals);
+
   /**
    * @brief Insert an interval into a disjoint interval set.
    *

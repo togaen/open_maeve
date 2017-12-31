@@ -21,9 +21,16 @@
  */
 #include "maeve_automation_core/maeve_geometry/disjoint_interval.h"
 
-#include <cassert>
+#include <algorithm>
 
 namespace maeve_automation_core {
+DisjointInterval::DisjointInterval(const std::vector<Interval>& intervals) {
+  std::for_each(std::begin(intervals), std::end(intervals),
+                [&](const Interval& interval) {
+                  DisjointInterval::insert(*this, interval);
+                });
+}
+
 std::set<Interval>::const_iterator DisjointInterval::insert(
     DisjointInterval& disjoint_interval, Interval interval) {
   // Don't insert invalid or empty intervals.
@@ -31,25 +38,25 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
     return std::end(disjoint_interval.set_);
   }
 
-  // If set is empty, no merging is possible. Done.
+  // If set is empty, no merging is possible, just insert. Done.
   if (disjoint_interval.set_.empty()) {
     return disjoint_interval.set_.insert(std::end(disjoint_interval.set_),
                                          std::move(interval));
   }
 
   // Find first element greater than or equal to 'interval'.
-  const auto it = disjoint_interval.set_.lower_bound(interval);
+  auto it_hint = disjoint_interval.set_.lower_bound(interval);
 
   // If the set contains an element equivalent to 'interval', then the iterator
   // will point to that element. In this case, 'interval' contains no extra
   // information, so it won't merge with any existing intervals. Done.
-  if (*it == interval) {
-    return it;
+  if ((it_hint != std::end(disjoint_interval.set_) && (*it_hint == interval))) {
+    return it_hint;
   }
 
   // Attempt merging of previous intervals.
   {
-    auto it_reverse = it;
+    auto it_reverse = it_hint;
     while (it_reverse != std::begin(disjoint_interval.set_)) {
       // Back up the iterator.
       --it_reverse;
@@ -57,55 +64,40 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
       // Attempt a merge.
       const auto i = Interval::merge(*it_reverse, interval);
 
-      // If the merge was not successful, all other previous intervals will be
-      // disjoint. Done.
+      // If the merge was not successful, no other intervals are disjoint. Done.
       if (!Interval::valid(i)) {
         break;
       }
 
-      //
-      // The merge was successful: remove the merged interval and update the
-      // insertion interval.
-      //
-
-      // Move the tracking interator back to keep it valid.
-      auto it_remove = it_reverse;
-      if (it_reverse != std::begin(disjoint_interval.set_)) {
-        --it_reverse;
-      }
-
-      // Remove the merged element.
-      const auto it_tmp = disjoint_interval.set_.erase(it_remove);
-
       // Update the inerstion interval.
       interval = i;
+
+      // Remove the merged element.
+      it_reverse = disjoint_interval.set_.erase(it_reverse);
     }
   }
 
   // Attempt merging of following intervals.
   {
-    auto it_forward = it;
+    auto it_forward = it_hint;
     while (it_forward != std::end(disjoint_interval.set_)) {
       // Attempt a merge
       const auto i = Interval::merge(*it_forward, interval);
 
-      // If the merge was not successful, all other forward intervals will be
-      // disjoint. Done.
+      // If the merge was not successful, no other intervals are disjoint. Done.
       if (!Interval::valid(i)) {
         break;
       }
 
-      //
-      // The merge was successful: remove the merged interval and update the
-      // insertion interval.
-      //
+      // Update the insertion interval.
+      interval = i;
 
       // Remove the merged element and update the iterator.
       it_forward = disjoint_interval.set_.erase(it_forward);
-
-      // Update the insertion interval.
-      interval = i;
     }
+
+    // Update hint iterator in case the forward element has changed.
+    it_hint = it_forward;
   }
 
   //
@@ -114,7 +106,7 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
   //
 
   // Done.
-  return disjoint_interval.set_.insert(it, std::move(interval));
+  return disjoint_interval.set_.insert(it_hint, std::move(interval));
 }
 
 std::set<Interval>::const_iterator DisjointInterval::begin(
@@ -130,6 +122,41 @@ std::set<Interval>::const_iterator DisjointInterval::end(
 std::set<Interval>::size_type DisjointInterval::size(
     const DisjointInterval& disjoint_interval) {
   return disjoint_interval.set_.size();
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const DisjointInterval& disjoint_interval) {
+  if (disjoint_interval.set_.empty()) {
+    return os << "{(empty)}";
+  }
+  os << "{";
+  const auto it_sentry = --(std::end(disjoint_interval.set_));
+  for (auto it = std::begin(disjoint_interval.set_); it != it_sentry; ++it) {
+    os << *it << ", ";
+  }
+  return os << *it_sentry << "}";
+}
+
+bool operator==(const DisjointInterval& disjoint_interval1,
+                const DisjointInterval& disjoint_interval2) {
+  const auto di1_size = DisjointInterval::size(disjoint_interval1);
+  const auto di2_size = DisjointInterval::size(disjoint_interval2);
+  if (di1_size != di2_size) {
+    return false;
+  }
+
+  auto accumulator = true;
+  auto it1 = std::begin(disjoint_interval1.set_);
+  auto it2 = std::begin(disjoint_interval2.set_);
+  for (; it1 != std::end(disjoint_interval1.set_); ++it1, ++it2) {
+    accumulator = accumulator && (*it1 == *it2);
+  }
+  return accumulator;
+}
+
+bool operator!=(const DisjointInterval& disjoint_interval1,
+                const DisjointInterval& disjoint_interval2) {
+  return !(disjoint_interval1 == disjoint_interval2);
 }
 
 }  // namespace maeve_automation_core
