@@ -79,7 +79,8 @@ std::ostream& operator<<(std::ostream& os, const LabelClasses& label_classes);
  *
  * @return The serialized label instances.
  */
-std::ostream& operator<<(std::ostream& os, const LabelInstances& label_instances);
+std::ostream& operator<<(std::ostream& os,
+                         const LabelInstances& label_instances);
 
 /**
  * @brief Stream overload for ClassSet.
@@ -99,5 +100,6 @@ std::ostream& operator<<(std::ostream& os, const ClassSet& class_set);
  *
  * @return The serialized label instance classes.
  */
-std::ostream& operator<<(std::ostream& os, const LabelInstanceClasses& label_instace_classes);
+std::ostream& operator<<(std::ostream& os,
+                         const LabelInstanceClasses& label_instace_classes);
 }  // namespace maeve_automation_core

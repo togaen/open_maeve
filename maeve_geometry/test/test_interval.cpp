@@ -29,6 +29,159 @@ namespace {
 const auto epsilon = 0.00001;
 }  // namespace
 
+TEST(Maeve_Geometry_Interval, testMerge) {
+  {
+    const auto i1 = Interval();
+    const auto i2 = Interval(0, 1);
+    const auto i = Interval::merge(i1, i2);
+    EXPECT_TRUE(Interval::valid(i));
+    EXPECT_FALSE(Interval::empty(i));
+    EXPECT_EQ(Interval::min(i2), 0.0);
+    EXPECT_EQ(Interval::max(i2), 1.0);
+  }
+
+  {
+    const auto i = Interval::merge(Interval(), Interval());
+    EXPECT_TRUE(Interval::valid(i));
+    EXPECT_TRUE(Interval::empty(i));
+  }
+
+  {
+    const auto i1 = Interval(20, 3);
+    const auto i2 = Interval(0, 1);
+    const auto i = Interval::merge(i1, i2);
+    EXPECT_FALSE(Interval::valid(i));
+  }
+
+  {
+    const auto i1 = Interval(2, 3);
+    const auto i2 = Interval(0, 1);
+    const auto i = Interval::merge(i1, i2);
+    EXPECT_FALSE(Interval::valid(i));
+  }
+
+  {
+    const auto i1 = Interval(0.25, 0.75);
+    const auto i2 = Interval(0, 1);
+    const auto i = Interval::merge(i1, i2);
+    EXPECT_TRUE(Interval::valid(i));
+    EXPECT_FALSE(Interval::empty(i));
+    EXPECT_EQ(Interval::min(i), 0.0);
+    EXPECT_EQ(Interval::max(i), 1.0);
+  }
+
+  {
+    const auto i1 = Interval(0.25, 1);
+    const auto i2 = Interval(0, 1);
+    const auto i = Interval::merge(i1, i2);
+    EXPECT_TRUE(Interval::valid(i));
+    EXPECT_FALSE(Interval::empty(i));
+    EXPECT_EQ(Interval::min(i), 0.0);
+    EXPECT_EQ(Interval::max(i), 1.0);
+  }
+}
+
+TEST(Maeve_Geometry_Interval, testComparisons) {
+  {
+    const auto i1 = Interval(0.25, 1);
+    const auto i2 = Interval(0, 1);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_TRUE((i1 != i2));
+    EXPECT_TRUE((i1 > i2));
+    EXPECT_TRUE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(-0.25, 0.5);
+    const auto i2 = Interval(0, 1);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_TRUE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_TRUE((i1 < i2));
+    EXPECT_TRUE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(0, 0.5);
+    const auto i2 = Interval(0, 1);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_TRUE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_TRUE((i1 < i2));
+    EXPECT_TRUE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(1, 0);
+    const auto i2 = Interval(0, 1);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(0, 1);
+    const auto i2 = Interval(0, 1);
+    EXPECT_TRUE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_TRUE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_TRUE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(1, 0);
+    const auto i2 = Interval(1, 0);
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(1, 0);
+    const auto i2 = Interval();
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval(0, 1);
+    const auto i2 = Interval();
+    EXPECT_FALSE((i1 == i2));
+    EXPECT_TRUE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+
+  {
+    const auto i1 = Interval();
+    const auto i2 = Interval();
+    EXPECT_TRUE((i1 == i2));
+    EXPECT_FALSE((i1 != i2));
+    EXPECT_FALSE((i1 > i2));
+    EXPECT_FALSE((i1 >= i2));
+    EXPECT_FALSE((i1 < i2));
+    EXPECT_FALSE((i1 <= i2));
+  }
+}
+
 TEST(Maeve_Geometry_Interval, testContains) {
   {
     const auto i = Interval();
@@ -162,7 +315,8 @@ TEST(Maeve_Geometry_Interval, testIntersection) {
     const auto i1 = Interval(-2.0, -1.0);
     const auto i2 = Interval(1.0, 2.0);
     const auto i = Interval::intersection(i1, i2);
-    EXPECT_FALSE(Interval::valid(i));
+    EXPECT_TRUE(Interval::valid(i));
+    EXPECT_TRUE(Interval::empty(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
     EXPECT_TRUE(std::isnan(Interval::max(i)));
     EXPECT_TRUE(std::isnan(Interval::length(i)));

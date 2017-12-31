@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include <iostream>
 #include <tuple>
 
 namespace maeve_automation_core {
@@ -29,6 +30,112 @@ namespace maeve_automation_core {
  */
 class Interval {
  public:
+  /** @name Comparison operations
+   *
+   * Comparison operations for Interval types. For sorting, these operators sort
+   * first based on the min interval bound, then the max.
+   *
+   * @note Like comparisons of NaN, invalid intervals always compare false.
+   *
+   * @{
+   */
+
+  /**
+   * @brief Compute equality.
+   *
+   * Two intervals compare equal iff they are both valid and they are both
+   * either empty or have equal bounds.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if the intervals compare equal; otherwise false.
+   */
+  friend bool operator==(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Compute inequality.
+   *
+   * This always returns the negation of the == operator.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 the second interval to compare.
+   *
+   * @return True if the intervals do not compare equal; otherwise false.
+   */
+  friend bool operator!=(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Compute whether an interval is strictly less than another.
+   *
+   * An interval is strictly less than another if its minimum bound is strictly
+   * less than the other's, or, if the min bound is equal, its max bound is
+   * strictly less than the other's.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if 'interval1' is strictly less than 'interval2'; otherwise
+   * false.
+   */
+  friend bool operator<(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Compute whether an interval is less than or equal to another.
+   *
+   * An interval is less than or equal to another if it is not strictly greater
+   * than the other.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if 'interval1' is less than or equal to 'interval2'; otherwise
+   * false.
+   */
+  friend bool operator<=(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Compute whether an interval is strictly greater than another.
+   *
+   * An interval is strictly greater than another if its minimum bound is
+   * strictly greater than the other's, or, if the min bound is equal, its max
+   * bound is strictly greater than the other's.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if 'interval1' is strictly greater than 'interval2'; otherwise
+   * false.
+   */
+  friend bool operator>(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Compute whether an interval is greater than or equal to another.
+   *
+   * And interval is greater than or equal to another if it is not strictly less
+   * than the other.
+   *
+   * @param interval1 The first interval to compare.
+   * @param interval2 The second interval to compare.
+   *
+   * @return True if 'interval1' is greater than or equal to 'interval2';
+   * otherwise false.
+   */
+  friend bool operator>=(const Interval& interval1, const Interval& interval2);
+  /**
+   * }@
+   * */
+
+  /**
+   * @brief Stream overload for Interval types.
+   *
+   * @param os The output stream.
+   * @param interval The interval to serialize.
+   *
+   * @return The output stream with the serialized interval.
+   */
+  friend std::ostream& operator<<(std::ostream& os, const Interval& interval);
+
   /**
    * @brief The minimum bound of the interval.
    *
@@ -118,6 +225,20 @@ class Interval {
                              const Interval& interval2);
 
   /**
+   * @brief Compute the interval that exactly contains the input intervals.
+   *
+   * This method computes and returns a convex hull of two intervals iff they
+   * intersect. If the two intervals do not intersect, there is no interval that
+   * exactly contains the input intervals, so an invalid interval is returned.
+   *
+   * @param interval1 The first interval to merge.
+   * @param interval2 The second interval to merge.
+   *
+   * @return The merged interval.
+   */
+  static Interval merge(const Interval& interval1, const Interval& interval2);
+
+  /**
    * @brief Constructor: initialize and empty interval with members set to NaN.
    */
   Interval();
@@ -138,5 +259,24 @@ class Interval {
   std::tuple<double, double> bounds_;
   /** @brief Whether the interval is empty or not. */
   bool empty_;
+
+  /**
+   * @brief Construct and return an invalid interval.
+   *
+   * @return The invalid interval.
+   */
+  static Interval buildInvalid();
+
+  /**
+   * @brief Test for whether a given interval can be ordered.
+   *
+   * Intervals exhibit ordering iff they are neither empty nor invalid.
+   *
+   * @param interval The interval to test for ordering property.
+   *
+   * @return True if the interval can be ordered; otherwise false.
+   */
+
+  static bool exhibitsOrdering(const Interval& interval);
 };  // class Interval
 }  // namespace maeve_automation_core
