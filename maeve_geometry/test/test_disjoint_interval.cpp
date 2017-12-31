@@ -27,9 +27,85 @@
 namespace maeve_automation_core {
 namespace {
 const auto epsilon = 0.00001;
+DisjointInterval makeTestDI() {
+  return DisjointInterval({Interval(0, 1), Interval(2, 3), Interval(4, 5),
+                           Interval(6, 7), Interval(8, 9)});
+}
 }  // namespace
 
+TEST(Maeve_Geometry_Disjoint_Interval, testComparison) {
+  {
+    EXPECT_EQ(makeTestDI(), makeTestDI());
+    EXPECT_FALSE((makeTestDI() != makeTestDI()));
+  }
+
+  {
+    auto di1 = makeTestDI();
+    auto di2 = makeTestDI();
+    DisjointInterval::insert(di2, Interval(0.5, 1.5));
+    EXPECT_EQ(DisjointInterval::size(di2), DisjointInterval::size(di1));
+    EXPECT_NE(di1, di2);
+    EXPECT_FALSE((di1 == di2));
+  }
+
+  {
+    auto di1 = makeTestDI();
+    auto di2 = makeTestDI();
+    DisjointInterval::insert(di2, Interval(0.5, 2.5));
+    EXPECT_EQ(DisjointInterval::size(di2), 4);
+    EXPECT_EQ(DisjointInterval::size(di1), 5);
+    EXPECT_NE(di1, di2);
+    EXPECT_FALSE((di1 == di2));
+  }
+}
+
 TEST(Maeve_Geometry_Disjoint_Interval, testInsert) {
+  {
+    auto di = makeTestDI();
+    const auto p = DisjointInterval::insert(di, Interval(0.5, 2.5));
+    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 3.0), Interval(4.0, 5.0),
+                                    Interval(6.0, 7.0), Interval(8.0, 9.0)}));
+  }
+
+  {
+    auto di = makeTestDI();
+    const auto p = DisjointInterval::insert(di, Interval(-1.0, -0.5));
+    EXPECT_EQ(di, DisjointInterval({Interval(-1.0, -0.5), Interval(0.0, 1.0),
+                                    Interval(2.0, 3.0), Interval(4.0, 5.0),
+                                    Interval(6.0, 7.0), Interval(8.0, 9.0)}));
+  }
+
+  {
+    auto di = makeTestDI();
+    const auto p = DisjointInterval::insert(di, Interval(10.0, 11.0));
+    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.0),
+                                    Interval(2.0, 3.0), Interval(4.0, 5.0),
+                                    Interval(6.0, 7.0), Interval(8.0, 9.0), Interval(10.0, 11.0)}));
+  }
+
+  {
+    auto di = makeTestDI();
+    const auto p = DisjointInterval::insert(di, Interval(8.5, 9.5));
+    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.0),
+                                    Interval(2.0, 3.0), Interval(4.0, 5.0),
+                                    Interval(6.0, 7.0), Interval(8.0, 9.5)}));
+  }
+
+  {
+    auto di = makeTestDI();
+    const auto p = DisjointInterval::insert(di, Interval(0.5, 1.5));
+    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.5),
+                                    Interval(2.0, 3.0), Interval(4.0, 5.0),
+                                    Interval(6.0, 7.0), Interval(8.0, 9.0)}));
+  }
+
+  {
+    auto di = makeTestDI();
+    const auto p = DisjointInterval::insert(di, Interval(1.5, 7.5));
+    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.0),
+                                    Interval(1.5, 7.5), Interval(8.0, 9.0)}));
+  }
+
   {
     auto di = DisjointInterval();
     {
@@ -84,7 +160,7 @@ TEST(Maeve_Geometry_Disjoint_Interval, testInsert) {
 
       auto it_begin = DisjointInterval::begin(di);
       EXPECT_EQ(*it_begin, Interval(0, 2));
-      EXPECT_EQ(*(++it_begin), Interval(3, 4));
+      EXPECT_EQ(*(++it_begin), Interval(3, 5)) << "Disjoint Interval: " << di;
       EXPECT_EQ(*(++it_begin), i);
     }
     {
@@ -92,12 +168,10 @@ TEST(Maeve_Geometry_Disjoint_Interval, testInsert) {
       const auto p = DisjointInterval::insert(di, i);
       auto it_insert = DisjointInterval::begin(di);
       EXPECT_EQ(it_insert, p);
-      EXPECT_EQ(DisjointInterval::size(di), 3);
+      EXPECT_EQ(DisjointInterval::size(di), 1);
 
       auto it_begin = DisjointInterval::begin(di);
-      EXPECT_EQ(*it_begin, Interval(0, 2));
-      EXPECT_EQ(*(++it_begin), Interval(3, 4));
-      EXPECT_EQ(*(++it_begin), i);
+      EXPECT_EQ(*it_begin, Interval(-10.0, 10.0));
     }
   }
 
