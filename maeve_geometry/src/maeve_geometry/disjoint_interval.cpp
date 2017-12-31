@@ -78,7 +78,7 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
         break;
       }
 
-      // Update the inerstion interval.
+      // Update the insertion interval.
       interval = i;
 
       // Remove the merged element.
