@@ -21,7 +21,7 @@
  */
 #pragma once
 
-#include "maeve_automation_core/maeve_geometry/comparisons.h"
-#include "maeve_automation_core/maeve_geometry/interval.h"
 #include "maeve_automation_core/maeve_geometry/aabb.h"
+#include "maeve_automation_core/maeve_geometry/comparisons.h"
 #include "maeve_automation_core/maeve_geometry/disjoint_interval.h"
+#include "maeve_automation_core/maeve_geometry/interval.h"
