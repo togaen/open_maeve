@@ -86,8 +86,23 @@ class DisjointInterval {
    */
   friend bool operator!=(const Interval& interval1, const Interval& interval2);
 
+  /**
+   * @brief Constructor: build empty disjoint interval set.
+   */
   DisjointInterval() = default;
-  DisjointInterval(const std::vector<Interval>& intervals);
+
+  /**
+   * @brief Constructor: build a disjoint interval set from given container of
+   * intervals.
+   *
+   * This constructor iterates over the given container calling
+   * DisjointInterval::insert for each element. During construction, it is
+   * useful to use the initializer syntax for std::vector, this allows
+   * statements of the form: DisjointInterval({Interval(0,1), Interval(2,3)}).
+   *
+   * @param intervals The container of intervals to construct the set with.
+   */
+  explicit DisjointInterval(const std::vector<Interval>& intervals);
 
   /**
    * @brief Insert an interval into a disjoint interval set.
