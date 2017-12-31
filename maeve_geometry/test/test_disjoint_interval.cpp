@@ -33,6 +33,14 @@ DisjointInterval makeTestDI() {
 }
 }  // namespace
 
+TEST(Maeve_Geometry_Disjoint_Interval, testContains) {
+  const auto di = makeTestDI();
+  EXPECT_TRUE(DisjointInterval::contains(di, 0.5));
+  EXPECT_TRUE(DisjointInterval::contains(di, 6.01));
+  EXPECT_FALSE(DisjointInterval::contains(di, 3.01));
+  EXPECT_FALSE(DisjointInterval::contains(di, 11.0));
+}
+
 TEST(Maeve_Geometry_Disjoint_Interval, testComparison) {
   {
     EXPECT_EQ(makeTestDI(), makeTestDI());

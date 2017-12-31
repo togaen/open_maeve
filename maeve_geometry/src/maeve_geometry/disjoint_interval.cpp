@@ -31,6 +31,15 @@ DisjointInterval::DisjointInterval(const std::vector<Interval>& intervals) {
                 });
 }
 
+bool DisjointInterval::contains(const DisjointInterval& disjoint_interval,
+                                const double value) {
+  return std::any_of(std::begin(disjoint_interval.set_),
+                     std::end(disjoint_interval.set_),
+                     [&](const Interval& interval) {
+                       return Interval::contains(interval, value);
+                     });
+}
+
 std::set<Interval>::const_iterator DisjointInterval::insert(
     DisjointInterval& disjoint_interval, Interval interval) {
   // Don't insert invalid or empty intervals.

@@ -127,6 +127,18 @@ class DisjointInterval {
       DisjointInterval& disjoint_interval, Interval interval);
 
   /**
+   * @brief Whether a given value is contained by any interval in the set.
+   *
+   * @param disjoint_interval The disjoint interval set.
+   * @param value The value to test for containment.
+   *
+   * @return True if 'value' is contained by any interval in the set; otherwise
+   * false;
+   */
+  static bool contains(const DisjointInterval& disjoint_interval,
+                       const double value);
+
+  /**
    * @brief Get a begin iterator for a given disjoint interval set.
    *
    * @param disjoint_interval The disjoint interval set.
