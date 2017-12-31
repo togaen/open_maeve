@@ -78,32 +78,32 @@ TEST(Maeve_Geometry_Disjoint_Interval, testInsert) {
   {
     auto di = makeTestDI();
     const auto p = DisjointInterval::insert(di, Interval(10.0, 11.0));
-    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.0),
-                                    Interval(2.0, 3.0), Interval(4.0, 5.0),
-                                    Interval(6.0, 7.0), Interval(8.0, 9.0), Interval(10.0, 11.0)}));
+    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.0), Interval(2.0, 3.0),
+                                    Interval(4.0, 5.0), Interval(6.0, 7.0),
+                                    Interval(8.0, 9.0), Interval(10.0, 11.0)}));
   }
 
   {
     auto di = makeTestDI();
     const auto p = DisjointInterval::insert(di, Interval(8.5, 9.5));
-    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.0),
-                                    Interval(2.0, 3.0), Interval(4.0, 5.0),
-                                    Interval(6.0, 7.0), Interval(8.0, 9.5)}));
+    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.0), Interval(2.0, 3.0),
+                                    Interval(4.0, 5.0), Interval(6.0, 7.0),
+                                    Interval(8.0, 9.5)}));
   }
 
   {
     auto di = makeTestDI();
     const auto p = DisjointInterval::insert(di, Interval(0.5, 1.5));
-    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.5),
-                                    Interval(2.0, 3.0), Interval(4.0, 5.0),
-                                    Interval(6.0, 7.0), Interval(8.0, 9.0)}));
+    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.5), Interval(2.0, 3.0),
+                                    Interval(4.0, 5.0), Interval(6.0, 7.0),
+                                    Interval(8.0, 9.0)}));
   }
 
   {
     auto di = makeTestDI();
     const auto p = DisjointInterval::insert(di, Interval(1.5, 7.5));
-    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.0),
-                                    Interval(1.5, 7.5), Interval(8.0, 9.0)}));
+    EXPECT_EQ(di, DisjointInterval({Interval(0.0, 1.0), Interval(1.5, 7.5),
+                                    Interval(8.0, 9.0)}));
   }
 
   {
