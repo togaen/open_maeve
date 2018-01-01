@@ -207,10 +207,11 @@ template <unsigned int Order>
 bool IntervalConstraints<Order>::satisfiable(
     const IntervalConstraints& constraints) {
   const auto is_valid = IntervalConstraints<Order>::valid(constraints);
-  const auto non_empty = std::all_of(
+  const auto t_non_empty = !Interval::empty(constraints.t_bounds_);
+  const auto s_non_empty = std::all_of(
       std::begin(constraints.s_bounds_), std::end(constraints.s_bounds_),
       [&](const Interval& interval) { return !Interval::empty(interval); });
-  return is_valid && non_empty;
+  return is_valid && t_non_empty && s_non_empty;
 }
 
 template <unsigned int Order>
