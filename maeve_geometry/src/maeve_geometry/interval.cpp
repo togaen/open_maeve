@@ -98,7 +98,7 @@ Interval Interval::merge(const Interval& interval1, const Interval& interval2) {
 
   // If the intersection is empty, the intervals do not overlap and cannot be
   // merged.
-  const auto i = Interval::intersection(interval1, interval2);
+  const auto i = Interval::intersect(interval1, interval2);
   if (Interval::empty(i)) {
     return Interval::buildInvalid();
   }
@@ -112,8 +112,8 @@ Interval Interval::merge(const Interval& interval1, const Interval& interval2) {
   return Interval::convexHull(interval1, interval2);
 }
 
-Interval Interval::intersection(const Interval& interval1,
-                                const Interval& interval2) {
+Interval Interval::intersect(const Interval& interval1,
+                             const Interval& interval2) {
   // Cannot intersect with an invalid interval.
   if (!Interval::valid(interval1) || !Interval::valid(interval2)) {
     return Interval::buildInvalid();

@@ -205,7 +205,7 @@ TEST(Maeve_Geometry_Interval, testEmpty) {
   {
     const auto i1 = Interval();
     const auto i2 = Interval();
-    const auto i3 = Interval::intersection(i1, i2);
+    const auto i3 = Interval::intersect(i1, i2);
     EXPECT_TRUE(Interval::valid(i3));
     EXPECT_TRUE(Interval::empty(i3));
     const auto i4 = Interval::convexHull(i1, i2);
@@ -216,7 +216,7 @@ TEST(Maeve_Geometry_Interval, testEmpty) {
   {
     const auto i1 = Interval();
     const auto i2 = Interval(0.0, 1.0);
-    const auto i3 = Interval::intersection(i1, i2);
+    const auto i3 = Interval::intersect(i1, i2);
     EXPECT_TRUE(Interval::valid(i3));
     EXPECT_TRUE(Interval::empty(i3));
     const auto i4 = Interval::convexHull(i1, i2);
@@ -275,7 +275,7 @@ TEST(Maeve_Geometry_Interval, testIntersection) {
   {
     const auto i1 = Interval(-1.0, 1.0);
     const auto i2 = Interval(-0.5, 1.5);
-    const auto i = Interval::intersection(i1, i2);
+    const auto i = Interval::intersect(i1, i2);
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_EQ(Interval::min(i), -0.5);
     EXPECT_EQ(Interval::max(i), 1.0);
@@ -285,7 +285,7 @@ TEST(Maeve_Geometry_Interval, testIntersection) {
   {
     const auto i1 = Interval(1.0, -1.0);
     const auto i2 = Interval(-0.5, 1.5);
-    const auto i = Interval::intersection(i1, i2);
+    const auto i = Interval::intersect(i1, i2);
     EXPECT_FALSE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
     EXPECT_TRUE(std::isnan(Interval::max(i)));
@@ -295,7 +295,7 @@ TEST(Maeve_Geometry_Interval, testIntersection) {
   {
     const auto i1 = Interval(1.0, -1.0);
     const auto i2 = Interval(0.5, -1.5);
-    const auto i = Interval::intersection(i1, i2);
+    const auto i = Interval::intersect(i1, i2);
     EXPECT_FALSE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
     EXPECT_TRUE(std::isnan(Interval::max(i)));
@@ -305,7 +305,7 @@ TEST(Maeve_Geometry_Interval, testIntersection) {
   {
     const auto i1 = Interval(1.0, -1.0);
     const auto i2 = Interval(0.5, -0.5);
-    const auto i = Interval::intersection(i1, i2);
+    const auto i = Interval::intersect(i1, i2);
     EXPECT_FALSE(Interval::valid(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));
     EXPECT_TRUE(std::isnan(Interval::max(i)));
@@ -314,7 +314,7 @@ TEST(Maeve_Geometry_Interval, testIntersection) {
   {
     const auto i1 = Interval(-2.0, -1.0);
     const auto i2 = Interval(1.0, 2.0);
-    const auto i = Interval::intersection(i1, i2);
+    const auto i = Interval::intersect(i1, i2);
     EXPECT_TRUE(Interval::valid(i));
     EXPECT_TRUE(Interval::empty(i));
     EXPECT_TRUE(std::isnan(Interval::min(i)));

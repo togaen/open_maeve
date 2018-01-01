@@ -208,8 +208,8 @@ class Interval {
    *
    * @return The newly constructed interval intersection.
    */
-  static Interval intersection(const Interval& interval1,
-                               const Interval& interval2);
+  static Interval intersect(const Interval& interval1,
+                            const Interval& interval2);
 
   /**
    * @brief Compute the convex hull of two intervals as a new interval.

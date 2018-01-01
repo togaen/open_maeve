@@ -34,7 +34,7 @@ TEST(Maeve_Geometry_AABB, testOperations) {
   {
     const auto a = AABB<1>();
     const auto b = AABB<1>();
-    const auto c = AABB<1>::intersection(a, b);
+    const auto c = AABB<1>::intersect(a, b);
     EXPECT_TRUE(AABB<1>::valid(c));
     EXPECT_TRUE(AABB<1>::empty(c));
     EXPECT_TRUE(std::isnan(AABB<1>::volume(c)));
@@ -43,7 +43,7 @@ TEST(Maeve_Geometry_AABB, testOperations) {
   {
     const auto a = AABB<2>({Interval(0, 1), Interval(0, 1)});
     const auto b = AABB<2>({Interval(0.5, 1.5), Interval(0.25, 0.75)});
-    const auto c = AABB<2>::intersection(a, b);
+    const auto c = AABB<2>::intersect(a, b);
     EXPECT_TRUE(AABB<2>::valid(c));
     EXPECT_FALSE(AABB<2>::empty(c));
     EXPECT_NEAR(AABB<2>::min(c, 0), 0.5, epsilon);
