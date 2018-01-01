@@ -21,5 +21,4 @@
  */
 #include "maeve_automation_core/maeve_dynamics/pst_reachability.h"
 
-namespace maeve_automation_core {
-}  // namespace maeve_automation_core
+namespace maeve_automation_core {}  // namespace maeve_automation_core

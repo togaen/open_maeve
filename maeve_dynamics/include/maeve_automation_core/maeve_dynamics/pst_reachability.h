@@ -21,5 +21,4 @@
  */
 #pragma once
 
-namespace maeve_automation_core {
-}  // namespace maeve_automation_core
+namespace maeve_automation_core {}  // namespace maeve_automation_core

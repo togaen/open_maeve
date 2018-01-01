@@ -120,10 +120,10 @@ IntervalConstraints<Order> IntervalConstraints<Order>::intersect(
     const IntervalConstraints& constraints2) {
   auto c = IntervalConstraints();
   c.t_bounds_ =
-      Interval::intersection(constraints1.t_bounds_, constraints2.t_bounds_);
+      Interval::intersect(constraints1.t_bounds_, constraints2.t_bounds_);
   for (auto i = 0; i <= Order; ++i) {
-    c.s_bounds_[i] = Interval::intersection(constraints1.s_bounds_[i],
-                                            constraints2.s_bounds_[i]);
+    c.s_bounds_[i] = Interval::intersect(constraints1.s_bounds_[i],
+                                         constraints2.s_bounds_[i]);
   }
   return c;
 }
