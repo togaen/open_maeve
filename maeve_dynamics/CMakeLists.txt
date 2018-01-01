@@ -131,6 +131,7 @@ include_directories(
 ## Declare a C++ library
  add_library(${PROJECT_NAME}
    src/${PROJECT_NAME}/pst_reachability.cpp
+   src/${PROJECT_NAME}/parabola.cpp
  )
 
 ## Add cmake target dependencies of the library
@@ -201,6 +202,7 @@ include_directories(
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_main.cpp
   test/test_interval_constraints.cpp
+  test/test_parabola.cpp
   )
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
