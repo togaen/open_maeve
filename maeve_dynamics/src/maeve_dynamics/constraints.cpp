@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#pragma once
-
 #include "maeve_automation_core/maeve_dynamics/constraints.h"
-#include "maeve_automation_core/maeve_dynamics/pst_reachability.h"
+
+namespace maeve_automation_core {
+}  // namespace maeve_automation_core
