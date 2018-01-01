@@ -21,7 +21,9 @@
  */
 #pragma once
 
+#include <algorithm>
 #include <array>
+#include <iostream>
 
 #include "maeve_automation_core/maeve_geometry/interval.h"
 
@@ -39,6 +41,62 @@ template <unsigned int Order>
 class IntervalConstraints {
  public:
   /**
+   * @brief Stream overload for interval constraints.
+   *
+   * @param os The output stream.
+   * @param constraints The constraint object.
+   *
+   * @return The output stream with the constraint object serialized.
+   */
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const IntervalConstraints& constraints) {
+    os << "{time: " << constraints.t_bounds_ << ", arc length: {";
+    for (auto i = 0; i < Order; ++i) {
+      os << "(order: " << i << ", bounds: " << constraints.s_bounds_[i]
+         << "), ";
+    }
+    return os << "(order: " << Order
+              << ", bounds: " << constraints.s_bounds_[Order] << ")}";
+  }
+
+  /**
+   * @brief Equality test for interval constraint sets.
+   *
+   * Two interval constraint sets are equivalent iff all corresponding member
+   * intervals of both sets are equivalent.
+   *
+   * @param constraints1 The first interval constraint set.
+   * @param constraints2 The second interval constraint set.
+   *
+   * @return True if the constraint sets are equal; otherwise false.
+   */
+  friend bool operator==(const IntervalConstraints& constraints1,
+                         const IntervalConstraints& constraints2) {
+    const auto t_eq = (constraints1.t_bounds_ == constraints2.t_bounds_);
+    auto s_eq = true;
+    for (auto i = 0; i <= Order; ++i) {
+      s_eq = (s_eq && (constraints1.s_bounds_[i] == constraints2.s_bounds_[i]));
+    }
+    return t_eq && s_eq;
+  }
+
+  /**
+   * @brief Inequality test for interval constraint sets.
+   *
+   * Two interval constraint sets are unequal iff they are not equal. See
+   * IntervalConstraints<Order>::operator==.
+   *
+   * @param constraints1 The first interval constraint set.
+   * @param constraints2 The second interval constraint set.
+   *
+   * @return True if the constraint sets are not equal; otherwise false.
+   */
+  friend bool operator!=(const IntervalConstraints& constraints1,
+                         const IntervalConstraints& constraints2) {
+    return !(constraints1 == constraints2);
+  }
+
+  /**
    * @brief Constructor: Build and initialize constraint object explicitly.
    *
    * @param t_bounds Feasible time interval.
@@ -46,6 +104,28 @@ class IntervalConstraints {
    */
   IntervalConstraints(Interval&& t_bounds,
                       std::array<Interval, Order + 1>&& s_bounds);
+
+  /**
+   * @brief A constraint set is valid iff all intervals are valid.
+   *
+   * @note Empty interval bounds are considered valid. That means it is possible
+   * that a valid constraint set cannot be satisfied.
+   *
+   * @param constraints The constraint set to check for validity.
+   *
+   * @return True if the constraint set is valid; otherwise false.
+   */
+  static bool valid(const IntervalConstraints& constraints);
+
+  /**
+   * @brief A constraint set is satisfiable iff it is valid and all intervals
+   * are non-emtpy.
+   *
+   * @param constraints The constraint set to check for satisfiability.
+   *
+   * @return True if the constraint set is satisfiable; otherwise false.
+   */
+  static bool satisfiable(const IntervalConstraints& constraints);
 
   /**
    * @brief Compute and return the intersection of two constraint objects.
@@ -113,6 +193,25 @@ template <unsigned int Order>
 IntervalConstraints<Order>::IntervalConstraints(
     Interval&& t_bounds, std::array<Interval, Order + 1>&& s_bounds)
     : t_bounds_(std::move(t_bounds)), s_bounds_(std::move(s_bounds)) {}
+
+template <unsigned int Order>
+bool IntervalConstraints<Order>::valid(const IntervalConstraints& constraints) {
+  const auto t_valid = Interval::valid(constraints.t_bounds_);
+  const auto s_valid = std::all_of(
+      std::begin(constraints.s_bounds_), std::end(constraints.s_bounds_),
+      [&](const Interval& interval) { return Interval::valid(interval); });
+  return t_valid && s_valid;
+}
+
+template <unsigned int Order>
+bool IntervalConstraints<Order>::satisfiable(
+    const IntervalConstraints& constraints) {
+  const auto is_valid = IntervalConstraints<Order>::valid(constraints);
+  const auto non_empty = std::all_of(
+      std::begin(constraints.s_bounds_), std::end(constraints.s_bounds_),
+      [&](const Interval& interval) { return !Interval::empty(interval); });
+  return is_valid && non_empty;
+}
 
 template <unsigned int Order>
 IntervalConstraints<Order> IntervalConstraints<Order>::intersect(
