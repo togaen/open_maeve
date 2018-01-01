@@ -19,7 +19,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/maeve_dynamics/constraints.h"
+#include <gtest/gtest.h>
+
+#include "maeve_automation_core/maeve_dynamics/interval_constraints.h"
 
 namespace maeve_automation_core {
+TEST(Maeve_Dynamics_Interval_Constraints, testConstruction) {
+  {
+    const auto c = IntervalConstraints<0>(Interval(0, 1), {Interval(0, 1)});
+    EXPECT_TRUE(true);
+  }
+}
 }  // namespace maeve_automation_core

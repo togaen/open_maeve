@@ -21,5 +21,5 @@
  */
 #pragma once
 
-#include "maeve_automation_core/maeve_dynamics/constraints.h"
+#include "maeve_automation_core/maeve_dynamics/interval_constraints.h"
 #include "maeve_automation_core/maeve_dynamics/pst_reachability.h"
