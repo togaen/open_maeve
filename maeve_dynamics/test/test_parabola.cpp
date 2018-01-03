@@ -21,6 +21,9 @@
  */
 #include <gtest/gtest.h>
 
+#include <cmath>
+#include <limits>
+
 #include "maeve_automation_core/maeve_dynamics/parabola.h"
 
 namespace maeve_automation_core {
@@ -46,6 +49,13 @@ TEST(Maeve_Dynamics_Parabola, testConstruction) {
   {
     const auto p = Parabola(1, 1, 1);
     EXPECT_TRUE(true);
+  }
+
+  {
+    const auto p = Parabola();
+    EXPECT_TRUE(std::isnan(Parabola::a(p)));
+    EXPECT_TRUE(std::isnan(Parabola::b(p)));
+    EXPECT_TRUE(std::isnan(Parabola::c(p)));
   }
 }
 }  // namespace maeve_automation_core

@@ -21,7 +21,26 @@
  */
 #include "maeve_automation_core/maeve_dynamics/parabola.h"
 
+#include <limits>
+
 namespace maeve_automation_core {
+namespace {
+const auto NaN = std::numeric_limits<double>::quiet_NaN();
+}  // namespace
+
+Parabola::Parabola() : coefficients_({NaN, NaN, NaN}) {}
+
+double Parabola::a(const Parabola& parabola) {
+  return parabola.coefficients_[0];
+}
+
+double Parabola::b(const Parabola& parabola) {
+  return parabola.coefficients_[1];
+}
+
+double Parabola::c(const Parabola& parabola) {
+  return parabola.coefficients_[2];
+}
 
 Parabola::Parabola(const double a, const double b, const double c)
     : coefficients_({a, b, c}) {}

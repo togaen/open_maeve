@@ -43,6 +43,11 @@ class Parabola {
   friend std::ostream& operator<<(std::ostream& os, const Parabola& parabola);
 
   /**
+   * @brief Constructor: default initialize to invalid values.
+   */
+  Parabola();
+
+  /**
    * @brief Constructor: build from specified coefficients.
    *
    * @param a The quadratic coefficient.
@@ -59,6 +64,33 @@ class Parabola {
    * @return The value of the parabola at 'x'.
    */
   double operator()(const double x) const;
+
+  /**
+   * @brief Access the quadratic coefficient.
+   *
+   * @param parabola The parabola.
+   *
+   * @return The quadratic coefficient.
+   */
+  static double a(const Parabola& parabola);
+
+  /**
+   * @brief Access the linear coefficient.
+   *
+   * @param parabola The parabola.
+   *
+   * @return The linear coefficient.
+   */
+  static double b(const Parabola& parabola);
+
+  /**
+   * @brief Access the constant coefficient.
+   *
+   * @param parabola The parabola
+   *
+   * @return The constant coefficient.
+   */
+  static double c(const Parabola& parabola);
 
  private:
   /**
