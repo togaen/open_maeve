@@ -22,6 +22,7 @@
 #include "maeve_automation_core/maeve_dynamics/parabola.h"
 
 namespace maeve_automation_core {
+
 Parabola::Parabola(const double a, const double b, const double c)
     : coefficients_({a, b, c}) {}
 

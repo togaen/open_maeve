@@ -24,6 +24,7 @@
 #include "maeve_automation_core/maeve_dynamics/parabola.h"
 
 namespace maeve_automation_core {
+
 TEST(Maeve_Dynamics_Parabola, testEval) {
   {
     const auto p = Parabola(1, 1, 1);
