@@ -239,6 +239,22 @@ class Interval {
   static Interval merge(const Interval& interval1, const Interval& interval2);
 
   /**
+   * @brief Factory method for building an interval representing the affinely
+   * extended reals.
+   *
+   * @return [-\infty, +\infty]
+   */
+  static Interval affinelyExtendedReals();
+
+  /**
+   * @brief Factory method for build an interval representing the maximum range
+   * of representable reals.
+   *
+   * @return [-DBL_MAX, DBL_MAX]
+   */
+  static Interval maxRepresentableReals();
+
+  /**
    * @brief Constructor: initialize and empty interval with members set to NaN.
    */
   Interval();

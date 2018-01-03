@@ -20,14 +20,25 @@
  * IN THE SOFTWARE.
  */
 #include <gtest/gtest.h>
+
 #include <cmath>
+#include <limits>
 
 #include "maeve_automation_core/maeve_geometry/interval.h"
 
 namespace maeve_automation_core {
 namespace {
+const auto Inf = std::numeric_limits<double>::infinity();
+const auto Min = std::numeric_limits<double>::lowest();
+const auto Max = std::numeric_limits<double>::max();
+const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto epsilon = 0.00001;
 }  // namespace
+
+TEST(Maeve_Geometry_Interval, testFactories) {
+  EXPECT_EQ(Interval::affinelyExtendedReals(), Interval(-Inf, Inf));
+  EXPECT_EQ(Interval::maxRepresentableReals(), Interval(Min, Max));
+}
 
 TEST(Maeve_Geometry_Interval, testMerge) {
   {

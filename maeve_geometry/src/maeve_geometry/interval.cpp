@@ -25,6 +25,9 @@
 #include <limits>
 
 namespace {
+const auto Inf = std::numeric_limits<double>::infinity();
+const auto Max = std::numeric_limits<double>::max();
+const auto Min = std::numeric_limits<double>::lowest();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
@@ -39,6 +42,10 @@ double Interval::max(const Interval& interval) {
 }
 
 bool Interval::empty(const Interval& interval) { return interval.empty_; }
+
+Interval Interval::affinelyExtendedReals() { return Interval(-Inf, Inf); }
+
+Interval Interval::maxRepresentableReals() { return Interval(Min, Max); }
 
 Interval::Interval()
     : bounds_(std::move(std::make_tuple(NaN, NaN))), empty_(true) {}
