@@ -35,6 +35,13 @@ const auto epsilon = 0.0001;
 
 namespace maeve_automation_core {
 
+TEST(Maeve_Geometry_Comparisons, testZero) {
+  EXPECT_TRUE(approxZero(d, epsilon));
+  EXPECT_TRUE(approxZero(d + epsilon * epsilon, epsilon));
+  EXPECT_FALSE(approxZero(d + 2.0 * epsilon, epsilon));
+  EXPECT_FALSE(approxZero(1.0, epsilon));
+}
+
 TEST(Maeve_Geometry_Comparisons, testEquality) {
   EXPECT_TRUE(approxEq(c, e, epsilon));
   EXPECT_TRUE(approxEq(e, c, epsilon));
