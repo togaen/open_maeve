@@ -53,6 +53,53 @@ class PST_Connector {
 
  private:
   /**
+   * @brief Check whether switching times are strictly non-decreasing.
+   *
+   * @param connector The connecting trajectory to check.
+   *
+   * @return True if the switching times are non-decreasing; otherwise false.
+   */
+  static bool switchingTimesNonDecreasing(const PST_Connector& connector);
+
+  /**
+   * @brief Check whether the function segments of the connector intersect at
+   * the switching times.
+   *
+   * @note An approximate floating point comparison is used.
+   *
+   * @param connector The connecting trajectory to check.
+   *
+   * @return True if the segments are connected; otherwise false.
+   */
+  static bool segmentsConnected(const PST_Connector& connector);
+
+  /**
+   * @brief Check whether the function segments of the connector have equal
+   * first derivatives at the switching times.
+   *
+   * @note An approximate floating point comparison is used.
+   *
+   * @param connector The connecting trajectory to check.
+   *
+   * @return True if the segments have equal first derivatives; otherwise false.
+   */
+  static bool segmentsTangent(const PST_Connector& connector);
+
+  /**
+   * @brief Check that the coefficients of the function segments conform.
+   *
+   * The quadratic coefficients of the initial and terminal segments must be
+   * non-zero, while the quadratic coefficient for the interstitial segment must
+   * be zero.
+   *
+   * @param connector The connecting trajectory to check.
+   *
+   * @return True if the segments satisfy coefficient requirements; otherwise
+   * false.
+   */
+  static bool checkSegmentCoefficients(const PST_Connector& connector);
+
+  /**
    * @brief Perform basic checks for validity of the connecting trajectory.
    *
    * In order to be valid, the following are necessary conditions:

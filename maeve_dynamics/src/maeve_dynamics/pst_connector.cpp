@@ -23,24 +23,87 @@
 
 #include <limits>
 
+#include "maeve_automation_core/maeve_geometry/comparisons.h"
+
 namespace maeve_automation_core {
-bool PST_Connector::valid(const PST_Connector& connector) {
+bool PST_Connector::switchingTimesNonDecreasing(
+    const PST_Connector& connector) {
   // Check monotonicity.
   auto non_decreasing = true;
   for (auto i = 1; i < connector.switching_times_.size(); ++i) {
     non_decreasing = (non_decreasing && (connector.switching_times_[i] >=
                                          connector.switching_times_[i - 1]));
   }
-  if (!non_decreasing) {
-    return false;
-  }
+  return non_decreasing;
+}
+
+bool PST_Connector::segmentsConnected(const PST_Connector& connector) {
+  // Absolute error for doing approximate floating point comparisons.
+  static const auto epsilon = 0.00001;
+
+  // Record switching times for convenience.
+  const auto t1 = connector.switching_times_[1];
+  const auto t2 = connector.switching_times_[2];
+
+  // Compute paths value of segments 0 and 1 at time t1.
+  const auto s01 = connector.functions_[0](t1);
+  const auto s11 = connector.functions_[1](t1);
+
+  // Compute path values of segments 1 and 2 at time t2.
+  const auto s12 = connector.functions_[1](t2);
+  const auto s22 = connector.functions_[2](t2);
+
+  // The path values at t1 and at t2 should be equal.
+  return approxEq(s01, s11, epsilon) && approxEq(s12, s22, epsilon);
+}
+
+bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
+  // Absolute error for doing approximate floating point comparisons.
+  static const auto epsilon = 0.00001;
+
+  // Record switching times for convenience.
+  const auto t1 = connector.switching_times_[1];
+  const auto t2 = connector.switching_times_[2];
+
+  // Compute \dot{s} value of segments 0 and 1 at time t1.
+  const auto s_dot01 = Parabola::dt(connector.functions_[0], t1);
+  const auto s_dot11 = Parabola::dt(connector.functions_[1], t1);
+
+  // Compute \dot{s} values of segments 1 and 2 at time t2.
+  const auto s_dot12 = Parabola::dt(connector.functions_[1], t2);
+  const auto s_dot22 = Parabola::dt(connector.functions_[2], t2);
+
+  // The path values at t1 and at t2 should be equal.
+  return approxEq(s_dot01, s_dot11, epsilon) &&
+         approxEq(s_dot12, s_dot22, epsilon);
+}
+
+bool PST_Connector::checkSegmentCoefficients(const PST_Connector& connector) {
+  const auto seg1_coeff_zero = (Parabola::a(connector.functions_[0]) == 0.0);
+  const auto seg2_coeff_zero = (Parabola::a(connector.functions_[1]) == 0.0);
+  const auto seg3_coeff_zero = (Parabola::a(connector.functions_[2]) == 0.0);
+
+  return !seg1_coeff_zero && seg2_coeff_zero && !seg3_coeff_zero;
+}
+
+bool PST_Connector::valid(const PST_Connector& connector) {
+  // Check monotonicity.
+  const auto non_decreasing =
+      PST_Connector::switchingTimesNonDecreasing(connector);
 
   // Check connectivity.
+  const auto segments_connected = PST_Connector::segmentsConnected(connector);
 
   // Check tangency.
+  const auto segments_tangent = PST_Connector::segmentsTangent(connector);
+
+  // Check coefficients.
+  const auto segment_coefficients =
+      PST_Connector::checkSegmentCoefficients(connector);
 
   // Done.
-  return false;
+  return non_decreasing && segments_connected && segments_tangent &&
+         segment_coefficients;
 }
 
 PST_Connector::PST_Connector(std::array<double, 4>&& switching_times,
