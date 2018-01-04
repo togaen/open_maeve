@@ -28,6 +28,14 @@
 
 namespace maeve_automation_core {
 
+TEST(Maeve_Dynamics_Parabola, testDerivatives) {
+  {
+    const auto p = Parabola(2, 3, 4);
+    EXPECT_EQ(Parabola::dt(p, 0.5), 4.0 * 0.5 + 3.0);
+    EXPECT_EQ(Parabola::ddt(p), 4.0);
+  }
+}
+
 TEST(Maeve_Dynamics_Parabola, testEval) {
   {
     const auto p = Parabola(1, 1, 1);

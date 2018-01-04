@@ -66,6 +66,25 @@ class Parabola {
   double operator()(const double x) const;
 
   /**
+   * @brief First derivative of the parabola at a given time.
+   *
+   * @param parabola The parabola.
+   * @param time The time.
+   *
+   * @return The first derivative of 'parabola' at 'time'.
+   */
+  static double dt(const Parabola& parabola, const double time);
+
+  /**
+   * @brief The second derivative of the parabola. 
+   *
+   * @param parabola The parabola.
+   *
+   * @return The second derivative of 'parabola'.
+   */
+  static double ddt(const Parabola& parabola);
+
+  /**
    * @brief Access the quadratic coefficient.
    *
    * @param parabola The parabola.
@@ -100,5 +119,10 @@ class Parabola {
    * at index 0, 'b' at index 1, and 'c' at index 2.
    */
   std::array<double, 3> coefficients_;
+
+  /**
+   * @brief Coefficients for the first derivative of the parabola.
+   */
+  std::array<double, 2> dt_coefficients_;
 };  // class Parabola
 }  // namespace maeve_automation_core
