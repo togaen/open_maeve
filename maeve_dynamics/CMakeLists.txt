@@ -132,6 +132,7 @@ include_directories(
  add_library(${PROJECT_NAME}
    src/${PROJECT_NAME}/pst_reachability.cpp
    src/${PROJECT_NAME}/parabola.cpp
+   src/${PROJECT_NAME}/pst_connector.cpp
  )
 
 ## Add cmake target dependencies of the library
