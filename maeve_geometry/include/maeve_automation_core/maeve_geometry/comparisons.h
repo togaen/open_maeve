@@ -59,6 +59,21 @@ inline bool approxNe(const T& a, const T& b, const T& eps) {
 }
 
 /**
+ * @brief Check whether a value is within epsilon of zero.
+ *
+ * @tparam T The type of the value to check.
+ *
+ * @param a The value to check.
+ * @param eps The absolute range within with to assume equality.
+ *
+ * @return True if 'a' is within 'eps' of zero; otherwise false.
+ */
+template <typename T>
+inline bool approxZero(const T& a, const T& eps) {
+  return approxEq(a, T(0), eps);
+}
+
+/**
  * @brief Check for approximate less than in absolute terms.
  *
  * @tparam T The type of value to check.
