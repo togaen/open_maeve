@@ -204,6 +204,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_main.cpp
   test/test_interval_constraints.cpp
   test/test_parabola.cpp
+  test/test_pst_connector.cpp
   )
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})

@@ -43,7 +43,7 @@ class PST_Connector {
    * @brief Constructor: explicitly initialize the connector.
    *
    * @note This constructor checks for validity of the arguments and throws an
-   * exception if they do not meet necessary conditions.
+   * exception if they do not meet basic necessary conditions.
    *
    * @param switching_times Trajectory switching times.
    * @param functions Trajectory functional segments.
@@ -86,18 +86,13 @@ class PST_Connector {
   static bool segmentsTangent(const PST_Connector& connector);
 
   /**
-   * @brief Check that the coefficients of the function segments conform.
-   *
-   * The quadratic coefficients of the initial and terminal segments must be
-   * non-zero, while the quadratic coefficient for the interstitial segment must
-   * be zero.
+   * @brief Check whether all parabola coefficients are real valued.
    *
    * @param connector The connecting trajectory to check.
    *
-   * @return True if the segments satisfy coefficient requirements; otherwise
-   * false.
+   * @return True if the segments all have real coefficients; otherwise false.
    */
-  static bool checkSegmentCoefficients(const PST_Connector& connector);
+  static bool realCoefficients(const PST_Connector& connector);
 
   /**
    * @brief Perform basic checks for validity of the connecting trajectory.
@@ -105,12 +100,14 @@ class PST_Connector {
    * In order to be valid, the following are necessary conditions:
    *
    *   1) The switching times must be strictly non-decreasing.
-   *   2) The 'a' coefficients of parabolas at indices 0 and 2 must not be 0.
-   *   3) The 'a' coefficient of the parabola at index 1 must be 0.
-   *   4) The values and tangents of parabolas at indices 0 and 1 must be equal
+   *   2) The values and tangents of parabolas at indices 0 and 1 must be equal
    *      at the switching time at index 1.
-   *   5) The values and tangents of parabolas at indices 1 and 2 must be equal
+   *   3) The values and tangents of parabolas at indices 1 and 2 must be equal
    *      at the switching time at index 2.
+   *   4) All parabola coefficients must be real valued.
+   *
+   * @note These are necessary, not sufficient, conditions for the connector to
+   * be valid.
    *
    * @param connecting_trajectory
    *

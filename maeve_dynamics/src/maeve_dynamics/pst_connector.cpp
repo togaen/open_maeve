@@ -21,6 +21,8 @@
  */
 #include "maeve_automation_core/maeve_dynamics/pst_connector.h"
 
+#include <algorithm>
+#include <cmath>
 #include <limits>
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
@@ -78,12 +80,13 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
          approxEq(s_dot12, s_dot22, epsilon);
 }
 
-bool PST_Connector::checkSegmentCoefficients(const PST_Connector& connector) {
-  const auto seg1_coeff_zero = (Parabola::a(connector.functions_[0]) == 0.0);
-  const auto seg2_coeff_zero = (Parabola::a(connector.functions_[1]) == 0.0);
-  const auto seg3_coeff_zero = (Parabola::a(connector.functions_[2]) == 0.0);
-
-  return !seg1_coeff_zero && seg2_coeff_zero && !seg3_coeff_zero;
+bool PST_Connector::realCoefficients(const PST_Connector& connector) {
+  return std::all_of(std::begin(connector.functions_),
+                     std::end(connector.functions_), [](const Parabola& p) {
+                       return std::isfinite(Parabola::a(p)) &&
+                              std::isfinite(Parabola::b(p)) &&
+                              std::isfinite(Parabola::c(p));
+                     });
 }
 
 bool PST_Connector::valid(const PST_Connector& connector) {
@@ -97,13 +100,12 @@ bool PST_Connector::valid(const PST_Connector& connector) {
   // Check tangency.
   const auto segments_tangent = PST_Connector::segmentsTangent(connector);
 
-  // Check coefficients.
-  const auto segment_coefficients =
-      PST_Connector::checkSegmentCoefficients(connector);
+  // Check validity.
+  const auto real_coefficients = PST_Connector::realCoefficients(connector);
 
   // Done.
   return non_decreasing && segments_connected && segments_tangent &&
-         segment_coefficients;
+         real_coefficients;
 }
 
 PST_Connector::PST_Connector(std::array<double, 4>&& switching_times,
