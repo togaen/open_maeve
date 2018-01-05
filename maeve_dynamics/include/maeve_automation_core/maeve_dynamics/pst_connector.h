@@ -24,7 +24,7 @@
 #include <array>
 #include <iostream>
 
-#include "maeve_automation_core/maeve_dynamics/parabola.h"
+#include "maeve_automation_core/maeve_geometry/parabola.h"
 
 namespace maeve_automation_core {
 /**

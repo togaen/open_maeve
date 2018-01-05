@@ -131,7 +131,6 @@ include_directories(
 ## Declare a C++ library
  add_library(${PROJECT_NAME}
    src/${PROJECT_NAME}/pst_reachability.cpp
-   src/${PROJECT_NAME}/parabola.cpp
    src/${PROJECT_NAME}/pst_connector.cpp
  )
 
@@ -203,7 +202,6 @@ include_directories(
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_main.cpp
   test/test_interval_constraints.cpp
-  test/test_parabola.cpp
   test/test_pst_connector.cpp
   )
 if(TARGET ${PROJECT_NAME}-test)

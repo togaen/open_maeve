@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/maeve_dynamics/parabola.h"
+#include "maeve_automation_core/maeve_geometry/parabola.h"
 
 #include <limits>
 
