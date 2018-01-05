@@ -76,7 +76,7 @@ class Parabola {
   static double dt(const Parabola& parabola, const double time);
 
   /**
-   * @brief The second derivative of the parabola. 
+   * @brief The second derivative of the parabola.
    *
    * @param parabola The parabola.
    *
