@@ -21,4 +21,63 @@
  */
 #include "maeve_automation_core/maeve_dynamics/pst_reachability.h"
 
-namespace maeve_automation_core {}  // namespace maeve_automation_core
+namespace maeve_automation_core {
+namespace pst {
+
+template <>
+boost::optional<PST_Connector> reachability<Type::I>(
+    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector> reachability<Type::II>(
+    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector> reachability<Type::III>(
+    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector> reachability<Type::IV>(
+    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector> reachability<Type::V>(
+    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector> reachability<Type::VI>(
+    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector> reachability<Type::VII>(
+    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector> reachability<Type::VIII>(
+    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+}  // namespace pst
+}  // namespace maeve_automation_core

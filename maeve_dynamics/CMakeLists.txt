@@ -21,7 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 
 
@@ -125,8 +125,9 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
  include
-  ${catkin_INCLUDE_DIRS}
-)
+ ${catkin_INCLUDE_DIRS}
+ ${Boost_INCLUDE_DIRS}
+ )
 
 ## Declare a C++ library
  add_library(${PROJECT_NAME}
@@ -203,6 +204,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_main.cpp
   test/test_interval_constraints.cpp
   test/test_pst_connector.cpp
+  test/test_pst_reachability.cpp
   )
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
