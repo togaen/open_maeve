@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <stdexcept>
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 
@@ -114,7 +115,7 @@ PST_Connector::PST_Connector(std::array<double, 4>&& switching_times,
       functions_(std::move(functions)) {
   const auto is_valid = PST_Connector::valid(*this);
   if (!is_valid) {
-    throw;
+    throw std::domain_error("Invalid parameter values for PST connector.");
   }
 }
 }  // namespace maeve_automation_core
