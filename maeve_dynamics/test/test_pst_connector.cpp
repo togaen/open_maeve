@@ -30,7 +30,8 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
     auto exception_thrown = false;
     try {
       auto pc = PST_Connector({0.0, 1.0, 3.0, 2.0}, {p, p, p});
-    } catch (...) {
+    } catch (const std::exception& e) {
+      std::cout << "Exception caught: " << e.what() << std::endl;
       exception_thrown = true;
     }
     EXPECT_TRUE(exception_thrown);

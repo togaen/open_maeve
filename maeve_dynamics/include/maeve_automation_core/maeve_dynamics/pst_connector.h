@@ -40,14 +40,24 @@ namespace maeve_automation_core {
 class PST_Connector {
  public:
   /**
-   * @brief Constructor: explicitly initialize the connector.
+   * @brief Stream overload for PST Connectors.
    *
-   * @note This constructor checks for validity of the arguments and throws an
-   * exception if they do not meet basic necessary conditions.
+   * @param os The output stream.
+   * @param constraints The PST connector object.
    *
-   * @param switching_times Trajectory switching times.
-   * @param functions Trajectory functional segments.
+   * @return The output stream with the object serialized.
    */
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const PST_Connector& connector);
+  /**
+  * @brief Constructor: explicitly initialize the connector.
+  *
+  * @note This constructor checks for validity of the arguments and throws an
+  * exception if they do not meet basic necessary conditions.
+  *
+  * @param switching_times Trajectory switching times.
+  * @param functions Trajectory functional segments.
+  */
   PST_Connector(std::array<double, 4>&& switching_times,
                 std::array<Parabola, 3>&& functions);
 

@@ -24,11 +24,23 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <sstream>
 #include <stdexcept>
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 
 namespace maeve_automation_core {
+std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
+  const auto& t = connector.switching_times_;
+  const auto& p = connector.functions_;
+
+  os << "{switching times: [" << t[0] << ", " << t[1] << ", " << t[2] << ", "
+     << t[3] << "], ";
+  os << "parabola coefficients: [" << p[0] << ", " << p[1] << ", " << p[2]
+     << "]}";
+  return os;
+}
+
 bool PST_Connector::switchingTimesNonDecreasing(
     const PST_Connector& connector) {
   // Check monotonicity.
@@ -115,7 +127,10 @@ PST_Connector::PST_Connector(std::array<double, 4>&& switching_times,
       functions_(std::move(functions)) {
   const auto is_valid = PST_Connector::valid(*this);
   if (!is_valid) {
-    throw std::domain_error("Invalid parameter values for PST connector.");
+    std::stringstream ss;
+    ss << *this;
+    throw std::domain_error("Invalid parameter values for PST connector: " +
+                            ss.str());
   }
 }
 }  // namespace maeve_automation_core
