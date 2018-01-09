@@ -22,62 +22,35 @@
 #include "maeve_automation_core/maeve_dynamics/pst_reachability.h"
 
 namespace maeve_automation_core {
-namespace pst {
+PST_Reachability::PST_Reachability(PST_Connector&& min_terminal,
+                                   PST_Connector&& max_terminal)
+    : min_terminal_(std::move(min_terminal)),
+      max_terminal_(std::move(max_terminal)) {}
 
-template <>
-boost::optional<PST_Connector> reachability<Type::I>(
-    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
+boost::optional<PST_Reachability> PST_Reachability::compute(
+    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints) {
   return boost::none;
 }
 
-template <>
-boost::optional<PST_Connector> reachability<Type::II>(
-    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
-    const IntervalConstraints<2>& constraints) {
-  return boost::none;
+Interval PST_Reachability::reachableInterval(
+    const PST_Reachability& reachability) {
+  const auto& min_connector = PST_Reachability::minConnector(reachability);
+  const auto& max_connector = PST_Reachability::maxConnector(reachability);
+  const auto min_speed = PST_Connector::terminalSpeed(min_connector);
+  const auto max_speed = PST_Connector::terminalSpeed(max_connector);
+
+  return Interval(min_speed, max_speed);
 }
 
-template <>
-boost::optional<PST_Connector> reachability<Type::III>(
-    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
-    const IntervalConstraints<2>& constraints) {
-  return boost::none;
+const PST_Connector& PST_Reachability::minConnector(
+    const PST_Reachability& reachability) {
+  return reachability.min_terminal_;
 }
 
-template <>
-boost::optional<PST_Connector> reachability<Type::IV>(
-    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
-    const IntervalConstraints<2>& constraints) {
-  return boost::none;
+const PST_Connector& PST_Reachability::maxConnector(
+    const PST_Reachability& reachability) {
+  return reachability.max_terminal_;
 }
 
-template <>
-boost::optional<PST_Connector> reachability<Type::V>(
-    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
-    const IntervalConstraints<2>& constraints) {
-  return boost::none;
-}
-
-template <>
-boost::optional<PST_Connector> reachability<Type::VI>(
-    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
-    const IntervalConstraints<2>& constraints) {
-  return boost::none;
-}
-
-template <>
-boost::optional<PST_Connector> reachability<Type::VII>(
-    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
-    const IntervalConstraints<2>& constraints) {
-  return boost::none;
-}
-
-template <>
-boost::optional<PST_Connector> reachability<Type::VIII>(
-    const Eigen::Vector2d& pt1, const Interval& v_i, const Eigen::Vector2d& pt2,
-    const IntervalConstraints<2>& constraints) {
-  return boost::none;
-}
-}  // namespace pst
 }  // namespace maeve_automation_core

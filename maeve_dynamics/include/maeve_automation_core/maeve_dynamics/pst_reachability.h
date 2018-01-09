@@ -29,103 +29,96 @@
 
 namespace maeve_automation_core {
 /**
- * @brief This namespace contains function for computing reachability under
- * second order constraints.
+ * @brief This class contains function for computing reachability under second
+ * order constraints.
  */
-namespace pst {
-/**
- * @brief Enumerate the types of trajectories that determine reachability in PST
- * space.
- */
-enum class Type {
-  // Type I: P^+LP^+ Trajectories with an initial acceleration, a constant speed
-  // portion, and a terminal acceleration
-  I,
-  // Type II: P^+LP^- Trajectories with an initial acceleration, a constant
-  // speed portion, and a terminal deceleration.
-  II,
-  // Type III: P^-LP^+ Trajectories with an initial deceleration, a constant
-  // speed portion, and a terminal acceleration.
-  III,
-  // Type IV: P^-LP^- Trajectories with an initial deceleration, a constant
-  // speed portion, and a terminal deceleration.
-  IV,
-  // Type V: P^+P^+ Trajectories with an initial acceleration followed by a
-  // terminal deceleration.
-  V,
-  // Type VI: P^+P^- Trajectories with an initial acceleration followed by a
-  // terminal deceleration.
-  VI,
-  // Type VII: P^-P^+ Trajectories with an initial deceleration followed by a
-  // terminal acceleration.
-  VII,
-  // Type VIII: P^-P^- Trajectories with an initial deceleration followed by a
-  // terminal deceleration.
-  VIII
-};
+class PST_Reachability {
+ public:
+  /**
+   * @brief Compute reachability.
+   *
+   * @param p1 The initial point in PT space.
+   * @param v_i The initial speed interval for p1.
+   * @param p2 The terminal point in PT space.
+   * @param constraints The dynamic constraints describing 1st and 2nd order
+   * bounds.
+   *
+   * @return A nullable object of either the reachability object or boost::none.
+   */
+  static boost::optional<PST_Reachability> compute(
+      const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
+      const IntervalConstraints<2>& constraints);
 
-/**
- * @brief Compute reachability.
- *
- * @tparam T The reachability type.
- *
- * @param p1 The initial point in PT space.
- * @param v_i The initial speed interval for p1.
- * @param p2 The terminal point in PT space.
- * @param constraints The dynamic constraints describing 1st and 2nd order
- * bounds.
- *
- * @return A nullable object of either the connecting trajectory for
- * boost::none.
- */
-template <Type T>
-boost::optional<PST_Connector> reachability(
-    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints);
+  /**
+   * @brief The interval of reachable speeds.
+   *
+   * @return An interval object of reachable speeds.
+   */
+  static Interval reachableInterval(const PST_Reachability& reachability);
 
-/**
- * This group defines template specializations for each connector type.
- * @{
- */
-template <>
-boost::optional<PST_Connector> reachability<Type::I>(
-    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints);
+  /**
+   * @brief Get a reference to the connector of min terminal speed.
+   *
+   * @param reachability The reachability object.
+   *
+   * @return A const reference to the min connector.
+   */
+  static const PST_Connector& minConnector(
+      const PST_Reachability& reachability);
 
-template <>
-boost::optional<PST_Connector> reachability<Type::II>(
-    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints);
+  /**
+   * @brief Get a reference to the connector of max terminal speed.
+   *
+   * @param reachability The reachability object.
+   *
+   * @return A const reference to the max connector.
+   */
+  static const PST_Connector& maxConnector(
+      const PST_Reachability& reachability);
 
-template <>
-boost::optional<PST_Connector> reachability<Type::III>(
-    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints);
+ private:
+  /**
+   * @brief Constructor: explicit initialization.
+   *
+   * @param min_terminal The connecting trajectory with min terminal speed.
+   * @param max_terminal The connecting trajectory with max terminal speed.
+   */
+  PST_Reachability(PST_Connector&& min_terminal, PST_Connector&& max_terminal);
 
-template <>
-boost::optional<PST_Connector> reachability<Type::IV>(
-    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints);
+  /**
+   * @brief Enumerate the types of trajectories that determine reachability in
+   * PST space.
+   */
+  enum class Type {
+    // Type I: P^+LP^+ Trajectories with an initial acceleration, a constant
+    // speed portion, and a terminal acceleration
+    I,
+    // Type II: P^+LP^- Trajectories with an initial acceleration, a constant
+    // speed portion, and a terminal deceleration.
+    II,
+    // Type III: P^-LP^+ Trajectories with an initial deceleration, a constant
+    // speed portion, and a terminal acceleration.
+    III,
+    // Type IV: P^-LP^- Trajectories with an initial deceleration, a constant
+    // speed portion, and a terminal deceleration.
+    IV,
+    // Type V: P^+P^+ Trajectories with an initial acceleration followed by a
+    // terminal deceleration.
+    V,
+    // Type VI: P^+P^- Trajectories with an initial acceleration followed by a
+    // terminal deceleration.
+    VI,
+    // Type VII: P^-P^+ Trajectories with an initial deceleration followed by a
+    // terminal acceleration.
+    VII,
+    // Type VIII: P^-P^- Trajectories with an initial deceleration followed by a
+    // terminal deceleration.
+    VIII
+  };
 
-template <>
-boost::optional<PST_Connector> reachability<Type::V>(
-    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints);
-
-template <>
-boost::optional<PST_Connector> reachability<Type::VI>(
-    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints);
-
-template <>
-boost::optional<PST_Connector> reachability<Type::VII>(
-    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints);
-
-template <>
-boost::optional<PST_Connector> reachability<Type::VIII>(
-    const Eigen::Vector2d& p1, const Interval& v_i, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints);
-/** @} */
-}  // namespace pst
+  /** @brief The PST connector that achieves minimum terminal speed. */
+  PST_Connector min_terminal_;
+  /** @brief the PST connector that achieves maximum terminal speed. */
+  PST_Connector max_terminal_;
+};  // class PST_Reachability
 }  // namespace maeve_automation_core

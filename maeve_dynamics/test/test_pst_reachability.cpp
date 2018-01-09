@@ -24,46 +24,4 @@
 #include "maeve_automation_core/maeve_dynamics/pst_reachability.h"
 
 namespace maeve_automation_core {
-namespace pst {
-TEST(Maeve_Dynamics_PST_Reachability, testReachability) {
-  const auto p1 = Eigen::Vector2d(0, 0);
-  const auto p2 = Eigen::Vector2d(5, 5);
-  const auto v_i = Interval(1, 1);
-  const auto c = IntervalConstraints<2>(Interval(-1, -1),
-                                        {Interval(0, 1), Interval(-4, 4)});
-
-  {
-    const auto r = reachability<Type::I>(p1, v_i, p2, c);
-    EXPECT_FALSE(!r);
-  }
-  {
-    const auto r = reachability<Type::II>(p1, v_i, p2, c);
-    EXPECT_FALSE(!r);
-  }
-  {
-    const auto r = reachability<Type::III>(p1, v_i, p2, c);
-    EXPECT_FALSE(!r);
-  }
-  {
-    const auto r = reachability<Type::IV>(p1, v_i, p2, c);
-    EXPECT_FALSE(!r);
-  }
-  {
-    const auto r = reachability<Type::V>(p1, v_i, p2, c);
-    EXPECT_FALSE(!r);
-  }
-  {
-    const auto r = reachability<Type::VI>(p1, v_i, p2, c);
-    EXPECT_FALSE(!r);
-  }
-  {
-    const auto r = reachability<Type::VII>(p1, v_i, p2, c);
-    EXPECT_FALSE(!r);
-  }
-  {
-    const auto r = reachability<Type::VIII>(p1, v_i, p2, c);
-    EXPECT_FALSE(!r);
-  }
-}
-}  // namespace pst
 }  // namespace maeve_automation_core
