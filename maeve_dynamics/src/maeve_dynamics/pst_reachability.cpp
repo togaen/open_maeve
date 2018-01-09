@@ -53,4 +53,67 @@ const PST_Connector& PST_Reachability::maxConnector(
   return reachability.max_terminal_;
 }
 
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::connector<PST_Reachability::Type::I>(
+    const Eigen::Vector2d& p1, const double v_i, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::connector<PST_Reachability::Type::II>(
+    const Eigen::Vector2d& p1, const double v_i, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::connector<PST_Reachability::Type::III>(
+    const Eigen::Vector2d& p1, const double v_i, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::connector<PST_Reachability::Type::IV>(
+    const Eigen::Vector2d& p1, const double v_i, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::connector<PST_Reachability::Type::V>(
+    const Eigen::Vector2d& p1, const Interval& V_i, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::connector<PST_Reachability::Type::VI>(
+    const Eigen::Vector2d& p1, const Interval& V_i, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::connector<PST_Reachability::Type::VII>(
+    const Eigen::Vector2d& p1, const Interval& V_i, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::connector<PST_Reachability::Type::VIII>(
+    const Eigen::Vector2d& p1, const Interval& V_i, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
 }  // namespace maeve_automation_core
