@@ -139,7 +139,7 @@ class PST_Reachability {
    * @brief Compute a connector for various types of trajectories for a given
    * initial speed interval.
    *
-   * @tparam T
+   * @tparam T The connector type.
    *
    * @param p1 The initial point in PT space.
    * @param V_i The initial speed interval for p1.
