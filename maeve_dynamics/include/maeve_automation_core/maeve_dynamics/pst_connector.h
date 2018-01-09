@@ -61,6 +61,24 @@ class PST_Connector {
   PST_Connector(std::array<double, 4>&& switching_times,
                 std::array<Parabola, 3>&& functions);
 
+  /**
+   * @brief Get the speed at the beginning of the connector.
+   *
+   * @param connector The connecting trajectory.
+   *
+   * @return The initial speed.
+   */
+  static double initialSpeed(const PST_Connector& connector);
+
+  /**
+   * @brief Get the speed at the end of the connector.
+   *
+   * @param connector The connecting trajectory.
+   *
+   * @return The terminal speed.
+   */
+  static double terminalSpeed(const PST_Connector& connector);
+
  private:
   /**
    * @brief Check whether switching times are strictly non-decreasing.

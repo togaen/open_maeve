@@ -41,6 +41,14 @@ std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
   return os;
 }
 
+double PST_Connector::initialSpeed(const PST_Connector& connector) {
+  return Parabola::dt(connector.functions_[0], connector.switching_times_[0]);
+}
+
+double PST_Connector::terminalSpeed(const PST_Connector& connector) {
+  return Parabola::dt(connector.functions_[2], connector.switching_times_[3]);
+}
+
 bool PST_Connector::switchingTimesNonDecreasing(
     const PST_Connector& connector) {
   // Check monotonicity.

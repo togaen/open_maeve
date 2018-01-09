@@ -24,6 +24,23 @@
 #include "maeve_automation_core/maeve_dynamics/pst_connector.h"
 
 namespace maeve_automation_core {
+namespace {
+const auto epsilon = 0.0001;
+}  // namespace
+
+TEST(Maeve_Dynamics_PST_Connector, testEndPoints) {
+  {
+    const auto p = Parabola(1, 1, 1);
+    try {
+      auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, p, p});
+      EXPECT_NEAR(PST_Connector::initialSpeed(pc), 1.0, epsilon);
+      EXPECT_NEAR(PST_Connector::terminalSpeed(pc), 7.0, epsilon);
+    } catch (const std::exception& e) {
+      ASSERT_FALSE(true) << "Unexpected exception: " << e.what();
+    }
+  }
+}
+
 TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
   {
     const auto p = Parabola(1, 1, 1);
