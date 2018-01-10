@@ -35,6 +35,31 @@ namespace maeve_automation_core {
 class PST_Reachability {
  public:
   /**
+   * @brief Types of trajectories that determine reachability in PST space.
+   *
+   * @note In principle there are two additional types, but in practice P+P+ is
+   * subsumed by P-P+ and P-P- is subsumed by P+P-.
+   */
+  enum class Type {
+    // P+LP+: Initial acceleration, constant speed, terminal acceleration
+    I,
+    // P+LP-: Initial acceleration, constant speed, terminal deceleration.
+    II,
+    // P-LP+: Initial deceleration, constant speed, terminal acceleration.
+    III,
+    // P-LP-: Initial deceleration, constant speed, terminal deceleration.
+    IV,
+    // PP+: Initial acceleration, terminal acceleration.
+    V,
+    // PP-: Initial acceleration, terminal deceleration.
+    VI,
+    // LP+: Initial constant speed, terminal acceleration.
+    VII,
+    // LP-: Initial constant speed, terminal deceleration.
+    VIII
+  };
+
+  /**
    * @brief Compute reachability.
    *
    * @param p1 The initial point in PT space.
@@ -75,40 +100,6 @@ class PST_Reachability {
    */
   static const PST_Connector& maxConnector(
       const PST_Reachability& reachability);
-
- private:
-  /**
-   * @brief Constructor: explicit initialization.
-   *
-   * @param min_terminal The connecting trajectory with min terminal speed.
-   * @param max_terminal The connecting trajectory with max terminal speed.
-   */
-  PST_Reachability(PST_Connector&& min_terminal, PST_Connector&& max_terminal);
-
-  /**
-   * @brief Types of trajectories that determine reachability in PST space.
-   *
-   * @note In principle there are two additional types, but in practice P+P+ is
-   * subsumed by P-P+ and P-P- is subsumed by P+P-.
-   */
-  enum class Type {
-    // P+LP+: Initial acceleration, constant speed, terminal acceleration
-    I,
-    // P+LP-: Initial acceleration, constant speed, terminal deceleration.
-    II,
-    // P-LP+: Initial deceleration, constant speed, terminal acceleration.
-    III,
-    // P-LP-: Initial deceleration, constant speed, terminal deceleration.
-    IV,
-    // PP+: Initial acceleration, terminal acceleration.
-    V,
-    // PP-: Initial acceleration, terminal deceleration.
-    VI,
-    // LP+: Initial constant speed, terminal acceleration.
-    VII,
-    // LP-: Initial constant speed, terminal deceleration.
-    VIII
-  };
 
   /**
    * @brief Compute a connector for various types of trajectories for a fixed
@@ -189,6 +180,15 @@ class PST_Reachability {
   boost::optional<PST_Connector> minTerminalSpeed(
       const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
       const IntervalConstraints<2>& constraints);
+
+ private:
+  /**
+   * @brief Constructor: explicit initialization.
+   *
+   * @param min_terminal The connecting trajectory with min terminal speed.
+   * @param max_terminal The connecting trajectory with max terminal speed.
+   */
+  PST_Reachability(PST_Connector&& min_terminal, PST_Connector&& max_terminal);
 
   /** @brief The PST connector that achieves minimum terminal speed. */
   PST_Connector min_terminal_;
