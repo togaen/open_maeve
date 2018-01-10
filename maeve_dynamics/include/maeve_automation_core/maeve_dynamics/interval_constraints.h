@@ -171,6 +171,27 @@ class IntervalConstraints {
   static bool feasibleS(const IntervalConstraints& constraints, const int order,
                         const double s);
 
+  /**
+   * @brief Get a reference to the temporal bounds of this constraint set.
+   *
+   * @param constraints The constraint set.
+   *
+   * @return A reference to the temporal bounds.
+   */
+  static const Interval& boundsT(const IntervalConstraints& constraints);
+
+  /**
+   * @brief Get a reference to dynamic bounds of a given order.
+   *
+   * @tparam QueryOrder The order being queried.
+   *
+   * @param constraints The constraint set.
+   *
+   * @return A reference to the dynamic bounds of the given order.
+   */
+  template <unsigned int QueryOrder>
+  static const Interval& boundsS(const IntervalConstraints& constraints);
+
  private:
   /**
    * @brief Constructor: default.
@@ -239,5 +260,21 @@ bool IntervalConstraints<Order>::feasibleS(
     const IntervalConstraints& constraints, const int order, const double s) {
   // Throw an exception if 'order' violates array bounds.
   return Interval::contains(constraints.s_bounds_.at(order), s);
+}
+
+template <unsigned int Order>
+const Interval& IntervalConstraints<Order>::boundsT(
+    const IntervalConstraints<Order>& constraints) {
+  return constraints.t_bounds_;
+}
+
+template <unsigned int Order>
+template <unsigned int QueryOrder>
+const Interval& IntervalConstraints<Order>::boundsS(
+    const IntervalConstraints<Order>& constraints) {
+  static_assert(
+      (QueryOrder <= Order),
+      "This constraint set does not define bounds of the specified order.");
+  return constraints.s_bounds_[QueryOrder];
 }
 }  // namespace maeve_automation_core

@@ -24,6 +24,31 @@
 #include "maeve_automation_core/maeve_dynamics/interval_constraints.h"
 
 namespace maeve_automation_core {
+TEST(Maeve_Dynamics_Interval_Constraints, testAccessors) {
+  {
+    const auto c = IntervalConstraints<2>(Interval(0, 1),
+                                          {Interval(2, 3), Interval(4, 5)});
+
+    const auto& t = IntervalConstraints<2>::boundsT(c);
+    EXPECT_EQ(t, Interval(0, 1));
+
+    const auto& s0 = IntervalConstraints<2>::boundsS<0>(c);
+    EXPECT_EQ(s0, Interval(2, 3));
+
+    const auto& s1 = IntervalConstraints<2>::boundsS<1>(c);
+    EXPECT_EQ(s1, Interval(4, 5));
+  }
+
+  {
+    const auto c = IntervalConstraints<2>(Interval(0, 1),
+                                          {Interval(2, 3), Interval(4, 5)});
+
+    // This should not compile.
+    // const auto& s = IntervalConstraints<2>::boundsS<3>(c);
+    // EXPECT_TRUE(false);
+  }
+}
+
 TEST(Maeve_Dynamics_Interval_Constraints, testIntersect) {
   {
     const auto c1 = IntervalConstraints<1>(Interval(0, 1),
