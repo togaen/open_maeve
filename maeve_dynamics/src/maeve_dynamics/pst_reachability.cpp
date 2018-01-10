@@ -193,11 +193,21 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::V>(
   return boost::none;
 }
 
+// LP+
 template <>
 boost::optional<PST_Connector>
 PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
     const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints) {
+  // Speed bounds (1st order dynamic constraints).
+  const auto& I_s = IntervalConstraints<2>::boundsS<1>(constraints);
+
+  // Terminal speed is max feasible speed.
+  const auto s_t = Interval::max(I_s);
+
+  // TODO
+
+  // Done.
   return boost::none;
 }
 
