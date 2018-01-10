@@ -23,29 +23,30 @@
 
 #include <array>
 #include <iostream>
+#include <tuple>
 
 namespace maeve_automation_core {
 /**
- * @brief This class defines a functor that evaluates a parabola.
+ * @brief This class defines a functor that evaluates a quadratic.
  */
-class Parabola {
+class Quadratic {
  public:
   /**
-   * @brief Stream overload for parabola.
+   * @brief Stream overload for quadratic.
    *
-   * This overload prints the coefficients of the parabola as an ordered set.
+   * This overload prints the coefficients of the quadratic as an ordered set.
    *
    * @param os The output stream.
-   * @param parabola The parabola functor.
+   * @param quadratic The quadratic functor.
    *
-   * @return The output stream with 'parabola' serialized to it.
+   * @return The output stream with 'quadratic' serialized to it.
    */
-  friend std::ostream& operator<<(std::ostream& os, const Parabola& parabola);
+  friend std::ostream& operator<<(std::ostream& os, const Quadratic& quadratic);
 
   /**
    * @brief Constructor: default initialize to invalid values.
    */
-  Parabola();
+  Quadratic();
 
   /**
    * @brief Constructor: build from specified coefficients.
@@ -54,75 +55,88 @@ class Parabola {
    * @param b The linear coefficient.
    * @param c The constant coefficient.
    */
-  Parabola(const double a, const double b, const double c);
+  Quadratic(const double a, const double b, const double c);
 
   /**
-   * @brief Operator to evaluate the parabola at a given value.
+   * @brief Operator to evaluate the quadratic at a given value.
    *
-   * @param x The domain value to evaluate the parabola at.
+   * @param x The domain value to evaluate the quadratic at.
    *
-   * @return The value of the parabola at 'x'.
+   * @return The value of the quadratic at 'x'.
    */
   double operator()(const double x) const;
 
   /**
-   * @brief First derivative of the parabola at a given time.
+   * @brief Compute the roots of a quadratic.
    *
-   * @param parabola The parabola.
-   * @param time The time.
+   * @note This method favors accuracy and numeric stability over speed.
    *
-   * @return The first derivative of 'parabola' at 'time'.
+   * @param quadratic The quadratic.
+   *
+   * @return A tuple of the roots (may be NaN). By convention the roots are
+   * ordered such that the first root is not larger than the second.
    */
-  static double dt(const Parabola& parabola, const double time);
+  static std::tuple<double, double> roots(const Quadratic& quadratic);
 
   /**
-   * @brief The second derivative of the parabola.
+   * @brief First derivative of the quadratic at a given time.
    *
-   * @param parabola The parabola.
+   * @param quadratic The quadratic.
+   * @param time The time.
    *
-   * @return The second derivative of 'parabola'.
+   * @return The first derivative of 'quadratic' at 'time'.
    */
-  static double ddt(const Parabola& parabola);
+  static double dt(const Quadratic& quadratic, const double time);
+
+  /**
+   * @brief The second derivative of the quadratic.
+   *
+   * @param quadratic The quadratic.
+   *
+   * @return The second derivative of 'quadratic'.
+   */
+  static double ddt(const Quadratic& quadratic);
 
   /**
    * @brief Access the quadratic coefficient.
    *
-   * @param parabola The parabola.
+   * @param quadratic The quadratic.
    *
    * @return The quadratic coefficient.
    */
-  static double a(const Parabola& parabola);
+  static double a(const Quadratic& quadratic);
 
   /**
    * @brief Access the linear coefficient.
    *
-   * @param parabola The parabola.
+   * @param quadratic The quadratic.
    *
    * @return The linear coefficient.
    */
-  static double b(const Parabola& parabola);
+  static double b(const Quadratic& quadratic);
 
   /**
    * @brief Access the constant coefficient.
    *
-   * @param parabola The parabola
+   * @param quadratic The quadratic
    *
    * @return The constant coefficient.
    */
-  static double c(const Parabola& parabola);
+  static double c(const Quadratic& quadratic);
 
  private:
   /**
-   * @brief Coefficients for the parabola in canonical form.
+   * @brief Coefficients for the quadratic in canonical form.
    *
-   * The parabola is assumed to be in canonical form ax^2 + bx + c = 0, with 'a'
+   * The quadratic is assumed to be in canonical form ax^2 + bx + c = 0, with
+   * 'a'
    * at index 0, 'b' at index 1, and 'c' at index 2.
    */
   std::array<double, 3> coefficients_;
 
   /**
-   * @brief Coefficients for the first derivative of the parabola.
+   * @brief Coefficients for the first derivative of the quadratic.
    */
   std::array<double, 2> dt_coefficients_;
-};  // class Parabola
+};  // class Quadratic
 }  // namespace maeve_automation_core
