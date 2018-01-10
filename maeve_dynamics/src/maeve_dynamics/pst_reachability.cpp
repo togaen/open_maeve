@@ -185,13 +185,35 @@ PST_Reachability::connector<PST_Reachability::Type::VIII>(
 
 /***/
 
-boost::optional<PST_Connector> PST_Reachability::maxTerminalSpeed(
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::V>(
     const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints) {
   return boost::none;
 }
 
-boost::optional<PST_Connector> PST_Reachability::minTerminalSpeed(
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
+    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+/***/
+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VI>(
+    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
     const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints) {
   return boost::none;
