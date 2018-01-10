@@ -182,4 +182,18 @@ PST_Reachability::connector<PST_Reachability::Type::VIII>(
     const IntervalConstraints<2>& constraints) {
   return boost::none;
 }
+
+/***/
+
+boost::optional<PST_Connector> PST_Reachability::maxTerminalSpeed(
+    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
+boost::optional<PST_Connector> PST_Reachability::minTerminalSpeed(
+    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
 }  // namespace maeve_automation_core

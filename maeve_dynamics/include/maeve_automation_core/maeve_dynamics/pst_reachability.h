@@ -90,28 +90,28 @@ class PST_Reachability {
    * PST space.
    */
   enum class Type {
-    // Type I: P^+LP^+ Trajectories with an initial acceleration, a constant
+    // Type I: P+LP+ Trajectories with an initial acceleration, a constant
     // speed portion, and a terminal acceleration
     I,
-    // Type II: P^+LP^- Trajectories with an initial acceleration, a constant
+    // Type II: P+LP- Trajectories with an initial acceleration, a constant
     // speed portion, and a terminal deceleration.
     II,
-    // Type III: P^-LP^+ Trajectories with an initial deceleration, a constant
+    // Type III: P-LP+ Trajectories with an initial deceleration, a constant
     // speed portion, and a terminal acceleration.
     III,
-    // Type IV: P^-LP^- Trajectories with an initial deceleration, a constant
+    // Type IV: P-LP- Trajectories with an initial deceleration, a constant
     // speed portion, and a terminal deceleration.
     IV,
-    // Type V: P^+P^+ Trajectories with an initial acceleration followed by a
+    // Type V: P+P+ Trajectories with an initial acceleration followed by a
     // terminal deceleration.
     V,
-    // Type VI: P^+P^- Trajectories with an initial acceleration followed by a
+    // Type VI: P+P- Trajectories with an initial acceleration followed by a
     // terminal deceleration.
     VI,
-    // Type VII: P^-P^+ Trajectories with an initial deceleration followed by a
+    // Type VII: P-P+ Trajectories with an initial deceleration followed by a
     // terminal acceleration.
     VII,
-    // Type VIII: P^-P^- Trajectories with an initial deceleration followed by a
+    // Type VIII: P-P- Trajectories with an initial deceleration followed by a
     // terminal deceleration.
     VIII
   };
@@ -144,7 +144,7 @@ class PST_Reachability {
    * @param p1 The initial point in PT space.
    * @param V_i The initial speed interval for p1.
    * @param p2 The temrinal point in PT space.
-   * @param constraints The dynamic constraints describing 1st and 2n order
+   * @param constraints The dynamic constraints describing 1st and 2nd order
    * bounds.
    *
    * @return A nullable object of either the connector object or boost::none.
@@ -152,6 +152,46 @@ class PST_Reachability {
   template <Type T>
   boost::optional<PST_Connector> connector(
       const Eigen::Vector2d& p1, const Interval& V_i, const Eigen::Vector2d& p2,
+      const IntervalConstraints<2>& constraints);
+
+  /**
+   * @brief Compute a connector that connects two points with the max temrinal
+   * speed.
+   *
+   * This methods computes a special connector of the form PLP+, where the
+   * initial parabolic function is of length zero, and a linear segment extends
+   * from p1 and becomes tangent to the terminal P+ curve. If no such feasible
+   * connector exists, a null object is returned.
+   *
+   * @param p1 The initial point in PT space.
+   * @param p2 The terminal point in PT space.
+   * @param constraints The dynamic constraints describing 1st and 2nd order
+   * bounds.
+   *
+   * @return A nullable object of either the connector object or boost::none.
+   */
+  boost::optional<PST_Connector> maxTerminalSpeed(
+      const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+      const IntervalConstraints<2>& constraints);
+
+  /**
+   * @brief Compute a connector that connects two points with the min temrinal
+   * speed.
+   *
+   * This methods computes a special connector of the form PLP-, where the
+   * initial parabolic function is of length zero, and a linear segment extends
+   * from p1 and becomes tangent to the terminal P- curve. If no such feasible
+   * connector exists, a null object is returned.
+   *
+   * @param p1 The initial point in PT space.
+   * @param p2 The terminal point in PT space.
+   * @param constraints The dynamic constraints describing 1st and 2nd order
+   * bounds.
+   *
+   * @return A nullable object of either the connector object or boost::none.
+   */
+  boost::optional<PST_Connector> minTerminalSpeed(
+      const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
       const IntervalConstraints<2>& constraints);
 
   /** @brief The PST connector that achieves minimum terminal speed. */
