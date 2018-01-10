@@ -21,6 +21,8 @@
  */
 #include "maeve_automation_core/maeve_geometry/quadratic.h"
 
+#include <algorithm>
+#include <cmath>
 #include <limits>
 
 namespace maeve_automation_core {
@@ -57,9 +59,47 @@ double Quadratic::operator()(const double x) const {
   return x * (coefficients_[0] * x + coefficients_[1]) + coefficients_[2];
 }
 
-std::tuple<double, double> Quadratic::inverse(const Quadratic& quadratic,
-                                              const double y) {
-  return std::make_tuple(NaN, NaN);
+std::tuple<double, double> Quadratic::roots(const Quadratic& quadratic) {
+  // Capture coefficientsl
+  const auto a = Quadratic::a(quadratic);
+  const auto b = Quadratic::b(quadratic);
+  const auto c = Quadratic::c(quadratic);
+
+  // Not quadratic.
+  if (a == 0.0) {
+    // Indeterminate form.
+    if (b == 0.0) {
+      return std::make_tuple(NaN, NaN);
+    }
+
+    // Linear (first form).
+    const auto x = -c / b;
+    return std::make_tuple(x, x);
+  }
+
+  // Linear (second form).
+  if (c == 0.0) {
+    const auto x = -b / a;
+    return std::make_tuple(x, x);
+  }
+
+  // Capture term under the square root.
+  const auto discriminant = (b * b - 4.0 * a * c);
+
+  // Complex.
+  if (discriminant < 0.0) {
+    return std::make_tuple(NaN, NaN);
+  }
+
+  // Compute one of the roots.
+  const auto discriminant_root = std::copysign(std::sqrt(discriminant), b);
+  const auto r1 = ((-b + discriminant_root) / (2.0 * a));
+
+  // Compute the other.
+  const auto r2 = (c / (a * r1));
+
+  // Done.
+  return std::minmax(r1, r2);
 }
 
 std::ostream& operator<<(std::ostream& os, const Quadratic& quadratic) {

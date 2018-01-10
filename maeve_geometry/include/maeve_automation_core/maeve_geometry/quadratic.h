@@ -67,15 +67,16 @@ class Quadratic {
   double operator()(const double x) const;
 
   /**
-   * @brief Compute the inverse of a quadratic.
+   * @brief Compute the roots of a quadratic.
+   *
+   * @note This method favors accuracy and numeric stability over speed.
    *
    * @param quadratic The quadratic.
-   * @param y The range value to compute the inverse for.
    *
-   * @return A tuple of the roots for range value 'y'; one or both may be NaN.
+   * @return A tuple of the roots (may be NaN). By convention the roots are
+   * ordered such that the first root is not larger than the second.
    */
-  static std::tuple<double, double> inverse(const Quadratic& quadratic,
-                                            const double y);
+  static std::tuple<double, double> roots(const Quadratic& quadratic);
 
   /**
    * @brief First derivative of the quadratic at a given time.

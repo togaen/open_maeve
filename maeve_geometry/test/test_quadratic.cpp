@@ -27,6 +27,51 @@
 #include "maeve_automation_core/maeve_geometry/quadratic.h"
 
 namespace maeve_automation_core {
+namespace {
+const auto epsilon = 0.00001;
+}  // namespace
+
+TEST(Maeve_Dynamics_Quadratic, testRootFinder) {
+  {
+    const auto q = Quadratic(1, 1, 1);
+    double r1, r2;
+    std::tie(r1, r2) = Quadratic::roots(q);
+    EXPECT_TRUE(std::isnan(r1));
+    EXPECT_TRUE(std::isnan(r2));
+  }
+
+  {
+    const auto q = Quadratic(1, 2, 1);
+    double r1, r2;
+    std::tie(r1, r2) = Quadratic::roots(q);
+    EXPECT_EQ(r1, r2);
+    EXPECT_NEAR(r2, -1.0, epsilon);
+  }
+
+  {
+    const auto q = Quadratic(0, 2, 1);
+    double r1, r2;
+    std::tie(r1, r2) = Quadratic::roots(q);
+    EXPECT_EQ(r1, r2);
+    EXPECT_NEAR(r2, -0.5, epsilon);
+  }
+
+  {
+    const auto q = Quadratic(1, 2, 0);
+    double r1, r2;
+    std::tie(r1, r2) = Quadratic::roots(q);
+    EXPECT_EQ(r1, r2);
+    EXPECT_NEAR(r2, -2.0, epsilon);
+  }
+
+  {
+    const auto q = Quadratic(3, 5, 2);
+    double r1, r2;
+    std::tie(r1, r2) = Quadratic::roots(q);
+    EXPECT_NEAR(r1, -1.0, epsilon);
+    EXPECT_NEAR(r2, -0.66666, epsilon);
+  }
+}
 
 TEST(Maeve_Dynamics_Quadratic, testDerivatives) {
   {
