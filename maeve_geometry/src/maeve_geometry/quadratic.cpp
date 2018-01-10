@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/maeve_geometry/parabola.h"
+#include "maeve_automation_core/maeve_geometry/quadratic.h"
 
 #include <limits>
 
@@ -28,38 +28,43 @@ namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
-Parabola::Parabola() : coefficients_({NaN, NaN, NaN}) {}
+Quadratic::Quadratic() : coefficients_({NaN, NaN, NaN}) {}
 
-Parabola::Parabola(const double a, const double b, const double c)
+Quadratic::Quadratic(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dt_coefficients_({2.0 * a, b}) {}
 
-double Parabola::dt(const Parabola& parabola, const double time) {
-  return parabola.dt_coefficients_[0] * time + parabola.dt_coefficients_[1];
+double Quadratic::dt(const Quadratic& quadratic, const double time) {
+  return quadratic.dt_coefficients_[0] * time + quadratic.dt_coefficients_[1];
 }
 
-double Parabola::ddt(const Parabola& parabola) {
-  return parabola.dt_coefficients_[0];
+double Quadratic::ddt(const Quadratic& quadratic) {
+  return quadratic.dt_coefficients_[0];
 }
 
-double Parabola::a(const Parabola& parabola) {
-  return parabola.coefficients_[0];
+double Quadratic::a(const Quadratic& quadratic) {
+  return quadratic.coefficients_[0];
 }
 
-double Parabola::b(const Parabola& parabola) {
-  return parabola.coefficients_[1];
+double Quadratic::b(const Quadratic& quadratic) {
+  return quadratic.coefficients_[1];
 }
 
-double Parabola::c(const Parabola& parabola) {
-  return parabola.coefficients_[2];
+double Quadratic::c(const Quadratic& quadratic) {
+  return quadratic.coefficients_[2];
 }
 
-double Parabola::operator()(const double x) const {
+double Quadratic::operator()(const double x) const {
   return x * (coefficients_[0] * x + coefficients_[1]) + coefficients_[2];
 }
 
-std::ostream& operator<<(std::ostream& os, const Parabola& parabola) {
-  return os << "{a: " << Parabola::a(parabola)
-            << ", b:" << Parabola::b(parabola)
-            << ", c:" << Parabola::c(parabola) << "}";
+std::tuple<double, double> Quadratic::inverse(const Quadratic& quadratic,
+                                              const double y) {
+  return std::make_tuple(NaN, NaN);
+}
+
+std::ostream& operator<<(std::ostream& os, const Quadratic& quadratic) {
+  return os << "{a: " << Quadratic::a(quadratic)
+            << ", b:" << Quadratic::b(quadratic)
+            << ", c:" << Quadratic::c(quadratic) << "}";
 }
 }  // namespace maeve_automation_core

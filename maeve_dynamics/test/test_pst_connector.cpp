@@ -30,7 +30,7 @@ const auto epsilon = 0.0001;
 
 TEST(Maeve_Dynamics_PST_Connector, testEndPoints) {
   {
-    const auto p = Parabola(1, 1, 1);
+    const auto p = Quadratic(1, 1, 1);
     try {
       auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, p, p});
       EXPECT_NEAR(PST_Connector::initialSpeed(pc), 1.0, epsilon);
@@ -43,7 +43,7 @@ TEST(Maeve_Dynamics_PST_Connector, testEndPoints) {
 
 TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
   {
-    const auto p = Parabola(1, 1, 1);
+    const auto p = Quadratic(1, 1, 1);
     auto exception_thrown = false;
     try {
       auto pc = PST_Connector({0.0, 1.0, 3.0, 2.0}, {p, p, p});
@@ -55,7 +55,7 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
   }
 
   {
-    const auto p = Parabola(1, 1, 1);
+    const auto p = Quadratic(1, 1, 1);
     auto exception_thrown = false;
     try {
       auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, p, p});
@@ -66,10 +66,10 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
   }
 
   {
-    const auto p = Parabola(1, 1, 1);
+    const auto p = Quadratic(1, 1, 1);
     auto exception_thrown = false;
     try {
-      auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, Parabola(), p});
+      auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, Quadratic(), p});
     } catch (...) {
       exception_thrown = true;
     }

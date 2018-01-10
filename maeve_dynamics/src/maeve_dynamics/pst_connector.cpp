@@ -42,11 +42,11 @@ std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
 }
 
 double PST_Connector::initialSpeed(const PST_Connector& connector) {
-  return Parabola::dt(connector.functions_[0], connector.switching_times_[0]);
+  return Quadratic::dt(connector.functions_[0], connector.switching_times_[0]);
 }
 
 double PST_Connector::terminalSpeed(const PST_Connector& connector) {
-  return Parabola::dt(connector.functions_[2], connector.switching_times_[3]);
+  return Quadratic::dt(connector.functions_[2], connector.switching_times_[3]);
 }
 
 bool PST_Connector::switchingTimesNonDecreasing(
@@ -89,12 +89,12 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
   const auto t2 = connector.switching_times_[2];
 
   // Compute \dot{s} value of segments 0 and 1 at time t1.
-  const auto s_dot01 = Parabola::dt(connector.functions_[0], t1);
-  const auto s_dot11 = Parabola::dt(connector.functions_[1], t1);
+  const auto s_dot01 = Quadratic::dt(connector.functions_[0], t1);
+  const auto s_dot11 = Quadratic::dt(connector.functions_[1], t1);
 
   // Compute \dot{s} values of segments 1 and 2 at time t2.
-  const auto s_dot12 = Parabola::dt(connector.functions_[1], t2);
-  const auto s_dot22 = Parabola::dt(connector.functions_[2], t2);
+  const auto s_dot12 = Quadratic::dt(connector.functions_[1], t2);
+  const auto s_dot22 = Quadratic::dt(connector.functions_[2], t2);
 
   // The path values at t1 and at t2 should be equal.
   return approxEq(s_dot01, s_dot11, epsilon) &&
@@ -103,10 +103,10 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
 
 bool PST_Connector::realCoefficients(const PST_Connector& connector) {
   return std::all_of(std::begin(connector.functions_),
-                     std::end(connector.functions_), [](const Parabola& p) {
-                       return std::isfinite(Parabola::a(p)) &&
-                              std::isfinite(Parabola::b(p)) &&
-                              std::isfinite(Parabola::c(p));
+                     std::end(connector.functions_), [](const Quadratic& p) {
+                       return std::isfinite(Quadratic::a(p)) &&
+                              std::isfinite(Quadratic::b(p)) &&
+                              std::isfinite(Quadratic::c(p));
                      });
 }
 
@@ -130,7 +130,7 @@ bool PST_Connector::valid(const PST_Connector& connector) {
 }
 
 PST_Connector::PST_Connector(std::array<double, 4>&& switching_times,
-                             std::array<Parabola, 3>&& functions)
+                             std::array<Quadratic, 3>&& functions)
     : switching_times_(std::move(switching_times)),
       functions_(std::move(functions)) {
   const auto is_valid = PST_Connector::valid(*this);
