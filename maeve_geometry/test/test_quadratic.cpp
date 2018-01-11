@@ -77,7 +77,7 @@ TEST(Maeve_Dynamics_Quadratic, testDerivatives) {
   {
     const auto p = Quadratic(2, 3, 4);
     EXPECT_EQ(Quadratic::dt(p, 0.5), 4.0 * 0.5 + 3.0);
-    EXPECT_EQ(Quadratic::ddt(p), 4.0);
+    EXPECT_EQ(Quadratic::ddt(p), 2.0);
   }
 }
 

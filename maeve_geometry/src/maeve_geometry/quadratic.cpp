@@ -40,7 +40,7 @@ double Quadratic::dt(const Quadratic& quadratic, const double time) {
 }
 
 double Quadratic::ddt(const Quadratic& quadratic) {
-  return quadratic.dt_coefficients_[0];
+  return quadratic.coefficients_[0];
 }
 
 double Quadratic::a(const Quadratic& quadratic) {
