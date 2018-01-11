@@ -31,6 +31,24 @@ namespace {
 const auto epsilon = 0.00001;
 }  // namespace
 
+TEST(Maeve_Dynamics_Quadratic, testPointWithDerivates) {
+  {
+    const auto q = Quadratic(9, 17, 7);
+    const auto x = 3.37;
+    const auto p = Eigen::Vector2d(x, q(x));
+    const auto dx = Quadratic::dx(q, p.x());
+    const auto ddx = Quadratic::ddx(q);
+
+    const auto q1 = Quadratic::fromPointWithDerivatives(p, dx, ddx);
+    EXPECT_NEAR(Quadratic::a(q1), Quadratic::a(q), epsilon)
+        << "Quadratic: " << q1;
+    EXPECT_NEAR(Quadratic::b(q1), Quadratic::b(q), epsilon)
+        << "Quadratic: " << q1;
+    EXPECT_NEAR(Quadratic::c(q1), Quadratic::c(q), epsilon)
+        << "Quadratic: " << q1;
+  }
+}
+
 TEST(Maeve_Dynamics_Quadratic, testRootFinder) {
   {
     const auto q = Quadratic(1, 1, 1);
@@ -76,8 +94,8 @@ TEST(Maeve_Dynamics_Quadratic, testRootFinder) {
 TEST(Maeve_Dynamics_Quadratic, testDerivatives) {
   {
     const auto p = Quadratic(2, 3, 4);
-    EXPECT_EQ(Quadratic::dt(p, 0.5), 4.0 * 0.5 + 3.0);
-    EXPECT_EQ(Quadratic::ddt(p), 2.0);
+    EXPECT_EQ(Quadratic::dx(p, 0.5), 4.0 * 0.5 + 3.0);
+    EXPECT_EQ(Quadratic::ddx(p), 2.0);
   }
 }
 

@@ -33,13 +33,22 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 Quadratic::Quadratic() : coefficients_({NaN, NaN, NaN}) {}
 
 Quadratic::Quadratic(const double a, const double b, const double c)
-    : coefficients_({a, b, c}), dt_coefficients_({2.0 * a, b}) {}
+    : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
 
-double Quadratic::dt(const Quadratic& quadratic, const double time) {
-  return quadratic.dt_coefficients_[0] * time + quadratic.dt_coefficients_[1];
+Quadratic Quadratic::fromPointWithDerivatives(const Eigen::Vector2d& p,
+                                              const double dx,
+                                              const double ddx) {
+  const auto a = ddx;
+  const auto b = dx - 2.0 * a * p.x();
+  const auto c = p.y() + p.x() * (a * p.x() - dx);
+  return Quadratic(a, b, c);
 }
 
-double Quadratic::ddt(const Quadratic& quadratic) {
+double Quadratic::dx(const Quadratic& quadratic, const double x) {
+  return quadratic.dx_coefficients_[0] * x + quadratic.dx_coefficients_[1];
+}
+
+double Quadratic::ddx(const Quadratic& quadratic) {
   return quadratic.coefficients_[0];
 }
 

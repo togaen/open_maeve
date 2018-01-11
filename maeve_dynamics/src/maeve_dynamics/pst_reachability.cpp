@@ -205,7 +205,7 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   // Terminal speed is max feasible speed.
   const auto s_t = Interval::max(I_s);
 
-  // TODO
+  // Define P+ portion.
 
   // Done.
   return boost::none;

@@ -21,6 +21,8 @@
  */
 #pragma once
 
+#include <Eigen/Core>
+
 #include <array>
 #include <iostream>
 #include <tuple>
@@ -79,14 +81,14 @@ class Quadratic {
   static std::tuple<double, double> roots(const Quadratic& quadratic);
 
   /**
-   * @brief First derivative of the quadratic at a given time.
+   * @brief First derivative of the quadratic at a given domain value.
    *
    * @param quadratic The quadratic.
-   * @param time The time.
+   * @param x The domain value.
    *
-   * @return The first derivative of 'quadratic' at 'time'.
+   * @return The first derivative of 'quadratic' at 'x'.
    */
-  static double dt(const Quadratic& quadratic, const double time);
+  static double dx(const Quadratic& quadratic, const double x);
 
   /**
    * @brief The second derivative of the quadratic.
@@ -95,7 +97,7 @@ class Quadratic {
    *
    * @return The second derivative of 'quadratic'.
    */
-  static double ddt(const Quadratic& quadratic);
+  static double ddx(const Quadratic& quadratic);
 
   /**
    * @brief Access the quadratic coefficient.
@@ -124,6 +126,19 @@ class Quadratic {
    */
   static double c(const Quadratic& quadratic);
 
+  /**
+   * @brief A factory method to compute the quadratic equation from a point it
+   * passes through and its derivative at that point.
+   *
+   * @param p The point the curve passes through of the form (domain, range).
+   * @param dx The first derivative at 'p'.
+   * @param ddx The second derivative.
+   *
+   * @return The quadratic that contains 'p' and has derivative 's_dot' at 'p'.
+   */
+  static Quadratic fromPointWithDerivatives(const Eigen::Vector2d& p,
+                                            const double dx, const double ddx);
+
  private:
   /**
    * @brief Coefficients for the quadratic in canonical form.
@@ -137,6 +152,6 @@ class Quadratic {
   /**
    * @brief Coefficients for the first derivative of the quadratic.
    */
-  std::array<double, 2> dt_coefficients_;
+  std::array<double, 2> dx_coefficients_;
 };  // class Quadratic
 }  // namespace maeve_automation_core

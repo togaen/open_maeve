@@ -42,11 +42,11 @@ std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
 }
 
 double PST_Connector::initialSpeed(const PST_Connector& connector) {
-  return Quadratic::dt(connector.functions_[0], connector.switching_times_[0]);
+  return Quadratic::dx(connector.functions_[0], connector.switching_times_[0]);
 }
 
 double PST_Connector::terminalSpeed(const PST_Connector& connector) {
-  return Quadratic::dt(connector.functions_[2], connector.switching_times_[3]);
+  return Quadratic::dx(connector.functions_[2], connector.switching_times_[3]);
 }
 
 bool PST_Connector::switchingTimesNonDecreasing(
@@ -89,12 +89,12 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
   const auto t2 = connector.switching_times_[2];
 
   // Compute \dot{s} value of segments 0 and 1 at time t1.
-  const auto s_dot01 = Quadratic::dt(connector.functions_[0], t1);
-  const auto s_dot11 = Quadratic::dt(connector.functions_[1], t1);
+  const auto s_dot01 = Quadratic::dx(connector.functions_[0], t1);
+  const auto s_dot11 = Quadratic::dx(connector.functions_[1], t1);
 
   // Compute \dot{s} values of segments 1 and 2 at time t2.
-  const auto s_dot12 = Quadratic::dt(connector.functions_[1], t2);
-  const auto s_dot22 = Quadratic::dt(connector.functions_[2], t2);
+  const auto s_dot12 = Quadratic::dx(connector.functions_[1], t2);
+  const auto s_dot22 = Quadratic::dx(connector.functions_[2], t2);
 
   // The path values at t1 and at t2 should be equal.
   return approxEq(s_dot01, s_dot11, epsilon) &&
