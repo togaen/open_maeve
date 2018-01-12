@@ -199,13 +199,18 @@ boost::optional<PST_Connector>
 PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
     const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints) {
-  // Speed bounds (1st order dynamic constraints).
-  const auto& I_s = IntervalConstraints<2>::boundsS<1>(constraints);
+  // Intervals for dynamic bounds.
+  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
+  const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
 
   // Terminal speed is max feasible speed.
-  const auto s_t = Interval::max(I_s);
+  const auto dt = Interval::max(I_dt);
+
+  // Constant max acceleration.
+  const auto ddt = Interval::max(I_ddt);
 
   // Define P+ portion.
+  const auto P_plus = Quadratic::fromPointWithDerivatives(p2, dt, ddt);
 
   // Done.
   return boost::none;
