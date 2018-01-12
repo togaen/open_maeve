@@ -22,6 +22,7 @@
 #pragma once
 
 #include <Eigen/Core>
+#include <boost/optional.hpp>
 
 #include <array>
 #include <iostream>
@@ -138,6 +139,22 @@ class Quadratic {
    */
   static Quadratic fromPointWithDerivatives(const Eigen::Vector2d& p,
                                             const double dx, const double ddx);
+
+  /**
+   * @brief Compute a ray tangent to 'quadratic' that passes through 'p'.
+   *
+   * @note On success, the return object will always have a quadratic
+   * coefficient of zero.
+   *
+   * @param quadratic The quadratic function to compute a ray from.
+   * @param p The point the ray should pass through.
+   *
+   * @return A quadratic function (with zero quadratic coefficient) that
+   * describes a ray passing through 'p' tangent to 'quadratic'; if no such ray
+   * exists, null is returned.
+   */
+  static boost::optional<Quadratic> tangentRayThroughPoint(
+      const Quadratic& quadratic, const Eigen::Vector2d& p);
 
  private:
   /**

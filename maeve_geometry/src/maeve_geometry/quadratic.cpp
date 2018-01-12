@@ -44,6 +44,11 @@ Quadratic Quadratic::fromPointWithDerivatives(const Eigen::Vector2d& p,
   return Quadratic(a, b, c);
 }
 
+boost::optional<Quadratic> Quadratic::tangentRayThroughPoint(
+    const Quadratic& quadratic, const Eigen::Vector2d& p) {
+  return boost::none;
+}
+
 double Quadratic::dx(const Quadratic& quadratic, const double x) {
   return quadratic.dx_coefficients_[0] * x + quadratic.dx_coefficients_[1];
 }
