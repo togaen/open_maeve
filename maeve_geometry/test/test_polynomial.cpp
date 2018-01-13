@@ -36,40 +36,30 @@ TEST(Maeve_Dynamics_Polynomial, testTangentRay) {
   {
     const auto q = Polynomial(3, -7, -2);
     const auto p_r = Eigen::Vector2d(3, -8);
-    const auto p_q = Eigen::Vector2d(0, q(0));
-    const auto p_t = Polynomial::tangentOfRayThroughPoint(q, p_r, p_q);
+    const auto p_t = Polynomial::tangentRaysThroughPoint(q, p_r);
     ASSERT_FALSE(!p_t);
-    const auto p1 = std::get<0>(*p_t);
-    const auto del1 = (p1 - p_r);
-    const auto m1 = del1.y() / del1.x();
-    const auto p2 = std::get<1>(*p_t);
-    const auto del2 = (p2 - p_r);
-    const auto m2 = del2.y() / del2.x();
-    std::cout << "p1: " << p1.transpose() << " : " << m1 << " : "
-              << (p_r.y() - m1 * p_r.x()) << ", p2: " << p2.transpose() << " : "
-              << m2 << " : " << (p_r.y() - m2 * p_r.x()) << std::endl;
+    std::cout << "Poly1: " << std::get<0>(*p_t)
+              << ", Poly2: " << std::get<1>(*p_t) << std::endl;
   }
 
   {
     const auto q = Polynomial(1, 0, -1);
     const auto p_r = Eigen::Vector2d(0, 0);
-    const auto p_q = Eigen::Vector2d(0, 1);
-    const auto p_t = Polynomial::tangentOfRayThroughPoint(q, p_r, p_q);
+    const auto p_t = Polynomial::tangentRaysThroughPoint(q, p_r);
     ASSERT_TRUE(!p_t);
   }
 
   {
     const auto q = Polynomial(1, 0, 1);
     const auto p_r = Eigen::Vector2d(0, 0);
-    const auto p_q = Eigen::Vector2d(0, 1);
-    const auto p_t = Polynomial::tangentOfRayThroughPoint(q, p_r, p_q);
+    const auto p_t = Polynomial::tangentRaysThroughPoint(q, p_r);
     ASSERT_FALSE(!p_t);
     const auto p1 = std::get<0>(*p_t);
     const auto p2 = std::get<1>(*p_t);
-    EXPECT_NEAR(p1.x(), -1.0, epsilon);
-    EXPECT_NEAR(p1.y(), 2.0, epsilon);
-    EXPECT_NEAR(p2.x(), 1.0, epsilon);
-    EXPECT_NEAR(p2.y(), 2.0, epsilon);
+    EXPECT_NEAR(Polynomial::dx(p1, p_r.x()), -2.0, epsilon);
+    EXPECT_NEAR(Polynomial::c(p1), 0.0, epsilon);
+    EXPECT_NEAR(Polynomial::dx(p2, p_r.x()), 2.0, epsilon);
+    EXPECT_NEAR(Polynomial::c(p2), 0.0, epsilon);
   }
 }
 

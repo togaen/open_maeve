@@ -165,20 +165,19 @@ class Polynomial {
                                              const double dx, const double ddx);
 
   /**
-   * @brief For a ray through 'p_r' tangent to 'polynomial' compute the tangent
-   * points on 'polynomial'.
+   * @brief Find the rays through 'p_r' tangent to 'polynomial'.
+   *
+   * @note By convention the rays point from 'p_r' to 'polynomial'.
    *
    * @param polynomial The polynomial function to compute a ray from.
    * @param p_r The point the ray should pass through.
-   * @param p_q A point satisfying 'polynomial'.
    *
-   * @return The points on 'polynomial' that are tangent to a ray through 'p_r';
-   * if no such rays exists, null is returned.
+   * @return The linear polynomials tangent to 'polynomial' and that pass
+   * through through 'p_r'; if no such rays exists, null is returned.
    */
-  static boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
-  tangentOfRayThroughPoint(const Polynomial& polynomial,
-                           const Eigen::Vector2d& p_r,
-                           const Eigen::Vector2d& p_q);
+  static boost::optional<std::tuple<Polynomial, Polynomial>>
+  tangentRaysThroughPoint(const Polynomial& polynomial,
+                          const Eigen::Vector2d& p_r);
 
  private:
   /**

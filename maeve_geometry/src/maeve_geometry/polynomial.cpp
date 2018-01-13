@@ -65,10 +65,9 @@ Polynomial Polynomial::fromPointWithDerivatives(const Eigen::Vector2d& p,
   return Polynomial(a, b, c);
 }
 
-boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
-Polynomial::tangentOfRayThroughPoint(const Polynomial& polynomial,
-                                     const Eigen::Vector2d& p_r,
-                                     const Eigen::Vector2d& p_q) {
+boost::optional<std::tuple<Polynomial, Polynomial>>
+Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
+                                    const Eigen::Vector2d& p_r) {
   // Capture coefficients.
   double a, b, c;
   std::tie(a, b, c) = Polynomial::coefficients(polynomial);
@@ -91,7 +90,7 @@ Polynomial::tangentOfRayThroughPoint(const Polynomial& polynomial,
   // Done.
   Eigen::Vector2d p1(r1, polynomial(r1));
   Eigen::Vector2d p2(r2, polynomial(r2));
-  return std::make_tuple(p1, p2);
+  return std::make_tuple(Polynomial(p_r, p1), Polynomial(p_r, p2));
 }
 
 double Polynomial::dx(const Polynomial& polynomial, const double x) {
