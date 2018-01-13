@@ -139,6 +139,18 @@ class DisjointInterval {
                        const double value);
 
   /**
+   * @brief Compute the intersection of two disjoint interval sets.
+   *
+   * @param disjoint_interval1 The first disjoint interval.
+   * @param disjoint_interval2 The second disjoint interval.
+   *
+   * @return The set of disjoint intervals exactly contained by
+   * 'disjoint_interval1' and 'disjoint_interval2'.
+   */
+  static DisjointInterval intersect(const DisjointInterval& disjoint_interval1,
+                                    const DisjointInterval& disjoint_interval2);
+
+  /**
    * @brief Get a begin iterator for a given disjoint interval set.
    *
    * @param disjoint_interval The disjoint interval set.
