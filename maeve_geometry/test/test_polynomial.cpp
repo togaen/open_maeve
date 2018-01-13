@@ -32,7 +32,7 @@ const auto Inf = std::numeric_limits<double>::infinity();
 const auto epsilon = 5e-4;
 }  // namespace
 
-TEST(Maeve_Dynamics_Polynomial, testTangentRay) {
+TEST(Maeve_Geometry_Polynomial, testTangentRay) {
   {
     const auto q = Polynomial(3, 7, 2);
     const auto p_r = Eigen::Vector2d(3, -8);
@@ -74,7 +74,7 @@ TEST(Maeve_Dynamics_Polynomial, testTangentRay) {
   }
 }
 
-TEST(Maeve_Dynamics_Polynomial, testPointWithDerivates) {
+TEST(Maeve_Geometry_Polynomial, testPointWithDerivates) {
   {
     const auto q = Polynomial(9, 17, 7);
     const auto x = 3.37;
@@ -92,7 +92,7 @@ TEST(Maeve_Dynamics_Polynomial, testPointWithDerivates) {
   }
 }
 
-TEST(Maeve_Dynamics_Polynomial, testRootFinder) {
+TEST(Maeve_Geometry_Polynomial, testRootFinder) {
   {
     const auto q = Polynomial(1, 1, 1);
     double r1, r2;
@@ -134,7 +134,7 @@ TEST(Maeve_Dynamics_Polynomial, testRootFinder) {
   }
 }
 
-TEST(Maeve_Dynamics_Polynomial, testDerivatives) {
+TEST(Maeve_Geometry_Polynomial, testDerivatives) {
   {
     const auto p = Polynomial(2, 3, 4);
     EXPECT_EQ(Polynomial::dx(p, 0.5), 4.0 * 0.5 + 3.0);
@@ -142,7 +142,7 @@ TEST(Maeve_Dynamics_Polynomial, testDerivatives) {
   }
 }
 
-TEST(Maeve_Dynamics_Polynomial, testEval) {
+TEST(Maeve_Geometry_Polynomial, testEval) {
   {
     const auto p = Polynomial(1, 1, 1);
     EXPECT_EQ(p(1.0), 3.0);
@@ -159,7 +159,7 @@ TEST(Maeve_Dynamics_Polynomial, testEval) {
   }
 }
 
-TEST(Maeve_Dynamics_Polynomial, testConstruction) {
+TEST(Maeve_Geometry_Polynomial, testConstruction) {
   {
     const auto p = Polynomial(1, 1, 1);
     EXPECT_TRUE(true);
