@@ -28,6 +28,7 @@
 
 namespace maeve_automation_core {
 namespace {
+const auto Inf = std::numeric_limits<double>::infinity();
 const auto epsilon = 0.00001;
 }  // namespace
 
@@ -44,7 +45,9 @@ TEST(Maeve_Dynamics_Polynomial, testTangentRay) {
     const auto p2 = std::get<1>(*p_t);
     const auto del2 = (p2 - p_r);
     const auto m2 = del2.y() / del2.x();
-    std::cout << "p1: " << p1.transpose() << " : " << m1 << " : " << (p_r.y() - m1 * p_r.x()) << ", p2: " << p2.transpose() << " : " << m2 << " : " << (p_r.y() - m2 * p_r.x()) << std::endl;
+    std::cout << "p1: " << p1.transpose() << " : " << m1 << " : "
+              << (p_r.y() - m1 * p_r.x()) << ", p2: " << p2.transpose() << " : "
+              << m2 << " : " << (p_r.y() - m2 * p_r.x()) << std::endl;
   }
 
   {
@@ -166,6 +169,57 @@ TEST(Maeve_Dynamics_Polynomial, testConstruction) {
     EXPECT_TRUE(std::isnan(Polynomial::a(p)));
     EXPECT_TRUE(std::isnan(Polynomial::b(p)));
     EXPECT_TRUE(std::isnan(Polynomial::c(p)));
+  }
+
+  {
+    const auto p = Polynomial(Eigen::Vector2d(0, 0), Eigen::Vector2d(1, 0));
+    double a, b, c;
+    std::tie(a, b, c) = Polynomial::coefficients(p);
+    EXPECT_EQ(a, 0.0);
+    EXPECT_NEAR(b, 0, epsilon);
+    EXPECT_NEAR(c, 0, epsilon);
+  }
+
+  {
+    const auto p = Polynomial(Eigen::Vector2d(0, 0), Eigen::Vector2d(0, 1));
+    double a, b, c;
+    std::tie(a, b, c) = Polynomial::coefficients(p);
+    EXPECT_EQ(a, 0.0);
+    EXPECT_EQ(b, Inf);
+    EXPECT_TRUE(std::isnan(c));
+  }
+
+  {
+    const auto p = Polynomial(Eigen::Vector2d(0, 1), Eigen::Vector2d(0, 0));
+    double a, b, c;
+    std::tie(a, b, c) = Polynomial::coefficients(p);
+    EXPECT_EQ(a, 0.0);
+    EXPECT_EQ(b, -Inf);
+    EXPECT_TRUE(std::isnan(c));
+  }
+
+  {
+    const Eigen::Vector2d p1(1.0, 2.0);
+    const Eigen::Vector2d p2(3.0, 7.0);
+    const Eigen::Vector2d d = (p2 - p1);
+    const auto p = Polynomial(p1, p2);
+    double a, b, c;
+    std::tie(a, b, c) = Polynomial::coefficients(p);
+    EXPECT_EQ(a, 0.0);
+    EXPECT_NEAR(b, (d.y() / d.x()), epsilon);
+    EXPECT_NEAR(c, (p2.y() - (d.y() / d.x()) * p2.x()), epsilon);
+  }
+
+  {
+    const Eigen::Vector2d p2(1.0, 2.0);
+    const Eigen::Vector2d p1(3.0, 7.0);
+    const Eigen::Vector2d d = (p2 - p1);
+    const auto p = Polynomial(p1, p2);
+    double a, b, c;
+    std::tie(a, b, c) = Polynomial::coefficients(p);
+    EXPECT_EQ(a, 0.0);
+    EXPECT_NEAR(b, (d.y() / d.x()), epsilon);
+    EXPECT_NEAR(c, (p2.y() - (d.y() / d.x()) * p2.x()), epsilon);
   }
 }
 }  // namespace maeve_automation_core

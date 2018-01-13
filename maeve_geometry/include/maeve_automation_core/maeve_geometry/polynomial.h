@@ -64,6 +64,17 @@ class Polynomial {
   Polynomial(const double a, const double b, const double c);
 
   /**
+   * @brief Constructor: build a linear polynomial from two points.
+   *
+   * @note By convention, positive slope points from p1 to p2. The quadratic
+   * coefficient will always be exactly zero.
+   *
+   * @param p1 The first point.
+   * @param p2 The second point.
+   */
+  Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2);
+
+  /**
    * @brief Operator to evaluate the polynomial at a given value.
    *
    * @param x The domain value to evaluate the polynomial at.

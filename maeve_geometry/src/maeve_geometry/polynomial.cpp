@@ -28,12 +28,33 @@
 namespace maeve_automation_core {
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
+const auto Inf = std::numeric_limits<double>::infinity();
 }  // namespace
 
 Polynomial::Polynomial() : coefficients_({NaN, NaN, NaN}) {}
 
 Polynomial::Polynomial(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
+
+Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
+  // Allocate coefficients.
+  double a = 0.0;
+  double b = NaN;
+  double c = NaN;
+
+  // Compute coefficient values.
+  const Eigen::Vector2d d = (p2 - p1);
+  if (d.x() == 0.0) {
+    b = std::copysign(Inf, (p2.y() - p1.y()));
+  } else {
+    b = (d.y() / d.x());
+    c = (p2.y() - b * p2.x());
+  }
+
+  // Store.
+  coefficients_ = {a, b, c};
+  dx_coefficients_ = {0.0, b};
+}
 
 Polynomial Polynomial::fromPointWithDerivatives(const Eigen::Vector2d& p,
                                                 const double dx,
