@@ -30,26 +30,29 @@
 
 namespace maeve_automation_core {
 /**
- * @brief This class defines a functor that evaluates a quadratic.
+ * @brief This class defines a functor that evaluates a polynomial.
+ *
+ * @note The class only supports polynomials up to order 2.
  */
-class Quadratic {
+class Polynomial {
  public:
   /**
-   * @brief Stream overload for quadratic.
+   * @brief Stream overload for polynomial.
    *
-   * This overload prints the coefficients of the quadratic as an ordered set.
+   * This overload prints the coefficients of the polynomial as an ordered set.
    *
    * @param os The output stream.
-   * @param quadratic The quadratic functor.
+   * @param polynomial The polynomial functor.
    *
-   * @return The output stream with 'quadratic' serialized to it.
+   * @return The output stream with 'polynomial' serialized to it.
    */
-  friend std::ostream& operator<<(std::ostream& os, const Quadratic& quadratic);
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const Polynomial& polynomial);
 
   /**
    * @brief Constructor: default initialize to invalid values.
    */
-  Quadratic();
+  Polynomial();
 
   /**
    * @brief Constructor: build from specified coefficients.
@@ -58,127 +61,127 @@ class Quadratic {
    * @param b The linear coefficient.
    * @param c The constant coefficient.
    */
-  Quadratic(const double a, const double b, const double c);
+  Polynomial(const double a, const double b, const double c);
 
   /**
-   * @brief Operator to evaluate the quadratic at a given value.
+   * @brief Operator to evaluate the polynomial at a given value.
    *
-   * @param x The domain value to evaluate the quadratic at.
+   * @param x The domain value to evaluate the polynomial at.
    *
-   * @return The value of the quadratic at 'x'.
+   * @return The value of the polynomial at 'x'.
    */
   double operator()(const double x) const;
 
   /**
-   * @brief Compute the roots of a quadratic.
+   * @brief Compute the roots of a polynomial.
    *
    * @note This method favors accuracy and numeric stability over speed.
    *
-   * @param quadratic The quadratic.
+   * @param polynomial The polynomial.
    *
    * @return A tuple of the roots (may be NaN). By convention the roots are
    * ordered such that the first root is not larger than the second.
    */
-  static std::tuple<double, double> roots(const Quadratic& quadratic);
+  static std::tuple<double, double> roots(const Polynomial& polynomial);
 
   /**
-   * @brief First derivative of the quadratic at a given domain value.
+   * @brief First derivative of the polynomial at a given domain value.
    *
-   * @param quadratic The quadratic.
+   * @param polynomial The polynomial.
    * @param x The domain value.
    *
-   * @return The first derivative of 'quadratic' at 'x'.
+   * @return The first derivative of 'polynomial' at 'x'.
    */
-  static double dx(const Quadratic& quadratic, const double x);
+  static double dx(const Polynomial& polynomial, const double x);
 
   /**
-   * @brief The second derivative of the quadratic.
+   * @brief The second derivative of the polynomial.
    *
-   * @param quadratic The quadratic.
+   * @param polynomial The polynomial.
    *
-   * @return The second derivative of 'quadratic'.
+   * @return The second derivative of 'polynomial'.
    */
-  static double ddx(const Quadratic& quadratic);
+  static double ddx(const Polynomial& polynomial);
 
   /**
    * @brief Access the quadratic coefficient.
    *
-   * @param quadratic The quadratic.
+   * @param polynomial The polynomial.
    *
-   * @return The quadratic coefficient.
+   * @return The polynomial coefficient.
    */
-  static double a(const Quadratic& quadratic);
+  static double a(const Polynomial& polynomial);
 
   /**
    * @brief Access the linear coefficient.
    *
-   * @param quadratic The quadratic.
+   * @param polynomial The polynomial.
    *
    * @return The linear coefficient.
    */
-  static double b(const Quadratic& quadratic);
+  static double b(const Polynomial& polynomial);
 
   /**
    * @brief Access the constant coefficient.
    *
-   * @param quadratic The quadratic
+   * @param polynomial The polynomial
    *
    * @return The constant coefficient.
    */
-  static double c(const Quadratic& quadratic);
+  static double c(const Polynomial& polynomial);
 
   /**
    * @brief Utility for capturing all coefficients at once.
    *
-   * @param quadratic The quadratic equation.
+   * @param polynomial The polynomial equation.
    *
    * @return A tuple of the coefficients.
    */
   static std::tuple<double, double, double> coefficients(
-      const Quadratic& quadratic);
+      const Polynomial& polynomial);
 
   /**
-   * @brief A factory method to compute the quadratic equation from a point it
+   * @brief A factory method to compute the polynomial equation from a point it
    * passes through and its derivative at that point.
    *
    * @param p The point the curve passes through of the form (domain, range).
    * @param dx The first derivative at 'p'.
    * @param ddx The second derivative.
    *
-   * @return The quadratic that contains 'p' and has derivative 's_dot' at 'p'.
+   * @return The polynomial that contains 'p' and has derivative 's_dot' at 'p'.
    */
-  static Quadratic fromPointWithDerivatives(const Eigen::Vector2d& p,
-                                            const double dx, const double ddx);
+  static Polynomial fromPointWithDerivatives(const Eigen::Vector2d& p,
+                                             const double dx, const double ddx);
 
   /**
-   * @brief For a ray through 'p_r' tangent to 'quadratic' compute the tangent
-   * points on 'quadratic'.
+   * @brief For a ray through 'p_r' tangent to 'polynomial' compute the tangent
+   * points on 'polynomial'.
    *
-   * @param quadratic The quadratic function to compute a ray from.
+   * @param polynomial The polynomial function to compute a ray from.
    * @param p_r The point the ray should pass through.
-   * @param p_q A point satisfying 'quadratic'.
+   * @param p_q A point satisfying 'polynomial'.
    *
-   * @return The points on 'quadratic' that are tangent to a ray through 'p_r';
+   * @return The points on 'polynomial' that are tangent to a ray through 'p_r';
    * if no such rays exists, null is returned.
    */
   static boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
-  tangentOfRayThroughPoint(const Quadratic& quadratic,
+  tangentOfRayThroughPoint(const Polynomial& polynomial,
                            const Eigen::Vector2d& p_r,
                            const Eigen::Vector2d& p_q);
 
  private:
   /**
-   * @brief Coefficients for the quadratic in canonical form.
+   * @brief Coefficients for the polynomial in canonical form.
    *
-   * The quadratic is assumed to be in canonical form ax^2 + bx + c = 0, with
+   * The polynomial is assumed to be in canonical form ax^2 + bx + c = 0, with
    * 'a'
    * at index 0, 'b' at index 1, and 'c' at index 2.
    */
   std::array<double, 3> coefficients_;
 
   /**
-   * @brief Coefficients for the first derivative of the quadratic.
+   * @brief Coefficients for the first derivative of the polynomial.
    */
   std::array<double, 2> dx_coefficients_;
-};  // class Quadratic
+};  // class Polynomial
 }  // namespace maeve_automation_core

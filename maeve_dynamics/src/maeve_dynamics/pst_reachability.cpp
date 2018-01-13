@@ -210,7 +210,7 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   const auto ddt = Interval::max(I_ddt);
 
   // Define P+ portion.
-  const auto P_plus = Quadratic::fromPointWithDerivatives(p2, dt, ddt);
+  const auto P_plus = Polynomial::fromPointWithDerivatives(p2, dt, ddt);
 
   // Done.
   return boost::none;

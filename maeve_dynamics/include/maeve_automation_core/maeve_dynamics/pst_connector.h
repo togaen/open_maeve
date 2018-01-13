@@ -24,7 +24,7 @@
 #include <array>
 #include <iostream>
 
-#include "maeve_automation_core/maeve_geometry/quadratic.h"
+#include "maeve_automation_core/maeve_geometry/polynomial.h"
 
 namespace maeve_automation_core {
 /**
@@ -35,7 +35,7 @@ namespace maeve_automation_core {
  * time, changes to the linear portion at the second switching time, changes to
  * the terminal parabolic portion at the third switching time, and ends at the
  * fourth switching time. The linear portion of the trajectory is represented as
- * a parabola with a zero coefficient for the quadratic term.
+ * a parabola with a zero coefficient for the polynomial term.
  */
 class PST_Connector {
  public:
@@ -59,7 +59,7 @@ class PST_Connector {
   * @param functions Trajectory functional segments.
   */
   PST_Connector(std::array<double, 4>&& switching_times,
-                std::array<Quadratic, 3>&& functions);
+                std::array<Polynomial, 3>&& functions);
 
   /**
    * @brief Get the speed at the beginning of the connector.
@@ -164,6 +164,6 @@ class PST_Connector {
    *   1: Interstitial linear segment
    *   2: Terminal parabolic segment
    */
-  std::array<Quadratic, 3> functions_;
+  std::array<Polynomial, 3> functions_;
 };  // class PST_Connector
 }  // namespace maeve_automation_core

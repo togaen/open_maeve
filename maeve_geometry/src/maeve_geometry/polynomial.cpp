@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/maeve_geometry/quadratic.h"
+#include "maeve_automation_core/maeve_geometry/polynomial.h"
 
 #include <algorithm>
 #include <cmath>
@@ -30,37 +30,37 @@ namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
-Quadratic::Quadratic() : coefficients_({NaN, NaN, NaN}) {}
+Polynomial::Polynomial() : coefficients_({NaN, NaN, NaN}) {}
 
-Quadratic::Quadratic(const double a, const double b, const double c)
+Polynomial::Polynomial(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
 
-Quadratic Quadratic::fromPointWithDerivatives(const Eigen::Vector2d& p,
-                                              const double dx,
-                                              const double ddx) {
+Polynomial Polynomial::fromPointWithDerivatives(const Eigen::Vector2d& p,
+                                                const double dx,
+                                                const double ddx) {
   const auto a = ddx;
   const auto b = dx - 2.0 * a * p.x();
   const auto c = p.y() + p.x() * (a * p.x() - dx);
-  return Quadratic(a, b, c);
+  return Polynomial(a, b, c);
 }
 
 boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
-Quadratic::tangentOfRayThroughPoint(const Quadratic& quadratic,
-                                    const Eigen::Vector2d& p_r,
-                                    const Eigen::Vector2d& p_q) {
+Polynomial::tangentOfRayThroughPoint(const Polynomial& polynomial,
+                                     const Eigen::Vector2d& p_r,
+                                     const Eigen::Vector2d& p_q) {
   // Capture coefficients.
   double a, b, c;
-  std::tie(a, b, c) = Quadratic::coefficients(quadratic);
+  std::tie(a, b, c) = Polynomial::coefficients(polynomial);
 
   // Compute solving equation.
   const auto A = a;
   const auto B = 2.0 * a * p_r.x();
   const auto C = -c + b * p_r.x() + p_r.y();
-  const auto q_r = Quadratic(A, B, C);
+  const auto q_r = Polynomial(A, B, C);
 
   // Solve.
   double r1, r2;
-  std::tie(r1, r2) = Quadratic::roots(q_r);
+  std::tie(r1, r2) = Polynomial::roots(q_r);
 
   // Both or neither roots must be valid.
   if (std::isnan(r1)) {
@@ -68,47 +68,47 @@ Quadratic::tangentOfRayThroughPoint(const Quadratic& quadratic,
   }
 
   // Done.
-  Eigen::Vector2d p1(r1, quadratic(r1));
-  Eigen::Vector2d p2(r2, quadratic(r2));
+  Eigen::Vector2d p1(r1, polynomial(r1));
+  Eigen::Vector2d p2(r2, polynomial(r2));
   return std::make_tuple(p1, p2);
 }
 
-double Quadratic::dx(const Quadratic& quadratic, const double x) {
-  return quadratic.dx_coefficients_[0] * x + quadratic.dx_coefficients_[1];
+double Polynomial::dx(const Polynomial& polynomial, const double x) {
+  return polynomial.dx_coefficients_[0] * x + polynomial.dx_coefficients_[1];
 }
 
-double Quadratic::ddx(const Quadratic& quadratic) {
-  return quadratic.coefficients_[0];
+double Polynomial::ddx(const Polynomial& polynomial) {
+  return polynomial.coefficients_[0];
 }
 
-double Quadratic::a(const Quadratic& quadratic) {
-  return quadratic.coefficients_[0];
+double Polynomial::a(const Polynomial& polynomial) {
+  return polynomial.coefficients_[0];
 }
 
-double Quadratic::b(const Quadratic& quadratic) {
-  return quadratic.coefficients_[1];
+double Polynomial::b(const Polynomial& polynomial) {
+  return polynomial.coefficients_[1];
 }
 
-double Quadratic::c(const Quadratic& quadratic) {
-  return quadratic.coefficients_[2];
+double Polynomial::c(const Polynomial& polynomial) {
+  return polynomial.coefficients_[2];
 }
 
-double Quadratic::operator()(const double x) const {
+double Polynomial::operator()(const double x) const {
   return x * (coefficients_[0] * x + coefficients_[1]) + coefficients_[2];
 }
 
-std::tuple<double, double, double> Quadratic::coefficients(
-    const Quadratic& quadratic) {
-  return std::make_tuple(Quadratic::a(quadratic), Quadratic::b(quadratic),
-                         Quadratic::c(quadratic));
+std::tuple<double, double, double> Polynomial::coefficients(
+    const Polynomial& polynomial) {
+  return std::make_tuple(Polynomial::a(polynomial), Polynomial::b(polynomial),
+                         Polynomial::c(polynomial));
 }
 
-std::tuple<double, double> Quadratic::roots(const Quadratic& quadratic) {
+std::tuple<double, double> Polynomial::roots(const Polynomial& polynomial) {
   // Capture coefficients
   double a, b, c;
-  std::tie(a, b, c) = Quadratic::coefficients(quadratic);
+  std::tie(a, b, c) = Polynomial::coefficients(polynomial);
 
-  // Not quadratic.
+  // Not polynomial.
   if (a == 0.0) {
     // Indeterminate form.
     if (b == 0.0) {
@@ -145,9 +145,9 @@ std::tuple<double, double> Quadratic::roots(const Quadratic& quadratic) {
   return std::minmax(r1, r2);
 }
 
-std::ostream& operator<<(std::ostream& os, const Quadratic& quadratic) {
-  return os << "{a: " << Quadratic::a(quadratic)
-            << ", b:" << Quadratic::b(quadratic)
-            << ", c:" << Quadratic::c(quadratic) << "}";
+std::ostream& operator<<(std::ostream& os, const Polynomial& polynomial) {
+  return os << "{a: " << Polynomial::a(polynomial)
+            << ", b:" << Polynomial::b(polynomial)
+            << ", c:" << Polynomial::c(polynomial) << "}";
 }
 }  // namespace maeve_automation_core
