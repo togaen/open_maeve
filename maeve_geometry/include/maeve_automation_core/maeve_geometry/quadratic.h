@@ -128,6 +128,16 @@ class Quadratic {
   static double c(const Quadratic& quadratic);
 
   /**
+   * @brief Utility for capturing all coefficients at once.
+   *
+   * @param quadratic The quadratic equation.
+   *
+   * @return A tuple of the coefficients.
+   */
+  static std::tuple<double, double, double> coefficients(
+      const Quadratic& quadratic);
+
+  /**
    * @brief A factory method to compute the quadratic equation from a point it
    * passes through and its derivative at that point.
    *

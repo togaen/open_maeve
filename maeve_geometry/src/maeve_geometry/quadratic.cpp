@@ -73,11 +73,16 @@ double Quadratic::operator()(const double x) const {
   return x * (coefficients_[0] * x + coefficients_[1]) + coefficients_[2];
 }
 
+std::tuple<double, double, double> Quadratic::coefficients(
+    const Quadratic& quadratic) {
+  return std::make_tuple(Quadratic::a(quadratic), Quadratic::b(quadratic),
+                         Quadratic::c(quadratic));
+}
+
 std::tuple<double, double> Quadratic::roots(const Quadratic& quadratic) {
-  // Capture coefficientsl
-  const auto a = Quadratic::a(quadratic);
-  const auto b = Quadratic::b(quadratic);
-  const auto c = Quadratic::c(quadratic);
+  // Capture coefficients
+  double a, b, c;
+  std::tie(a, b, c) = Quadratic::coefficients(quadratic);
 
   // Not quadratic.
   if (a == 0.0) {
