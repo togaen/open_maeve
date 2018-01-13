@@ -49,6 +49,19 @@ double PST_Connector::terminalSpeed(const PST_Connector& connector) {
   return Polynomial::dx(connector.functions_[2], connector.switching_times_[3]);
 }
 
+std::tuple<Eigen::Vector2d, Eigen::Vector2d> PST_Connector::boundaryPoints(
+    const PST_Connector& connector) {
+  const auto t0 = connector.switching_times_[0];
+  const auto t1 = connector.switching_times_[3];
+  const auto& f0 = connector.functions_[0];
+  const auto& f1 = connector.functions_[2];
+
+  const Eigen::Vector2d p0(t0, f0(t0));
+  const Eigen::Vector2d p1(t1, f1(t1));
+
+  return std::make_tuple(p0, p1);
+}
+
 bool PST_Connector::switchingTimesNonDecreasing(
     const PST_Connector& connector) {
   // Check monotonicity.

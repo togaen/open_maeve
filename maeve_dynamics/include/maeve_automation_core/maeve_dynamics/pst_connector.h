@@ -79,6 +79,16 @@ class PST_Connector {
    */
   static double terminalSpeed(const PST_Connector& connector);
 
+  /**
+   * @brief Compute and return the boundary points of a connector.
+   *
+   * @param connector
+   *
+   * @return An ordered pair of points at [min, max] domain time.
+   */
+  static std::tuple<Eigen::Vector2d, Eigen::Vector2d> boundaryPoints(
+      const PST_Connector& connector);
+
  private:
   /**
    * @brief Check whether switching times are strictly non-decreasing.
