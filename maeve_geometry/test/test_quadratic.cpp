@@ -31,6 +31,16 @@ namespace {
 const auto epsilon = 0.00001;
 }  // namespace
 
+TEST(Maeve_Dynamics_Quadratic, testTangentRay) {
+  {
+    const auto q = Quadratic(1, 0, 1);
+    const auto p_r = Eigen::Vector2d(0, 0);
+    const auto p_q = Eigen::Vector2d(0, 1);
+    const auto p_t = Quadratic::tangentOfRayThroughPoint(q, p_r, p_q);
+    ASSERT_FALSE(!p_t);
+  }
+}
+
 TEST(Maeve_Dynamics_Quadratic, testPointWithDerivates) {
   {
     const auto q = Quadratic(9, 17, 7);

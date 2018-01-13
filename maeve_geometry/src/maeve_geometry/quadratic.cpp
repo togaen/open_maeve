@@ -44,9 +44,37 @@ Quadratic Quadratic::fromPointWithDerivatives(const Eigen::Vector2d& p,
   return Quadratic(a, b, c);
 }
 
-boost::optional<Quadratic> Quadratic::tangentRayThroughPoint(
-    const Quadratic& quadratic, const Eigen::Vector2d& p) {
-  return boost::none;
+boost::optional<Eigen::Vector2d> Quadratic::tangentOfRayThroughPoint(
+    const Quadratic& quadratic, const Eigen::Vector2d& p_r,
+    const Eigen::Vector2d& p_q) {
+  // Capture coefficients.
+  double a, b, c;
+  std::tie(a, b, c) = Quadratic::coefficients(quadratic);
+
+  // Degenerate cases.
+  const auto linear = (Quadratic::a(quadratic) == 0.0);
+  const auto singular = (p_r == p_q);
+  if (linear || singular) {
+    return boost::none;
+  }
+
+  // Translate to system with origin at 'p_r'.
+  const Eigen::Vector2d p_hat = (p_q - p_r);
+
+  // Try to find a satisfying tangent point x coordinate.
+  const auto x_i_sq = (p_hat.y() - p_hat.x() * (a * p_hat.x() - b)) / a;
+
+  // No real solution.
+  if (x_i_sq < 0.0) {
+    return boost::none;
+  }
+
+  // Find tangent point y coordinate.
+  const auto x_i = std::sqrt(x_i_sq);
+  const auto y_i = quadratic(x_i);
+
+  // Undo translation and return.
+  return (Eigen::Vector2d(x_i, y_i) + p_r).eval();
 }
 
 double Quadratic::dx(const Quadratic& quadratic, const double x) {

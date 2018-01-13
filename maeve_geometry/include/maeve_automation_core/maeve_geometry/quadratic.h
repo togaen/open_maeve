@@ -21,12 +21,12 @@
  */
 #pragma once
 
-#include <Eigen/Core>
-#include <boost/optional.hpp>
-
 #include <array>
 #include <iostream>
 #include <tuple>
+
+#include "Eigen/Core"
+#include "boost/optional.hpp"
 
 namespace maeve_automation_core {
 /**
@@ -151,20 +151,19 @@ class Quadratic {
                                             const double dx, const double ddx);
 
   /**
-   * @brief Compute a ray tangent to 'quadratic' that passes through 'p'.
-   *
-   * @note On success, the return object will always have a quadratic
-   * coefficient of zero.
+   * @brief For a ray through 'p_r' tangent to 'quadratic' compute the tangent
+   * point on 'quadratic'.
    *
    * @param quadratic The quadratic function to compute a ray from.
-   * @param p The point the ray should pass through.
+   * @param p_r The point the ray should pass through.
+   * @param p_q A point satisfying 'quadratic'.
    *
-   * @return A quadratic function (with zero quadratic coefficient) that
-   * describes a ray passing through 'p' tangent to 'quadratic'; if no such ray
-   * exists, null is returned.
+   * @return The point on 'quadratic' that is tangent to a ray through 'p_r'; if
+   * no such ray exists, null is returned.
    */
-  static boost::optional<Quadratic> tangentRayThroughPoint(
-      const Quadratic& quadratic, const Eigen::Vector2d& p);
+  static boost::optional<Eigen::Vector2d> tangentOfRayThroughPoint(
+      const Quadratic& quadratic, const Eigen::Vector2d& p_r,
+      const Eigen::Vector2d& p_q);
 
  private:
   /**
