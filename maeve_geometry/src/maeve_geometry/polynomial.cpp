@@ -25,6 +25,8 @@
 #include <cmath>
 #include <limits>
 
+#include "maeve_automation_core/maeve_geometry/comparisons.h"
+
 namespace maeve_automation_core {
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -67,15 +69,16 @@ Polynomial Polynomial::fromPointWithDerivatives(const Eigen::Vector2d& p,
 
 boost::optional<std::tuple<Polynomial, Polynomial>>
 Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
-                                    const Eigen::Vector2d& p_r) {
+                                    const Eigen::Vector2d& p_r,
+                                    const double epsilon) {
   // Capture coefficients.
   double a, b, c;
   std::tie(a, b, c) = Polynomial::coefficients(polynomial);
 
   // Compute solving equation.
   const auto A = a;
-  const auto B = 2.0 * a * p_r.x();
-  const auto C = -c + b * p_r.x() + p_r.y();
+  const auto B = -2.0 * a * p_r.x();
+  const auto C = -b * p_r.x() + p_r.y() - c;
   const auto q_r = Polynomial(A, B, C);
 
   // Solve.
@@ -87,10 +90,46 @@ Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
     return boost::none;
   }
 
-  // Done.
+  // Compute tangent points.
   Eigen::Vector2d p1(r1, polynomial(r1));
   Eigen::Vector2d p2(r2, polynomial(r2));
-  return std::make_tuple(Polynomial(p_r, p1), Polynomial(p_r, p2));
+
+  // Construct rays.
+  Polynomial ray1(p_r, p1);
+  Polynomial ray2(p_r, p2);
+
+#if 0  // These checks should not be needed.
+  // Get coincident information.
+  const auto ray1_coincident = approxEq(ray1(r1), p1.y(), epsilon);
+  const auto ray2_coincident = approxEq(ray2(r2), p2.y(), epsilon);
+
+  // Get tangency information.
+  const auto p_dx1 = Polynomial::dx(polynomial, p1.x());
+  const auto ray1_dx = Polynomial::dx(ray1, p1.x());
+  const auto ray1_tangent = approxEq(ray1_dx, p_dx1, epsilon);
+
+  const auto p_dx2 = Polynomial::dx(polynomial, p2.x());
+  const auto ray2_dx = Polynomial::dx(ray2, p2.x());
+  const auto ray2_tangent = approxEq(ray2_dx, p_dx2, epsilon);
+
+  // Validate rays.
+  const auto ray1_okay = (ray1_coincident && ray1_tangent);
+  const auto ray2_okay = (ray2_coincident && ray2_tangent);
+
+  // Check and return.
+  if (!ray1_okay && !ray2_okay) {
+    return boost::none;
+  }
+
+  if (!ray1_okay) {
+    return std::make_tuple(ray2, ray2);
+  }
+
+  if (!ray2_okay) {
+    return std::make_tuple(ray1, ray1);
+  }
+#endif
+  return std::make_tuple(ray1, ray2);
 }
 
 double Polynomial::dx(const Polynomial& polynomial, const double x) {
