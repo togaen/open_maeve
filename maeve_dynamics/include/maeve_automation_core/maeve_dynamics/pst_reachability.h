@@ -116,7 +116,7 @@ class PST_Reachability {
    * @return A nullable object of either the connector object or boost::none.
    */
   template <Type T>
-  boost::optional<PST_Connector> connector(
+  static boost::optional<PST_Connector> connector(
       const Eigen::Vector2d& p1, const double v_i, const Eigen::Vector2d& p2,
       const IntervalConstraints<2>& constraints);
 
@@ -135,7 +135,7 @@ class PST_Reachability {
    * @return A nullable object of either the connector object or boost::none.
    */
   template <Type T>
-  boost::optional<PST_Connector> connector(
+  static boost::optional<PST_Connector> connector(
       const Eigen::Vector2d& p1, const Interval& V_i, const Eigen::Vector2d& p2,
       const IntervalConstraints<2>& constraints);
 
@@ -156,7 +156,7 @@ class PST_Reachability {
    * @return A nullable object of either the connector object or boost::none.
    */
   template <Type T>
-  boost::optional<PST_Connector> maxTerminalSpeed(
+  static boost::optional<PST_Connector> maxTerminalSpeed(
       const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
       const IntervalConstraints<2>& constraints);
 
@@ -177,7 +177,7 @@ class PST_Reachability {
    * @return A nullable object of either the connector object or boost::none.
    */
   template <Type T>
-  boost::optional<PST_Connector> minTerminalSpeed(
+  static boost::optional<PST_Connector> minTerminalSpeed(
       const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
       const IntervalConstraints<2>& constraints);
 
