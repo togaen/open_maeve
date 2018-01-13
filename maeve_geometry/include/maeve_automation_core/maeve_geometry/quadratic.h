@@ -152,18 +152,19 @@ class Quadratic {
 
   /**
    * @brief For a ray through 'p_r' tangent to 'quadratic' compute the tangent
-   * point on 'quadratic'.
+   * points on 'quadratic'.
    *
    * @param quadratic The quadratic function to compute a ray from.
    * @param p_r The point the ray should pass through.
    * @param p_q A point satisfying 'quadratic'.
    *
-   * @return The point on 'quadratic' that is tangent to a ray through 'p_r'; if
-   * no such ray exists, null is returned.
+   * @return The points on 'quadratic' that are tangent to a ray through 'p_r';
+   * if no such rays exists, null is returned.
    */
-  static boost::optional<Eigen::Vector2d> tangentOfRayThroughPoint(
-      const Quadratic& quadratic, const Eigen::Vector2d& p_r,
-      const Eigen::Vector2d& p_q);
+  static boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
+  tangentOfRayThroughPoint(const Quadratic& quadratic,
+                           const Eigen::Vector2d& p_r,
+                           const Eigen::Vector2d& p_q);
 
  private:
   /**

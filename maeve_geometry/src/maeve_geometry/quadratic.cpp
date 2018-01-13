@@ -44,37 +44,33 @@ Quadratic Quadratic::fromPointWithDerivatives(const Eigen::Vector2d& p,
   return Quadratic(a, b, c);
 }
 
-boost::optional<Eigen::Vector2d> Quadratic::tangentOfRayThroughPoint(
-    const Quadratic& quadratic, const Eigen::Vector2d& p_r,
-    const Eigen::Vector2d& p_q) {
+boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
+Quadratic::tangentOfRayThroughPoint(const Quadratic& quadratic,
+                                    const Eigen::Vector2d& p_r,
+                                    const Eigen::Vector2d& p_q) {
   // Capture coefficients.
   double a, b, c;
   std::tie(a, b, c) = Quadratic::coefficients(quadratic);
 
-  // Degenerate cases.
-  const auto linear = (Quadratic::a(quadratic) == 0.0);
-  const auto singular = (p_r == p_q);
-  if (linear || singular) {
+  // Compute solving equation.
+  const auto A = a;
+  const auto B = 2.0 * a * p_r.x();
+  const auto C = -c + b * p_r.x() + p_r.y();
+  const auto q_r = Quadratic(A, B, C);
+
+  // Solve.
+  double r1, r2;
+  std::tie(r1, r2) = Quadratic::roots(q_r);
+
+  // Both or neither roots must be valid.
+  if (std::isnan(r1)) {
     return boost::none;
   }
 
-  // Translate to system with origin at 'p_r'.
-  const Eigen::Vector2d p_hat = (p_q - p_r);
-
-  // Try to find a satisfying tangent point x coordinate.
-  const auto x_i_sq = (p_hat.y() - p_hat.x() * (a * p_hat.x() - b)) / a;
-
-  // No real solution.
-  if (x_i_sq < 0.0) {
-    return boost::none;
-  }
-
-  // Find tangent point y coordinate.
-  const auto x_i = std::sqrt(x_i_sq);
-  const auto y_i = quadratic(x_i);
-
-  // Undo translation and return.
-  return (Eigen::Vector2d(x_i, y_i) + p_r).eval();
+  // Done.
+  Eigen::Vector2d p1(r1, quadratic(r1));
+  Eigen::Vector2d p2(r2, quadratic(r2));
+  return std::make_tuple(p1, p2);
 }
 
 double Quadratic::dx(const Quadratic& quadratic, const double x) {
