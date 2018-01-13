@@ -165,18 +165,15 @@ class Polynomial {
                                              const double dx, const double ddx);
 
   /**
-   * @brief Find the rays through 'p_r' tangent to 'polynomial'.
-   *
-   * @note By convention the rays point from 'p_r' to 'polynomial'.
+   * @brief Find tangent points of rays through 'p_r' tangent to 'polynomial'.
    *
    * @param polynomial The polynomial function to compute a ray from.
    * @param p_r The point the ray should pass through.
    * @param epsilon Precision specifier for performing validity checking.
    *
-   * @return The linear polynomials tangent to 'polynomial' and that pass
-   * through through 'p_r'; if no such rays exists, null is returned.
+   * @return The tangent points; if no rays exists, null is returned.
    */
-  static boost::optional<std::tuple<Polynomial, Polynomial>>
+  static boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
   tangentRaysThroughPoint(const Polynomial& polynomial,
                           const Eigen::Vector2d& p_r,
                           const double epsilon = 1e-8);

@@ -38,8 +38,8 @@ TEST(Maeve_Dynamics_Polynomial, testTangentRay) {
     const auto p_r = Eigen::Vector2d(3, -8);
     const auto p_t = Polynomial::tangentRaysThroughPoint(q, p_r);
     ASSERT_FALSE(!p_t);
-    const auto& p1 = std::get<0>(*p_t);
-    const auto& p2 = std::get<1>(*p_t);
+    const auto p1 = Polynomial(p_r, std::get<0>(*p_t));
+    const auto p2 = Polynomial(p_r, std::get<1>(*p_t));
     EXPECT_NEAR(Polynomial::dx(p1, p_r.x()), -1.38181, epsilon);
     EXPECT_NEAR(Polynomial::c(p1), -3.85456, epsilon);
     EXPECT_NEAR(Polynomial::dx(p2, p_r.x()), 51.3818, epsilon);
@@ -65,8 +65,8 @@ TEST(Maeve_Dynamics_Polynomial, testTangentRay) {
     const auto p_r = Eigen::Vector2d(0, 0);
     const auto p_t = Polynomial::tangentRaysThroughPoint(q, p_r);
     ASSERT_FALSE(!p_t);
-    const auto p1 = std::get<0>(*p_t);
-    const auto p2 = std::get<1>(*p_t);
+    const auto p1 = Polynomial(p_r, std::get<0>(*p_t));
+    const auto p2 = Polynomial(p_r, std::get<1>(*p_t));
     EXPECT_NEAR(Polynomial::dx(p1, p_r.x()), -2.0, epsilon);
     EXPECT_NEAR(Polynomial::c(p1), 0.0, epsilon);
     EXPECT_NEAR(Polynomial::dx(p2, p_r.x()), 2.0, epsilon);

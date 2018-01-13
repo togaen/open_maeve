@@ -67,7 +67,7 @@ Polynomial Polynomial::fromPointWithDerivatives(const Eigen::Vector2d& p,
   return Polynomial(a, b, c);
 }
 
-boost::optional<std::tuple<Polynomial, Polynomial>>
+boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
 Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
                                     const Eigen::Vector2d& p_r,
                                     const double epsilon) {
@@ -94,12 +94,8 @@ Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
   Eigen::Vector2d p1(r1, polynomial(r1));
   Eigen::Vector2d p2(r2, polynomial(r2));
 
-  // Construct rays.
-  Polynomial ray1(p_r, p1);
-  Polynomial ray2(p_r, p2);
-
   // Done.
-  return std::make_tuple(ray1, ray2);
+  return std::make_tuple(p1, p2);
 }
 
 double Polynomial::dx(const Polynomial& polynomial, const double x) {
