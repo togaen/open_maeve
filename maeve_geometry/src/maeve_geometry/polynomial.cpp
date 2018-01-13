@@ -98,37 +98,7 @@ Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
   Polynomial ray1(p_r, p1);
   Polynomial ray2(p_r, p2);
 
-#if 0  // These checks should not be needed.
-  // Get coincident information.
-  const auto ray1_coincident = approxEq(ray1(r1), p1.y(), epsilon);
-  const auto ray2_coincident = approxEq(ray2(r2), p2.y(), epsilon);
-
-  // Get tangency information.
-  const auto p_dx1 = Polynomial::dx(polynomial, p1.x());
-  const auto ray1_dx = Polynomial::dx(ray1, p1.x());
-  const auto ray1_tangent = approxEq(ray1_dx, p_dx1, epsilon);
-
-  const auto p_dx2 = Polynomial::dx(polynomial, p2.x());
-  const auto ray2_dx = Polynomial::dx(ray2, p2.x());
-  const auto ray2_tangent = approxEq(ray2_dx, p_dx2, epsilon);
-
-  // Validate rays.
-  const auto ray1_okay = (ray1_coincident && ray1_tangent);
-  const auto ray2_okay = (ray2_coincident && ray2_tangent);
-
-  // Check and return.
-  if (!ray1_okay && !ray2_okay) {
-    return boost::none;
-  }
-
-  if (!ray1_okay) {
-    return std::make_tuple(ray2, ray2);
-  }
-
-  if (!ray2_okay) {
-    return std::make_tuple(ray1, ray1);
-  }
-#endif
+  // Done.
   return std::make_tuple(ray1, ray2);
 }
 
