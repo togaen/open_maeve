@@ -209,11 +209,39 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   // Constant max acceleration.
   const auto ddt = Interval::max(I_ddt);
 
-  // Define P+ portion.
+  // Compute P+ portion.
   const auto P_plus = Polynomial::fromPointWithDerivatives(p2, dt, ddt);
 
-  // Done.
-  return boost::none;
+  // Compute tangent points of L portion.
+  const auto rays = Polynomial::tangentRaysThroughPoint(P_plus, p1);
+  if (!rays) {
+    return boost::none;
+  }
+
+  // Construct linear segments to test.
+  const auto L1 = Polynomial(p1, std::get<0>(*rays));
+  const auto L2 = Polynomial(p1, std::get<1>(*rays));
+
+  // Check L portion.
+  const auto s1_dot = Polynomial::dx(L1, p1.x());
+  const auto s2_dot = Polynomial::dx(L2, p1.x());
+  const auto L1_valid = Interval::contains(I_dt, s1_dot);
+  const auto L2_valid = Interval::contains(I_dt, s2_dot);
+
+  // No connection of this type.
+  if (!L1_valid && !L2_valid) {
+    return boost::none;
+  }
+
+  // This should never happen.
+  assert(!(L1_valid && L2_valid));
+
+  // For simplicity.
+  const auto& L = (L1_valid ? L1 : L2);
+  const auto& r = (L1_valid ? std::get<0>(*rays) : std::get<1>(*rays));
+
+  // Build connector and return.
+  return PST_Connector({p1.y(), p1.y(), r.y(), p2.y()}, {L, L, P_plus});
 }
 
 /***/
