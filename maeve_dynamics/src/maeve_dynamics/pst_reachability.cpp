@@ -241,7 +241,7 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   const auto& r = (L1_valid ? std::get<0>(*rays) : std::get<1>(*rays));
 
   // Build connector and return.
-  return PST_Connector({p1.y(), p1.y(), r.y(), p2.y()}, {L, L, P_plus});
+  return PST_Connector({p1.x(), p1.x(), r.x(), p2.x()}, {L, L, P_plus});
 }
 
 /***/
