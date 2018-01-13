@@ -155,6 +155,15 @@ class Interval {
   static double max(const Interval& interval);
 
   /**
+   * @brief Utility to retrieve both interval bounds at once.
+   *
+   * @param interval The interval to retrieve the bounds from.
+   *
+   * @return A tuple of the bounds.
+   */
+  static const std::tuple<double, double>& bounds(const Interval& interval);
+
+  /**
    * @brief Return the length of the interval.
    *
    * @note For empty or invalid intervals, NaN is returned. See Interval::empty
