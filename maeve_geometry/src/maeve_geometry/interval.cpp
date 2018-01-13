@@ -41,6 +41,10 @@ double Interval::max(const Interval& interval) {
   return std::get<1>(interval.bounds_);
 }
 
+const std::tuple<double, double>& Interval::bounds(const Interval& interval) {
+  return interval.bounds_;
+}
+
 bool Interval::empty(const Interval& interval) { return interval.empty_; }
 
 Interval Interval::affinelyExtendedReals() { return Interval(-Inf, Inf); }
