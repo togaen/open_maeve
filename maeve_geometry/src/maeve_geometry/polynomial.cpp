@@ -25,6 +25,8 @@
 #include <cmath>
 #include <limits>
 
+#include "boost/io/ios_state.hpp"
+
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 
 namespace maeve_automation_core {
@@ -171,6 +173,15 @@ std::tuple<double, double> Polynomial::roots(const Polynomial& polynomial) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Polynomial& polynomial) {
+  static const auto PRECISION = 5;
+
+  // Restore stream state on exit.
+  boost::io::ios_all_saver guard(os);
+
+  // Temporarily set desired flags and precision.
+  os.setf(std::ios::fixed, std::ios::floatfield);
+  os.precision(PRECISION);
+
   return os << "{a: " << Polynomial::a(polynomial)
             << ", b:" << Polynomial::b(polynomial)
             << ", c:" << Polynomial::c(polynomial) << "}";
