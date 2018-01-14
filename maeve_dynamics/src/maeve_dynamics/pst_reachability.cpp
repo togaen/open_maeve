@@ -261,11 +261,23 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VI>(
   return boost::none;
 }
 
+// LP-
 template <>
 boost::optional<PST_Connector>
 PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
     const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints) {
-  return boost::none;
+  // Intervals for dynamic bounds.
+  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
+  const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
+
+  // Terminal speed is max feasible speed.
+  const auto dt = Interval::min(I_dt);
+
+  // Constant max acceleration.
+  const auto ddt = Interval::min(I_ddt);
+
+  // Compute and return.
+  return computeLP(p1, p2, dt, ddt, I_dt);
 }
 }  // namespace maeve_automation_core

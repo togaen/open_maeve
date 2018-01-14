@@ -60,7 +60,19 @@ TEST(Maeve_Dynamics_PST_Reachability, testMaxTerminalSpeedVII) {
     const auto r =
         PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(p0, p1,
                                                                         c);
-    EXPECT_FALSE(!r);
+    ASSERT_FALSE(!r);
+  }
+}
+
+TEST(Maeve_Dynamics_PST_Reachability, testMinTerminalSpeedVIII) {
+  {
+    const Eigen::Vector2d p0(0, 0);
+    const Eigen::Vector2d p1(4, 4);
+
+    const auto r =
+        PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(p0, p1,
+                                                                         c);
+    ASSERT_FALSE(!r);
   }
 }
 #if 0
