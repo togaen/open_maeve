@@ -193,27 +193,14 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::V>(
   return boost::none;
 }
 
-// LP+
-template <>
-boost::optional<PST_Connector>
-PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints) {
-  // Intervals for dynamic bounds.
-  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
-  const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
-
-  // Terminal speed is max feasible speed.
-  const auto dt = Interval::max(I_dt);
-
-  // Constant max acceleration.
-  const auto ddt = Interval::max(I_ddt);
-
-  // Compute P+ portion.
-  const auto P_plus = Polynomial::fromPointWithDerivatives(p2, dt, ddt);
+boost::optional<PST_Connector> PST_Reachability::computeLP(
+    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2, const double p2_dt,
+    const double p2_ddt, const Interval& I_dt) {
+  // Compute P portion.
+  const auto P = Polynomial::fromPointWithDerivatives(p2, p2_dt, p2_ddt);
 
   // Compute tangent points of L portion.
-  const auto rays = Polynomial::tangentRaysThroughPoint(P_plus, p1);
+  const auto rays = Polynomial::tangentRaysThroughPoint(P, p1);
   if (!rays) {
     return boost::none;
   }
@@ -241,7 +228,27 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   const auto& r = (L1_valid ? std::get<0>(*rays) : std::get<1>(*rays));
 
   // Build connector and return.
-  return PST_Connector({p1.x(), p1.x(), r.x(), p2.x()}, {L, L, P_plus});
+  return PST_Connector({p1.x(), p1.x(), r.x(), p2.x()}, {L, L, P});
+}
+
+// LP+
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
+    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  // Intervals for dynamic bounds.
+  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
+  const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
+
+  // Terminal speed is max feasible speed.
+  const auto dt = Interval::max(I_dt);
+
+  // Constant max acceleration.
+  const auto ddt = Interval::max(I_ddt);
+
+  // Compute and return.
+  return computeLP(p1, p2, dt, ddt, I_dt);
 }
 
 /***/
