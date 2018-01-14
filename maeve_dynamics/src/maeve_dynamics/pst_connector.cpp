@@ -49,6 +49,50 @@ double PST_Connector::terminalSpeed(const PST_Connector& connector) {
   return Polynomial::dx(connector.functions_[2], connector.switching_times_[3]);
 }
 
+boost::optional<PST_Connector> PST_Connector::computePLP(
+    const Eigen::Vector2d& p1, const double p1_dt, const Eigen::Vector2d& p2,
+    const double p2_dt, const double p2_ddt, const Interval& I_dt) {
+  return boost::none;
+}
+
+boost::optional<PST_Connector> PST_Connector::computeLP(
+    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2, const double p2_dt,
+    const double p2_ddt, const Interval& I_dt) {
+  // Compute P portion.
+  const auto P = Polynomial::fromPointWithDerivatives(p2, p2_dt, p2_ddt);
+
+  // Compute tangent points of L portion.
+  const auto rays = Polynomial::tangentRaysThroughPoint(P, p1);
+  if (!rays) {
+    return boost::none;
+  }
+
+  // Construct linear segments to test.
+  const auto L1 = Polynomial(p1, std::get<0>(*rays));
+  const auto L2 = Polynomial(p1, std::get<1>(*rays));
+
+  // Check L portion.
+  const auto s1_dot = Polynomial::dx(L1, p1.x());
+  const auto s2_dot = Polynomial::dx(L2, p1.x());
+  const auto L1_valid = Interval::contains(I_dt, s1_dot);
+  const auto L2_valid = Interval::contains(I_dt, s2_dot);
+
+  // No connection of this type.
+  if (!L1_valid && !L2_valid) {
+    return boost::none;
+  }
+
+  // This should never happen.
+  assert(!(L1_valid && L2_valid));
+
+  // For simplicity.
+  const auto& L = (L1_valid ? L1 : L2);
+  const auto& r = (L1_valid ? std::get<0>(*rays) : std::get<1>(*rays));
+
+  // Build connector and return.
+  return PST_Connector({p1.x(), p1.x(), r.x(), p2.x()}, {L, L, P});
+}
+
 std::tuple<Eigen::Vector2d, Eigen::Vector2d> PST_Connector::boundaryPoints(
     const PST_Connector& connector) {
   const auto t0 = connector.switching_times_[0];

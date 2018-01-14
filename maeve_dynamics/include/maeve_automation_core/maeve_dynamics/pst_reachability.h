@@ -194,43 +194,6 @@ class PST_Reachability {
    */
   PST_Reachability(PST_Connector&& min_terminal, PST_Connector&& max_terminal);
 
-  /**
-   * @brief Compute an LP connector between 'p1' and 'p1'.
-   *
-   * The computed connector shall have a P segement that passes through 'p2'
-   * with derivatives 'p2_dt' and 'p2_ddt', and an L segment through 'p1' and
-   * 'p2'.
-   *
-   * @param p1 The initial point in PT space.
-   * @param p2 The terminal point in PT space.
-   * @param p2_dt Connector first derivative at 'p2'.
-   * @param p2_ddt Connector second derivative at 'p2'.
-   * @param I_dt The interval of feasible speeds.
-   *
-   * @return A nullable of object of either the connector or boost::none.
-   */
-  static boost::optional<PST_Connector> computeLP(const Eigen::Vector2d& p1,
-                                                  const Eigen::Vector2d& p2,
-                                                  const double p2_dt,
-                                                  const double p2_ddt,
-                                                  const Interval& I_dt);
-
-  /**
-   * @brief Compute a PLP connector between 'p1' and 'p1'.
-   *
-   * @param p1 The initial point in PT space.
-   * @param p1_dt Connector first derivative at 'p1'.
-   * @param p2 The terminal point in PT space.
-   * @param p2_dt Connector first derivative at 'p2'.
-   * @param p2_ddt Connector second derivative at 'p2'.
-   * @param I_dt The interval of feasible speeds.
-   *
-   * @return A nullable object of either the connector or boost::none.
-   */
-  static boost::optional<PST_Connector> computePLP(
-      const Eigen::Vector2d& p1, const double p1_dt, const Eigen::Vector2d& p2,
-      const double p2_dt, const double p2_ddt, const Interval& I_dt);
-
   /** @brief The PST connector that achieves minimum terminal speed. */
   PST_Connector min_terminal_;
   /** @brief the PST connector that achieves maximum terminal speed. */

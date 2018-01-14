@@ -28,6 +28,48 @@ namespace {
 const auto epsilon = 0.0001;
 }  // namespace
 
+TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
+  {
+    const Eigen::Vector2d p1(3, 4);
+    const Eigen::Vector2d p2(8, 9);
+    const auto p2_dt = 5.0;
+    const auto p2_ddt = 4.0;
+    const auto I_dt = Interval(0, 5.0);
+
+    const auto connector =
+        PST_Connector::computeLP(p1, p2, p2_dt, p2_ddt, I_dt);
+    ASSERT_FALSE(!connector);
+
+    std::stringstream ss;
+    ss << *connector;
+    const auto expected_str = std::string(
+        "{switching times: [3, 3, 7.47214, 8], parabola coefficients: [{a: "
+        "0.00000, b:0.77709, c:1.66874}, {a: 0.00000, b:0.77709, c:1.66874}, "
+        "{a: 4.00000, b:-59.00000, c:225.00000}]}");
+    EXPECT_EQ(ss.str(), expected_str);
+  }
+
+  {
+    const Eigen::Vector2d p1(3, 4);
+    const Eigen::Vector2d p2(8, 9);
+    const auto p2_dt = 0.0;
+    const auto p2_ddt = -4.0;
+    const auto I_dt = Interval(0, 5.0);
+
+    const auto connector =
+        PST_Connector::computeLP(p1, p2, p2_dt, p2_ddt, I_dt);
+    ASSERT_FALSE(!connector);
+
+    std::stringstream ss;
+    ss << *connector;
+    const auto expected_str = std::string(
+        "{switching times: [3, 3, 7.8734, 8], parabola coefficients: [{a: "
+        "0.00000, b:1.01282, c:0.96153}, {a: 0.00000, b:1.01282, c:0.96153}, "
+        "{a: -4.00000, b:64.00000, c:-247.00000}]}");
+    EXPECT_EQ(ss.str(), expected_str);
+  }
+}
+
 TEST(Maeve_Dynamics_PST_Connector, testEndPoints) {
   {
     const auto p = Polynomial(1, 1, 1);
