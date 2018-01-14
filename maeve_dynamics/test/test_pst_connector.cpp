@@ -30,6 +30,26 @@ const auto epsilon = 0.0001;
 
 TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
   {
+    const Eigen::Vector2d p1(0, 0);
+    const Eigen::Vector2d p2(5, 5);
+    const auto p2_dt = 1.0;
+    const auto p2_ddt = 4.0;
+    const auto I_dt = Interval(1.0, 1.0);
+
+    const auto connector =
+        PST_Connector::computeLP(p1, p2, p2_dt, p2_ddt, I_dt);
+    ASSERT_FALSE(!connector);
+
+    std::stringstream ss;
+    ss << *connector;
+    const auto expected_str = std::string(
+        "{switching times: [0, 0, 5, 5], parabola coefficients: [{a: 0.00000, "
+        "b:1.00000, c:0.00000}, {a: 0.00000, b:1.00000, c:0.00000}, {a: "
+        "4.00000, b:-39.00000, c:100.00000}]}");
+    EXPECT_EQ(ss.str(), expected_str);
+  }
+
+  {
     const Eigen::Vector2d p1(3, 4);
     const Eigen::Vector2d p2(8, 9);
     const auto p2_dt = 5.0;
