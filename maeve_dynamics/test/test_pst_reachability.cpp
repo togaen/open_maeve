@@ -61,6 +61,14 @@ TEST(Maeve_Dynamics_PST_Reachability, testMaxTerminalSpeedVII) {
         PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(p0, p1,
                                                                         c);
     ASSERT_FALSE(!r);
+
+    std::stringstream ss;
+    ss << *r;
+    const auto expected_str = std::string(
+        "{switching times: [3, 3, 7.47214, 8], parabola coefficients: [{a: "
+        "0.00000, b:0.77709, c:1.66874}, {a: 0.00000, b:0.77709, c:1.66874}, "
+        "{a: 4.00000, b:-59.00000, c:225.00000}]}");
+    EXPECT_EQ(ss.str(), expected_str);
   }
 }
 
@@ -73,6 +81,14 @@ TEST(Maeve_Dynamics_PST_Reachability, testMinTerminalSpeedVIII) {
         PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(p0, p1,
                                                                          c);
     ASSERT_FALSE(!r);
+
+    std::stringstream ss;
+    ss << *r;
+    const auto expected_str = std::string(
+        "{switching times: [3, 3, 7.8734, 8], parabola coefficients: [{a: "
+        "0.00000, b:1.01282, c:0.96153}, {a: 0.00000, b:1.01282, c:0.96153}, "
+        "{a: -4.00000, b:64.00000, c:-247.00000}]}");
+    EXPECT_EQ(ss.str(), expected_str);
   }
 }
 #if 0
