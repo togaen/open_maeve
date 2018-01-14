@@ -214,6 +214,8 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
     return connector;
   }
 
+  // TODO(me): LP for case where terminal speed is not known.
+
   // For PLP, need initial speed interval bounds.
   double p1_dt_min, p1_dt_max;
   std::tie(p1_dt_min, p1_dt_max) = Interval::bounds(I_i);
@@ -234,6 +236,8 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   if (connector_max) {
     return connector_max;
   }
+
+  // TODO(me): PLP for case where terminal speed is not known.
 
   // If it's PP, we're done.
   // TODO(me)
@@ -273,6 +277,8 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
     return connector;
   }
 
+  // TODO(me): LP for case where terminal speed is not known.
+
   // For PLP, need initial speed interval bounds.
   double p1_dt_min, p1_dt_max;
   std::tie(p1_dt_min, p1_dt_max) = Interval::bounds(I_i);
@@ -293,6 +299,8 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
   if (connector_max) {
     return connector_max;
   }
+
+  // TODO(me): PLP for case where terminal speed is not known.
 
   // If it's PP, we're done.
   // TODO(me)
