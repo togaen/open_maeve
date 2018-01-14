@@ -24,6 +24,8 @@
 #include <algorithm>
 #include <limits>
 
+#include "boost/io/ios_state.hpp"
+
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
@@ -275,12 +277,24 @@ bool operator<=(const Interval& interval1, const Interval& interval2) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Interval& interval) {
+  static const auto PRECISION = 5;
+
+  // Restore stream state on exit.
+  boost::io::ios_all_saver guard(os);
+
+  // Temporarily set desired flags and precision.
+  os.setf(std::ios::fixed, std::ios::floatfield);
+  os.precision(PRECISION);
+
+  // Do stream output.
   if (!Interval::valid(interval)) {
     return os << "[(invalid)]";
   }
+
   if (Interval::empty(interval)) {
     return os << "[(empty)]";
   }
+
   return os << "[" << Interval::min(interval) << ", " << Interval::max(interval)
             << "]";
 }

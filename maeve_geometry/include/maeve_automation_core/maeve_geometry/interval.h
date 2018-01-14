@@ -129,6 +129,8 @@ class Interval {
   /**
    * @brief Stream overload for Interval types.
    *
+   * @note Output precision is fixed inside the function definition.
+   *
    * @param os The output stream.
    * @param interval The interval to serialize.
    *
