@@ -219,13 +219,20 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   std::tie(p1_dt_min, p1_dt_max) = Interval::bounds(I_i);
 
   // If it's PLP, we're done.
-  if (const auto connector =
-          PST_Connector::computePLP(p1, p1_dt_min, p2, dt, ddt, I_dt)) {
-    return connector;
+  const auto connector_min =
+      PST_Connector::computePLP(p1, p1_dt_min, p2, dt, ddt, I_dt);
+  const auto connector_max =
+      PST_Connector::computePLP(p1, p1_dt_max, p2, dt, ddt, I_dt);
+  if (connector_min && connector_max) {
+    const auto s1 = PST_Connector::terminalSpeed(*connector_min);
+    const auto s2 = PST_Connector::terminalSpeed(*connector_max);
+    return (s1 > s2) ? *connector_min : *connector_max;
   }
-  if (const auto connector =
-          PST_Connector::computePLP(p1, p1_dt_max, p2, dt, ddt, I_dt)) {
-    return connector;
+  if (connector_min) {
+    return connector_min;
+  }
+  if (connector_max) {
+    return connector_max;
   }
 
   // TODO(me): PP
@@ -270,13 +277,20 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
   std::tie(p1_dt_min, p1_dt_max) = Interval::bounds(I_i);
 
   // If it's PLP, we're done.
-  if (const auto connector =
-          PST_Connector::computePLP(p1, p1_dt_min, p2, dt, ddt, I_dt)) {
-    return connector;
+  const auto connector_min =
+      PST_Connector::computePLP(p1, p1_dt_min, p2, dt, ddt, I_dt);
+  const auto connector_max =
+      PST_Connector::computePLP(p1, p1_dt_max, p2, dt, ddt, I_dt);
+  if (connector_min && connector_max) {
+    const auto s1 = PST_Connector::terminalSpeed(*connector_min);
+    const auto s2 = PST_Connector::terminalSpeed(*connector_max);
+    return (s1 > s2) ? *connector_min : *connector_max;
   }
-  if (const auto connector =
-          PST_Connector::computePLP(p1, p1_dt_max, p2, dt, ddt, I_dt)) {
-    return connector;
+  if (connector_min) {
+    return connector_min;
+  }
+  if (connector_max) {
+    return connector_max;
   }
 
   // TODO(me): PP
