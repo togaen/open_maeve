@@ -40,6 +40,51 @@ Polynomial::Polynomial() : coefficients_({NaN, NaN, NaN}) {}
 Polynomial::Polynomial(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
 
+bool Polynomial::valid(const Polynomial& polynomial) {
+  double a, b, c;
+  std::tie(a, b, c) = Polynomial::coefficients(polynomial);
+  return (std::isfinite(a) && std::isfinite(b) && std::isfinite(c));
+}
+
+bool Polynomial::isLinear(const Polynomial& polynomial) {
+  const auto is_valid = Polynomial::valid(polynomial);
+  const auto a_zero = (Polynomial::a(polynomial) == 0.0);
+  const auto b_non_zero = (Polynomial::b(polynomial) != 0.0);
+  return (is_valid && a_zero && b_non_zero);
+}
+
+bool Polynomial::isQuadratic(const Polynomial& polynomial) {
+  const auto is_valid = Polynomial::valid(polynomial);
+  const auto a_non_zero = (Polynomial::a(polynomial) != 0.0);
+  return (is_valid && a_non_zero);
+}
+
+bool Polynomial::isConstant(const Polynomial& polynomial) {
+  const auto is_valid = Polynomial::valid(polynomial);
+  const auto a_zero = (Polynomial::a(polynomial) == 0.0);
+  const auto b_zero = (Polynomial::b(polynomial) == 0.0);
+  return (is_valid && a_zero && b_zero);
+}
+
+boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
+    const Polynomial& polynomial) {
+  // Linear or constant; no unique critical point.
+  if (Polynomial::isLinear(polynomial) || Polynomial::isConstant(polynomial)) {
+    return boost::none;
+  }
+
+  // Find unique critical point of a quadratic equation.
+  if (Polynomial::isQuadratic(polynomial)) {
+    const auto x_critical =
+        (-polynomial.dx_coefficients_[1] / polynomial.dx_coefficients_[0]);
+    const auto y_critical = polynomial(x_critical);
+    return Eigen::Vector2d(x_critical, y_critical);
+  }
+
+  // This function is not defined for other polynomials.
+  return boost::none;
+}
+
 Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
   // Allocate coefficients.
   double a = 0.0;

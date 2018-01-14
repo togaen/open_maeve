@@ -28,9 +28,91 @@
 
 namespace maeve_automation_core {
 namespace {
+const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto Inf = std::numeric_limits<double>::infinity();
 const auto epsilon = 5e-4;
 }  // namespace
+
+TEST(Maeve_Geometry_Polynomial, testUniqueCriticalPoint) {
+  {
+    const auto p = Polynomial(0, 1, 2);
+    const auto c = Polynomial::uniqueCriticalPoint(p);
+    EXPECT_TRUE(!c);
+  }
+
+  {
+    const auto p = Polynomial(0, 0, 1);
+    const auto c = Polynomial::uniqueCriticalPoint(p);
+    EXPECT_TRUE(!c);
+  }
+
+  {
+    const auto p = Polynomial(3, 9, 5);
+    const auto c = Polynomial::uniqueCriticalPoint(p);
+    ASSERT_FALSE(!c);
+    EXPECT_NEAR(c->x(), (-9.0 / 6.0), epsilon);
+    EXPECT_NEAR(c->y(), p(c->x()), epsilon);
+    EXPECT_NEAR(Polynomial::dx(p, c->x()), 0.0, epsilon);
+  }
+}
+
+TEST(Maeve_Geometry_Polynomial, testType) {
+  {
+    const auto p = Polynomial(1, 2, 3);
+    EXPECT_FALSE(Polynomial::isConstant(p));
+    EXPECT_FALSE(Polynomial::isLinear(p));
+    EXPECT_TRUE(Polynomial::isQuadratic(p));
+  }
+
+  {
+    const auto p = Polynomial(0, 2, 3);
+    EXPECT_FALSE(Polynomial::isConstant(p));
+    EXPECT_TRUE(Polynomial::isLinear(p));
+    EXPECT_FALSE(Polynomial::isQuadratic(p));
+  }
+
+  {
+    const auto p = Polynomial(0, 0, 3);
+    EXPECT_TRUE(Polynomial::isConstant(p));
+    EXPECT_FALSE(Polynomial::isLinear(p));
+    EXPECT_FALSE(Polynomial::isQuadratic(p));
+  }
+
+  {
+    const auto p = Polynomial(0, 0, 0);
+    EXPECT_TRUE(Polynomial::isConstant(p));
+    EXPECT_FALSE(Polynomial::isLinear(p));
+    EXPECT_FALSE(Polynomial::isQuadratic(p));
+  }
+
+  {
+    const auto p = Polynomial(1, 0, 3);
+    EXPECT_FALSE(Polynomial::isConstant(p));
+    EXPECT_FALSE(Polynomial::isLinear(p));
+    EXPECT_TRUE(Polynomial::isQuadratic(p));
+  }
+
+  {
+    const auto p = Polynomial(1, 0, 0);
+    EXPECT_FALSE(Polynomial::isConstant(p));
+    EXPECT_FALSE(Polynomial::isLinear(p));
+    EXPECT_TRUE(Polynomial::isQuadratic(p));
+  }
+
+  {
+    const auto p = Polynomial(Inf, 0, 0);
+    EXPECT_FALSE(Polynomial::isConstant(p));
+    EXPECT_FALSE(Polynomial::isLinear(p));
+    EXPECT_FALSE(Polynomial::isQuadratic(p));
+  }
+
+  {
+    const auto p = Polynomial(1, 0, NaN);
+    EXPECT_FALSE(Polynomial::isConstant(p));
+    EXPECT_FALSE(Polynomial::isLinear(p));
+    EXPECT_FALSE(Polynomial::isQuadratic(p));
+  }
+}
 
 TEST(Maeve_Geometry_Polynomial, testTangentRay) {
   {

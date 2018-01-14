@@ -86,6 +86,20 @@ class Polynomial {
   double operator()(const double x) const;
 
   /**
+   * @brief Get the unique critical point of the polynomial.
+   *
+   * @note For polynomials that are constant functions, this method returns a
+   * null object because there is no unique critical point.
+   *
+   * @param polynomial The polynomial.
+   *
+   * @return A nullable object of the unique critical point of the polynomial,
+   * or boost::none if no such point exists.
+   */
+  static boost::optional<Eigen::Vector2d> uniqueCriticalPoint(
+      const Polynomial& polynomial);
+
+  /**
    * @brief Compute the roots of a polynomial.
    *
    * @note This method favors accuracy and numeric stability over speed.
@@ -154,6 +168,33 @@ class Polynomial {
       const Polynomial& polynomial);
 
   /**
+   * @brief Whether the polynomial is a linear function.
+   *
+   * @param polynomial The polynomial.
+   *
+   * @return True if the polynomial is a linear function; otherwise false.
+   */
+  static bool isLinear(const Polynomial& polynomial);
+
+  /**
+   * @brief Whether the polynomial is a quadratic function.
+   *
+   * @param polynomial The polynomial.
+   *
+   * @return True if the polynomial is a quadratic function; otherwise false.
+   */
+  static bool isQuadratic(const Polynomial& polynomial);
+
+  /**
+   * @brief Whether the polynomial is a constant function.
+   *
+   * @param polynomial The polynomial.
+   *
+   * @return True if the polynomial is a constant function; otherwise false.
+   */
+  static bool isConstant(const Polynomial& polynomial);
+
+  /**
    * @brief A factory method to compute the polynomial equation from a point it
    * passes through and its derivative at that point.
    *
@@ -179,6 +220,15 @@ class Polynomial {
   tangentRaysThroughPoint(const Polynomial& polynomial,
                           const Eigen::Vector2d& p_r,
                           const double epsilon = 1e-8);
+
+  /**
+   * @brief Whether the polynomial has real-valued coefficients.
+   *
+   * @param polynomial The polynomial.
+   *
+   * @return True if all coefficients are real-valued; otherwise false.
+   */
+  static bool valid(const Polynomial& polynomial);
 
  private:
   /**
