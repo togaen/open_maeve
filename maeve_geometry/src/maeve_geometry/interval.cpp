@@ -53,6 +53,10 @@ Interval Interval::affinelyExtendedReals() { return Interval(-Inf, Inf); }
 
 Interval Interval::maxRepresentableReals() { return Interval(Min, Max); }
 
+Interval Interval::nonNegativeReals() { return Interval(0.0, Max); }
+
+Interval Interval::nonPositiveReals() { return Interval(Min, 0.0); }
+
 Interval::Interval()
     : bounds_(std::move(std::make_tuple(NaN, NaN))), empty_(true) {}
 
