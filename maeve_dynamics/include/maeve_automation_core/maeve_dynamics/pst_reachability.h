@@ -151,6 +151,7 @@ class PST_Reachability {
    * from p1 and becomes tangent to the terminal P+ curve. If no such feasible
    * connector exists, a null object is returned.
    *
+   * @param I_i The interval of available initial speeds.
    * @param p1 The initial point in PT space.
    * @param p2 The terminal point in PT space.
    * @param constraints The dynamic constraints describing 1st and 2nd order
@@ -160,7 +161,7 @@ class PST_Reachability {
    */
   template <Type T>
   static boost::optional<PST_Connector> maxTerminalSpeed(
-      const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+      const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
       const IntervalConstraints<2>& constraints);
 
   /**
@@ -172,6 +173,7 @@ class PST_Reachability {
    * from p1 and becomes tangent to the terminal P- curve. If no such feasible
    * connector exists, a null object is returned.
    *
+   * @param I_i The interval of available initial speeds.
    * @param p1 The initial point in PT space.
    * @param p2 The terminal point in PT space.
    * @param constraints The constraints describing 1st and 2nd order bounds.
@@ -180,8 +182,17 @@ class PST_Reachability {
    */
   template <Type T>
   static boost::optional<PST_Connector> minTerminalSpeed(
-      const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+      const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
       const IntervalConstraints<2>& constraints);
+
+ private:
+  /**
+   * @brief Constructor: explicit initialization.
+   *
+   * @param min_terminal The connecting trajectory with min terminal speed.
+   * @param max_terminal The connecting trajectory with max terminal speed.
+   */
+  PST_Reachability(PST_Connector&& min_terminal, PST_Connector&& max_terminal);
 
   /**
    * @brief Compute an LP connector between 'p1' and 'p1'.
@@ -204,14 +215,25 @@ class PST_Reachability {
                                                   const double p2_ddt,
                                                   const Interval& I_dt);
 
- private:
   /**
-   * @brief Constructor: explicit initialization.
+   * @brief Compute a PLP connector between 'p1' and 'p1'.
    *
-   * @param min_terminal The connecting trajectory with min terminal speed.
-   * @param max_terminal The connecting trajectory with max terminal speed.
+   * @note This method assumes an LP connector is not available, so it attempts
+   * to build a PLP starting from one of the extrema of the initial available
+   * speed interval.
+   *
+   * @param p1 The initial point in PT space.
+   * @param p2 The terminal point in PT space.
+   * @param p2_dt Connector first derivative at 'p2'.
+   * @param p2_ddt Connector second derivative at 'p2'.
+   * @param I_dt The interval of feasible speeds.
+   * @param I_i The interval of initial available speeds.
+   *
+   * @return A nullable object of either the connector or boost::none.
    */
-  PST_Reachability(PST_Connector&& min_terminal, PST_Connector&& max_terminal);
+  static boost::optional<PST_Connector> computePLP(
+      const Eigen::Vector2d& p1, const Eigen::Vector2d& p2, const double p2_dt,
+      const double p2_ddt, const Interval& I_dt, const Interval& I_i);
 
   /** @brief The PST connector that achieves minimum terminal speed. */
   PST_Connector min_terminal_;
@@ -309,13 +331,13 @@ PST_Reachability::connector<PST_Reachability::Type::VI>(
 template <>
 boost::optional<PST_Connector>
 PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::V>(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints);
 
 template <>
 boost::optional<PST_Connector>
 PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints);
 /** @} */
 
@@ -327,13 +349,13 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
 template <>
 boost::optional<PST_Connector>
 PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VI>(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints);
 
 template <>
 boost::optional<PST_Connector>
 PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints);
 /** @} */
 }  // namespace maeve_automation_core

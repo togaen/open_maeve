@@ -185,11 +185,9 @@ PST_Reachability::connector<PST_Reachability::Type::VIII>(
 
 /***/
 
-template <>
-boost::optional<PST_Connector>
-PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::V>(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints) {
+boost::optional<PST_Connector> PST_Reachability::computePLP(
+    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2, const double p2_dt,
+    const double p2_ddt, const Interval& I_dt, const Interval& I_i) {
   return boost::none;
 }
 
@@ -231,11 +229,19 @@ boost::optional<PST_Connector> PST_Reachability::computeLP(
   return PST_Connector({p1.x(), p1.x(), r.x(), p2.x()}, {L, L, P});
 }
 
+template <>
+boost::optional<PST_Connector>
+PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::V>(
+    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  return boost::none;
+}
+
 // LP+
 template <>
 boost::optional<PST_Connector>
 PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints) {
   // Intervals for dynamic bounds.
   const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
@@ -247,8 +253,20 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   // Constant max acceleration.
   const auto ddt = Interval::max(I_ddt);
 
-  // Compute and return.
-  return computeLP(p1, p2, dt, ddt, I_dt);
+  // If it's LP, we're done.
+  if (const auto connector = computeLP(p1, p2, dt, ddt, I_dt)) {
+    return connector;
+  }
+
+  // If it's PLP, we're done.
+  if (const auto connector = computePLP(p1, p2, dt, ddt, I_dt, I_i)) {
+    return connector;
+  }
+
+  // TODO: PP
+
+  // Done.
+  return boost::none;
 }
 
 /***/
@@ -256,7 +274,7 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
 template <>
 boost::optional<PST_Connector>
 PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VI>(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints) {
   return boost::none;
 }
@@ -265,7 +283,7 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VI>(
 template <>
 boost::optional<PST_Connector>
 PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const IntervalConstraints<2>& constraints) {
   // Intervals for dynamic bounds.
   const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
@@ -277,7 +295,19 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
   // Constant max acceleration.
   const auto ddt = Interval::min(I_ddt);
 
-  // Compute and return.
-  return computeLP(p1, p2, dt, ddt, I_dt);
+  // If it's LP, we're done.
+  if (const auto connector = computeLP(p1, p2, dt, ddt, I_dt)) {
+    return connector;
+  }
+
+  // If it's PLP, we're done.
+  if (const auto connector = computePLP(p1, p2, dt, ddt, I_dt, I_i)) {
+    return connector;
+  }
+
+  // TODO: PP
+
+  // Done.
+  return boost::none;
 }
 }  // namespace maeve_automation_core

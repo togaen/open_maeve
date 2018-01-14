@@ -25,6 +25,7 @@
 
 namespace maeve_automation_core {
 namespace {
+const auto I_i_all = Interval::nonNegativeReals();
 const auto c = IntervalConstraints<2>(
     {0, 10}, {Interval(0, 100), Interval(0, 5), Interval(-4, 4)});
 }  // namespace
@@ -46,8 +47,8 @@ TEST(Maeve_Dynamics_PST_Reachability, testMaxTerminalSpeedV) {
     const Eigen::Vector2d p1(1, 1);
 
     const auto r =
-        PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::V>(p0, p1,
-                                                                      c);
+        PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::V>(
+            I_i_all, p0, p1, c);
     // ASSERT_FALSE(!r);
   }
 }
@@ -58,8 +59,8 @@ TEST(Maeve_Dynamics_PST_Reachability, testMaxTerminalSpeedVII) {
     const Eigen::Vector2d p1(8, 9);
 
     const auto r =
-        PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(p0, p1,
-                                                                        c);
+        PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
+            I_i_all, p0, p1, c);
     ASSERT_FALSE(!r);
 
     std::stringstream ss;
@@ -78,8 +79,8 @@ TEST(Maeve_Dynamics_PST_Reachability, testMinTerminalSpeedVIII) {
     const Eigen::Vector2d p1(8, 9);
 
     const auto r =
-        PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(p0, p1,
-                                                                         c);
+        PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
+            I_i_all, p0, p1, c);
     ASSERT_FALSE(!r);
 
     std::stringstream ss;
