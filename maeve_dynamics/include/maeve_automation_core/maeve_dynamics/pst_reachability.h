@@ -218,22 +218,18 @@ class PST_Reachability {
   /**
    * @brief Compute a PLP connector between 'p1' and 'p1'.
    *
-   * @note This method assumes an LP connector is not available, so it attempts
-   * to build a PLP starting from one of the extrema of the initial available
-   * speed interval.
-   *
    * @param p1 The initial point in PT space.
+   * @param p1_dt Connector first derivative at 'p1'.
    * @param p2 The terminal point in PT space.
    * @param p2_dt Connector first derivative at 'p2'.
    * @param p2_ddt Connector second derivative at 'p2'.
    * @param I_dt The interval of feasible speeds.
-   * @param I_i The interval of initial available speeds.
    *
    * @return A nullable object of either the connector or boost::none.
    */
   static boost::optional<PST_Connector> computePLP(
-      const Eigen::Vector2d& p1, const Eigen::Vector2d& p2, const double p2_dt,
-      const double p2_ddt, const Interval& I_dt, const Interval& I_i);
+      const Eigen::Vector2d& p1, const double p1_dt, const Eigen::Vector2d& p2,
+      const double p2_dt, const double p2_ddt, const Interval& I_dt);
 
   /** @brief The PST connector that achieves minimum terminal speed. */
   PST_Connector min_terminal_;

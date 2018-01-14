@@ -186,8 +186,8 @@ PST_Reachability::connector<PST_Reachability::Type::VIII>(
 /***/
 
 boost::optional<PST_Connector> PST_Reachability::computePLP(
-    const Eigen::Vector2d& p1, const Eigen::Vector2d& p2, const double p2_dt,
-    const double p2_ddt, const Interval& I_dt, const Interval& I_i) {
+    const Eigen::Vector2d& p1, const double p1_dt, const Eigen::Vector2d& p2,
+    const double p2_dt, const double p2_ddt, const Interval& I_dt) {
   return boost::none;
 }
 
@@ -258,8 +258,15 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
     return connector;
   }
 
+  // For PLP, need initial speed interval bounds.
+  double p1_dt_min, p1_dt_max;
+  std::tie(p1_dt_min, p1_dt_max) = Interval::bounds(I_i);
+
   // If it's PLP, we're done.
-  if (const auto connector = computePLP(p1, p2, dt, ddt, I_dt, I_i)) {
+  if (const auto connector = computePLP(p1, p1_dt_min, p2, dt, ddt, I_dt)) {
+    return connector;
+  }
+  if (const auto connector = computePLP(p1, p1_dt_max, p2, dt, ddt, I_dt)) {
     return connector;
   }
 
@@ -300,8 +307,15 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
     return connector;
   }
 
+  // For PLP, need initial speed interval bounds.
+  double p1_dt_min, p1_dt_max;
+  std::tie(p1_dt_min, p1_dt_max) = Interval::bounds(I_i);
+
   // If it's PLP, we're done.
-  if (const auto connector = computePLP(p1, p2, dt, ddt, I_dt, I_i)) {
+  if (const auto connector = computePLP(p1, p1_dt_min, p2, dt, ddt, I_dt)) {
+    return connector;
+  }
+  if (const auto connector = computePLP(p1, p1_dt_max, p2, dt, ddt, I_dt)) {
     return connector;
   }
 
