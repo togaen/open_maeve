@@ -235,7 +235,8 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
     return connector_max;
   }
 
-  // TODO(me): PP
+  // If it's PP, we're done.
+  // TODO(me)
 
   // Done.
   return boost::none;
@@ -293,9 +294,10 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
     return connector_max;
   }
 
-  // TODO(me): PP
+  // If it's PP, we're done.
+  // TODO(me)
 
-  // Done.
+  // Otherwise, the point is unreachable.
   return boost::none;
 }
 }  // namespace maeve_automation_core
