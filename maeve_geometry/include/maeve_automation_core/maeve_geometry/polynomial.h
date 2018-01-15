@@ -105,6 +105,9 @@ class Polynomial {
    * @brief Compute and return the domains for which the polynomial first
    * derivative has negative and positive sign.
    *
+   * @note The critical point, where first derivative is zero, is included in
+   * both partitions.
+   *
    * @param polynomial The polynomial.
    *
    * @return An ordered tuple of the domain for negative first derivative and
