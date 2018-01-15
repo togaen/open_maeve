@@ -56,8 +56,8 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
 }
 
 boost::optional<PST_Connector> PST_Connector::computePL_0P(
-    const Eigen::Vector2d& p1, const double p1_dt, const Eigen::Vector2d& p2,
-    const double p2_ddt, const Interval& I_dt) {
+    const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
+    const Eigen::Vector2d& p2, const double p2_ddt, const Interval& I_dt) {
   // Compute critical point of P1.
 
   // Construct L_0 through P1 critical point.

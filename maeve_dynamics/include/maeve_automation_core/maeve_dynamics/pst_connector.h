@@ -121,7 +121,7 @@ class PST_Connector {
    * @param p1_dt Connector first derivative at 'p1'.
    * @param p2 The terminal point in PT space.
    * @param p2_dt Connector first derivative at 'p2'.
-   * @param p2_ddt Connector second derivative.
+   * @param p2_ddt Connector second derivative at 'p2'.
    * @param I_dt The interval of feasible speeds.
    *
    * @return A nullable object of either the connector or boost::none.
@@ -138,14 +138,16 @@ class PST_Connector {
    *
    * @param p1 The initial point in PT space.
    * @param p1_dt Connector first derivative at 'p1'.
+   * @param p1_ddt Connector second deriviative at 'p1'.
    * @param p2 The terminal point in PT space.
-   * @param p2_ddt Connector second derivative.
+   * @param p2_ddt Connector second derivative at 'p2'.
    * @param I_dt The interval of feasible speeds.
    *
    * @return A nullable object of either the connector or boost::none.
    */
   static boost::optional<PST_Connector> computePL_0P(const Eigen::Vector2d& p1,
                                                      const double p1_dt,
+                                                     const double p1_ddt,
                                                      const Eigen::Vector2d& p2,
                                                      const double p2_ddt,
                                                      const Interval& I_dt);
