@@ -55,6 +55,24 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
   return boost::none;
 }
 
+template <>
+Interval PST_Connector::domain<PST_Connector::Idx::FIRST>(
+    const PST_Connector& connector) {
+  return Interval(connector.switching_times_[0], connector.switching_times_[1]);
+}
+
+template <>
+Interval PST_Connector::domain<PST_Connector::Idx::SECOND>(
+    const PST_Connector& connector) {
+  return Interval(connector.switching_times_[1], connector.switching_times_[2]);
+}
+
+template <>
+Interval PST_Connector::domain<PST_Connector::Idx::THIRD>(
+    const PST_Connector& connector) {
+  return Interval(connector.switching_times_[2], connector.switching_times_[3]);
+}
+
 boost::optional<PST_Connector> PST_Connector::computePL_0P(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
     const Eigen::Vector2d& p2, const double p2_ddt, const Interval& I_dt) {
@@ -119,6 +137,30 @@ std::tuple<Eigen::Vector2d, Eigen::Vector2d> PST_Connector::boundaryPoints(
   return std::make_tuple(p0, p1);
 }
 
+bool PST_Connector::timeDomainNonZeroMeasure(const PST_Connector& connector) {
+  const auto D =
+      Interval(connector.switching_times_[0], connector.switching_times_[3]);
+  return !Interval::zeroLength(D);
+}
+
+template <>
+const Polynomial& PST_Connector::function<PST_Connector::Idx::FIRST>(
+    const PST_Connector& connector) {
+  return connector.functions_[0];
+}
+
+template <>
+const Polynomial& PST_Connector::function<PST_Connector::Idx::SECOND>(
+    const PST_Connector& connector) {
+  return connector.functions_[1];
+}
+
+template <>
+const Polynomial& PST_Connector::function<PST_Connector::Idx::THIRD>(
+    const PST_Connector& connector) {
+  return connector.functions_[2];
+}
+
 bool PST_Connector::switchingTimesNonDecreasing(
     const PST_Connector& connector) {
   // Check monotonicity.
@@ -171,12 +213,11 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
          approxEq(s_dot12, s_dot22, epsilon);
 }
 
-bool PST_Connector::realCoefficients(const PST_Connector& connector) {
+bool PST_Connector::validSegments(const PST_Connector& connector) {
   return std::all_of(std::begin(connector.functions_),
                      std::end(connector.functions_), [](const Polynomial& p) {
-                       return std::isfinite(Polynomial::a(p)) &&
-                              std::isfinite(Polynomial::b(p)) &&
-                              std::isfinite(Polynomial::c(p));
+                       return (Polynomial::valid(p) && Polynomial::valid(p) &&
+                               Polynomial::valid(p));
                      });
 }
 
@@ -192,11 +233,34 @@ bool PST_Connector::valid(const PST_Connector& connector) {
   const auto segments_tangent = PST_Connector::segmentsTangent(connector);
 
   // Check validity.
-  const auto real_coefficients = PST_Connector::realCoefficients(connector);
+  const auto segments_valid = PST_Connector::validSegments(connector);
+
+  // Check first derivatives.
+  const auto seg1_valid_dx =
+      PST_Connector::noNegativeFirstDerivatives<Idx::FIRST>(connector);
+  const auto seg2_valid_dx =
+      PST_Connector::noNegativeFirstDerivatives<Idx::SECOND>(connector);
+  const auto seg3_valid_dx =
+      PST_Connector::noNegativeFirstDerivatives<Idx::THIRD>(connector);
+
+  // Check time domain.
+  const auto time_domain_valid =
+      PST_Connector::timeDomainNonZeroMeasure(connector);
+#if 0
+  std::cout << "non_decreasing: " << non_decreasing
+            << ", segments_connected: " << segments_connected
+            << ", segments_tangent: " << segments_tangent
+            << ", segments_valid: " << segments_valid
+            << ", seg1_valid_dx: " << seg1_valid_dx
+            << ", seg2_valid_dx: " << seg2_valid_dx
+            << ", seg3_valid_dx: " << seg3_valid_dx
+            << ", time_domain_valid: " << time_domain_valid << std::endl;
+#endif
 
   // Done.
-  return non_decreasing && segments_connected && segments_tangent &&
-         real_coefficients;
+  return (non_decreasing && segments_connected && segments_tangent &&
+          segments_valid && (seg1_valid_dx && seg2_valid_dx && seg3_valid_dx) &&
+          time_domain_valid);
 }
 
 PST_Connector::PST_Connector(std::array<double, 4>&& switching_times,

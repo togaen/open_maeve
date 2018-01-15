@@ -22,6 +22,7 @@
 #pragma once
 
 #include <array>
+#include <cassert>
 #include <iostream>
 #include <tuple>
 
@@ -145,14 +146,16 @@ class PST_Connector {
    *
    * @return A nullable object of either the connector or boost::none.
    */
-  static boost::optional<PST_Connector> computePL_0P(const Eigen::Vector2d& p1,
-                                                     const double p1_dt,
-                                                     const double p1_ddt,
-                                                     const Eigen::Vector2d& p2,
-                                                     const double p2_ddt,
-                                                     const Interval& I_dt);
+  static boost::optional<PST_Connector> computePL_0P(
+      const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
+      const Eigen::Vector2d& p2, const double p2_ddt, const Interval& I_dt);
 
  private:
+  /**
+   * @brief Utility enum for indexing connector segments.
+   */
+  enum class Idx { FIRST, SECOND, THIRD };
+
   /**
    * @brief Check whether switching times are strictly non-decreasing.
    *
@@ -187,13 +190,58 @@ class PST_Connector {
   static bool segmentsTangent(const PST_Connector& connector);
 
   /**
-   * @brief Check whether all parabola coefficients are real valued.
+   * @brief Check whether all segments have valid coefficients.
    *
    * @param connector The connecting trajectory to check.
    *
-   * @return True if the segments all have real coefficients; otherwise false.
+   * @return True if the segments all have valid coefficients; otherwise false.
    */
-  static bool realCoefficients(const PST_Connector& connector);
+  static bool validSegments(const PST_Connector& connector);
+
+  /**
+   * @brief Whether the time domain of the connector has non-zero measure.
+   *
+   * @param connector The connecting trajectory to check.
+   *
+   * @return True if the time domain has non-zero measure; otherwise false.
+   */
+  static bool timeDomainNonZeroMeasure(const PST_Connector& connector);
+
+  /**
+   * @brief Whether the first derivative is non-negative along entire connector.
+   *
+   * @tparam I The segment index.
+   *
+   * @param connector The connecting trajectory to check.
+   *
+   * @return True if the first derivative along the segment is never negative.
+   */
+  template <Idx I>
+  static bool noNegativeFirstDerivatives(const PST_Connector& connector);
+
+  /**
+   * @brief Get a reference to the function for a given segment.
+   *
+   * @tparam Idx The segment index.
+   *
+   * @param connector The connecting trajectory.
+   *
+   * @return A const reference to the function for the given segment.
+   */
+  template <Idx I>
+  static const Polynomial& function(const PST_Connector& connector);
+
+  /**
+   * @brief Get an interval domain representation of a segment's domain.
+   *
+   * @tparam Idx The segment index desired.
+   *
+   * @param connector The connecting trajectory.
+   *
+   * @return An interval representing the segment's domain.
+   */
+  template <Idx I>
+  static Interval domain(const PST_Connector& connector);
 
   /**
    * @brief Perform basic checks for validity of the connecting trajectory.
@@ -206,6 +254,8 @@ class PST_Connector {
    *   3) The values and tangents of parabolas at indices 1 and 2 must be equal
    *      at the switching time at index 2.
    *   4) All parabola coefficients must be real valued.
+   *   5) First derivative must be non-negative along connector.
+   *   6) The total time domain must have non-zero measure.
    *
    * @note These are necessary, not sufficient, conditions for the connector to
    * be valid.
@@ -239,4 +289,83 @@ class PST_Connector {
    */
   std::array<Polynomial, 3> functions_;
 };  // class PST_Connector
+
+template <PST_Connector::Idx I>
+bool PST_Connector::noNegativeFirstDerivatives(const PST_Connector& connector) {
+  // Capture the time domain.
+  const auto domain = PST_Connector::domain<I>(connector);
+
+  // Capture the function.
+  const auto& function = PST_Connector::function<I>(connector);
+
+  // Trivially, if the domain is length zero, or the function is constant, there
+  // are no negative first derivatives.
+  if (Interval::zeroLength(domain) || Polynomial::isConstant(function)) {
+    return true;
+  }
+
+  // If quadratic, test accordingly.
+  if (Polynomial::isQuadratic(function)) {
+    // Check for intersection between the negative domain of function and the
+    // segment domain.
+    if (const auto dx_partition = Polynomial::dxSignDomainPartition(function)) {
+      const auto& I_neg = std::get<0>(*dx_partition);
+      const auto i = Interval::intersect(I_neg, domain);
+
+      // This intersection may contain only the critical point, which satisfies
+      // the test, but means the interval is not empty. Therefore, check for an
+      // intersection of non-zero length in addition to being not empty.
+      if (!Interval::empty(i) && !Interval::zeroLength(i)) {
+        return false;
+      }
+    }
+
+    // This should never happen.
+    assert(false);
+  }
+
+  // If linear, test accordingly.
+  if (Polynomial::isLinear(function)) {
+    if (Polynomial::dx(function, 0.0) < 0.0) {
+      return false;
+    }
+  }
+
+  // Everything checks out.
+  return true;
+}
+
+/**
+ * Specializations for computing segment domain.
+ * @{
+ */
+template <>
+Interval PST_Connector::domain<PST_Connector::Idx::FIRST>(
+    const PST_Connector& connector);
+
+template <>
+Interval PST_Connector::domain<PST_Connector::Idx::SECOND>(
+    const PST_Connector& connector);
+
+template <>
+Interval PST_Connector::domain<PST_Connector::Idx::THIRD>(
+    const PST_Connector& connector);
+/** @} */
+
+/**
+ * Specializations for testing segment domains.
+ * @{
+ */
+template <>
+const Polynomial& PST_Connector::function<PST_Connector::Idx::FIRST>(
+    const PST_Connector& connector);
+
+template <>
+const Polynomial& PST_Connector::function<PST_Connector::Idx::SECOND>(
+    const PST_Connector& connector);
+
+template <>
+const Polynomial& PST_Connector::function<PST_Connector::Idx::THIRD>(
+    const PST_Connector& connector);
+/** @} */
 }  // namespace maeve_automation_core
