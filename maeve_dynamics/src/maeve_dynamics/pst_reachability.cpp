@@ -204,13 +204,14 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
 
   // Terminal speed is max feasible speed.
-  const auto dt = Interval::max(I_dt);
+  const auto dt_max = Interval::max(I_dt);
 
   // Constant max acceleration.
-  const auto ddt = Interval::max(I_ddt);
+  const auto ddt_max = Interval::max(I_ddt);
 
   // If it's LP, we're done.
-  if (const auto connector = PST_Connector::computeLP(p1, p2, dt, ddt, I_dt)) {
+  if (const auto connector =
+          PST_Connector::computeLP(p1, p2, dt_max, ddt_max)) {
     return connector;
   }
 
@@ -220,9 +221,9 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
 
   // If it's PLP, we're done.
   const auto connector_min =
-      PST_Connector::computePLP(p1, p1_dt_min, p2, dt, ddt, I_dt);
+      PST_Connector::computePLP(p1, p1_dt_min, p2, dt_max, ddt_max);
   const auto connector_max =
-      PST_Connector::computePLP(p1, p1_dt_max, p2, dt, ddt, I_dt);
+      PST_Connector::computePLP(p1, p1_dt_max, p2, dt_max, ddt_max);
   if (connector_min && connector_max) {
     const auto s1 = PST_Connector::terminalSpeed(*connector_min);
     const auto s2 = PST_Connector::terminalSpeed(*connector_max);
@@ -271,13 +272,14 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
   const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
 
   // Terminal speed is max feasible speed.
-  const auto dt = Interval::min(I_dt);
+  const auto dt_min = Interval::min(I_dt);
 
   // Constant max acceleration.
-  const auto ddt = Interval::min(I_ddt);
+  const auto ddt_min = Interval::min(I_ddt);
 
   // If it's LP, we're done.
-  if (const auto connector = PST_Connector::computeLP(p1, p2, dt, ddt, I_dt)) {
+  if (const auto connector =
+          PST_Connector::computeLP(p1, p2, dt_min, ddt_min)) {
     return connector;
   }
 
@@ -289,9 +291,9 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
 
   // If it's PLP, we're done.
   const auto connector_min =
-      PST_Connector::computePLP(p1, p1_dt_min, p2, dt, ddt, I_dt);
+      PST_Connector::computePLP(p1, p1_dt_min, p2, dt_min, ddt_min);
   const auto connector_max =
-      PST_Connector::computePLP(p1, p1_dt_max, p2, dt, ddt, I_dt);
+      PST_Connector::computePLP(p1, p1_dt_max, p2, dt_min, ddt_min);
   if (connector_min && connector_max) {
     const auto s1 = PST_Connector::terminalSpeed(*connector_min);
     const auto s2 = PST_Connector::terminalSpeed(*connector_max);

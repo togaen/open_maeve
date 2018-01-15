@@ -34,10 +34,8 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     const Eigen::Vector2d p2(5, 5);
     const auto p2_dt = 1.0;
     const auto p2_ddt = 4.0;
-    const auto I_dt = Interval(1.0, 1.0);
 
-    const auto connector =
-        PST_Connector::computeLP(p1, p2, p2_dt, p2_ddt, I_dt);
+    const auto connector = PST_Connector::computeLP(p1, p2, p2_dt, p2_ddt);
     ASSERT_FALSE(!connector);
 
     std::stringstream ss;
@@ -54,10 +52,8 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     const Eigen::Vector2d p2(8, 9);
     const auto p2_dt = 5.0;
     const auto p2_ddt = 4.0;
-    const auto I_dt = Interval(0, 5.0);
 
-    const auto connector =
-        PST_Connector::computeLP(p1, p2, p2_dt, p2_ddt, I_dt);
+    const auto connector = PST_Connector::computeLP(p1, p2, p2_dt, p2_ddt);
     ASSERT_FALSE(!connector);
 
     std::stringstream ss;
@@ -74,10 +70,8 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     const Eigen::Vector2d p2(8, 9);
     const auto p2_dt = 0.0;
     const auto p2_ddt = -4.0;
-    const auto I_dt = Interval(0, 5.0);
 
-    const auto connector =
-        PST_Connector::computeLP(p1, p2, p2_dt, p2_ddt, I_dt);
+    const auto connector = PST_Connector::computeLP(p1, p2, p2_dt, p2_ddt);
     ASSERT_FALSE(!connector);
 
     std::stringstream ss;

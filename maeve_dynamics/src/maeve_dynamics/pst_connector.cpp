@@ -51,7 +51,7 @@ double PST_Connector::terminalSpeed(const PST_Connector& connector) {
 
 boost::optional<PST_Connector> PST_Connector::computePLP(
     const Eigen::Vector2d& p1, const double p1_dt, const Eigen::Vector2d& p2,
-    const double p2_dt, const double p2_ddt, const Interval& I_dt) {
+    const double p2_dt, const double p2_ddt) {
   return boost::none;
 }
 
@@ -75,7 +75,7 @@ Interval PST_Connector::domain<PST_Connector::Idx::THIRD>(
 
 boost::optional<PST_Connector> PST_Connector::computePL_0P(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
-    const Eigen::Vector2d& p2, const double p2_ddt, const Interval& I_dt) {
+    const Eigen::Vector2d& p2, const double p2_ddt) {
   // Compute initial P.
   const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p2_ddt);
 
@@ -108,22 +108,19 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
       (*p_critical + Eigen::Vector2d(p_critical->x() + 1.0, p_critical->y()));
   const auto L = Polynomial(*p_critical, p_critical2);
 
-  // Only one connector should be valid; if both are valid, they are equal. If
-  // neither are valid, the connection does not exist.
+  // Attempt to build connector and return.
   const auto t0 = p1.x();
   const auto t1 = p_critical->x();
   const auto t3 = p2.x();
   try {
-    // Try to build and return first candidate.
     const auto t2 = critical_pt1.x();
     return PST_Connector({t0, t1, t2, t3}, {P1, L, P2_candidate1});
   } catch (...) {
     try {
-      // Try to build and return second candidate.
       const auto t2 = critical_pt2.x();
       return PST_Connector({t0, t1, t2, t3}, {P1, L, P2_candidate2});
     } catch (...) {
-      // No feasible connection for this connector type.
+      // No feasible connection exists.
       return boost::none;
     }
   }
@@ -131,7 +128,7 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
 
 boost::optional<PST_Connector> PST_Connector::computeLP(
     const Eigen::Vector2d& p1, const Eigen::Vector2d& p2, const double p2_dt,
-    const double p2_ddt, const Interval& I_dt) {
+    const double p2_ddt) {
   // Compute P portion.
   const auto P = Polynomial::fromPointWithDerivatives(p2, p2_dt, p2_ddt);
 
@@ -141,34 +138,24 @@ boost::optional<PST_Connector> PST_Connector::computeLP(
     return boost::none;
   }
 
+  // Capture ray points.
+  Eigen::Vector2d r1, r2;
+  std::tie(r1, r2) = *rays;
+
   // Construct linear segments to test.
-  const auto L1 = Polynomial(p1, std::get<0>(*rays));
-  const auto L2 = Polynomial(p1, std::get<1>(*rays));
+  const auto L1 = Polynomial(p1, r1);
+  const auto L2 = Polynomial(p1, r2);
 
-  // Check L portion.
-  const auto s1_dot = Polynomial::dx(L1, p1.x());
-  const auto s2_dot = Polynomial::dx(L2, p1.x());
-  const auto L1_valid = Interval::contains(I_dt, s1_dot);
-  const auto L2_valid = Interval::contains(I_dt, s2_dot);
-
-  // No connection of this type.
-  if (!L1_valid && !L2_valid) {
-    return boost::none;
-  }
-
-  // This should never happen.
-  assert(!(L1_valid && L2_valid));
-
-  // For simplicity.
-  const auto& L = (L1_valid ? L1 : L2);
-  const auto& r = (L1_valid ? std::get<0>(*rays) : std::get<1>(*rays));
-
-  // Build connector and return.
+  // Attempt to build connector and return.
   try {
-    return PST_Connector({p1.x(), p1.x(), r.x(), p2.x()}, {L, L, P});
-  } catch (const std::exception& e) {
-    std::cerr << "Unexpected error constructing PST_Connector: " << e.what();
-    return boost::none;
+    return PST_Connector({p1.x(), p1.x(), r1.x(), p2.x()}, {L1, L1, P});
+  } catch (...) {
+    try {
+      return PST_Connector({p1.x(), p1.x(), r2.x(), p2.x()}, {L2, L2, P});
+    } catch (...) {
+      // No feasible connection exists.
+      return boost::none;
+    }
   }
 }
 
