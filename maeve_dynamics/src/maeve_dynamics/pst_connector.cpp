@@ -92,8 +92,41 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
     return boost::none;
   }
 
-  // Done.
-  return boost::none;
+  // Extract critical points.
+  Eigen::Vector2d critical_pt1, critical_pt2;
+  std::tie(critical_pt1, critical_pt2) = *critical_points;
+
+  // Build candidate terminal P curves.
+  static const auto dx_critical = 0.0;
+  const auto P2_candidate1 =
+      Polynomial::fromPointWithDerivatives(critical_pt1, dx_critical, p2_ddt);
+  const auto P2_candidate2 =
+      Polynomial::fromPointWithDerivatives(critical_pt2, dx_critical, p2_ddt);
+
+  // Build L curve by artificially construction a line through 'p_critical'.
+  const Eigen::Vector2d p_critical2 =
+      (*p_critical + Eigen::Vector2d(p_critical->x() + 1.0, p_critical->y()));
+  const auto L = Polynomial(*p_critical, p_critical2);
+
+  // Only one connector should be valid; if both are valid, they are equal. If
+  // neither are valid, the connection does not exist.
+  const auto t0 = p1.x();
+  const auto t1 = p_critical->x();
+  const auto t3 = p2.x();
+  try {
+    // Try to build and return first candidate.
+    const auto t2 = critical_pt1.x();
+    return PST_Connector({t0, t1, t2, t3}, {P1, L, P2_candidate1});
+  } catch (...) {
+    try {
+      // Try to build and return second candidate.
+      const auto t2 = critical_pt2.x();
+      return PST_Connector({t0, t1, t2, t3}, {P1, L, P2_candidate2});
+    } catch (...) {
+      // No feasible connection for this connector type.
+      return boost::none;
+    }
+  }
 }
 
 boost::optional<PST_Connector> PST_Connector::computeLP(
