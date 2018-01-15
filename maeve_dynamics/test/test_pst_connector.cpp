@@ -28,6 +28,19 @@ namespace {
 const auto epsilon = 0.0001;
 }  // namespace
 
+TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
+  {
+    const Eigen::Vector2d p1(0, 0);
+    const auto p1_dt = 0.0;
+    const auto p1_ddt = 4.0;
+    const Eigen::Vector2d p2(10, 2);
+    const auto p2_ddt = 4.0;
+    const auto connector =
+        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt);
+    ASSERT_FALSE(!connector);
+  }
+}
+
 TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
   {
     const Eigen::Vector2d p1(0, 0);
