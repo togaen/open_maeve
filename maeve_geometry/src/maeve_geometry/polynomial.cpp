@@ -40,10 +40,10 @@ Polynomial::Polynomial() : coefficients_({NaN, NaN, NaN}) {}
 Polynomial::Polynomial(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
 
-boost::optional<std::tuple<Polynomial, Polynomial>>
-Polynomial::fromPointAndCriticalLine(const Eigen::Vector2d& p,
-                                     const double y_critical,
-                                     const double ddx) {
+boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
+Polynomial::findConstrainedCriticalPoints(const Eigen::Vector2d& p,
+                                          const double y_critical,
+                                          const double ddx) {
   // Attempt to get roots.
   const auto A = ddx;
   const auto B = (-2.0 * ddx * p.x());
@@ -59,12 +59,8 @@ Polynomial::fromPointAndCriticalLine(const Eigen::Vector2d& p,
   const Eigen::Vector2d p1(x1_critical, y_critical);
   const Eigen::Vector2d p2(x2_critical, y_critical);
 
-  // Build solving polynomials.
-  auto P1 = Polynomial::fromPointWithDerivatives(p1, 0.0, ddx);
-  auto P2 = Polynomial::fromPointWithDerivatives(p2, 0.0, ddx);
-
   // Done.
-  return std::make_tuple(std::move(P1), std::move(P2));
+  return std::make_tuple(p1, p2);
 }
 
 bool Polynomial::valid(const Polynomial& polynomial) {

@@ -76,11 +76,21 @@ Interval PST_Connector::domain<PST_Connector::Idx::THIRD>(
 boost::optional<PST_Connector> PST_Connector::computePL_0P(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
     const Eigen::Vector2d& p2, const double p2_ddt, const Interval& I_dt) {
-  // Compute critical point of P1.
+  // Compute initial P.
+  const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p2_ddt);
 
-  // Construct L_0 through P1 critical point.
+  // Attempt to compute critical point of P1.
+  const auto p_critical = Polynomial::uniqueCriticalPoint(P1);
+  if (!p_critical) {
+    return boost::none;
+  }
 
-  // Compute P2 through p2 with critical point on L_0.
+  // Attempt to find critical points for candidate terminal parabolas.
+  const auto critical_points =
+      Polynomial::findConstrainedCriticalPoints(p2, p_critical->y(), p2_ddt);
+  if (!critical_points) {
+    return boost::none;
+  }
 
   // Done.
   return boost::none;

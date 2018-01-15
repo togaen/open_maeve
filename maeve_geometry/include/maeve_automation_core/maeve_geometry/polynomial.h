@@ -265,19 +265,19 @@ class Polynomial {
                                              const double dx, const double ddx);
 
   /**
-   * @brief Find the two polynomials that pass through 'p' and whose critical
-   * points lie on the line 'y_critical'.
+   * @brief Find the two critical points that lie on 'y_critical' for
+   * polynomials that pass through 'p'.
    *
    * @param p The point the polynomials pass through.
    * @param y_critical The critical line.
    * @param ddx The second derivative of the output polynomials.
    *
-   * @return A nullable object with the two polynomials solving the system; or
-   * null if there is no solution.
+   * @return A nullable object with the two critical points solving the system;
+   * or null if there is no solution.
    */
-  static boost::optional<std::tuple<Polynomial, Polynomial>>
-  fromPointAndCriticalLine(const Eigen::Vector2d& p, const double y_critical,
-                           const double ddx);
+  static boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
+  findConstrainedCriticalPoints(const Eigen::Vector2d& p,
+                                const double y_critical, const double ddx);
 
  private:
   /**

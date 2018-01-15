@@ -39,9 +39,9 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto y_critical = 0.0;
     const auto ddx = -2.0;
 
-    const auto curves =
-        Polynomial::fromPointAndCriticalLine(p, y_critical, ddx);
-    EXPECT_TRUE(!curves);
+    const auto points =
+        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx);
+    EXPECT_TRUE(!points);
   }
 
   {
@@ -49,12 +49,15 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto y_critical = 1.0;
     const auto ddx = 2.0;
 
-    const auto curves =
-        Polynomial::fromPointAndCriticalLine(p, y_critical, ddx);
-    ASSERT_FALSE(!curves);
+    const auto points =
+        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx);
+    ASSERT_FALSE(!points);
 
-    Polynomial p1, p2;
-    std::tie(p1, p2) = *curves;
+    Eigen::Vector2d pt1, pt2;
+    std::tie(pt1, pt2) = *points;
+
+    const auto p1 = Polynomial::fromPointWithDerivatives(pt1, 0.0, ddx);
+    const auto p2 = Polynomial::fromPointWithDerivatives(pt2, 0.0, ddx);
 
     std::stringstream ss1, ss2;
     ss1 << p1;
@@ -68,12 +71,15 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto y_critical = 0.0;
     const auto ddx = 2.0;
 
-    const auto curves =
-        Polynomial::fromPointAndCriticalLine(p, y_critical, ddx);
-    ASSERT_FALSE(!curves);
+    const auto points =
+        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx);
+    ASSERT_FALSE(!points);
 
-    Polynomial p1, p2;
-    std::tie(p1, p2) = *curves;
+    Eigen::Vector2d pt1, pt2;
+    std::tie(pt1, pt2) = *points;
+
+    const auto p1 = Polynomial::fromPointWithDerivatives(pt1, 0.0, ddx);
+    const auto p2 = Polynomial::fromPointWithDerivatives(pt2, 0.0, ddx);
 
     std::stringstream ss1, ss2;
     ss1 << p1;
@@ -87,12 +93,15 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto y_critical = 0.0;
     const auto ddx = 1.0;
 
-    const auto curves =
-        Polynomial::fromPointAndCriticalLine(p, y_critical, ddx);
-    ASSERT_FALSE(!curves);
+    const auto points =
+        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx);
+    ASSERT_FALSE(!points);
 
-    Polynomial p1, p2;
-    std::tie(p1, p2) = *curves;
+    Eigen::Vector2d pt1, pt2;
+    std::tie(pt1, pt2) = *points;
+
+    const auto p1 = Polynomial::fromPointWithDerivatives(pt1, 0.0, ddx);
+    const auto p2 = Polynomial::fromPointWithDerivatives(pt2, 0.0, ddx);
 
     std::stringstream ss1, ss2;
     ss1 << p1;
