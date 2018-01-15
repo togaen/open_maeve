@@ -126,11 +126,13 @@ class Polynomial {
    * @param b The linear coefficient.
    * @param c The constant coefficient.
    *
-   * @return A tuple of the roots (may be NaN). By convention the roots are
-   * ordered such that the first root is not larger than the second.
+   * @return A nullable object containing a tuple of the roots, or null if there
+   * are no real roots. By convention the roots are ordered such that the first
+   * root is not larger than the second.
    */
-  static std::tuple<double, double> roots(const double a, const double b,
-                                          const double c);
+  static boost::optional<std::tuple<double, double>> roots(const double a,
+                                                           const double b,
+                                                           const double c);
 
   /**
    * @brief Convenience overload of Polynomial::roots(const double, const
@@ -140,7 +142,8 @@ class Polynomial {
    *
    * @return See Polynomial::roots(const double, const double, const double)
    */
-  static std::tuple<double, double> roots(const Polynomial& polynomial);
+  static boost::optional<std::tuple<double, double>> roots(
+      const Polynomial& polynomial);
 
   /**
    * @brief First derivative of the polynomial at a given domain value.

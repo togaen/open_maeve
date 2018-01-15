@@ -205,40 +205,50 @@ TEST(Maeve_Geometry_Polynomial, testPointWithDerivates) {
 TEST(Maeve_Geometry_Polynomial, testRootFinder) {
   {
     const auto q = Polynomial(1, 1, 1);
-    double r1, r2;
-    std::tie(r1, r2) = Polynomial::roots(q);
-    EXPECT_TRUE(std::isnan(r1));
-    EXPECT_TRUE(std::isnan(r2));
+    const auto roots = Polynomial::roots(q);
+    EXPECT_TRUE(!roots);
   }
 
   {
     const auto q = Polynomial(1, 2, 1);
+    const auto roots = Polynomial::roots(q);
+    ASSERT_FALSE(!roots);
+
     double r1, r2;
-    std::tie(r1, r2) = Polynomial::roots(q);
+    std::tie(r1, r2) = *roots;
     EXPECT_EQ(r1, r2);
     EXPECT_NEAR(r2, -1.0, epsilon);
   }
 
   {
     const auto q = Polynomial(0, 2, 1);
+    const auto roots = Polynomial::roots(q);
+    ASSERT_FALSE(!roots);
+
     double r1, r2;
-    std::tie(r1, r2) = Polynomial::roots(q);
+    std::tie(r1, r2) = *roots;
     EXPECT_EQ(r1, r2);
     EXPECT_NEAR(r2, -0.5, epsilon);
   }
 
   {
     const auto q = Polynomial(1, 2, 0);
+    const auto roots = Polynomial::roots(q);
+    ASSERT_FALSE(!roots);
+
     double r1, r2;
-    std::tie(r1, r2) = Polynomial::roots(q);
+    std::tie(r1, r2) = *roots;
     EXPECT_EQ(r1, r2);
     EXPECT_NEAR(r2, -2.0, epsilon);
   }
 
   {
     const auto q = Polynomial(3, 5, 2);
+    const auto roots = Polynomial::roots(q);
+    ASSERT_FALSE(!roots);
+
     double r1, r2;
-    std::tie(r1, r2) = Polynomial::roots(q);
+    std::tie(r1, r2) = *roots;
     EXPECT_NEAR(r1, -1.0, epsilon);
     EXPECT_NEAR(r2, -0.66666, epsilon);
   }

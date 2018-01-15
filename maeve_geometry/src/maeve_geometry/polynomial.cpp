@@ -22,6 +22,7 @@
 #include "maeve_automation_core/maeve_geometry/polynomial.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <limits>
 
@@ -47,9 +48,13 @@ std::tuple<Polynomial, Polynomial> fromPointAndCriticalLine(
   const auto B = (2.0 * p.x());
   const auto C = (p.y() - y_critical - ddx * (p.y() * p.y()));
 
-  // Get roots.
+  // Get roots; this should never fail.
   double r1, r2;
-  std::tie(r1, r2) = Polynomial::roots(A, B, C);
+  if (const auto roots = Polynomial::roots(A, B, C)) {
+    std::tie(r1, r2) = *roots;
+  } else {
+    assert(false);
+  }
 
   // Lambdas for computing remaining coefficients.
   auto b = [](const double a, const double x) { return (-2.0 * a * x); };
@@ -176,9 +181,13 @@ Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
   const auto B = -2.0 * a * p_r.x();
   const auto C = -b * p_r.x() + p_r.y() - c;
 
-  // Solve.
+  // Get the roots; this should never fail.
   double r1, r2;
-  std::tie(r1, r2) = Polynomial::roots(A, B, C);
+  if (const auto roots = Polynomial::roots(A, B, C)) {
+    std::tie(r1, r2) = *roots;
+  } else {
+    assert(false);
+  }
 
   // Both or neither roots must be valid.
   if (std::isnan(r1)) {
@@ -223,19 +232,21 @@ std::tuple<double, double, double> Polynomial::coefficients(
                          Polynomial::c(polynomial));
 }
 
-std::tuple<double, double> Polynomial::roots(const Polynomial& polynomial) {
+boost::optional<std::tuple<double, double>> Polynomial::roots(
+    const Polynomial& polynomial) {
   double a, b, c;
   std::tie(a, b, c) = Polynomial::coefficients(polynomial);
   return Polynomial::roots(a, b, c);
 }
 
-std::tuple<double, double> Polynomial::roots(const double a, const double b,
-                                             const double c) {
+boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
+                                                              const double b,
+                                                              const double c) {
   // Not polynomial.
   if (a == 0.0) {
     // Indeterminate form.
     if (b == 0.0) {
-      return std::make_tuple(NaN, NaN);
+      return boost::none;
     }
 
     // Linear (first form).
@@ -254,7 +265,7 @@ std::tuple<double, double> Polynomial::roots(const double a, const double b,
 
   // Complex.
   if (discriminant < 0.0) {
-    return std::make_tuple(NaN, NaN);
+    return boost::none;
   }
 
   // Compute one of the roots.
@@ -265,7 +276,8 @@ std::tuple<double, double> Polynomial::roots(const double a, const double b,
   const auto r2 = (c / (a * r1));
 
   // Done.
-  return std::minmax(r1, r2);
+  std::tuple<double, double> roots = std::minmax(r1, r2);
+  return roots;
 }
 
 std::ostream& operator<<(std::ostream& os, const Polynomial& polynomial) {
