@@ -121,7 +121,12 @@ boost::optional<PST_Connector> PST_Connector::computeLP(
   const auto& r = (L1_valid ? std::get<0>(*rays) : std::get<1>(*rays));
 
   // Build connector and return.
-  return PST_Connector({p1.x(), p1.x(), r.x(), p2.x()}, {L, L, P});
+  try {
+    return PST_Connector({p1.x(), p1.x(), r.x(), p2.x()}, {L, L, P});
+  } catch (const std::exception& e) {
+    std::cerr << "Unexpected error constructing PST_Connector: " << e.what();
+    return boost::none;
+  }
 }
 
 std::tuple<Eigen::Vector2d, Eigen::Vector2d> PST_Connector::boundaryPoints(
