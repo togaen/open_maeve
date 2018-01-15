@@ -22,6 +22,7 @@
 #pragma once
 
 #include <iostream>
+#include <limits>
 #include <tuple>
 
 namespace maeve_automation_core {
@@ -30,6 +31,15 @@ namespace maeve_automation_core {
  */
 class Interval {
  public:
+  /** @name Special interval bound values
+   *
+   * These values are used to construct special types of intervals.
+   */
+  static constexpr double Min = std::numeric_limits<double>::lowest();
+  static constexpr double Max = std::numeric_limits<double>::max();
+  static constexpr double Inf = std::numeric_limits<double>::infinity();
+  /** @} */
+
   /** @name Comparison operations
    *
    * Comparison operations for Interval types. For sorting, these operators sort

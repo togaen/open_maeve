@@ -22,19 +22,14 @@
 #include "maeve_automation_core/maeve_geometry/interval.h"
 
 #include <algorithm>
-#include <limits>
 
 #include "boost/io/ios_state.hpp"
 
 namespace {
-const auto Inf = std::numeric_limits<double>::infinity();
-const auto Max = std::numeric_limits<double>::max();
-const auto Min = std::numeric_limits<double>::lowest();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 namespace maeve_automation_core {
-
 double Interval::min(const Interval& interval) {
   return std::get<0>(interval.bounds_);
 }
@@ -49,9 +44,13 @@ const std::tuple<double, double>& Interval::bounds(const Interval& interval) {
 
 bool Interval::empty(const Interval& interval) { return interval.empty_; }
 
-Interval Interval::affinelyExtendedReals() { return Interval(-Inf, Inf); }
+Interval Interval::affinelyExtendedReals() {
+  return Interval(-Interval::Inf, Interval::Inf);
+}
 
-Interval Interval::maxRepresentableReals() { return Interval(Min, Max); }
+Interval Interval::maxRepresentableReals() {
+  return Interval(Interval::Min, Interval::Max);
+}
 
 Interval Interval::nonNegativeReals() { return Interval(0.0, Max); }
 
