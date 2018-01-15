@@ -40,6 +40,36 @@ Polynomial::Polynomial() : coefficients_({NaN, NaN, NaN}) {}
 Polynomial::Polynomial(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
 
+std::tuple<Polynomial, Polynomial> fromPointAndCriticalLine(
+    const Eigen::Vector2d& p, const double y_critical, const double ddx) {
+  // Set up coefficients.
+  const auto A = -ddx;
+  const auto B = (2.0 * p.x());
+  const auto C = (p.y() - y_critical - ddx * (p.y() * p.y()));
+
+  // Get roots.
+  double r1, r2;
+  std::tie(r1, r2) = Polynomial::roots(A, B, C);
+
+  // Lambdas for computing remaining coefficients.
+  auto b = [](const double a, const double x) { return (-2.0 * a * x); };
+  auto c = [](const double a, const double b, const double x, const double y) {
+    return (y - a * (x * x) - b * x);
+  };
+
+  // Build solving polynomials.
+  const auto b1 = b(ddx, r1);
+  const auto c1 = c(ddx, b1, r1, y_critical);
+  auto P1 = Polynomial(ddx, b1, c1);
+
+  const auto b2 = b(ddx, r2);
+  const auto c2 = c(ddx, b2, r2, y_critical);
+  auto P2 = Polynomial(ddx, b2, c2);
+
+  // Done.
+  return std::make_tuple(std::move(P1), std::move(P2));
+}
+
 bool Polynomial::valid(const Polynomial& polynomial) {
   double a, b, c;
   std::tie(a, b, c) = Polynomial::coefficients(polynomial);

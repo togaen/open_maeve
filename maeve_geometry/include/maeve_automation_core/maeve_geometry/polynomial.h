@@ -226,19 +226,6 @@ class Polynomial {
   static bool isConstant(const Polynomial& polynomial);
 
   /**
-   * @brief A factory method to compute the polynomial equation from a point it
-   * passes through and its derivative at that point.
-   *
-   * @param p The point the curve passes through of the form (domain, range).
-   * @param dx The first derivative at 'p'.
-   * @param ddx The second derivative.
-   *
-   * @return The polynomial that contains 'p' and has derivative 's_dot' at 'p'.
-   */
-  static Polynomial fromPointWithDerivatives(const Eigen::Vector2d& p,
-                                             const double dx, const double ddx);
-
-  /**
    * @brief Find tangent points of rays through 'p_r' tangent to 'polynomial'.
    *
    * @param polynomial The polynomial function to compute a ray from.
@@ -260,6 +247,32 @@ class Polynomial {
    * @return True if all coefficients are real-valued; otherwise false.
    */
   static bool valid(const Polynomial& polynomial);
+
+  /**
+   * @brief A factory method to compute the polynomial equation from a point it
+   * passes through and its derivative at that point.
+   *
+   * @param p The point the curve passes through of the form (domain, range).
+   * @param dx The first derivative at 'p'.
+   * @param ddx The second derivative.
+   *
+   * @return The polynomial that contains 'p' and has derivative 's_dot' at 'p'.
+   */
+  static Polynomial fromPointWithDerivatives(const Eigen::Vector2d& p,
+                                             const double dx, const double ddx);
+
+  /**
+   * @brief Find the two polynomials that pass through 'p' and whose critical
+   * points lie on the line 'y_critical'.
+   *
+   * @param p The point the polynomials pass through.
+   * @param y_critical The critical line.
+   * @param ddx The second derivative of the output polynomials.
+   *
+   * @return The two polynomials solving the system.
+   */
+  static std::tuple<Polynomial, Polynomial> fromPointAndCriticalLine(
+      const Eigen::Vector2d& p, const double y_critical, const double ddx);
 
  private:
   /**
