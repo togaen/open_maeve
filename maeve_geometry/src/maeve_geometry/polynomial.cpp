@@ -145,11 +145,10 @@ Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
   const auto A = a;
   const auto B = -2.0 * a * p_r.x();
   const auto C = -b * p_r.x() + p_r.y() - c;
-  const auto q_r = Polynomial(A, B, C);
 
   // Solve.
   double r1, r2;
-  std::tie(r1, r2) = Polynomial::roots(q_r);
+  std::tie(r1, r2) = Polynomial::roots(A, B, C);
 
   // Both or neither roots must be valid.
   if (std::isnan(r1)) {
@@ -195,10 +194,13 @@ std::tuple<double, double, double> Polynomial::coefficients(
 }
 
 std::tuple<double, double> Polynomial::roots(const Polynomial& polynomial) {
-  // Capture coefficients
   double a, b, c;
   std::tie(a, b, c) = Polynomial::coefficients(polynomial);
+  return Polynomial::roots(a, b, c);
+}
 
+std::tuple<double, double> Polynomial::roots(const double a, const double b,
+                                             const double c) {
   // Not polynomial.
   if (a == 0.0) {
     // Indeterminate form.

@@ -122,10 +122,23 @@ class Polynomial {
    *
    * @note This method favors accuracy and numeric stability over speed.
    *
-   * @param polynomial The polynomial.
+   * @param a The quadratic coefficient.
+   * @param b The linear coefficient.
+   * @param c The constant coefficient.
    *
    * @return A tuple of the roots (may be NaN). By convention the roots are
    * ordered such that the first root is not larger than the second.
+   */
+  static std::tuple<double, double> roots(const double a, const double b,
+                                          const double c);
+
+  /**
+   * @brief Convenience overload of Polynomial::roots(const double, const
+   * double, const double).
+   *
+   * @param polynomial The polynomial to find roots for.
+   *
+   * @return See Polynomial::roots(const double, const double, const double)
    */
   static std::tuple<double, double> roots(const Polynomial& polynomial);
 
