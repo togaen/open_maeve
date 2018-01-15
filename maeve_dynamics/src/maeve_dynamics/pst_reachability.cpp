@@ -214,8 +214,6 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
     return connector;
   }
 
-  // TODO(me): LP for case where terminal speed is not known.
-
   // For PLP, need initial speed interval bounds.
   double p1_dt_min, p1_dt_max;
   std::tie(p1_dt_min, p1_dt_max) = Interval::bounds(I_i);
@@ -237,7 +235,13 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
     return connector_max;
   }
 
-  // TODO(me): PLP for case where terminal speed is not known.
+  //
+  // From here, a terminal connect at maximum speed is not possible.
+  //
+
+  // Compute L_0P.
+
+  // TODO(me): PP for case where terminal speed is not known.
 
   // If it's PP, we're done.
   // TODO(me)
