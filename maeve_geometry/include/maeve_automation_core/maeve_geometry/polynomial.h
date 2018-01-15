@@ -28,6 +28,8 @@
 #include "Eigen/Core"
 #include "boost/optional.hpp"
 
+#include "maeve_automation_core/maeve_geometry/interval.h"
+
 namespace maeve_automation_core {
 /**
  * @brief This class defines a functor that evaluates a polynomial.
@@ -97,6 +99,19 @@ class Polynomial {
    * or boost::none if no such point exists.
    */
   static boost::optional<Eigen::Vector2d> uniqueCriticalPoint(
+      const Polynomial& polynomial);
+
+  /**
+   * @brief Compute and return the domains for which the polynomial first
+   * derivative has negative and positive sign.
+   *
+   * @param polynomial The polynomial.
+   *
+   * @return An ordered tuple of the domain for negative first derivative and
+   * positive first derivative. For polynomials without a unique critical point,
+   * a null object is returned.
+   */
+  static boost::optional<std::tuple<Interval, Interval>> dxSignDomainPartition(
       const Polynomial& polynomial);
 
   /**
