@@ -38,8 +38,8 @@ TEST(Maeve_Geometry_Polynomial, testdxSignDomainPartition) {
     const auto p = Polynomial(1, 1, 1);
     const auto part = Polynomial::dxSignDomainPartition(p);
     ASSERT_FALSE(!part);
-    EXPECT_EQ(Interval(Interval::Min, -0.5), std::get<0>(*part));
-    EXPECT_EQ(Interval(-0.5, Interval::Max), std::get<1>(*part));
+    EXPECT_EQ(Interval(-Interval::Inf, -0.5), std::get<0>(*part));
+    EXPECT_EQ(Interval(-0.5, Interval::Inf), std::get<1>(*part));
     EXPECT_TRUE(Polynomial::dx(p, -0.6) < 0.0);
     EXPECT_TRUE(Polynomial::dx(p, -0.4) > 0.0);
   }
@@ -48,8 +48,8 @@ TEST(Maeve_Geometry_Polynomial, testdxSignDomainPartition) {
     const auto p = Polynomial(-1, 1, 1);
     const auto part = Polynomial::dxSignDomainPartition(p);
     ASSERT_FALSE(!part);
-    EXPECT_EQ(Interval(0.5, Interval::Max), std::get<0>(*part));
-    EXPECT_EQ(Interval(Interval::Min, 0.5), std::get<1>(*part));
+    EXPECT_EQ(Interval(0.5, Interval::Inf), std::get<0>(*part));
+    EXPECT_EQ(Interval(-Interval::Inf, 0.5), std::get<1>(*part));
     EXPECT_TRUE(Polynomial::dx(p, 0.4) > 0.0);
     EXPECT_TRUE(Polynomial::dx(p, 0.6) < 0.0);
   }

@@ -94,8 +94,8 @@ Polynomial::dxSignDomainPartition(const Polynomial& polynomial) {
   }
 
   // Compute domains.
-  const auto I1 = Interval(Interval::Min, p_critical->x());
-  const auto I2 = Interval(p_critical->x(), Interval::Max);
+  const auto I1 = Interval(-Interval::Inf, p_critical->x());
+  const auto I2 = Interval(p_critical->x(), Interval::Inf);
 
   // Partition domains by second derivative and return.
   if (Polynomial::a(polynomial) > 0.0) {
