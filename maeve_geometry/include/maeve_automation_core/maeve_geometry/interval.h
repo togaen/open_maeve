@@ -35,9 +35,9 @@ class Interval {
    *
    * These values are used to construct special types of intervals.
    */
-  static constexpr double Min = std::numeric_limits<double>::lowest();
-  static constexpr double Max = std::numeric_limits<double>::max();
-  static constexpr double Inf = std::numeric_limits<double>::infinity();
+  static constexpr auto Min = std::numeric_limits<double>::lowest();
+  static constexpr auto Max = std::numeric_limits<double>::max();
+  static constexpr auto Inf = std::numeric_limits<double>::infinity();
   /** @} */
 
   /** @name Comparison operations
