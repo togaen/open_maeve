@@ -22,7 +22,6 @@
 #include "maeve_automation_core/maeve_geometry/polynomial.h"
 
 #include <algorithm>
-#include <cassert>
 #include <cmath>
 #include <limits>
 
@@ -41,35 +40,28 @@ Polynomial::Polynomial() : coefficients_({NaN, NaN, NaN}) {}
 Polynomial::Polynomial(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
 
-std::tuple<Polynomial, Polynomial> fromPointAndCriticalLine(
-    const Eigen::Vector2d& p, const double y_critical, const double ddx) {
-  // Set up coefficients.
-  const auto A = -ddx;
-  const auto B = (2.0 * p.x());
-  const auto C = (p.y() - y_critical - ddx * (p.y() * p.y()));
-
-  // Get roots; this should never fail.
-  double r1, r2;
+boost::optional<std::tuple<Polynomial, Polynomial>>
+Polynomial::fromPointAndCriticalLine(const Eigen::Vector2d& p,
+                                     const double y_critical,
+                                     const double ddx) {
+  // Attempt to get roots.
+  const auto A = ddx;
+  const auto B = (-2.0 * ddx * p.x());
+  const auto C = (ddx * (p.x() * p.x()) + y_critical - p.y());
+  double x1_critical, x2_critical;
   if (const auto roots = Polynomial::roots(A, B, C)) {
-    std::tie(r1, r2) = *roots;
+    std::tie(x1_critical, x2_critical) = *roots;
   } else {
-    assert(false);
+    return boost::none;
   }
 
-  // Lambdas for computing remaining coefficients.
-  auto b = [](const double a, const double x) { return (-2.0 * a * x); };
-  auto c = [](const double a, const double b, const double x, const double y) {
-    return (y - a * (x * x) - b * x);
-  };
+  // Construct critical points.
+  const Eigen::Vector2d p1(x1_critical, y_critical);
+  const Eigen::Vector2d p2(x2_critical, y_critical);
 
   // Build solving polynomials.
-  const auto b1 = b(ddx, r1);
-  const auto c1 = c(ddx, b1, r1, y_critical);
-  auto P1 = Polynomial(ddx, b1, c1);
-
-  const auto b2 = b(ddx, r2);
-  const auto c2 = c(ddx, b2, r2, y_critical);
-  auto P2 = Polynomial(ddx, b2, c2);
+  auto P1 = Polynomial::fromPointWithDerivatives(p1, 0.0, ddx);
+  auto P2 = Polynomial::fromPointWithDerivatives(p2, 0.0, ddx);
 
   // Done.
   return std::make_tuple(std::move(P1), std::move(P2));
@@ -181,16 +173,11 @@ Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
   const auto B = -2.0 * a * p_r.x();
   const auto C = -b * p_r.x() + p_r.y() - c;
 
-  // Get the roots; this should never fail.
+  // Attempt to find the roots.
   double r1, r2;
   if (const auto roots = Polynomial::roots(A, B, C)) {
     std::tie(r1, r2) = *roots;
   } else {
-    assert(false);
-  }
-
-  // Both or neither roots must be valid.
-  if (std::isnan(r1)) {
     return boost::none;
   }
 

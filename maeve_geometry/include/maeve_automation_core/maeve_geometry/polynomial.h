@@ -272,10 +272,12 @@ class Polynomial {
    * @param y_critical The critical line.
    * @param ddx The second derivative of the output polynomials.
    *
-   * @return The two polynomials solving the system.
+   * @return A nullable object with the two polynomials solving the system; or
+   * null if there is no solution.
    */
-  static std::tuple<Polynomial, Polynomial> fromPointAndCriticalLine(
-      const Eigen::Vector2d& p, const double y_critical, const double ddx);
+  static boost::optional<std::tuple<Polynomial, Polynomial>>
+  fromPointAndCriticalLine(const Eigen::Vector2d& p, const double y_critical,
+                           const double ddx);
 
  private:
   /**

@@ -33,6 +33,75 @@ const auto Inf = std::numeric_limits<double>::infinity();
 const auto epsilon = 5e-4;
 }  // namespace
 
+TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
+  {
+    const auto p = Eigen::Vector2d(1.0, 3.0);
+    const auto y_critical = 0.0;
+    const auto ddx = -2.0;
+
+    const auto curves =
+        Polynomial::fromPointAndCriticalLine(p, y_critical, ddx);
+    EXPECT_TRUE(!curves);
+  }
+
+  {
+    const auto p = Eigen::Vector2d(2.0, 3.0);
+    const auto y_critical = 1.0;
+    const auto ddx = 2.0;
+
+    const auto curves =
+        Polynomial::fromPointAndCriticalLine(p, y_critical, ddx);
+    ASSERT_FALSE(!curves);
+
+    Polynomial p1, p2;
+    std::tie(p1, p2) = *curves;
+
+    std::stringstream ss1, ss2;
+    ss1 << p1;
+    EXPECT_EQ(ss1.str(), std::string("{a: 2.00000, b:-4.00000, c:3.00000}"));
+    ss2 << p2;
+    EXPECT_EQ(ss2.str(), std::string("{a: 2.00000, b:-12.00000, c:19.00000}"));
+  }
+
+  {
+    const auto p = Eigen::Vector2d(1.0, 3.0);
+    const auto y_critical = 0.0;
+    const auto ddx = 2.0;
+
+    const auto curves =
+        Polynomial::fromPointAndCriticalLine(p, y_critical, ddx);
+    ASSERT_FALSE(!curves);
+
+    Polynomial p1, p2;
+    std::tie(p1, p2) = *curves;
+
+    std::stringstream ss1, ss2;
+    ss1 << p1;
+    EXPECT_EQ(ss1.str(), std::string("{a: 2.00000, b:0.89898, c:0.10102}"));
+    ss2 << p2;
+    EXPECT_EQ(ss2.str(), std::string("{a: 2.00000, b:-8.89898, c:9.89898}"));
+  }
+
+  {
+    const auto p = Eigen::Vector2d(1.0, 3.0);
+    const auto y_critical = 0.0;
+    const auto ddx = 1.0;
+
+    const auto curves =
+        Polynomial::fromPointAndCriticalLine(p, y_critical, ddx);
+    ASSERT_FALSE(!curves);
+
+    Polynomial p1, p2;
+    std::tie(p1, p2) = *curves;
+
+    std::stringstream ss1, ss2;
+    ss1 << p1;
+    EXPECT_EQ(ss1.str(), std::string("{a: 1.00000, b:1.46410, c:0.53590}"));
+    ss2 << p2;
+    EXPECT_EQ(ss2.str(), std::string("{a: 1.00000, b:-5.46410, c:7.46410}"));
+  }
+}
+
 TEST(Maeve_Geometry_Polynomial, testdxSignDomainPartition) {
   {
     const auto p = Polynomial(1, 1, 1);
