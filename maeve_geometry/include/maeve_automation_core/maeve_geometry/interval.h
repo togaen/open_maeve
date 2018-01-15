@@ -181,11 +181,24 @@ class Interval {
    * @note For empty or invalid intervals, NaN is returned. See Interval::empty
    * for note on distinction between length zero and the emptiness property.
    *
-   * @param interval
+   * @param interval The interval to check.
    *
    * @return The length of the interval.
    */
   static double length(const Interval& interval);
+
+  /**
+   * @brief Utility for checking whether an interval has zero length.
+   *
+   * @note For empty or invalid intervals, false is returned. See
+   * Interval::empty
+   * for note on distinction between length zero and the emptiness property.
+   *
+   * @param interval The interval to check.
+   *
+   * @return True if the interval has zero length; otherwise false.
+   */
+  static bool zeroLength(const Interval& interval);
 
   /**
    * @brief Whether the interval is empty or not.

@@ -42,6 +42,14 @@ const std::tuple<double, double>& Interval::bounds(const Interval& interval) {
   return interval.bounds_;
 }
 
+bool Interval::zeroLength(const Interval& interval) {
+  if (Interval::empty(interval)) {
+    return false;
+  }
+
+  return (Interval::min(interval) == Interval::max(interval));
+}
+
 bool Interval::empty(const Interval& interval) { return interval.empty_; }
 
 Interval Interval::affinelyExtendedReals() {

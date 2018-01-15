@@ -236,6 +236,28 @@ TEST(Maeve_Geometry_Interval, testEmpty) {
   }
 }
 
+TEST(Maeve_Geometry_Interval, testZeroLength) {
+  {
+    const auto i = Interval(0, 1);
+    EXPECT_FALSE(Interval::zeroLength(i));
+  }
+
+  {
+    const auto i = Interval(1, 0);
+    EXPECT_FALSE(Interval::zeroLength(i));
+  }
+
+  {
+    const auto i = Interval();
+    EXPECT_FALSE(Interval::zeroLength(i));
+  }
+
+  {
+    const auto i = Interval(2, 2);
+    EXPECT_TRUE(Interval::zeroLength(i));
+  }
+}
+
 TEST(Maeve_Geometry_Interval, testConvexHull) {
   {
     const auto i1 = Interval(-1.0, 1.0);
