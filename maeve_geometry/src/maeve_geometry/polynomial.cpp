@@ -225,7 +225,7 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(
 boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
                                                               const double b,
                                                               const double c) {
-  // Not polynomial.
+  // Not quadratic.
   if (a == 0.0) {
     // Indeterminate form.
     if (b == 0.0) {
@@ -243,23 +243,25 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
     return std::make_tuple(x, x);
   }
 
-  // Capture term under the square root.
+  // Compute the discriminant.
   const auto discriminant = (b * b - 4.0 * a * c);
 
-  // Complex.
+  // Roots are complex, the range of this function is real, so no solution.
   if (discriminant < 0.0) {
     return boost::none;
   }
 
-  // Compute one of the roots.
+  // Compute the root that avoids catastrophic cancellation.
   const auto discriminant_root = std::copysign(std::sqrt(discriminant), b);
-  const auto r1 = ((-b + discriminant_root) / (2.0 * a));
+  const auto r1 = ((-b - discriminant_root) / (2.0 * a));
 
-  // Compute the other.
+  // Compute the other root.
   const auto r2 = (c / (a * r1));
 
-  // Done.
+  // Order the roots lowest and highest.
   std::tuple<double, double> roots = std::minmax(r1, r2);
+
+  // Done.
   return roots;
 }
 

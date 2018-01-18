@@ -118,7 +118,7 @@ class Polynomial {
       const Polynomial& polynomial);
 
   /**
-   * @brief Compute the roots of a polynomial.
+   * @brief Compute the real-valued roots of a polynomial.
    *
    * @note This method favors accuracy and numeric stability over speed.
    *
