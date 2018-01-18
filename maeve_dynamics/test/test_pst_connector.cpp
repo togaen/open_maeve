@@ -30,6 +30,18 @@ const auto epsilon = 0.0001;
 
 TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
   {
+    const Eigen::Vector2d p1(1.0, 3.0);
+    const auto p1_dt = 0.0;
+    const auto p1_ddt = 4.0;
+    const Eigen::Vector2d p2(p1.x() + 3.0,
+                             p1.y() + Polynomial(p1_ddt, p1_dt, 0.0)(3.0));
+    const auto p2_ddt = 4.0;
+    const auto connector =
+        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt);
+    ASSERT_FALSE(!connector);
+  }
+
+  {
     const Eigen::Vector2d p1(0, 0);
     const auto p1_dt = 0.0;
     const auto p1_ddt = 4.0;
@@ -38,6 +50,14 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
     const auto connector =
         PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt);
     ASSERT_FALSE(!connector);
+
+    std::stringstream ss;
+    ss << *connector;
+    EXPECT_EQ(ss.str(),
+              std::string("{switching times: [0, -0, 9.29289, 10], parabola "
+                          "coefficients: [{a: 4.00000, b:0.00000, c:0.00000}, "
+                          "{a: 0.00000, b:0.00000, c:0.00000}, {a: 4.00000, "
+                          "b:-74.34315, c:345.43146}]}"));
   }
 }
 
