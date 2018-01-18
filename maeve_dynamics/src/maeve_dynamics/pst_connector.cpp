@@ -104,8 +104,7 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
       Polynomial::fromPointWithDerivatives(critical_pt2, dx_critical, p2_ddt);
 
   // Build L curve by artificially construction a line through 'p_critical'.
-  const Eigen::Vector2d p_critical2 =
-      (*p_critical + Eigen::Vector2d(p_critical->x() + 1.0, p_critical->y()));
+  const Eigen::Vector2d p_critical2 = (*p_critical + Eigen::Vector2d(1.0, 0.0));
   const auto L = Polynomial(*p_critical, p_critical2);
 
   // Attempt to build connector and return.
