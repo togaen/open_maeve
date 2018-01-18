@@ -41,6 +41,13 @@ std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
   return os;
 }
 
+std::tuple<double, double, double, double> PST_Connector::switchingTimes(
+    const PST_Connector& connector) {
+  return std::make_tuple(
+      connector.switching_times_[0], connector.switching_times_[1],
+      connector.switching_times_[2], connector.switching_times_[3]);
+}
+
 double PST_Connector::initialSpeed(const PST_Connector& connector) {
   return Polynomial::dx(connector.functions_[0], connector.switching_times_[0]);
 }
@@ -114,11 +121,11 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
   try {
     const auto t2 = critical_pt1.x();
     return PST_Connector({t0, t1, t2, t3}, {P1, L, P2_candidate1});
-  } catch (...) {
+  } catch (const std::exception& /* e */) {
     try {
       const auto t2 = critical_pt2.x();
       return PST_Connector({t0, t1, t2, t3}, {P1, L, P2_candidate2});
-    } catch (...) {
+    } catch (const std::exception& /* e */) {
       // No feasible connection exists.
       return boost::none;
     }
@@ -231,8 +238,8 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
   static const auto epsilon = 0.00001;
 
   // Record switching times for convenience.
-  const auto t1 = connector.switching_times_[1];
-  const auto t2 = connector.switching_times_[2];
+  double t0, t1, t2, t3;
+  std::tie(t0, t1, t2, t3) = PST_Connector::switchingTimes(connector);
 
   // Compute \dot{s} value of segments 0 and 1 at time t1.
   const auto s_dot01 = Polynomial::dx(connector.functions_[0], t1);
@@ -280,7 +287,7 @@ bool PST_Connector::valid(const PST_Connector& connector) {
   // Check time domain.
   const auto time_domain_valid =
       PST_Connector::timeDomainNonZeroMeasure(connector);
-#if 0
+#if 0 // For debugging.
   std::cout << "non_decreasing: " << non_decreasing
             << ", segments_connected: " << segments_connected
             << ", segments_tangent: " << segments_tangent

@@ -222,7 +222,7 @@ class PST_Connector {
   /**
    * @brief Get a reference to the function for a given segment.
    *
-   * @tparam Idx The segment index.
+   * @tparam I The segment index.
    *
    * @param connector The connecting trajectory.
    *
@@ -234,7 +234,7 @@ class PST_Connector {
   /**
    * @brief Get an interval domain representation of a segment's domain.
    *
-   * @tparam Idx The segment index desired.
+   * @tparam I The segment index desired.
    *
    * @param connector The connecting trajectory.
    *
@@ -242,6 +242,30 @@ class PST_Connector {
    */
   template <Idx I>
   static Interval domain(const PST_Connector& connector);
+
+  /**
+   * @brief Whether a given segment is active.
+   *
+   * A segment is active when its domain has length > 0.
+   *
+   * @tparam I The segment index desired.
+   *
+   * @param connector The connecting trajectory.
+   *
+   * @return True if the segment is active; otherwise false.
+   */
+  template <Idx I>
+  static bool segmentActive(const PST_Connector& connector);
+
+  /**
+   * @brief Convenience method for retrieving all switching times as doubles.
+   *
+   * @param connector The connecting trajectory.
+   *
+   * @return A tuple of ordered switching times.
+   */
+  static std::tuple<double, double, double, double> switchingTimes(
+      const PST_Connector& connector);
 
   /**
    * @brief Perform basic checks for validity of the connecting trajectory.
@@ -333,6 +357,12 @@ bool PST_Connector::noNegativeFirstDerivatives(const PST_Connector& connector) {
 
   // Everything checks out.
   return true;
+}
+
+template <PST_Connector::Idx I>
+bool PST_Connector::segmentActive(const PST_Connector& connector) {
+  const auto D = PST_Connector::domain<I>(connector);
+  return !Interval::zeroLength(D);
 }
 
 /**
