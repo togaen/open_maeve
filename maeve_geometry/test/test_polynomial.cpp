@@ -316,8 +316,8 @@ TEST(Maeve_Geometry_Polynomial, testRootFinder) {
 
     double r1, r2;
     std::tie(r1, r2) = *roots;
-    EXPECT_EQ(r1, r2);
-    EXPECT_NEAR(r2, -2.0, epsilon);
+    EXPECT_NEAR(r1, -2.0, epsilon);
+    EXPECT_EQ(r2, 0.0);
   }
 
   {

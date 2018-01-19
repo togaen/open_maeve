@@ -232,14 +232,8 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
       return boost::none;
     }
 
-    // Linear (first form).
+    // Linear.
     const auto x = -c / b;
-    return std::make_tuple(x, x);
-  }
-
-  // Linear (second form).
-  if (c == 0.0) {
-    const auto x = -b / a;
     return std::make_tuple(x, x);
   }
 
