@@ -225,7 +225,7 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(
 boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
                                                               const double b,
                                                               const double c) {
-  // Not quadratic.
+  // Not quadratic: either indeterminate or linear.
   if (a == 0.0) {
     // Indeterminate form.
     if (b == 0.0) {
@@ -252,6 +252,7 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
   const auto r1 = ((-b - discriminant_root) / (2.0 * a));
 
   // Compute the second root with Vieta's formula.
+  // 'r1' will always be nonzero due to sign choice above.
   const auto r2 = (c / (a * r1));
 
   // Order the roots lowest and highest.

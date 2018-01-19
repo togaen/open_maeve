@@ -310,6 +310,17 @@ TEST(Maeve_Geometry_Polynomial, testRootFinder) {
   }
 
   {
+    const auto q = Polynomial(1, -2, 0);
+    const auto roots = Polynomial::roots(q);
+    ASSERT_FALSE(!roots);
+
+    double r1, r2;
+    std::tie(r1, r2) = *roots;
+    EXPECT_EQ(r1, 0.0);
+    EXPECT_NEAR(r2, 2.0, epsilon);
+  }
+
+  {
     const auto q = Polynomial(1, 2, 0);
     const auto roots = Polynomial::roots(q);
     ASSERT_FALSE(!roots);
