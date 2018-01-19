@@ -227,7 +227,7 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
                                                               const double c) {
   // Not quadratic: either indeterminate or linear.
   if (a == 0.0) {
-    // Indeterminate form.
+    // Indeterminate.
     if (b == 0.0) {
       return boost::none;
     }
