@@ -245,11 +245,13 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
     return boost::none;
   }
 
-  // Compute the root that avoids catastrophic cancellation.
+  // Choose the sign that avoids catastrophic cancellation.
   const auto discriminant_root = std::copysign(std::sqrt(discriminant), b);
+
+  // Compute the first root.
   const auto r1 = ((-b - discriminant_root) / (2.0 * a));
 
-  // Compute the other root.
+  // Compute the second root with Vieta's formula.
   const auto r2 = (c / (a * r1));
 
   // Order the roots lowest and highest.
