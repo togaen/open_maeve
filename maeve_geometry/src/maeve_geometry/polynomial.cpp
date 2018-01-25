@@ -129,9 +129,9 @@ Polynomial::dxSignDomainPartition(const Polynomial& polynomial) {
 
 Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
   // Allocate coefficients.
-  double a = 0.0;
-  double b = NaN;
-  double c = NaN;
+  auto a = 0.0;
+  auto b = NaN;
+  auto c = NaN;
 
   // Compute coefficient values.
   const Eigen::Vector2d d = (p2 - p1);
