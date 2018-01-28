@@ -30,6 +30,10 @@
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 
 namespace maeve_automation_core {
+namespace {
+const auto NaN = std::numeric_limits<double>::quiet_NaN();
+}  // namespace
+
 std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
   const auto& t = connector.switching_times_;
   const auto& p = connector.functions_;
@@ -130,6 +134,69 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
       return boost::none;
     }
   }
+}
+
+boost::optional<PST_Connector> PST_Connector::computePP(
+    const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
+    const Eigen::Vector2d& p2, const double p2_ddt) {
+  // Compute P1 segment coefficients.
+  const auto a1 = p1_ddt;
+  const auto b1 = (p1_dt - 2.0 * a1 * p1.x());
+  const auto c1 = (p1.y() + (a1 * p1.x() - p1_dt) * p1.x());
+  const auto P1 = Polynomial(a1, b1, c1);
+
+  // Compute tangency point candidates.
+  const auto a2 = p2_ddt;
+  const auto A = (a1 - a2);
+  const auto B = (-2.0 * p2.x() * A);
+  const auto C = (-p2.x() * (a2 * p2.x() + b1) - c1 + p2.y());
+  Eigen::Vector2d p_t1(NaN, NaN);
+  Eigen::Vector2d p_t2(NaN, NaN);
+  if (const auto roots = Polynomial::roots(A, B, C)) {
+    double r1, r2;
+    std::tie(r1, r2) = *roots;
+    p_t1 = Eigen::Vector2d(r1, P1(r1));
+    p_t2 = Eigen::Vector2d(r2, P1(r2));
+  } else {
+    return boost::none;
+  }
+
+  // Compute P2 candidate segment coefficients.
+  static const auto b2 = [&](const double x) { return (2.0 * A * x + b1); };
+  static const auto c2 = [&](const double x) {
+    return ((-a2 * p2.x() - 2.0 * x * A - b1) * p2.x() + p2.y());
+  };
+  const auto P2_1 = Polynomial(a2, b2(p_t1.x()), c2(p_t1.y()));
+  const auto P2_2 = Polynomial(a2, b2(p_t2.x()), c2(p_t1.y()));
+
+  // Compute L candidate segments (for completeness; should not be actually
+  // necessary).
+  static const auto L_c = [](const Eigen::Vector2d& p, const double m) {
+    return (p.y() - m * p.x());
+  };
+  const auto L1_b = Polynomial::dx(P1, p_t1.x());
+  const auto L2_b = Polynomial::dx(P1, p_t2.x());
+  const auto L1 = Polynomial(0.0, L1_b, L_c(p_t1, L1_b));
+  const auto L2 = Polynomial(0.0, L2_b, L_c(p_t2, L2_b));
+
+  // Find valid connectors, if any.
+  const auto C1 = PST_Connector::noExceptionConstructor(
+      {p1.x(), p_t1.x(), p_t1.x(), p2.x()}, {P1, L1, P2_1});
+  const auto C2 = PST_Connector::noExceptionConstructor(
+      {p1.x(), p_t2.x(), p_t2.x(), p2.x()}, {P1, L2, P2_2});
+
+  // This should not happen.
+  if (C1 && C2) {
+    throw std::range_error("Too many valid connectors.");
+  }
+
+  // Nothing found.
+  if (!C1 && !C2) {
+    return boost::none;
+  }
+
+  // Done.
+  return (C1 ? *C1 : *C2);
 }
 
 boost::optional<PST_Connector> PST_Connector::computeLP(
@@ -287,7 +354,7 @@ bool PST_Connector::valid(const PST_Connector& connector) {
   // Check time domain.
   const auto time_domain_valid =
       PST_Connector::timeDomainNonZeroMeasure(connector);
-#if 0 // For debugging.
+#if 0  // For debugging.
   std::cout << "non_decreasing: " << non_decreasing
             << ", segments_connected: " << segments_connected
             << ", segments_tangent: " << segments_tangent
@@ -314,6 +381,16 @@ PST_Connector::PST_Connector(std::array<double, 4>&& switching_times,
     ss << *this;
     throw std::domain_error("Invalid parameter values for PST connector: " +
                             ss.str());
+  }
+}
+
+boost::optional<PST_Connector> PST_Connector::noExceptionConstructor(
+    std::array<double, 4>&& switching_times,
+    std::array<Polynomial, 3>&& functions) noexcept {
+  try {
+    return PST_Connector(std::move(switching_times), std::move(functions));
+  } catch (...) {
+    return boost::none;
   }
 }
 }  // namespace maeve_automation_core

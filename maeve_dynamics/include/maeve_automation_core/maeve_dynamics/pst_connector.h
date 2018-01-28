@@ -55,16 +55,28 @@ class PST_Connector {
   friend std::ostream& operator<<(std::ostream& os,
                                   const PST_Connector& connector);
   /**
-  * @brief Constructor: explicitly initialize the connector.
-  *
-  * @note This constructor checks for validity of the arguments and throws an
-  * exception if they do not meet basic necessary conditions.
-  *
-  * @param switching_times Trajectory switching times.
-  * @param functions Trajectory functional segments.
-  */
+   * @brief Constructor: explicitly initialize the connector.
+   *
+   * @note This constructor checks for validity of the arguments and throws an
+   * exception if they do not meet basic necessary conditions.
+   *
+   * @param switching_times Trajectory switching times.
+   * @param functions Trajectory functional segments.
+   */
   PST_Connector(std::array<double, 4>&& switching_times,
                 std::array<Polynomial, 3>&& functions);
+
+  /**
+   * @brief Factory method that calls constructor but swallows exception.
+   *
+   * @param switching_times Trajectory switching times.
+   * @param functions Trajectory functional segments.
+   *
+   * @return A nullable object with either the object or null.
+   */
+  static boost::optional<PST_Connector> noExceptionConstructor(
+      std::array<double, 4>&& switching_times,
+      std::array<Polynomial, 3>&& functions) noexcept;
 
   /**
    * @brief Get the speed at the beginning of the connector.
@@ -149,6 +161,28 @@ class PST_Connector {
                                                      const double p1_ddt,
                                                      const Eigen::Vector2d& p2,
                                                      const double p2_ddt);
+
+  /**
+   * @brief Compute a PP connector between 'p1' and 'p2'.
+   *
+   * The PP connector is a special case of the PLP connector who linear portion
+   * is inactive, and whoe parabolic segments touch at a point of shared
+   * tangency. This curve differs from the PL_0P connector in that the points of
+   * tangency are not necessarily critical points of the parabolic segments.
+   *
+   * @param p1 The initial point in PT space.
+   * @param p1_dt Connector first derivative at 'p1'.
+   * @param p1_ddt Connector second deriviative at 'p1'.
+   * @param p2 The terminal point in PT space.
+   * @param p2_ddt Connector second derivative at 'p2'.
+   *
+   * @return A nullable object of either the connector or boost::none.
+   */
+  static boost::optional<PST_Connector> computePP(const Eigen::Vector2d& p1,
+                                                  const double p1_dt,
+                                                  const double p1_ddt,
+                                                  const Eigen::Vector2d& p2,
+                                                  const double p2_ddt);
 
  private:
   /**
