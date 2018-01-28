@@ -140,10 +140,9 @@ boost::optional<PST_Connector> PST_Connector::computePP(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
     const Eigen::Vector2d& p2, const double p2_ddt) {
   // Compute P1 segment coefficients.
-  const auto a1 = p1_ddt;
-  const auto b1 = (p1_dt - 2.0 * a1 * p1.x());
-  const auto c1 = (p1.y() + (a1 * p1.x() - p1_dt) * p1.x());
-  const auto P1 = Polynomial(a1, b1, c1);
+  const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
+  double a1, b1, c1;
+  std::tie(a1, b1, c1) = Polynomial::coefficients(P1);
 
   // Compute tangency point candidates.
   const auto a2 = p2_ddt;
@@ -161,16 +160,7 @@ boost::optional<PST_Connector> PST_Connector::computePP(
     return boost::none;
   }
 
-  // Compute P2 candidate segment coefficients.
-  static const auto b2 = [&](const double x) { return (2.0 * A * x + b1); };
-  static const auto c2 = [&](const double x) {
-    return ((-a2 * p2.x() - 2.0 * x * A - b1) * p2.x() + p2.y());
-  };
-  const auto P2_1 = Polynomial(a2, b2(p_t1.x()), c2(p_t1.y()));
-  const auto P2_2 = Polynomial(a2, b2(p_t2.x()), c2(p_t1.y()));
-
-  // Compute L candidate segments (for completeness; should not be actually
-  // necessary).
+  // Compute L candidates (for completeness; not be actually necessary).
   static const auto L_c = [](const Eigen::Vector2d& p, const double m) {
     return (p.y() - m * p.x());
   };
@@ -178,6 +168,10 @@ boost::optional<PST_Connector> PST_Connector::computePP(
   const auto L2_b = Polynomial::dx(P1, p_t2.x());
   const auto L1 = Polynomial(0.0, L1_b, L_c(p_t1, L1_b));
   const auto L2 = Polynomial(0.0, L2_b, L_c(p_t2, L2_b));
+
+  // Compute P2 candidate segment coefficients.
+  const auto P2_1 = Polynomial::fromPointWithDerivatives(p_t1, L1_b, a2);
+  const auto P2_2 = Polynomial::fromPointWithDerivatives(p_t2, L2_b, a2);
 
   // Find valid connectors, if any.
   const auto C1 = PST_Connector::noExceptionConstructor(

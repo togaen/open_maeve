@@ -19,6 +19,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
+
+#include <sstream>
+
 #include <gtest/gtest.h>
 
 #include "maeve_automation_core/maeve_dynamics/pst_connector.h"
@@ -29,6 +32,44 @@ const auto epsilon = 0.0001;
 }  // namespace
 
 TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
+  {
+    const Eigen::Vector2d p1(3, 2);
+    const auto p1_dt = 0.0;
+    const auto p1_ddt = 1.0;
+    const auto p2_ddt = -p1_ddt;
+    const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
+    const auto P2 = Polynomial::fromPointWithDerivatives(
+        Eigen::Vector2d(4.0, 3.0), 2.0, p2_ddt);
+    const auto p2 = Polynomial::uniqueCriticalPoint(P2);
+    ASSERT_FALSE(!p2);
+
+    ASSERT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePP(p1, p1_dt, p1_ddt, *p2, p2_ddt);
+      ASSERT_FALSE(!connector);
+      std::stringstream ss;
+      ss << *connector;
+      EXPECT_EQ(ss.str(),
+                "{switching times: [3, 4, 4, 5], parabola coefficients: [{a: "
+                "1.00000, b:-6.00000, c:11.00000}, {a: 0.00000, b:2.00000, "
+                "c:-5.00000}, {a: -1.00000, b:10.00000, c:-21.00000}]}");
+    });
+  }
+
+  {
+    const Eigen::Vector2d p1(0.0, 0.0);
+    const auto p1_dt = 0.0;
+    const auto p1_ddt = 1.0;
+    const auto p2_ddt = -p1_ddt;
+    const auto p2 = Eigen::Vector2d(0.5, 0.5);
+
+    ASSERT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePP(p1, p1_dt, p1_ddt, p2, p2_ddt);
+      EXPECT_TRUE(!connector);
+    });
+  }
+
   {
     const Eigen::Vector2d p1(0.0, 0.0);
     const auto p1_dt = 0.0;
@@ -44,7 +85,12 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
       const auto connector =
           PST_Connector::computePP(p1, p1_dt, p1_ddt, *p2, p2_ddt);
       ASSERT_FALSE(!connector);
-      std::cout << *connector << std::endl;
+      std::stringstream ss;
+      ss << *connector;
+      EXPECT_EQ(ss.str(),
+                "{switching times: [0, 1, 1, 2], parabola coefficients: [{a: "
+                "1.00000, b:0.00000, c:0.00000}, {a: 0.00000, b:2.00000, "
+                "c:-1.00000}, {a: -1.00000, b:4.00000, c:-2.00000}]}");
     });
   }
 }
