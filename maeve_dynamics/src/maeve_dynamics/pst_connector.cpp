@@ -28,6 +28,7 @@
 #include <stdexcept>
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
+#include "maeve_automation_core/maeve_geometry/powers.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -61,9 +62,65 @@ double PST_Connector::terminalSpeed(const PST_Connector& connector) {
 }
 
 boost::optional<PST_Connector> PST_Connector::computePLP(
-    const Eigen::Vector2d& p1, const double p1_dt, const Eigen::Vector2d& p2,
-    const double p2_dt, const double p2_ddt) {
-  return boost::none;
+    const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
+    const Eigen::Vector2d& p2, const double p2_dt, const double p2_ddt) {
+  // Some error checking.
+  if ((p1_ddt == 0.0) || (p2_ddt == 0.0)) {
+    throw std::domain_error("Second derivatives must be non-zero.");
+  }
+
+  // Compute P segments.
+  const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
+  const auto P2 = Polynomial::fromPointWithDerivatives(p2, p2_dt, p2_ddt);
+
+  // Get segment coefficients.
+  double a0, b0, c0, a3, b3, c3;
+  std::tie(a0, b0, c0) = Polynomial::coefficients(P1);
+  std::tie(a3, b3, c3) = Polynomial::coefficients(P2);
+
+  // Compute roots for tangency points.
+  const auto A = ((square(a3) / a0) - a3);
+  const auto B = (a3 * ((b3 - b0) / a0));
+  const auto C = (square(b3 - b0) / (4.0 * a0) - c0 + c3);
+  Eigen::Vector2d p2_1(NaN, NaN);
+  Eigen::Vector2d p2_2(NaN, NaN);
+  if (const auto roots = Polynomial::roots(A, B, C)) {
+    double r1, r2;
+    std::tie(r1, r2) = *roots;
+    p2_1 = Eigen::Vector2d(r1, P2(r1));
+    p2_2 = Eigen::Vector2d(r2, P2(r2));
+  } else {
+    return boost::none;
+  }
+
+  // Candidate linear portions.
+  const auto dt_1 = Polynomial::dx(P2, p2_1.x());
+  const auto dt_2 = Polynomial::dx(P2, p2_2.x());
+  const auto L1 = Polynomial::fromPointWithDerivatives(p2_1, dt_1, 0.0);
+  const auto L2 = Polynomial::fromPointWithDerivatives(p2_2, dt_2, 0.0);
+
+  // Other tangency points.
+  const auto p1_1 = Polynomial::quadraticPointAtDerivative(P1, dt_1);
+  const auto p1_2 = Polynomial::quadraticPointAtDerivative(P2, dt_2);
+
+  // Candidate connectors.
+  const auto C1 = PST_Connector::noExceptionConstructor(
+      {p1.x(), p1_1.x(), p2_1.x(), p2.x()}, {P1, L1, P2});
+  const auto C2 = PST_Connector::noExceptionConstructor(
+      {p1.x(), p1_2.x(), p2_2.x(), p2.x()}, {P1, L2, P2});
+
+  // No valid connector.
+  if (!C1 && !C2) {
+    return boost::none;
+  }
+
+  // This should not happend.
+  if (C1 && C2) {
+    throw std::range_error("Too many valid connectors.");
+  }
+
+  // Done.
+  return (C1 ? *C1 : *C2);
 }
 
 template <>

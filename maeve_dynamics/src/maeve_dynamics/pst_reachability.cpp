@@ -220,6 +220,7 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   std::tie(p1_dt_min, p1_dt_max) = Interval::bounds(I_i);
 
   // If it's PLP, we're done.
+  /*
   const auto connector_min =
       PST_Connector::computePLP(p1, p1_dt_min, p2, dt_max, ddt_max);
   const auto connector_max =
@@ -235,7 +236,7 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   if (connector_max) {
     return connector_max;
   }
-
+*/
   //
   // From here, a terminal connect at maximum speed is not possible.
   //
@@ -288,7 +289,7 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
   // For PLP, need initial speed interval bounds.
   double p1_dt_min, p1_dt_max;
   std::tie(p1_dt_min, p1_dt_max) = Interval::bounds(I_i);
-
+/*
   // If it's PLP, we're done.
   const auto connector_min =
       PST_Connector::computePLP(p1, p1_dt_min, p2, dt_min, ddt_min);
@@ -305,7 +306,7 @@ PST_Reachability::minTerminalSpeed<PST_Reachability::Type::VIII>(
   if (connector_max) {
     return connector_max;
   }
-
+*/
   // TODO(me): PLP for case where terminal speed is not known.
 
   // If it's PP, we're done.

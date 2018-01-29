@@ -130,6 +130,7 @@ class PST_Connector {
    *
    * @param p1 The initial point in PT space.
    * @param p1_dt Connector first derivative at 'p1'.
+   * @param p1_ddt Connector second derivative at 'p1'.
    * @param p2 The terminal point in PT space.
    * @param p2_dt Connector first derivative at 'p2'.
    * @param p2_ddt Connector second derivative at 'p2'.
@@ -138,6 +139,7 @@ class PST_Connector {
    */
   static boost::optional<PST_Connector> computePLP(const Eigen::Vector2d& p1,
                                                    const double p1_dt,
+                                                   const double p1_ddt,
                                                    const Eigen::Vector2d& p2,
                                                    const double p2_dt,
                                                    const double p2_ddt);
