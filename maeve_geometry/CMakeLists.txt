@@ -208,6 +208,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_aabb.cpp
   test/test_disjoint_interval.cpp
   test/test_polynomial.cpp
+  test/test_powers.cpp
   )
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME} ${catkin_LIBRARIES})
