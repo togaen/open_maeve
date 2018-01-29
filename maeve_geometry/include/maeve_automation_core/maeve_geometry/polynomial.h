@@ -267,6 +267,19 @@ class Polynomial {
                                              const double dx, const double ddx);
 
   /**
+   * @brief Compute the point at which a polynomial achieves a derivative value.
+   *
+   * @pre 'P' must be a quadratic.
+   *
+   * @param P The polynomial.
+   * @param dx The derivative.
+   *
+   * @return The point along 'P' that achieves first derivative 'dx'.
+   */
+  static Eigen::Vector2d quadraticPointAtDerivative(const Polynomial& P,
+                                                    const double dx);
+
+  /**
    * @brief Find the two critical points that lie on 'y_critical' for
    * polynomials that pass through 'p'.
    *

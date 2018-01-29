@@ -33,6 +33,30 @@ const auto Inf = std::numeric_limits<double>::infinity();
 const auto epsilon = 5e-4;
 }  // namespace
 
+TEST(Maeve_Geometry_Polynomial, testQuadraticPointAtDerivative) {
+  {
+    const auto x = 0.0;
+    const auto P = Polynomial(1, 1, 1);
+    const auto dx = Polynomial::dx(P, x);
+    const auto p2 = Polynomial::quadraticPointAtDerivative(P, dx);
+
+    const Eigen::Vector2d p1(x, P(x));
+    EXPECT_NEAR(p1.x(), p2.x(), epsilon);
+    EXPECT_NEAR(p1.y(), p2.y(), epsilon);
+  }
+
+  {
+    const auto x = 1.3;
+    const auto P = Polynomial(1, 1, 1);
+    const auto dx = Polynomial::dx(P, x);
+    const auto p2 = Polynomial::quadraticPointAtDerivative(P, dx);
+
+    const Eigen::Vector2d p1(x, P(x));
+    EXPECT_NEAR(p1.x(), p2.x(), epsilon);
+    EXPECT_NEAR(p1.y(), p2.y(), epsilon);
+  }
+}
+
 TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
   {
     const auto p = Eigen::Vector2d(1.0, 3.0);

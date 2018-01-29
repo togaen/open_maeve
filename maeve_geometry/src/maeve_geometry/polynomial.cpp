@@ -28,6 +28,7 @@
 #include "boost/io/ios_state.hpp"
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
+#include "maeve_automation_core/maeve_geometry/powers.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -47,7 +48,7 @@ Polynomial::findConstrainedCriticalPoints(const Eigen::Vector2d& p,
   // Attempt to get roots.
   const auto A = ddx;
   const auto B = (-2.0 * ddx * p.x());
-  const auto C = (ddx * (p.x() * p.x()) + y_critical - p.y());
+  const auto C = (ddx * square(p.x()) + y_critical - p.y());
   double x1_critical, x2_critical;
   if (const auto roots = Polynomial::roots(A, B, C)) {
     std::tie(x1_critical, x2_critical) = *roots;
@@ -154,6 +155,12 @@ Polynomial Polynomial::fromPointWithDerivatives(const Eigen::Vector2d& p,
   const auto b = dx - 2.0 * a * p.x();
   const auto c = p.y() + p.x() * (a * p.x() - dx);
   return Polynomial(a, b, c);
+}
+
+Eigen::Vector2d Polynomial::quadraticPointAtDerivative(const Polynomial& P,
+                                                       const double dx) {
+  const auto x = ((dx - Polynomial::b(P)) / (2.0 * Polynomial::a(P)));
+  return Eigen::Vector2d(x, P(x));
 }
 
 boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
