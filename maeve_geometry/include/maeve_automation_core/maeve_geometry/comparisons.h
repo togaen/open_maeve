@@ -42,6 +42,21 @@ inline bool approxEq(const T& a, const T& b, const T& eps) {
 }
 
 /**
+ * @brief If 'val' is within 'espilon' of zero, return zero. Otherwise return
+ * 'val'.
+ *
+ * @tparam T The type of the arguments.
+ * @param val The value being clamped.
+ * @param epsilon The range about zero to perform a clamp.
+ *
+ * @return Zero if val is within epsilon of zero; otherwise val.
+ */
+template <typename T>
+inline T clampToZero(const T& val, const T& eps) {
+  return ((std::abs(val) < eps) ? 0.0 : val);
+}
+
+/**
  * @brief Check for approximate inequality in absolute terms.
  *
  * @tparam T The type of value to check.
