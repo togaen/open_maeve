@@ -125,17 +125,22 @@ class Polynomial {
    *
    * @note This method favors accuracy and numeric stability over speed.
    *
+   * @post If the polynomial has a unique root, the tuple members will be
+   * exactly identical.
+   *
    * @param a The quadratic coefficient.
    * @param b The linear coefficient.
    * @param c The constant coefficient.
+   * @param tolerance An optional tolerance value to use to suppress small
+   * magnitude negative discriminants.
    *
    * @return A nullable object containing a tuple of the roots, or null if there
    * are no real roots. By convention the roots are ordered such that the first
    * root is not larger than the second.
    */
-  static boost::optional<std::tuple<double, double>> roots(const double a,
-                                                           const double b,
-                                                           const double c);
+  static boost::optional<std::tuple<double, double>> roots(
+      const double a, const double b, const double c,
+      const double tolerance = 0.0);
 
   /**
    * @brief Convenience overload of Polynomial::roots(const double, const

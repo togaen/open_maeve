@@ -306,6 +306,15 @@ TEST(Maeve_Geometry_Polynomial, testPointWithDerivates) {
 
 TEST(Maeve_Geometry_Polynomial, testRootFinder) {
   {
+    const auto a = 393.7183923846020374;
+    const auto c = 901.030976000000002836;
+    const auto b = (2.0 * std::sqrt(a * c));
+    const auto p = Polynomial(a, b, c);
+    const auto roots = Polynomial::roots(a, b, c, 1e-6);
+    EXPECT_FALSE(!roots);
+  }
+
+  {
     const auto q = Polynomial(1, 1, 1);
     const auto roots = Polynomial::roots(q);
     EXPECT_TRUE(!roots);

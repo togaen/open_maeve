@@ -229,9 +229,8 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(
   return Polynomial::roots(a, b, c);
 }
 
-boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
-                                                              const double b,
-                                                              const double c) {
+boost::optional<std::tuple<double, double>> Polynomial::roots(
+    const double a, const double b, const double c, const double tolerance) {
   // Not quadratic: either indeterminate or linear.
   if (a == 0.0) {
     // Indeterminate.
@@ -245,7 +244,7 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
   }
 
   // Compute the discriminant.
-  const auto discriminant = (b * b - 4.0 * a * c);
+  const auto discriminant = clampToZero((b * b - 4.0 * a * c), tolerance);
 
   // Roots are complex, the range of this function is real, so no solution.
   if (discriminant < 0.0) {
@@ -260,7 +259,8 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(const double a,
 
   // Compute the second root with Vieta's formula.
   // 'r1' will always be nonzero due to sign choice above.
-  const auto r2 = (c / (a * r1));
+  // Check for zero discriminant to ensure unique roots are exactly identical.
+  const auto r2 = ((discriminant == 0.0) ? r1 : (c / (a * r1)));
 
   // Order the roots lowest and highest.
   std::tuple<double, double> roots = std::minmax(r1, r2);
