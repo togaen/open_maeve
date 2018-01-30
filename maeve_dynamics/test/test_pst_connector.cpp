@@ -31,6 +31,168 @@ namespace {
 const auto epsilon = 0.0001;
 }  // namespace
 
+TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
+  {
+    const Eigen::Vector2d p1(3, 2);
+    const auto p1_dt = -3.0;
+    const auto p1_ddt = 0.0;
+    const Eigen::Vector2d p2(5, 7);
+    const auto p2_dt = 0.0;
+    const auto p2_ddt = 3.0;
+
+    EXPECT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+      ASSERT_TRUE(!connector);
+    });
+  }
+
+  {
+    const Eigen::Vector2d p1(3, 2);
+    const auto p1_dt = -3.0;
+    const auto p1_ddt = -3.0;
+    const Eigen::Vector2d p2(5, 7);
+    const auto p2_dt = 0.0;
+    const auto p2_ddt = -3.0;
+
+    EXPECT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+      ASSERT_TRUE(!connector);
+    });
+  }
+
+  {
+    const Eigen::Vector2d p1(3, 2);
+    const auto p1_dt = 3.0;
+    const auto p1_ddt = -2.0;
+    const Eigen::Vector2d p2(5, 7);
+    const auto p2_dt = 0.0;
+    const auto p2_ddt = -2.0;
+
+    EXPECT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+      ASSERT_TRUE(!connector);
+    });
+  }
+
+  {
+    const Eigen::Vector2d p1(3, 2);
+    const auto p1_dt = 3.0;
+    const auto p1_ddt = -3.0;
+    const Eigen::Vector2d p2(5, 7);
+    const auto p2_dt = 0.0;
+    const auto p2_ddt = -3.0;
+
+    EXPECT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+      ASSERT_FALSE(!connector);
+
+      std::stringstream ss;
+      ss << *connector;
+      EXPECT_EQ(ss.str(),
+                "{switching times: [3, 3.02778, 4.52778, 5], parabola "
+                "coefficients: [{a: -3.00000, b:21.00000, c:-34.00000}, {a: "
+                "0.00000, b:2.83333, c:-6.49769}, {a: -3.00000, b:30.00000, "
+                "c:-68.00000}]}");
+    });
+  }
+
+  {
+    const Eigen::Vector2d p1(3, 2);
+    const auto p1_dt = 1.0;
+    const auto p1_ddt = 2.0;
+    const Eigen::Vector2d p2(5, 7);
+    const auto p2_dt = 4.0;
+    const auto p2_ddt = 2.0;
+
+    EXPECT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+      ASSERT_FALSE(!connector);
+
+      std::stringstream ss;
+      ss << *connector;
+      EXPECT_EQ(ss.str(),
+                "{switching times: [3, 3.375, 4.625, 5], parabola "
+                "coefficients: [{a: 2.00000, b:-11.00000, c:17.00000}, {a: "
+                "0.00000, b:2.50000, c:-5.78125}, {a: 2.00000, b:-16.00000, "
+                "c:37.00000}]}");
+    });
+  }
+
+  {
+    const Eigen::Vector2d p1(3, 2);
+    const auto p1_dt = 4.0;
+    const auto p1_ddt = -4.0;
+    const Eigen::Vector2d p2(5, 7);
+    const auto p2_dt = 4.0;
+    const auto p2_ddt = 3.0;
+
+    EXPECT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+      ASSERT_FALSE(!connector);
+
+      std::stringstream ss;
+      ss << *connector;
+      EXPECT_EQ(ss.str(),
+                "{switching times: [3, 3.21429, 4.71429, 5], parabola "
+                "coefficients: [{a: -4.00000, b:28.00000, c:-46.00000}, {a: "
+                "0.00000, b:2.28571, c:-4.67347}, {a: 3.00000, b:-26.00000, "
+                "c:62.00000}]}");
+    });
+  }
+
+  {
+    const Eigen::Vector2d p1(3, 2);
+    const auto p1_dt = 0.0;
+    const auto p1_ddt = 4.0;
+    const Eigen::Vector2d p2(5, 7);
+    const auto p2_dt = 0.0;
+    const auto p2_ddt = -3.0;
+
+    EXPECT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+      ASSERT_FALSE(!connector);
+
+      std::stringstream ss;
+      ss << *connector;
+      EXPECT_EQ(ss.str(),
+                "{switching times: [3, 3.41107, 4.4519, 5], parabola "
+                "coefficients: [{a: 4.00000, b:-24.00000, c:38.00000}, {a: "
+                "0.00000, b:3.28857, c:-8.54164}, {a: -3.00000, b:30.00000, "
+                "c:-68.00000}]}");
+    });
+  }
+
+  {
+    const Eigen::Vector2d p1(0, 0);
+    const auto p1_dt = 0.0;
+    const auto p1_ddt = 4.0;
+    const Eigen::Vector2d p2(5, 5);
+    const auto p2_dt = 0.0;
+    const auto p2_ddt = -3.0;
+
+    EXPECT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+      ASSERT_FALSE(!connector);
+
+      std::stringstream ss;
+      ss << *connector;
+      EXPECT_EQ(ss.str(),
+                "{switching times: [0, 0.128875, 4.82817, 5], parabola "
+                "coefficients: [{a: 4.00000, b:0.00000, c:0.00000}, {a: "
+                "0.00000, b:1.03100, c:-0.06644}, {a: -3.00000, b:30.00000, "
+                "c:-70.00000}]}");
+    });
+  }
+}
+
 TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
   {
     const Eigen::Vector2d p1(3, 2);

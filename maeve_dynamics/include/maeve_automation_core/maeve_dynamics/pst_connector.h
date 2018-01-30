@@ -128,6 +128,8 @@ class PST_Connector {
   /**
    * @brief Compute a PLP connector between 'p1' and 'p1'.
    *
+   * @pre The second derivatives must be non-zero.
+   *
    * @param p1 The initial point in PT space.
    * @param p1_dt Connector first derivative at 'p1'.
    * @param p1_ddt Connector second derivative at 'p1'.
@@ -137,12 +139,9 @@ class PST_Connector {
    *
    * @return A nullable object of either the connector or boost::none.
    */
-  static boost::optional<PST_Connector> computePLP(const Eigen::Vector2d& p1,
-                                                   const double p1_dt,
-                                                   const double p1_ddt,
-                                                   const Eigen::Vector2d& p2,
-                                                   const double p2_dt,
-                                                   const double p2_ddt);
+  static boost::optional<PST_Connector> computePLP(
+      const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
+      const Eigen::Vector2d& p2, const double p2_dt, const double p2_ddt);
 
   /**
    * @brief Compute a PL_0P connector between 'p1' and 'p1'.

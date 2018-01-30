@@ -64,11 +64,6 @@ double PST_Connector::terminalSpeed(const PST_Connector& connector) {
 boost::optional<PST_Connector> PST_Connector::computePLP(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
     const Eigen::Vector2d& p2, const double p2_dt, const double p2_ddt) {
-  // Some error checking.
-  if ((p1_ddt == 0.0) || (p2_ddt == 0.0)) {
-    throw std::domain_error("Second derivatives must be non-zero.");
-  }
-
   // Compute P segments.
   const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
   const auto P2 = Polynomial::fromPointWithDerivatives(p2, p2_dt, p2_ddt);
@@ -101,7 +96,7 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
 
   // Other tangency points.
   const auto p1_1 = Polynomial::quadraticPointAtDerivative(P1, dt_1);
-  const auto p1_2 = Polynomial::quadraticPointAtDerivative(P2, dt_2);
+  const auto p1_2 = Polynomial::quadraticPointAtDerivative(P1, dt_2);
 
   // Candidate connectors.
   const auto C1 = PST_Connector::noExceptionConstructor(
@@ -114,9 +109,12 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
     return boost::none;
   }
 
-  // This should not happend.
+  // This should only happen if the roots are unique.
   if (C1 && C2) {
-    throw std::range_error("Too many valid connectors.");
+    if (p2_1.x() == p2_2.x()) {
+      return *C1;
+    }
+    throw std::range_error("Too many valid PLP connectors.");
   }
 
   // Done.
@@ -236,9 +234,12 @@ boost::optional<PST_Connector> PST_Connector::computePP(
   const auto C2 = PST_Connector::noExceptionConstructor(
       {p1.x(), p_t2.x(), p_t2.x(), p2.x()}, {P1, L2, P2_2});
 
-  // This should not happen.
+  // This should only happen if the roots are unique.
   if (C1 && C2) {
-    throw std::range_error("Too many valid connectors.");
+    if (p_t1.x() == p_t2.x()) {
+      return *C1;
+    }
+    throw std::range_error("Too many valid PP connectors.");
   }
 
   // Nothing found.
