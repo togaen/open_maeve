@@ -162,6 +162,14 @@ Interval Interval::intersect(const Interval& interval1,
   return Interval();
 }
 
+double Interval::projectToInterval(const Interval& interval, const double val) {
+  if (Interval::contains(interval, val)) {
+    return val;
+  }
+  return ((val < Interval::min(interval)) ? Interval::min(interval)
+                                          : Interval::max(interval));
+}
+
 bool Interval::exhibitsOrdering(const Interval& interval) {
   return !Interval::empty(interval) && Interval::valid(interval);
 }

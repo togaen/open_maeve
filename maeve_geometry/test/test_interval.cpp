@@ -35,6 +35,27 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto epsilon = 0.00001;
 }  // namespace
 
+TEST(Maeve_Geometry_Interval, testProjectToInterval) {
+  const auto i = Interval(-1, 1);
+  {
+    const auto val = 0.0;
+    const auto p = Interval::projectToInterval(i, val);
+    EXPECT_EQ(p, val);
+  }
+
+  {
+    const auto val = -3.4;
+    const auto p = Interval::projectToInterval(i, val);
+    EXPECT_EQ(p, Interval::min(i));
+  }
+
+  {
+    const auto val = 2.7;
+    const auto p = Interval::projectToInterval(i, val);
+    EXPECT_EQ(p, Interval::max(i));
+  }
+}
+
 TEST(Maeve_Geometry_Interval, testFactories) {
   EXPECT_EQ(Interval::affinelyExtendedReals(), Interval(-Inf, Inf));
   EXPECT_EQ(Interval::maxRepresentableReals(), Interval(Min, Max));

@@ -246,6 +246,17 @@ class Interval {
                             const Interval& interval2);
 
   /**
+   * @brief Project a scalar 'val' onto 'interval'.
+   *
+   * @param interval The interval to project onto.
+   * @param val The value to project.
+   *
+   * @return If 'val' \in 'interval', return 'val'; otherwise return the nearer
+   * interval bound.
+   */
+  static double projectToInterval(const Interval& interval, const double val);
+
+  /**
    * @brief Compute the convex hull of two intervals as a new interval.
    *
    * @note For intervals that overlap, this is equivalent to a union.
