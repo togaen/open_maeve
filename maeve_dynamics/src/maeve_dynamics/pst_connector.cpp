@@ -54,11 +54,69 @@ std::tuple<double, double, double, double> PST_Connector::switchingTimes(
 }
 
 double PST_Connector::initialSpeed(const PST_Connector& connector) {
-  return Polynomial::dx(connector.functions_[0], connector.switching_times_[0]);
+  if (PST_Connector::segmentActive<Idx::FIRST>(connector)) {
+    return Polynomial::dx(PST_Connector::function<Idx::FIRST>(connector),
+                          connector.switching_times_[0]);
+  }
+  if (PST_Connector::segmentActive<Idx::SECOND>(connector)) {
+    return Polynomial::dx(PST_Connector::function<Idx::SECOND>(connector),
+                          connector.switching_times_[1]);
+  }
+  if (PST_Connector::segmentActive<Idx::THIRD>(connector)) {
+    return Polynomial::dx(PST_Connector::function<Idx::THIRD>(connector),
+                          connector.switching_times_[2]);
+  }
+
+  // No active segment.
+  return NaN;
 }
 
 double PST_Connector::terminalSpeed(const PST_Connector& connector) {
-  return Polynomial::dx(connector.functions_[2], connector.switching_times_[3]);
+  if (PST_Connector::segmentActive<Idx::THIRD>(connector)) {
+    return Polynomial::dx(PST_Connector::function<Idx::THIRD>(connector),
+                          connector.switching_times_[3]);
+  }
+  if (PST_Connector::segmentActive<Idx::SECOND>(connector)) {
+    return Polynomial::dx(PST_Connector::function<Idx::SECOND>(connector),
+                          connector.switching_times_[2]);
+  }
+  if (PST_Connector::segmentActive<Idx::FIRST>(connector)) {
+    return Polynomial::dx(PST_Connector::function<Idx::FIRST>(connector),
+                          connector.switching_times_[1]);
+  }
+
+  // No active segment.
+  return NaN;
+}
+
+double PST_Connector::initialAcceleration(const PST_Connector& connector) {
+  if (PST_Connector::segmentActive<Idx::FIRST>(connector)) {
+    return Polynomial::ddx(PST_Connector::function<Idx::FIRST>(connector));
+  }
+  if (PST_Connector::segmentActive<Idx::SECOND>(connector)) {
+    return Polynomial::ddx(PST_Connector::function<Idx::SECOND>(connector));
+  }
+  if (PST_Connector::segmentActive<Idx::THIRD>(connector)) {
+    return Polynomial::ddx(PST_Connector::function<Idx::THIRD>(connector));
+  }
+
+  // No active segment.
+  return NaN;
+}
+
+double PST_Connector::terminalAcceleration(const PST_Connector& connector) {
+  if (PST_Connector::segmentActive<Idx::THIRD>(connector)) {
+    return Polynomial::ddx(PST_Connector::function<Idx::THIRD>(connector));
+  }
+  if (PST_Connector::segmentActive<Idx::SECOND>(connector)) {
+    return Polynomial::ddx(PST_Connector::function<Idx::SECOND>(connector));
+  }
+  if (PST_Connector::segmentActive<Idx::FIRST>(connector)) {
+    return Polynomial::ddx(PST_Connector::function<Idx::FIRST>(connector));
+  }
+
+  // No active segment.
+  return NaN;
 }
 
 boost::optional<PST_Connector> PST_Connector::computePLP(

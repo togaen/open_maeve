@@ -88,6 +88,15 @@ class PST_Connector {
   static double initialSpeed(const PST_Connector& connector);
 
   /**
+   * @brief Get the acceleration at the beginning of the connector.
+   *
+   * @param connector The connecting Trajectory.
+   *
+   * @return The initial acceleration.
+   */
+  static double initialAcceleration(const PST_Connector& connector);
+
+  /**
    * @brief Get the speed at the end of the connector.
    *
    * @param connector The connecting trajectory.
@@ -95,6 +104,15 @@ class PST_Connector {
    * @return The terminal speed.
    */
   static double terminalSpeed(const PST_Connector& connector);
+
+  /**
+   * @brief Get the acceleration at the end of the connector.
+   *
+   * @param connector The connecting Trajectory.
+   *
+   * @return The terminal acceleration.
+   */
+  static double terminalAcceleration(const PST_Connector& connector);
 
   /**
    * @brief Compute and return the boundary points of a connector.
