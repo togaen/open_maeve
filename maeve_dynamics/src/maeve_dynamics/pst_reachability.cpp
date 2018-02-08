@@ -54,18 +54,15 @@ const PST_Connector& PST_Reachability::maxConnector(
   return reachability.max_terminal_;
 }
 
-namespace {
-boost::optional<PST_Connector> LPorPLP(const PST_Connector& LP,
-                                       const double target_speed,
-                                       const Interval& I_dt,
-                                       const Interval& I_ddt) {
+boost::optional<PST_Connector> PST_Reachability::LPorPLP(
+    const PST_Connector& LP, const Interval& I_dt, const Interval& I_ddt) {
   const auto ddt_min = Interval::min(I_ddt);
   const auto ddt_max = Interval::max(I_ddt);
   const auto terminal_ddt = PST_Connector::terminalAcceleration(LP);
 
   // If LP is valid, just return it.
-  const auto v = PST_Connector::initialSpeed(LP);
-  if (Interval::contains(I_dt, v)) {
+  const auto initial_speed = PST_Connector::initialSpeed(LP);
+  if (Interval::contains(I_dt, initial_speed)) {
     return LP;
   }
 
@@ -78,16 +75,17 @@ boost::optional<PST_Connector> LPorPLP(const PST_Connector& LP,
   //
 
   // Get valid starting speed.
-  const auto dt_valid = Interval::projectToInterval(I_dt, v);
+  const auto dt_valid = Interval::projectToInterval(I_dt, initial_speed);
 
   // Initial acceleration should move toward dt_valid.
-  const auto ddt = ((v < dt_valid) ? ddt_max : ddt_min);
+  const auto ddt = ((initial_speed < dt_valid) ? ddt_max : ddt_min);
 
   // Get appropriate terminal acceleration.
+  const auto terminal_speed = PST_Connector::terminalSpeed(LP);
   const auto PLP_min =
-      PST_Connector::computePLP(p1, dt_valid, ddt, p2, target_speed, ddt_min);
+      PST_Connector::computePLP(p1, dt_valid, ddt, p2, terminal_speed, ddt_min);
   const auto PLP_max =
-      PST_Connector::computePLP(p1, dt_valid, ddt, p2, target_speed, ddt_max);
+      PST_Connector::computePLP(p1, dt_valid, ddt, p2, terminal_speed, ddt_max);
 
   // Find anything?
   if (PLP_min) {
@@ -100,14 +98,10 @@ boost::optional<PST_Connector> LPorPLP(const PST_Connector& LP,
   // Done.
   return boost::none;
 }
-}  // namespace
 
-// LP+
-template <>
-boost::optional<PST_Connector>
-PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
+boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
     const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints) {
+    const double target_speed, const IntervalConstraints<2>& constraints) {
   // Intervals for dynamic bounds.
   const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
   const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
@@ -116,8 +110,6 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   const auto dt_max = Interval::max(I_dt);
   const auto dt_min = Interval::min(I_dt);
 
-  const auto target_speed = dt_max;
-
   // Extremal accelerations.
   const auto ddt_max = Interval::max(I_ddt);
   const auto ddt_min = Interval::min(I_ddt);
@@ -125,12 +117,12 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   // Check for LP or PLP connectivity: these will hit target speed exactly,
   // so return if connector found.
   if (const auto LP = PST_Connector::computeLP(p1, p2, target_speed, ddt_min)) {
-    if (const auto PLP = LPorPLP(*LP, target_speed, I_dt, I_ddt)) {
+    if (const auto PLP = LPorPLP(*LP, I_dt, I_ddt)) {
       return *PLP;
     }
   }
   if (const auto LP = PST_Connector::computeLP(p1, p2, target_speed, ddt_max)) {
-    if (const auto PLP = LPorPLP(*LP, target_speed, I_dt, I_ddt)) {
+    if (const auto PLP = LPorPLP(*LP, I_dt, I_ddt)) {
       return *PLP;
     }
   }
@@ -144,10 +136,43 @@ PST_Reachability::maxTerminalSpeed<PST_Reachability::Type::VII>(
   const auto PP_min =
       PST_Connector::computePP(p1, dt_max, ddt_max, p2, ddt_min);
 
-  // TODO(me): choose the connector that gets nearest the target speed.
+  // Choose the connector that gets nearest the target speed.
+  const auto PL_0P_delta =
+      !PL_0P ? Inf
+             : std::abs(target_speed - PST_Connector::terminalSpeed(*PL_0P));
+  const auto PP_max_delta =
+      !PP_max ? Inf
+              : std::abs(target_speed - PST_Connector::terminalSpeed(*PP_max));
+  const auto PP_min_delta =
+      !PP_min ? Inf
+              : std::abs(target_speed - PST_Connector::terminalSpeed(*PP_min));
+
+  // No solution, done.
+  if ((PL_0P_delta == Inf) && (PP_max_delta == Inf) && (PP_min_delta == Inf)) {
+    return boost::none;
+  }
+
+  //
+  // There is at least one valid solution.
+  //
+
+  // Comparator for finding best target speed.
+  const auto comp = [](
+      const std::tuple<double, boost::optional<PST_Connector>>& a,
+      const std::tuple<double, boost::optional<PST_Connector>>& b) {
+    return (std::get<0>(a) < std::get<0>(b));
+  };
+
+  // Pair the connectors with their distances to the target speed.
+  const auto PL_0P_tuple = std::make_tuple(PL_0P_delta, PL_0P);
+  const auto PP_max_tuple = std::make_tuple(PP_max_delta, PP_max);
+  const auto PP_min_tuple = std::make_tuple(PP_min_delta, PP_min);
+
+  // Find the best one.
+  const auto best_tuple =
+      std::min(PL_0P_tuple, std::min(PP_max_tuple, PP_min_tuple, comp), comp);
 
   // Done.
-  return boost::none;
+  return *std::get<1>(best_tuple);
 }
-
 }  // namespace maeve_automation_core

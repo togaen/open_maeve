@@ -38,31 +38,6 @@ namespace maeve_automation_core {
 class PST_Reachability {
  public:
   /**
-   * @brief Types of trajectories that determine reachability in PST space.
-   *
-   * @note In principle there are two additional types, but in practice P+P+ is
-   * subsumed by P-P+ and P-P- is subsumed by P+P-.
-   */
-  enum class Type {
-    // P+LP+: Initial acceleration, constant speed, terminal acceleration
-    I,
-    // P+LP-: Initial acceleration, constant speed, terminal deceleration.
-    II,
-    // P-LP+: Initial deceleration, constant speed, terminal acceleration.
-    III,
-    // P-LP-: Initial deceleration, constant speed, terminal deceleration.
-    IV,
-    // PP+: Initial acceleration, terminal acceleration.
-    V,
-    // PP-: Initial acceleration, terminal deceleration.
-    VI,
-    // LP+: Initial constant speed, terminal acceleration.
-    VII,
-    // LP-: Initial constant speed, terminal deceleration.
-    VIII
-  };
-
-  /**
    * @brief The interval of reachable speeds.
    *
    * @return An interval object of reachable speeds.
@@ -90,26 +65,21 @@ class PST_Reachability {
       const PST_Reachability& reachability);
 
   /**
-   * @brief Compute a connector that connects two points with the max temrinal
+   * @brief Compute a connector that connects two points with the desired target
    * speed.
-   *
-   * This methods computes a special connector of the form PLP+, where the
-   * initial parabolic function is of length zero, and a linear segment extends
-   * from p1 and becomes tangent to the terminal P+ curve. If no such feasible
-   * connector exists, a null object is returned.
    *
    * @param I_i The interval of available initial speeds.
    * @param p1 The initial point in PT space.
    * @param p2 The terminal point in PT space.
+   * @param target_speed Desired target speed.
    * @param constraints The dynamic constraints describing 1st and 2nd order
    * bounds.
    *
    * @return A nullable object of either the connector object or boost::none.
    */
-  template <Type T>
-  static boost::optional<PST_Connector> maxTerminalSpeed(
+  static boost::optional<PST_Connector> targetTerminalSpeed(
       const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
-      const IntervalConstraints<2>& constraints);
+      const double target_speed, const IntervalConstraints<2>& constraints);
 
  private:
   /**
@@ -119,6 +89,20 @@ class PST_Reachability {
    * @param max_terminal The connecting trajectory with max terminal speed.
    */
   PST_Reachability(PST_Connector&& min_terminal, PST_Connector&& max_terminal);
+
+  /**
+   * @brief Given an LP connector, verify that it satisfies constraints, or
+   * attempt to compute a PLP connector that does.
+   *
+   * @param LP The LP connector.
+   * @param I_dt The interval of valid speeds.
+   * @param I_ddt The interval of valid accelerations.
+   *
+   * @return A nullable object of either the connector or boost::none.
+   */
+  static boost::optional<PST_Connector> LPorPLP(const PST_Connector& LP,
+                                                const Interval& I_dt,
+                                                const Interval& I_ddt);
 
   /** @brief The PST connector that achieves minimum terminal speed. */
   PST_Connector min_terminal_;
