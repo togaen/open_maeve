@@ -25,6 +25,21 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief Convenience method for performing logical exclusive or ops.
+ *
+ * @tparam T The input type; this must be convertible to bool.
+ *
+ * @param a The first value.
+ * @param b The second value.
+ *
+ * @return True if exactly one of 'a' and 'b' is true; otherwise false.
+ */
+template <typename T>
+inline bool exclusiveOr(const T& a, const T& b) {
+  return (!static_cast<bool>(a) != !static_cast<bool>(b));
+}
+
+/**
  * @brief Check for approximate equality in absolute terms.
  *
  * @tparam T The type of value to check.

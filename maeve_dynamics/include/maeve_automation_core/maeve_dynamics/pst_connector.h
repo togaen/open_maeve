@@ -63,8 +63,8 @@ class PST_Connector {
    * @param switching_times Trajectory switching times.
    * @param functions Trajectory functional segments.
    */
-  PST_Connector(std::array<double, 4>&& switching_times,
-                std::array<Polynomial, 3>&& functions);
+  PST_Connector(std::array<double, 4> switching_times,
+                std::array<Polynomial, 3> functions);
 
   /**
    * @brief Factory method that calls constructor but swallows exception.
@@ -75,8 +75,8 @@ class PST_Connector {
    * @return A nullable object with either the object or null.
    */
   static boost::optional<PST_Connector> noExceptionConstructor(
-      std::array<double, 4>&& switching_times,
-      std::array<Polynomial, 3>&& functions) noexcept;
+      std::array<double, 4> switching_times,
+      std::array<Polynomial, 3> functions) noexcept;
 
   /**
    * @brief Get the speed at the beginning of the connector.

@@ -29,8 +29,8 @@ const auto Inf = std::numeric_limits<double>::infinity();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }
 
-PST_Reachability::PST_Reachability(PST_Connector&& min_terminal,
-                                   PST_Connector&& max_terminal)
+PST_Reachability::PST_Reachability(PST_Connector min_terminal,
+                                   PST_Connector max_terminal)
     : min_terminal_(std::move(min_terminal)),
       max_terminal_(std::move(max_terminal)) {}
 

@@ -88,7 +88,7 @@ class PST_Reachability {
    * @param min_terminal The connecting trajectory with min terminal speed.
    * @param max_terminal The connecting trajectory with max terminal speed.
    */
-  PST_Reachability(PST_Connector&& min_terminal, PST_Connector&& max_terminal);
+  PST_Reachability(PST_Connector min_terminal, PST_Connector max_terminal);
 
   /**
    * @brief Given an LP connector, verify that it satisfies constraints, or

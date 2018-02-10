@@ -102,8 +102,8 @@ class IntervalConstraints {
    * @param t_bounds Feasible time interval.
    * @param s_bounds Array of feasible s intervals indexed by order.
    */
-  IntervalConstraints(Interval&& t_bounds,
-                      std::array<Interval, Order + 1>&& s_bounds);
+  IntervalConstraints(Interval t_bounds,
+                      std::array<Interval, Order + 1> s_bounds);
 
   /**
    * @brief A constraint set is valid iff all intervals are valid.
@@ -212,7 +212,7 @@ class IntervalConstraints {
 
 template <unsigned int Order>
 IntervalConstraints<Order>::IntervalConstraints(
-    Interval&& t_bounds, std::array<Interval, Order + 1>&& s_bounds)
+    Interval t_bounds, std::array<Interval, Order + 1> s_bounds)
     : t_bounds_(std::move(t_bounds)), s_bounds_(std::move(s_bounds)) {}
 
 template <unsigned int Order>
