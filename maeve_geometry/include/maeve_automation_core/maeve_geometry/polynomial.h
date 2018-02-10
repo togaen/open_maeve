@@ -105,22 +105,6 @@ class Polynomial {
       const Polynomial& polynomial);
 
   /**
-   * @brief Compute and return the domains for which the polynomial first
-   * derivative has negative and positive sign.
-   *
-   * @note The critical point, where first derivative is zero, is included in
-   * both partitions.
-   *
-   * @param polynomial The polynomial.
-   *
-   * @return An ordered tuple of the domain for negative first derivative and
-   * positive first derivative. For polynomials without a unique critical point,
-   * a null object is returned.
-   */
-  static boost::optional<std::tuple<Interval, Interval>> dxSignDomainPartition(
-      const Polynomial& polynomial);
-
-  /**
    * @brief Compute the real-valued roots of a polynomial.
    *
    * @note This method favors accuracy and numeric stability over speed.

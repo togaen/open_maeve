@@ -109,25 +109,6 @@ boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
   return boost::none;
 }
 
-boost::optional<std::tuple<Interval, Interval>>
-Polynomial::dxSignDomainPartition(const Polynomial& polynomial) {
-  // Get critical point.
-  const auto p_critical = Polynomial::uniqueCriticalPoint(polynomial);
-  if (!p_critical) {
-    return boost::none;
-  }
-
-  // Compute domains.
-  const auto I1 = Interval(-Interval::Inf, p_critical->x());
-  const auto I2 = Interval(p_critical->x(), Interval::Inf);
-
-  // Partition domains by second derivative and return.
-  if (Polynomial::a(polynomial) > 0.0) {
-    return std::make_tuple(std::move(I1), std::move(I2));
-  }
-  return std::make_tuple(std::move(I2), std::move(I1));
-}
-
 Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
   // Allocate coefficients.
   auto a = 0.0;
