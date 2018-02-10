@@ -74,6 +74,15 @@ Interval::Interval(const double minimum, const double maximum)
   }
 }
 
+bool Interval::isSubsetEq(const Interval& interval1,
+                          const Interval& interval2) {
+  const auto lower_contained =
+      (Interval::min(interval1) >= Interval::min(interval2));
+  const auto upper_contained =
+      (Interval::max(interval1) <= Interval::max(interval2));
+  return (lower_contained && upper_contained);
+}
+
 bool Interval::contains(const Interval& interval, const double value) {
   return (Interval::valid(interval) && !Interval::empty(interval) &&
           (value >= Interval::min(interval)) &&

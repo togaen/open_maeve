@@ -235,6 +235,16 @@ class Interval {
   static bool contains(const Interval& interval, const double value);
 
   /**
+   * @brief Test for whether 'interval1' \subseteq 'interval2'
+   *
+   * @param interval1 The first interval.
+   * @param interval2 The second interval.
+   *
+   * @return True if interval1 \subseteq interval2; otherwise false.
+   */
+  static bool isSubsetEq(const Interval& interval1, const Interval& interval2);
+
+  /**
    * @brief Compute the intersection of two intervals as a new interval.
    *
    * @param interval1 The first interval.

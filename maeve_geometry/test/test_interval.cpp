@@ -35,6 +35,15 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto epsilon = 0.00001;
 }  // namespace
 
+TEST(Maeve_Geometry_Interval, testIsSubsetEq) {
+  EXPECT_TRUE(Interval::isSubsetEq(Interval(-0.5, 0.5), Interval(-1.0, 1.0)));
+  EXPECT_TRUE(Interval::isSubsetEq(Interval(3.2, 4.2), Interval(3.2, 4.2)));
+  EXPECT_FALSE(Interval::isSubsetEq(Interval(-3.0, -1.0), Interval(1.0, 3.0)));
+  EXPECT_FALSE(Interval::isSubsetEq(Interval(1.0, 3.0), Interval(2.0, 4.0)));
+  EXPECT_FALSE(Interval::isSubsetEq(Interval(), Interval()));
+  EXPECT_FALSE(Interval::isSubsetEq(Interval(3.0, 2.0), Interval(1.0, 1.0)));
+}
+
 TEST(Maeve_Geometry_Interval, testProjectToInterval) {
   const auto i = Interval(-1, 1);
   {
