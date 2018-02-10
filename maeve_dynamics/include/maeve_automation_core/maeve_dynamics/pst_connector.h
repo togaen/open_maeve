@@ -40,7 +40,8 @@ namespace maeve_automation_core {
  * time, changes to the linear portion at the second switching time, changes to
  * the terminal parabolic portion at the third switching time, and ends at the
  * fourth switching time. The linear portion of the trajectory is represented as
- * a parabola with a zero coefficient for the polynomial term.
+ * a parabola with a zero coefficient for the polynomial term. The speed along a
+ * connector is constrained to be strictly non-negative.
  */
 class PST_Connector {
  public:
@@ -261,16 +262,19 @@ class PST_Connector {
   static bool timeDomainNonZeroMeasure(const PST_Connector& connector);
 
   /**
-   * @brief Whether the first derivative is non-negative along entire connector.
+   * @brief Whether the first derivative is within given bounds along entire
+   * connector.
    *
    * @tparam I The segment index.
    *
    * @param connector The connecting trajectory to check.
    *
-   * @return True if the first derivative along the segment is never negative.
+   * @return True if the first derivative along the segment is always withing
+   * bounds; otherwise false.
    */
   template <Idx I>
-  static bool noNegativeFirstDerivatives(const PST_Connector& connector);
+  static bool boundedFirstDerivatives(const PST_Connector& connector,
+                                      const Interval& bounds);
 
   /**
    * @brief Get a reference to the function for a given segment.
@@ -368,48 +372,46 @@ class PST_Connector {
 };  // class PST_Connector
 
 template <PST_Connector::Idx I>
-bool PST_Connector::noNegativeFirstDerivatives(const PST_Connector& connector) {
-  // Capture the time domain.
-  const auto domain = PST_Connector::domain<I>(connector);
-
+bool PST_Connector::boundedFirstDerivatives(const PST_Connector& connector,
+                                            const Interval& bounds) {
   // Capture the function.
   const auto& function = PST_Connector::function<I>(connector);
 
-  // Trivially, if the domain is length zero, or the function is constant, there
-  // are no negative first derivatives.
-  if (Interval::zeroLength(domain) || Polynomial::isConstant(function)) {
+  // Capture the time domain.
+  const auto domain = PST_Connector::domain<I>(connector);
+
+  // Trivially, if the domain is length zero, bounds are satisfied.
+  if (Interval::zeroLength(domain)) {
     return true;
+  }
+
+  // If function is constant, check whether zero speed satisfies.
+  if (Polynomial::isConstant(function)) {
+    return Interval::contains(bounds, 0.0);
   }
 
   // If quadratic, test accordingly.
   if (Polynomial::isQuadratic(function)) {
-    // Check for intersection between the negative domain of function and the
-    // segment domain.
-    if (const auto dx_partition = Polynomial::dxSignDomainPartition(function)) {
-      const auto& I_neg = std::get<0>(*dx_partition);
-      const auto i = Interval::intersect(I_neg, domain);
+    // Compute dx at domain bounds.
+    const auto s_dot1 = Polynomial::dx(function, Interval::min(domain));
+    const auto s_dot2 = Polynomial::dx(function, Interval::max(domain));
 
-      // This intersection may contain only the critical point, which satisfies
-      // the test, but means the interval is not empty. Therefore, check for an
-      // intersection of non-zero length in addition to being not empty.
-      if (!Interval::empty(i) && !Interval::zeroLength(i)) {
-        return false;
-      }
-    }
+    // Construct speed range.
+    const auto speed_range =
+        Interval(std::min(s_dot1, s_dot2), std::max(s_dot1, s_dot2));
 
-    // This should never happen.
-    assert(false);
+    // Check speed range.
+    return Interval::isSubsetEq(speed_range, bounds);
   }
 
   // If linear, test accordingly.
   if (Polynomial::isLinear(function)) {
-    if (Polynomial::dx(function, 0.0) < 0.0) {
-      return false;
-    }
+    return Interval::contains(bounds, Polynomial::dx(function, 0.0));
   }
 
-  // Everything checks out.
-  return true;
+  // Control should never reach this point.
+  throw std::domain_error("Unexpected function type.");
+  return false;
 }
 
 template <PST_Connector::Idx I>

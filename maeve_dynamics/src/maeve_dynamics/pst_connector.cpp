@@ -32,6 +32,7 @@
 
 namespace maeve_automation_core {
 namespace {
+const auto Inf = std::numeric_limits<double>::infinity();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
@@ -454,12 +455,14 @@ bool PST_Connector::valid(const PST_Connector& connector) {
   const auto segments_valid = PST_Connector::validSegments(connector);
 
   // Check first derivatives.
-  const auto seg1_valid_dx =
-      PST_Connector::noNegativeFirstDerivatives<Idx::FIRST>(connector);
+  const auto non_negative = Interval(0.0, Inf);
+  const auto seg1_valid_dx = PST_Connector::boundedFirstDerivatives<Idx::FIRST>(
+      connector, non_negative);
   const auto seg2_valid_dx =
-      PST_Connector::noNegativeFirstDerivatives<Idx::SECOND>(connector);
-  const auto seg3_valid_dx =
-      PST_Connector::noNegativeFirstDerivatives<Idx::THIRD>(connector);
+      PST_Connector::boundedFirstDerivatives<Idx::SECOND>(connector,
+                                                          non_negative);
+  const auto seg3_valid_dx = PST_Connector::boundedFirstDerivatives<Idx::THIRD>(
+      connector, non_negative);
 
   // Check time domain.
   const auto time_domain_valid =
