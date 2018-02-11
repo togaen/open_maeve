@@ -236,18 +236,21 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
   const auto t0 = p1.x();
   const auto t1 = p_critical->x();
   const auto t3 = p2.x();
-  try {
-    const auto t2 = critical_pt1.x();
-    return PST_Connector({t0, t1, t2, t3}, {P1, L, P2_candidate1});
-  } catch (const std::exception& /* e */) {
-    try {
-      const auto t2 = critical_pt2.x();
-      return PST_Connector({t0, t1, t2, t3}, {P1, L, P2_candidate2});
-    } catch (const std::exception& /* e */) {
-      // No feasible connection exists.
-      return boost::none;
-    }
+
+  const auto C1 = PST_Connector::noExceptionConstructor(
+      {t0, t1, critical_pt1.x(), t3}, {P1, L, P2_candidate1});
+
+  const auto C2 = PST_Connector::noExceptionConstructor(
+      {t0, t1, critical_pt2.x(), t3}, {P1, L, P2_candidate2});
+
+  if (C1) {
+    return *C1;
   }
+  if (C2) {
+    return *C2;
+  }
+
+  return boost::none;
 }
 
 boost::optional<PST_Connector> PST_Connector::computePP(
@@ -286,8 +289,8 @@ boost::optional<PST_Connector> PST_Connector::computePP(
   // Compute P2 candidate segment coefficients.
   const auto P2_1 = Polynomial::fromPointWithDerivatives(p_t1, L1_b, a2);
   const auto P2_2 = Polynomial::fromPointWithDerivatives(p_t2, L2_b, a2);
-
   // Find valid connectors, if any.
+
   const auto C1 = PST_Connector::noExceptionConstructor(
       {p1.x(), p_t1.x(), p_t1.x(), p2.x()}, {P1, L1, P2_1});
   const auto C2 = PST_Connector::noExceptionConstructor(
