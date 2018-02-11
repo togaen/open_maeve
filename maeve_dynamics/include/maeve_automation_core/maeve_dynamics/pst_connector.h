@@ -204,6 +204,18 @@ class PST_Connector {
                                                   const Eigen::Vector2d& p2,
                                                   const double p2_ddt);
 
+  /**
+   * @brief Test whether speeds along the connector are bounded.
+   *
+   * @param connector The connector.
+   * @param bounds The speed bounds.
+   *
+   * @return True if all speeds reached along connector are contained in
+   * 'bounds'; otherwise false.
+   */
+  static bool boundedInteriorSpeeds(const PST_Connector& connector,
+                                    const Interval& bounds);
+
  private:
   /**
    * @brief Utility enum for indexing connector segments.

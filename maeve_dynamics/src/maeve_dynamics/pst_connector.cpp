@@ -440,6 +440,18 @@ bool PST_Connector::validSegments(const PST_Connector& connector) {
                      });
 }
 
+bool PST_Connector::boundedInteriorSpeeds(const PST_Connector& connector,
+                                          const Interval& bounds) {
+  const auto seg1_valid_dx =
+      PST_Connector::boundedFirstDerivatives<Idx::FIRST>(connector, bounds);
+  const auto seg2_valid_dx =
+      PST_Connector::boundedFirstDerivatives<Idx::SECOND>(connector, bounds);
+  const auto seg3_valid_dx =
+      PST_Connector::boundedFirstDerivatives<Idx::THIRD>(connector, bounds);
+
+  return (seg1_valid_dx && seg2_valid_dx && seg3_valid_dx);
+}
+
 bool PST_Connector::valid(const PST_Connector& connector) {
   // Check monotonicity.
   const auto non_decreasing =
@@ -456,13 +468,8 @@ bool PST_Connector::valid(const PST_Connector& connector) {
 
   // Check first derivatives.
   const auto non_negative = Interval(0.0, Inf);
-  const auto seg1_valid_dx = PST_Connector::boundedFirstDerivatives<Idx::FIRST>(
-      connector, non_negative);
-  const auto seg2_valid_dx =
-      PST_Connector::boundedFirstDerivatives<Idx::SECOND>(connector,
-                                                          non_negative);
-  const auto seg3_valid_dx = PST_Connector::boundedFirstDerivatives<Idx::THIRD>(
-      connector, non_negative);
+  const auto valid_speeds =
+      PST_Connector::boundedInteriorSpeeds(connector, non_negative);
 
   // Check time domain.
   const auto time_domain_valid =
@@ -480,8 +487,7 @@ bool PST_Connector::valid(const PST_Connector& connector) {
 
   // Done.
   return (non_decreasing && segments_connected && segments_tangent &&
-          segments_valid && (seg1_valid_dx && seg2_valid_dx && seg3_valid_dx) &&
-          time_domain_valid);
+          segments_valid && valid_speeds && time_domain_valid);
 }
 
 PST_Connector::PST_Connector(std::array<double, 4> switching_times,
