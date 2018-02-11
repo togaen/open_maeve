@@ -108,6 +108,21 @@ class PST_Reachability {
                    const IntervalConstraints<2>& constraints);
 
   /**
+   * @brief Factory method for constructing PST_Reachability objects that
+   * swallows exceptions.
+   *
+   * @param min_terminal The connecting trajectory with min terminal speed.
+   * @param max_terminal The connecting trajectory with max terminal speed.
+   * @param constraints  The dynamic constraints reachability should satisfy.
+   *
+   * @return An optional that is disengaged on exception, or that contains the
+   * object.
+   */
+  static boost::optional<PST_Reachability> noExceptionConstructor(
+      PST_Connector min_terminal, PST_Connector max_terminal,
+      const IntervalConstraints<2>& constraints) noexcept;
+
+  /**
    * @brief Check whether the speeds of the interior along the connector satisfy
    * constraints.
    *

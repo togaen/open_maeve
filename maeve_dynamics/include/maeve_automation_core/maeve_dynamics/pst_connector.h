@@ -68,6 +68,11 @@ class PST_Connector {
                 std::array<Polynomial, 3> functions);
 
   /**
+   * @brief Disallow default construction.
+   */
+  PST_Connector() = delete;
+
+  /**
    * @brief Factory method that calls constructor but swallows exception.
    *
    * @param switching_times Trajectory switching times.

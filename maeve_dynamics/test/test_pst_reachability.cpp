@@ -64,7 +64,7 @@ compute(
 
 #endif
   const Eigen::Vector2d p1(3.0, 2.0);
-  const Eigen::Vector2d p2(7.0, 7.5);
+  const Eigen::Vector2d p2(4.0, 7.5);
   auto t_bounds = Interval(0.0, 10.0);
   auto s_bounds = Interval(0.0, 10.0);
   auto s_dot_bounds = Interval(0.0, 5.0);
