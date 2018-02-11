@@ -30,7 +30,7 @@ namespace maeve_automation_core {
 namespace {
 const auto epsilon = 0.0001;
 }  // namespace
-
+#if 0
 TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
   {
     const Eigen::Vector2d p1(3, 2);
@@ -199,6 +199,28 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
 }
 
 TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
+  {
+    const Eigen::Vector2d p1(0.0, 0.0);
+    const auto p1_dt = 1.0;
+    const auto p1_ddt = 2.0;
+    const auto p2_ddt = -p1_ddt;
+    const auto p2 = Eigen::Vector2d(1.0, 1.3);
+
+    ASSERT_NO_THROW({
+      const auto connector =
+          PST_Connector::computePP(p1, p1_dt, p1_ddt, p2, p2_ddt);
+      ASSERT_FALSE(!connector);
+      std::stringstream ss;
+      ss << *connector;
+      EXPECT_EQ(ss.str(),
+                "{\"switching_times\": [0, 0.34808, 0.34808, 1], "
+                "\"parabola_coefficients\": [{\"a\": 2.00000, \"b\": "
+                "1.00000, \"c\": 0.00000}, {\"a\": 0.00000, \"b\": 2.39232, "
+                "\"c\": -0.24232}, {\"a\": -2.00000, \"b\": 3.78464, \"c\": "
+                "-0.48464}]}");
+    });
+  }
+
   {
     const Eigen::Vector2d p1(3, 2);
     const auto p1_dt = 0.0;
@@ -430,8 +452,24 @@ TEST(Maeve_Dynamics_PST_Connector, testEndPoints) {
     }
   }
 }
-
+#endif
 TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
+#if 0
+  {
+    auto exception_thrown = false;
+    try {
+      auto pc = PST_Connector(
+          {0.0, 0.34808, 0.34808, 1.0},
+          {Polynomial(2.0, 1.0, 0.0), Polynomial(0.0, 2.39232, -0.24232),
+           Polynomial(-2.0, 3.78464, -0.48464)});
+    } catch (const std::exception& e) {
+      std::cout << "Exception caught: " << e.what() << std::endl;
+      exception_thrown = true;
+    }
+    EXPECT_FALSE(exception_thrown);
+  }
+#endif
+#if 0
   {
     const auto p = Polynomial(1, 1, 1);
     auto exception_thrown = false;
@@ -444,16 +482,10 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
     EXPECT_TRUE(exception_thrown);
   }
 
-  {
+  EXPECT_NO_THROW({
     const auto p = Polynomial(1, 1, 1);
-    auto exception_thrown = false;
-    try {
-      auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, p, p});
-    } catch (...) {
-      exception_thrown = true;
-    }
-    EXPECT_FALSE(exception_thrown);
-  }
+    auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, p, p});
+  });
 
   {
     const auto p = Polynomial(1, 1, 1);
@@ -465,5 +497,6 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
     }
     EXPECT_TRUE(exception_thrown);
   }
+#endif
 }
 }  // namespace maeve_automation_core

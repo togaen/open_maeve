@@ -27,7 +27,7 @@ namespace maeve_automation_core {
 TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
   {
     const Eigen::Vector2d p1(0.0, 0.0);
-    const Eigen::Vector2d p2(1.0, 0.0);
+    const Eigen::Vector2d p2(1.0, 0.2);
     auto t_bounds = Interval(0.0, 10.0);
     auto s_bounds = Interval(0.0, 10.0);
     auto s_dot_bounds = Interval(0.0, 50.0);
@@ -35,22 +35,11 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
     const auto constraints = IntervalConstraints<2>(
         t_bounds, {s_bounds, s_dot_bounds, s_ddot_bounds});
 
-    const auto speed = Interval::min(s_dot_bounds);
-    ASSERT_NO_THROW({
-      const auto reachability =
-          PST_Reachability::compute(Interval(1.0, 1.0), p1, p2, constraints);
-      if (reachability) {
-        std::cout << PST_Reachability::reachableInterval(*reachability)
-                  << std::endl;
-        const auto& min_connector =
-            PST_Reachability::minConnector(*reachability);
-        const auto& max_connector =
-            PST_Reachability::maxConnector(*reachability);
-        std::cout << "min: " << min_connector << std::endl;
-        std::cout << "max: " << max_connector << std::endl;
-      } else {
-        std::cout << "Not reachable for initial speed: " << speed << std::endl;
-      }
+    const auto speed = 1.0;
+    EXPECT_NO_THROW({
+      const auto connector = PST_Reachability::targetTerminalSpeed(
+          Interval(speed, speed), p1, p2, Interval::max(s_bounds), constraints);
+      ASSERT_FALSE(!connector);
     });
   }
 
@@ -62,7 +51,7 @@ compute(
   IntervalConstraints(Interval&& t_bounds,
                       std::array<Interval, Order + 1>&& s_bounds);
 #endif
-
+#if 1
   const Eigen::Vector2d p1(0.0, 0.0);
   const Eigen::Vector2d p2(1.0, 0.0);
   auto t_bounds = Interval(0.0, 10.0);
@@ -79,7 +68,8 @@ compute(
       const auto reachability = PST_Reachability::compute(
           Interval(1.0, 1.0), p1, Eigen::Vector2d(1.0, p), constraints);
       if (reachability) {
-        std::cout << PST_Reachability::reachableInterval(*reachability)
+        std::cout << "{\"p\": " << p << ", \"interval\": "
+                  << PST_Reachability::reachableInterval(*reachability) << "},"
                   << std::endl;
       } else {
         std::cout << "Not reachable for initial path: " << p << std::endl;
@@ -88,5 +78,6 @@ compute(
 
     p += path_inc;
   }
+#endif
 }
 }  // namespace maeve_automation_core
