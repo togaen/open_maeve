@@ -21,6 +21,7 @@
  */
 #include "maeve_automation_core/maeve_dynamics/pst_reachability.h"
 
+#include <cmath>
 #include <limits>
 #include <sstream>
 
@@ -228,7 +229,8 @@ boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
               : std::abs(target_speed - PST_Connector::terminalSpeed(*PP_min));
 
   // No solution, done.
-  if ((PL_0P_delta == Inf) && (PP_max_delta == Inf) && (PP_min_delta == Inf)) {
+  if (!std::isfinite(PL_0P_delta) && !std::isfinite(PP_max_delta) &&
+      !std::isfinite(PP_min_delta)) {
     return boost::none;
   }
 
