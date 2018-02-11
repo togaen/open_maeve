@@ -93,10 +93,11 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       std::stringstream ss;
       ss << *connector;
       EXPECT_EQ(ss.str(),
-                "{switching times: [3, 3.02778, 4.52778, 5], parabola "
-                "coefficients: [{a: -3.00000, b:21.00000, c:-34.00000}, {a: "
-                "0.00000, b:2.83333, c:-6.49769}, {a: -3.00000, b:30.00000, "
-                "c:-68.00000}]}");
+                "{\"switching_times\": [3, 3.02778, 4.52778, 5], "
+                "\"parabola_coefficients\": [{\"a\": -3.00000, \"b\": "
+                "21.00000, \"c\": -34.00000}, {\"a\": 0.00000, \"b\": 2.83333, "
+                "\"c\": -6.49769}, {\"a\": -3.00000, \"b\": 30.00000, \"c\": "
+                "-68.00000}]}");
     });
   }
 
@@ -116,10 +117,11 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       std::stringstream ss;
       ss << *connector;
       EXPECT_EQ(ss.str(),
-                "{switching times: [3, 3.375, 4.625, 5], parabola "
-                "coefficients: [{a: 2.00000, b:-11.00000, c:17.00000}, {a: "
-                "0.00000, b:2.50000, c:-5.78125}, {a: 2.00000, b:-16.00000, "
-                "c:37.00000}]}");
+                "{\"switching_times\": [3, 3.375, 4.625, 5], "
+                "\"parabola_coefficients\": [{\"a\": 2.00000, \"b\": "
+                "-11.00000, \"c\": 17.00000}, {\"a\": 0.00000, \"b\": 2.50000, "
+                "\"c\": -5.78125}, {\"a\": 2.00000, \"b\": -16.00000, \"c\": "
+                "37.00000}]}");
     });
   }
 
@@ -139,10 +141,11 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       std::stringstream ss;
       ss << *connector;
       EXPECT_EQ(ss.str(),
-                "{switching times: [3, 3.21429, 4.71429, 5], parabola "
-                "coefficients: [{a: -4.00000, b:28.00000, c:-46.00000}, {a: "
-                "0.00000, b:2.28571, c:-4.67347}, {a: 3.00000, b:-26.00000, "
-                "c:62.00000}]}");
+                "{\"switching_times\": [3, 3.21429, 4.71429, 5], "
+                "\"parabola_coefficients\": [{\"a\": -4.00000, \"b\": "
+                "28.00000, \"c\": -46.00000}, {\"a\": 0.00000, \"b\": 2.28571, "
+                "\"c\": -4.67347}, {\"a\": 3.00000, \"b\": -26.00000, \"c\": "
+                "62.00000}]}");
     });
   }
 
@@ -162,10 +165,11 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       std::stringstream ss;
       ss << *connector;
       EXPECT_EQ(ss.str(),
-                "{switching times: [3, 3.41107, 4.4519, 5], parabola "
-                "coefficients: [{a: 4.00000, b:-24.00000, c:38.00000}, {a: "
-                "0.00000, b:3.28857, c:-8.54164}, {a: -3.00000, b:30.00000, "
-                "c:-68.00000}]}");
+                "{\"switching_times\": [3, 3.41107, 4.4519, 5], "
+                "\"parabola_coefficients\": [{\"a\": 4.00000, \"b\": "
+                "-24.00000, \"c\": 38.00000}, {\"a\": 0.00000, \"b\": 3.28857, "
+                "\"c\": -8.54164}, {\"a\": -3.00000, \"b\": 30.00000, \"c\": "
+                "-68.00000}]}");
     });
   }
 
@@ -185,10 +189,11 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       std::stringstream ss;
       ss << *connector;
       EXPECT_EQ(ss.str(),
-                "{switching times: [0, 0.128875, 4.82817, 5], parabola "
-                "coefficients: [{a: 4.00000, b:0.00000, c:0.00000}, {a: "
-                "0.00000, b:1.03100, c:-0.06644}, {a: -3.00000, b:30.00000, "
-                "c:-70.00000}]}");
+                "{\"switching_times\": [0, 0.128875, 4.82817, 5], "
+                "\"parabola_coefficients\": [{\"a\": 4.00000, \"b\": 0.00000, "
+                "\"c\": 0.00000}, {\"a\": 0.00000, \"b\": 1.03100, \"c\": "
+                "-0.06644}, {\"a\": -3.00000, \"b\": 30.00000, \"c\": "
+                "-70.00000}]}");
     });
   }
 }
@@ -212,9 +217,11 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
       std::stringstream ss;
       ss << *connector;
       EXPECT_EQ(ss.str(),
-                "{switching times: [3, 4, 4, 5], parabola coefficients: [{a: "
-                "1.00000, b:-6.00000, c:11.00000}, {a: 0.00000, b:2.00000, "
-                "c:-5.00000}, {a: -1.00000, b:10.00000, c:-21.00000}]}");
+                "{\"switching_times\": [3, 4, 4, 5], "
+                "\"parabola_coefficients\": [{\"a\": 1.00000, \"b\": -6.00000, "
+                "\"c\": 11.00000}, {\"a\": 0.00000, \"b\": 2.00000, "
+                "\"c\": -5.00000}, {\"a\": -1.00000, \"b\": 10.00000, \"c\": "
+                "-21.00000}]}");
     });
   }
 
@@ -250,9 +257,11 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
       std::stringstream ss;
       ss << *connector;
       EXPECT_EQ(ss.str(),
-                "{switching times: [0, 1, 1, 2], parabola coefficients: [{a: "
-                "1.00000, b:0.00000, c:0.00000}, {a: 0.00000, b:2.00000, "
-                "c:-1.00000}, {a: -1.00000, b:4.00000, c:-2.00000}]}");
+                "{\"switching_times\": [0, 1, 1, 2], "
+                "\"parabola_coefficients\": [{\"a\": 1.00000, \"b\": 0.00000, "
+                "\"c\": 0.00000}, {\"a\": 0.00000, \"b\": 2.00000, "
+                "\"c\": -1.00000}, {\"a\": -1.00000, \"b\": 4.00000, \"c\": "
+                "-2.00000}]}");
     });
   }
 }
@@ -323,10 +332,10 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
     std::stringstream ss;
     ss << *connector;
     EXPECT_EQ(ss.str(),
-              std::string("{switching times: [1, 1, 1, 4], parabola "
-                          "coefficients: [{a: 4.00000, b:-8.00000, c:7.00000}, "
-                          "{a: 0.00000, b:0.00000, c:3.00000}, {a: 4.00000, "
-                          "b:-8.00000, c:7.00000}]}"));
+              "{\"switching_times\": [1, 1, 1, 4], \"parabola_coefficients\": "
+              "[{\"a\": 4.00000, \"b\": -8.00000, \"c\": 7.00000}, {\"a\": "
+              "0.00000, \"b\": 0.00000, \"c\": 3.00000}, {\"a\": 4.00000, "
+              "\"b\": -8.00000, \"c\": 7.00000}]}");
   }
 
   {
@@ -342,10 +351,11 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
     std::stringstream ss;
     ss << *connector;
     EXPECT_EQ(ss.str(),
-              std::string("{switching times: [0, -0, 9.29289, 10], parabola "
-                          "coefficients: [{a: 4.00000, b:0.00000, c:0.00000}, "
-                          "{a: 0.00000, b:0.00000, c:0.00000}, {a: 4.00000, "
-                          "b:-74.34315, c:345.43146}]}"));
+              "{\"switching_times\": [0, -0, 9.29289, 10], "
+              "\"parabola_coefficients\": [{\"a\": 4.00000, \"b\": 0.00000, "
+              "\"c\": 0.00000}, {\"a\": 0.00000, \"b\": 0.00000, \"c\": "
+              "0.00000}, {\"a\": 4.00000, \"b\": -74.34315, \"c\": "
+              "345.43146}]}");
   }
 }
 
@@ -362,9 +372,10 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     std::stringstream ss;
     ss << *connector;
     const auto expected_str = std::string(
-        "{switching times: [0, 0, 5, 5], parabola coefficients: [{a: 0.00000, "
-        "b:1.00000, c:0.00000}, {a: 0.00000, b:1.00000, c:0.00000}, {a: "
-        "4.00000, b:-39.00000, c:100.00000}]}");
+        "{\"switching_times\": [0, 0, 5, 5], \"parabola_coefficients\": "
+        "[{\"a\": 0.00000, \"b\": 1.00000, \"c\": 0.00000}, {\"a\": 0.00000, "
+        "\"b\": 1.00000, \"c\": 0.00000}, {\"a\": 4.00000, \"b\": -39.00000, "
+        "\"c\": 100.00000}]}");
     EXPECT_EQ(ss.str(), expected_str);
   }
 
@@ -380,9 +391,10 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     std::stringstream ss;
     ss << *connector;
     const auto expected_str = std::string(
-        "{switching times: [3, 3, 7.47214, 8], parabola coefficients: [{a: "
-        "0.00000, b:0.77709, c:1.66874}, {a: 0.00000, b:0.77709, c:1.66874}, "
-        "{a: 4.00000, b:-59.00000, c:225.00000}]}");
+        "{\"switching_times\": [3, 3, 7.47214, 8], \"parabola_coefficients\": "
+        "[{\"a\": 0.00000, \"b\": 0.77709, \"c\": 1.66874}, {\"a\": 0.00000, "
+        "\"b\": 0.77709, \"c\": 1.66874}, {\"a\": 4.00000, \"b\": -59.00000, "
+        "\"c\": 225.00000}]}");
     EXPECT_EQ(ss.str(), expected_str);
   }
 
@@ -398,9 +410,10 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     std::stringstream ss;
     ss << *connector;
     const auto expected_str = std::string(
-        "{switching times: [3, 3, 7.8734, 8], parabola coefficients: [{a: "
-        "0.00000, b:1.01282, c:0.96153}, {a: 0.00000, b:1.01282, c:0.96153}, "
-        "{a: -4.00000, b:64.00000, c:-247.00000}]}");
+        "{\"switching_times\": [3, 3, 7.8734, 8], \"parabola_coefficients\": "
+        "[{\"a\": 0.00000, \"b\": 1.01282, \"c\": 0.96153}, {\"a\": 0.00000, "
+        "\"b\": 1.01282, \"c\": 0.96153}, {\"a\": -4.00000, \"b\": 64.00000, "
+        "\"c\": -247.00000}]}");
     EXPECT_EQ(ss.str(), expected_str);
   }
 }

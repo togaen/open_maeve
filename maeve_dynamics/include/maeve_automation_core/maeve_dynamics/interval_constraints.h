@@ -43,6 +43,8 @@ class IntervalConstraints {
   /**
    * @brief Stream overload for interval constraints.
    *
+   * @note The serialization is JSON compatible.
+   *
    * @param os The output stream.
    * @param constraints The constraint object.
    *
@@ -50,13 +52,13 @@ class IntervalConstraints {
    */
   friend std::ostream& operator<<(std::ostream& os,
                                   const IntervalConstraints& constraints) {
-    os << "{time: " << constraints.t_bounds_ << ", arc length: {";
+    os << "{\"time\": " << constraints.t_bounds_ << ", \"arc_length\": {";
     for (auto i = 0; i < Order; ++i) {
-      os << "(order: " << i << ", bounds: " << constraints.s_bounds_[i]
-         << "), ";
+      os << "{\"order\": " << i << ", \"bounds\": " << constraints.s_bounds_[i]
+         << "}, ";
     }
-    return os << "(order: " << Order
-              << ", bounds: " << constraints.s_bounds_[Order] << ")}";
+    return os << "{\"order\": " << Order
+              << ", \"bounds\": " << constraints.s_bounds_[Order] << "}}";
   }
 
   /**

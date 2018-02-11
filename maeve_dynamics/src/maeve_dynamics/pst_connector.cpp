@@ -40,9 +40,9 @@ std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
   const auto& t = connector.switching_times_;
   const auto& p = connector.functions_;
 
-  os << "{switching times: [" << t[0] << ", " << t[1] << ", " << t[2] << ", "
-     << t[3] << "], ";
-  os << "parabola coefficients: [" << p[0] << ", " << p[1] << ", " << p[2]
+  os << "{\"switching_times\": [" << t[0] << ", " << t[1] << ", " << t[2]
+     << ", " << t[3] << "], ";
+  os << "\"parabola_coefficients\": [" << p[0] << ", " << p[1] << ", " << p[2]
      << "]}";
   return os;
 }

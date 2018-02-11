@@ -260,8 +260,8 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& polynomial) {
   os.setf(std::ios::fixed, std::ios::floatfield);
   os.precision(PRECISION);
 
-  return os << "{a: " << Polynomial::a(polynomial)
-            << ", b:" << Polynomial::b(polynomial)
-            << ", c:" << Polynomial::c(polynomial) << "}";
+  return os << "{\"a\": " << Polynomial::a(polynomial)
+            << ", \"b\": " << Polynomial::b(polynomial)
+            << ", \"c\": " << Polynomial::c(polynomial) << "}";
 }
 }  // namespace maeve_automation_core

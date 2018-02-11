@@ -48,6 +48,8 @@ class PST_Connector {
   /**
    * @brief Stream overload for PST Connectors.
    *
+   * @note The serialization is JSON compatible.
+   *
    * @param os The output stream.
    * @param constraints The PST connector object.
    *

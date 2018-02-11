@@ -322,14 +322,14 @@ std::ostream& operator<<(std::ostream& os, const Interval& interval) {
 
   // Do stream output.
   if (!Interval::valid(interval)) {
-    return os << "[(invalid)]";
+    return os << "null";
   }
 
   if (Interval::empty(interval)) {
-    return os << "[(empty)]";
+    return os << "{}";
   }
 
-  return os << "[" << Interval::min(interval) << ", " << Interval::max(interval)
-            << "]";
+  return os << "{\"min\": " << Interval::min(interval)
+            << ", \"max\": " << Interval::max(interval) << "}";
 }
 }  // namespace maeve_automation_core

@@ -46,7 +46,8 @@ class Polynomial {
    *
    * This overload prints the coefficients of the polynomial as an ordered set.
    *
-   * @note Output precision is fixed inside the function definition.
+   * @note Output precision is fixed inside the function definition, and the
+   * serialization is JSON compatible.
    *
    * @param os The output stream.
    * @param polynomial The polynomial functor.

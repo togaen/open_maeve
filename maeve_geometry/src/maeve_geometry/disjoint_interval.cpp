@@ -189,7 +189,7 @@ std::set<Interval>::size_type DisjointInterval::size(
 std::ostream& operator<<(std::ostream& os,
                          const DisjointInterval& disjoint_interval) {
   if (disjoint_interval.set_.empty()) {
-    return os << "{(empty)}";
+    return os << "{}";
   }
   os << "{";
   const auto it_sentry = --(std::end(disjoint_interval.set_));
