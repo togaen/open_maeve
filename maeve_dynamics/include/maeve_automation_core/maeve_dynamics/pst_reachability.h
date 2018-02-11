@@ -81,14 +81,45 @@ class PST_Reachability {
       const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
       const double target_speed, const IntervalConstraints<2>& constraints);
 
+  /**
+   * @brief Compute the reachability from 'p1' to 'p2' under the given
+   * constraints.
+   *
+   * @param I_i The interval of speeds available at p1.
+   * @param p1  The initial path-time point.
+   * @param p2  The terminal path-time point.
+   * @param constraints The set of dynamic constraints.
+   *
+   * @return The reachability objects, or a disengaged optional.
+   */
+  static boost::optional<PST_Reachability> compute(
+      const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+      const IntervalConstraints<2>& constraints);
+
  private:
   /**
    * @brief Constructor: explicit initialization.
    *
    * @param min_terminal The connecting trajectory with min terminal speed.
    * @param max_terminal The connecting trajectory with max terminal speed.
+   * @param constraints  The dynamic constraints reachability should satisfy.
    */
-  PST_Reachability(PST_Connector min_terminal, PST_Connector max_terminal);
+  PST_Reachability(PST_Connector min_terminal, PST_Connector max_terminal,
+                   const IntervalConstraints<2>& constraints);
+
+  /**
+   * @brief Check whether the speeds of the interior along the connector satisfy
+   * constraints.
+   *
+   *
+   * @param connector The connector being checked.
+   * @param constraints The constraints to check againts.
+   *
+   * @return True if the speeds bounds are nowhere violated on the interior of
+   * the connector; otherwise false.
+   */
+  static bool validInteriorSpeeds(const PST_Connector& connector,
+                                  const IntervalConstraints<2>& constraints);
 
   /**
    * @brief Given an LP connector, verify that it satisfies constraints, or

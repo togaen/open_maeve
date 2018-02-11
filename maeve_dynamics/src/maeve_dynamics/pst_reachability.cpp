@@ -23,6 +23,8 @@
 
 #include <limits>
 
+#include "maeve_automation_core/maeve_geometry/comparisons.h"
+
 namespace maeve_automation_core {
 namespace {
 const auto Inf = std::numeric_limits<double>::infinity();
@@ -30,9 +32,28 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }
 
 PST_Reachability::PST_Reachability(PST_Connector min_terminal,
-                                   PST_Connector max_terminal)
+                                   PST_Connector max_terminal,
+                                   const IntervalConstraints<2>& constraints)
     : min_terminal_(std::move(min_terminal)),
-      max_terminal_(std::move(max_terminal)) {}
+      max_terminal_(std::move(max_terminal)) {
+  const auto I_reachable = PST_Reachability::reachableInterval(*this);
+  if (!Interval::valid(I_reachable)) {
+    throw std::domain_error(
+        "Attempted to construct reachability object with invalid information.");
+  }
+
+  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
+  if (!PST_Connector::boundedInteriorSpeeds(min_terminal, I_dt)) {
+    throw std::runtime_error(
+        "Attempted to construct reachability object with infeasible "
+        "connector.");
+  }
+  if (!PST_Connector::boundedInteriorSpeeds(max_terminal, I_dt)) {
+    throw std::runtime_error(
+        "Attempted to construct reachability object with infeasible "
+        "connector.");
+  }
+}
 
 Interval PST_Reachability::reachableInterval(
     const PST_Reachability& reachability) {
@@ -52,6 +73,14 @@ const PST_Connector& PST_Reachability::minConnector(
 const PST_Connector& PST_Reachability::maxConnector(
     const PST_Reachability& reachability) {
   return reachability.max_terminal_;
+}
+
+bool PST_Reachability::validInteriorSpeeds(
+    const PST_Connector& connector, const IntervalConstraints<2>& constraints) {
+  // Intervals for dynamic bounds.
+  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
+
+  return PST_Connector::boundedInteriorSpeeds(connector, I_dt);
 }
 
 boost::optional<PST_Connector> PST_Reachability::LPorPLP(
@@ -97,6 +126,44 @@ boost::optional<PST_Connector> PST_Reachability::LPorPLP(
 
   // Done.
   return boost::none;
+}
+
+boost::optional<PST_Reachability> PST_Reachability::compute(
+    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+    const IntervalConstraints<2>& constraints) {
+  // Intervals for dynamic bounds.
+  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
+
+  // Extremal speeds.
+  const auto dt_max = Interval::max(I_dt);
+  const auto dt_min = Interval::min(I_dt);
+
+  // Compute connectors.
+  auto min_connector =
+      PST_Reachability::targetTerminalSpeed(I_i, p1, p2, dt_min, constraints);
+  auto max_connector =
+      PST_Reachability::targetTerminalSpeed(I_i, p1, p2, dt_max, constraints);
+
+  // Not reachable.
+  if (!min_connector && !max_connector) {
+    return boost::none;
+  }
+
+  // One reachable.
+  if (exclusiveOr(min_connector, max_connector)) {
+    if (min_connector) {
+      auto copy = *min_connector;
+      return PST_Reachability(std::move(copy), std::move(*min_connector),
+                              constraints);
+    }
+    auto copy = *max_connector;
+    return PST_Reachability(std::move(copy), std::move(*max_connector),
+                            constraints);
+  }
+
+  // Both reachable.
+  return PST_Reachability(std::move(*min_connector), std::move(*max_connector),
+                          constraints);
 }
 
 boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
