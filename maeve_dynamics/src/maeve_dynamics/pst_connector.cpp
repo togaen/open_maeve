@@ -334,16 +334,19 @@ boost::optional<PST_Connector> PST_Connector::computeLP(
   const auto L2 = Polynomial(p1, r2);
 
   // Attempt to build connector and return.
-  try {
-    return PST_Connector({p1.x(), p1.x(), r1.x(), p2.x()}, {L1, L1, P});
-  } catch (...) {
-    try {
-      return PST_Connector({p1.x(), p1.x(), r2.x(), p2.x()}, {L2, L2, P});
-    } catch (...) {
-      // No feasible connection exists.
-      return boost::none;
-    }
+  const auto C1 = PST_Connector::noExceptionConstructor(
+      {p1.x(), p1.x(), r1.x(), p2.x()}, {L1, L1, P});
+  const auto C2 = PST_Connector::noExceptionConstructor(
+      {p1.x(), p1.x(), r2.x(), p2.x()}, {L2, L2, P});
+
+  if (C1) {
+    return *C1;
   }
+  if (C2) {
+    return *C2;
+  }
+
+  return boost::none;
 }
 
 std::tuple<Eigen::Vector2d, Eigen::Vector2d> PST_Connector::boundaryPoints(
