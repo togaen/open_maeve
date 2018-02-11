@@ -64,13 +64,12 @@ Interval Interval::nonNegativeReals() { return Interval(0.0, Max); }
 
 Interval Interval::nonPositiveReals() { return Interval(Min, 0.0); }
 
-Interval::Interval()
-    : bounds_(std::move(std::make_tuple(NaN, NaN))), empty_(true) {}
+Interval::Interval() : bounds_(std::make_tuple(NaN, NaN)), empty_(true) {}
 
 Interval::Interval(const double minimum, const double maximum)
-    : bounds_(std::move(std::make_tuple(minimum, maximum))), empty_(false) {
+    : bounds_(std::make_tuple(minimum, maximum)), empty_(false) {
   if (!Interval::valid(*this)) {
-    bounds_ = std::move(std::make_tuple(NaN, NaN));
+    bounds_ = std::make_tuple(NaN, NaN);
   }
 }
 

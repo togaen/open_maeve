@@ -33,7 +33,7 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
     auto s_dot_bounds = Interval(0.0, 5.0);
     auto s_ddot_bounds = Interval(-1.0, 2.0);
     const auto constraints = IntervalConstraints<2>(
-        std::move(t_bounds), {s_bounds, s_dot_bounds, s_ddot_bounds});
+        t_bounds, {s_bounds, s_dot_bounds, s_ddot_bounds});
 
     const auto speed = Interval::min(s_dot_bounds);
     ASSERT_NO_THROW({
@@ -69,8 +69,8 @@ compute(
   auto s_bounds = Interval(0.0, 10.0);
   auto s_dot_bounds = Interval(0.0, 5.0);
   auto s_ddot_bounds = Interval(-1.0, 2.0);
-  const auto constraints = IntervalConstraints<2>(
-      std::move(t_bounds), {s_bounds, s_dot_bounds, s_ddot_bounds});
+  const auto constraints =
+      IntervalConstraints<2>(t_bounds, {s_bounds, s_dot_bounds, s_ddot_bounds});
 
   const auto start_speed = Interval::min(s_dot_bounds);
   const auto speed_inc = 0.01;

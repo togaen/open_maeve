@@ -490,10 +490,9 @@ bool PST_Connector::valid(const PST_Connector& connector) {
           segments_valid && valid_speeds && time_domain_valid);
 }
 
-PST_Connector::PST_Connector(std::array<double, 4> switching_times,
-                             std::array<Polynomial, 3> functions)
-    : switching_times_(std::move(switching_times)),
-      functions_(std::move(functions)) {
+PST_Connector::PST_Connector(const std::array<double, 4>& switching_times,
+                             const std::array<Polynomial, 3>& functions)
+    : switching_times_(switching_times), functions_(functions) {
   const auto is_valid = PST_Connector::valid(*this);
   if (!is_valid) {
     std::stringstream ss;
@@ -504,10 +503,10 @@ PST_Connector::PST_Connector(std::array<double, 4> switching_times,
 }
 
 boost::optional<PST_Connector> PST_Connector::noExceptionConstructor(
-    std::array<double, 4> switching_times,
-    std::array<Polynomial, 3> functions) noexcept {
+    const std::array<double, 4>& switching_times,
+    const std::array<Polynomial, 3>& functions) noexcept {
   try {
-    return PST_Connector(std::move(switching_times), std::move(functions));
+    return PST_Connector(switching_times, functions);
   } catch (...) {
     return boost::none;
   }

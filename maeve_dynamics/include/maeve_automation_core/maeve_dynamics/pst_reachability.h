@@ -104,7 +104,8 @@ class PST_Reachability {
    * @param max_terminal The connecting trajectory with max terminal speed.
    * @param constraints  The dynamic constraints reachability should satisfy.
    */
-  PST_Reachability(PST_Connector min_terminal, PST_Connector max_terminal,
+  PST_Reachability(const PST_Connector& min_terminal,
+                   const PST_Connector& max_terminal,
                    const IntervalConstraints<2>& constraints);
 
   /**
@@ -119,7 +120,7 @@ class PST_Reachability {
    * object.
    */
   static boost::optional<PST_Reachability> noExceptionConstructor(
-      PST_Connector min_terminal, PST_Connector max_terminal,
+      const PST_Connector& min_terminal, const PST_Connector& max_terminal,
       const IntervalConstraints<2>& constraints) noexcept;
 
   /**

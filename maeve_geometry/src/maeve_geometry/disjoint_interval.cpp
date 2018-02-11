@@ -103,7 +103,7 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
   // If set is empty, no merging is possible, just insert. Done.
   if (disjoint_interval.set_.empty()) {
     return disjoint_interval.set_.insert(std::end(disjoint_interval.set_),
-                                         std::move(interval));
+                                         interval);
   }
 
   // Find first element greater than or equal to 'interval'.
@@ -168,7 +168,7 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
   //
 
   // Done.
-  return disjoint_interval.set_.insert(it_hint, std::move(interval));
+  return disjoint_interval.set_.insert(it_hint, interval);
 }
 
 std::set<Interval>::const_iterator DisjointInterval::begin(

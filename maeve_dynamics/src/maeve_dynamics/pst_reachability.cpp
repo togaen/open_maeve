@@ -31,11 +31,10 @@ const auto Inf = std::numeric_limits<double>::infinity();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }
 
-PST_Reachability::PST_Reachability(PST_Connector min_terminal,
-                                   PST_Connector max_terminal,
+PST_Reachability::PST_Reachability(const PST_Connector& min_terminal,
+                                   const PST_Connector& max_terminal,
                                    const IntervalConstraints<2>& constraints)
-    : min_terminal_(std::move(min_terminal)),
-      max_terminal_(std::move(max_terminal)) {
+    : min_terminal_(min_terminal), max_terminal_(max_terminal) {
   const auto I_reachable = PST_Reachability::reachableInterval(*this);
   if (!Interval::valid(I_reachable)) {
     throw std::domain_error(
@@ -56,11 +55,10 @@ PST_Reachability::PST_Reachability(PST_Connector min_terminal,
 }
 
 boost::optional<PST_Reachability> PST_Reachability::noExceptionConstructor(
-    PST_Connector min_terminal, PST_Connector max_terminal,
+    const PST_Connector& min_terminal, const PST_Connector& max_terminal,
     const IntervalConstraints<2>& constraints) noexcept {
   try {
-    return PST_Reachability(std::move(min_terminal), std::move(max_terminal),
-                            constraints);
+    return PST_Reachability(min_terminal, max_terminal, constraints);
   } catch (...) {
     return boost::none;
   }
@@ -163,18 +161,16 @@ boost::optional<PST_Reachability> PST_Reachability::compute(
   // One reachable.
   if (exclusiveOr(min_connector, max_connector)) {
     if (min_connector) {
-      auto copy = *min_connector;
       return PST_Reachability::noExceptionConstructor(
-          std::move(copy), std::move(*min_connector), constraints);
+          *min_connector, *min_connector, constraints);
     }
-    auto copy = *max_connector;
     return PST_Reachability::noExceptionConstructor(
-        std::move(copy), std::move(*max_connector), constraints);
+        *max_connector, *max_connector, constraints);
   }
 
   // Both reachable.
-  return PST_Reachability::noExceptionConstructor(
-      std::move(*min_connector), std::move(*max_connector), constraints);
+  return PST_Reachability::noExceptionConstructor(*min_connector,
+                                                  *max_connector, constraints);
 }
 
 boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
