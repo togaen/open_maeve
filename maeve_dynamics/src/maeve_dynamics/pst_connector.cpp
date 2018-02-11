@@ -440,6 +440,18 @@ bool PST_Connector::validSegments(const PST_Connector& connector) {
                      });
 }
 
+bool PST_Connector::boundedInteriorAccelerations(const PST_Connector& connector,
+                                                 const Interval& bounds) {
+  const auto seg1_valid_ddx =
+      PST_Connector::boundedSecondDerivatives<Idx::FIRST>(connector, bounds);
+  const auto seg2_valid_ddx =
+      PST_Connector::boundedSecondDerivatives<Idx::SECOND>(connector, bounds);
+  const auto seg3_valid_ddx =
+      PST_Connector::boundedSecondDerivatives<Idx::THIRD>(connector, bounds);
+
+  return (seg1_valid_ddx && seg2_valid_ddx && seg3_valid_ddx);
+}
+
 bool PST_Connector::boundedInteriorSpeeds(const PST_Connector& connector,
                                           const Interval& bounds) {
   const auto seg1_valid_dx =
@@ -450,6 +462,40 @@ bool PST_Connector::boundedInteriorSpeeds(const PST_Connector& connector,
       PST_Connector::boundedFirstDerivatives<Idx::THIRD>(connector, bounds);
 
   return (seg1_valid_dx && seg2_valid_dx && seg3_valid_dx);
+}
+
+bool PST_Connector::boundedInteriorPositions(const PST_Connector& connector,
+                                             const Interval& bounds) {
+  const auto seg1_valid =
+      PST_Connector::boundedZerothDerivatives<Idx::FIRST>(connector, bounds);
+  const auto seg2_valid =
+      PST_Connector::boundedZerothDerivatives<Idx::SECOND>(connector, bounds);
+  const auto seg3_valid =
+      PST_Connector::boundedZerothDerivatives<Idx::THIRD>(connector, bounds);
+
+  return (seg1_valid && seg2_valid && seg3_valid);
+}
+
+bool PST_Connector::boundedInteriorTimes(const PST_Connector& connector,
+                                         const Interval& bounds) {
+  return std::all_of(std::begin(connector.switching_times_),
+                     std::end(connector.switching_times_), [&](const double t) {
+                       return Interval::contains(bounds, t);
+                     });
+}
+
+bool PST_Connector::dynamicallyFeasible(
+    const PST_Connector& connector, const IntervalConstraints<2>& constraints) {
+  const auto& time_bounds = IntervalConstraints<2>::boundsT(constraints);
+  const auto& s_bounds = IntervalConstraints<2>::boundsS<0>(constraints);
+  const auto& s_dot_bounds = IntervalConstraints<2>::boundsS<1>(constraints);
+  const auto& s_ddot_bounds = IntervalConstraints<2>::boundsS<2>(constraints);
+
+  return (
+      PST_Connector::boundedInteriorTimes(connector, time_bounds) &&
+      PST_Connector::boundedInteriorPositions(connector, s_bounds) &&
+      PST_Connector::boundedInteriorSpeeds(connector, s_dot_bounds) &&
+      PST_Connector::boundedInteriorAccelerations(connector, s_ddot_bounds));
 }
 
 bool PST_Connector::valid(const PST_Connector& connector) {
