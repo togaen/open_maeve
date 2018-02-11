@@ -399,38 +399,16 @@ bool PST_Connector::boundedFirstDerivatives(const PST_Connector& connector,
   // Capture the time domain.
   const auto domain = PST_Connector::domain<I>(connector);
 
-  // Trivially, if the domain is length zero, bounds are satisfied.
-  if (Interval::zeroLength(domain)) {
-    return true;
-  }
+  // Compute dx at domain bounds.
+  const auto s_dot1 = Polynomial::dx(function, Interval::min(domain));
+  const auto s_dot2 = Polynomial::dx(function, Interval::max(domain));
 
-  // If function is constant, check whether zero speed satisfies.
-  if (Polynomial::isConstant(function)) {
-    return Interval::contains(bounds, 0.0);
-  }
+  // Construct speed range.
+  const auto speed_range =
+      Interval(std::min(s_dot1, s_dot2), std::max(s_dot1, s_dot2));
 
-  // If quadratic, test accordingly.
-  if (Polynomial::isQuadratic(function)) {
-    // Compute dx at domain bounds.
-    const auto s_dot1 = Polynomial::dx(function, Interval::min(domain));
-    const auto s_dot2 = Polynomial::dx(function, Interval::max(domain));
-
-    // Construct speed range.
-    const auto speed_range =
-        Interval(std::min(s_dot1, s_dot2), std::max(s_dot1, s_dot2));
-
-    // Check speed range.
-    return Interval::isSubsetEq(speed_range, bounds);
-  }
-
-  // If linear, test accordingly.
-  if (Polynomial::isLinear(function)) {
-    return Interval::contains(bounds, Polynomial::dx(function, 0.0));
-  }
-
-  // Control should never reach this point.
-  throw std::domain_error("Unexpected function type.");
-  return false;
+  // Check speed range.
+  return Interval::isSubsetEq(speed_range, bounds);
 }
 
 template <PST_Connector::Idx I>
