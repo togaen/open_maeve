@@ -22,6 +22,7 @@
 #include "maeve_automation_core/maeve_dynamics/pst_reachability.h"
 
 #include <limits>
+#include <sstream>
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 
@@ -41,16 +42,22 @@ PST_Reachability::PST_Reachability(const PST_Connector& min_terminal,
         "Attempted to construct reachability object with invalid information.");
   }
 
-  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
-  if (!PST_Connector::boundedInteriorSpeeds(min_terminal, I_dt)) {
+  if (!PST_Connector::dynamicallyFeasible(min_terminal, constraints)) {
+    std::stringstream ss;
+    ss << min_terminal;
     throw std::runtime_error(
         "Attempted to construct reachability object with infeasible "
-        "connector.");
+        "min_terminal connector: " +
+        ss.str());
   }
-  if (!PST_Connector::boundedInteriorSpeeds(max_terminal, I_dt)) {
+
+  if (!PST_Connector::dynamicallyFeasible(max_terminal, constraints)) {
+    std::stringstream ss;
+    ss << max_terminal;
     throw std::runtime_error(
-        "Attempted to construct reachability object with infeasible "
-        "connector.");
+        "Attempted to construct reachibility object with infeasible "
+        "max_terminal connector: " +
+        ss.str());
   }
 }
 
@@ -179,7 +186,7 @@ boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
   // Intervals for dynamic bounds.
   const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
 
-  // Extremal speeds.
+  // Initial extremal speeds.
   const auto initial_dt_max = Interval::max(I_i);
   const auto initial_dt_min = Interval::min(I_i);
 
