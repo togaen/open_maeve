@@ -202,7 +202,7 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
     const Eigen::Vector2d& p2, const double p2_ddt) {
   // Compute initial P.
-  const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p2_ddt);
+  const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
 
   // Attempt to compute critical point of P1.
   const auto p_critical = Polynomial::uniqueCriticalPoint(P1);
