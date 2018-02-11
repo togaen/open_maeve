@@ -177,12 +177,11 @@ boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
     const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
     const double target_speed, const IntervalConstraints<2>& constraints) {
   // Intervals for dynamic bounds.
-  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
   const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
 
   // Extremal speeds.
-  const auto dt_max = Interval::max(I_dt);
-  const auto dt_min = Interval::min(I_dt);
+  const auto initial_dt_max = Interval::max(I_i);
+  const auto initial_dt_min = Interval::min(I_i);
 
   // Extremal accelerations.
   const auto ddt_max = Interval::max(I_ddt);
@@ -191,12 +190,12 @@ boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
   // Check for LP or PLP connectivity: these will hit target speed exactly,
   // so return if connector found.
   if (const auto LP = PST_Connector::computeLP(p1, p2, target_speed, ddt_min)) {
-    if (const auto PLP = LPorPLP(*LP, I_dt, I_ddt)) {
+    if (const auto PLP = LPorPLP(*LP, I_i, I_ddt)) {
       return *PLP;
     }
   }
   if (const auto LP = PST_Connector::computeLP(p1, p2, target_speed, ddt_max)) {
-    if (const auto PLP = LPorPLP(*LP, I_dt, I_ddt)) {
+    if (const auto PLP = LPorPLP(*LP, I_i, I_ddt)) {
       return *PLP;
     }
   }
@@ -204,11 +203,11 @@ boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
   // Check for PL_0P or PP: these will not hit target speed exactly, so compute
   // all and choose nearest.
   const auto PL_0P =
-      PST_Connector::computePL_0P(p1, dt_min, ddt_min, p2, ddt_max);
+      PST_Connector::computePL_0P(p1, initial_dt_min, ddt_min, p2, ddt_max);
   const auto PP_max =
-      PST_Connector::computePP(p1, dt_min, ddt_min, p2, ddt_max);
+      PST_Connector::computePP(p1, initial_dt_min, ddt_min, p2, ddt_max);
   const auto PP_min =
-      PST_Connector::computePP(p1, dt_max, ddt_max, p2, ddt_min);
+      PST_Connector::computePP(p1, initial_dt_max, ddt_max, p2, ddt_min);
 
   // Choose the connector that gets nearest the target speed.
   const auto PL_0P_delta =
