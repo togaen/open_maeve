@@ -293,7 +293,7 @@ boost::optional<PST_Connector> PST_Connector::computePP(
   const auto C2 = PST_Connector::noExceptionConstructor(
       {p1.x(), p_t2.x(), p_t2.x(), p2.x()}, {P1, L2, P2_2});
 
-  // This should only happen if the roots are unique.
+  // This should only happen if the roots are equal.
   if (C1 && C2) {
     if (p_t1.x() == p_t2.x()) {
       return *C1;
@@ -525,9 +525,7 @@ bool PST_Connector::valid(const PST_Connector& connector) {
             << ", segments_connected: " << segments_connected
             << ", segments_tangent: " << segments_tangent
             << ", segments_valid: " << segments_valid
-            << ", seg1_valid_dx: " << seg1_valid_dx
-            << ", seg2_valid_dx: " << seg2_valid_dx
-            << ", seg3_valid_dx: " << seg3_valid_dx
+            << ", valid_speeds: " << valid_speeds
             << ", time_domain_valid: " << time_domain_valid << std::endl;
 #endif
 
