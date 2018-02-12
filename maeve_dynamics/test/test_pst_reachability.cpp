@@ -75,18 +75,26 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
   }
 
   const Eigen::Vector2d p2(1.0, 0.0);
-  auto p = p1.y();
+  auto p = 1.0 + p1.y();
   const auto path_inc = 0.1;
   while (p < Interval::max(s_bounds)) {
+    auto entered_feasible_region = false;
+    auto exited_feasible_region = false;
     ASSERT_NO_THROW({
       const auto reachability = PST_Reachability::compute(
           Interval(speed, speed), p1, Eigen::Vector2d(p2.x(), p), constraints);
       if (reachability) {
+        ASSERT_FALSE(exited_feasible_region);
+        entered_feasible_region = true;
+#if 0
         std::cout << "{\"p\": " << p << ", \"interval\": "
                   << PST_Reachability::reachableInterval(*reachability) << "},"
                   << std::endl;
+#endif
       } else {
-        std::cout << "Not reachable for initial path: " << p << std::endl;
+        if (entered_feasible_region) {
+          exited_feasible_region = true;
+        }
       }
     });
 
