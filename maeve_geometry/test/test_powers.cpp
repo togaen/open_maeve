@@ -19,16 +19,19 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#pragma once
+#include <gtest/gtest.h>
 
-#include <Eigen/StdVector>
-
-#include "maeve_automation_core/maeve_geometry/aabb.h"
-#include "maeve_automation_core/maeve_geometry/comparisons.h"
-#include "maeve_automation_core/maeve_geometry/disjoint_interval.h"
-#include "maeve_automation_core/maeve_geometry/interval.h"
+#include "maeve_automation_core/maeve_geometry/powers.h"
 
 namespace maeve_automation_core {
-typedef std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d>>
-    AlignedVector;
-}  // maeve_automation_core
+
+TEST(Maeve_Geometry_Comparisons, testPowers) {
+  const auto x = 3.5;
+  EXPECT_EQ(square(x), x * x);
+  EXPECT_EQ(cube(x), x * x * x);
+  EXPECT_EQ(fourth(x), x * x * x * x);
+  EXPECT_EQ(fifth(x), x * x * x * x * x);
+  EXPECT_EQ(sixth(x), x * x * x * x * x * x);
+}
+
+}  // namespace maeve_automation_core

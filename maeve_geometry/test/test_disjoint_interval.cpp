@@ -33,6 +33,43 @@ DisjointInterval makeTestDI() {
 }
 }  // namespace
 
+TEST(Maeve_Geometry_Disjoint_Interval, testIntersection) {
+  {
+    const auto di1 = makeTestDI();
+    const auto di2 = DisjointInterval(
+        {Interval(0.5, 0.75), Interval(2.5, 2.8), Interval(6.3, 6.6)});
+    const auto di = DisjointInterval::intersect(di1, di2);
+    EXPECT_EQ(di, di2);
+  }
+
+  {
+    const auto di1 = makeTestDI();
+    const auto di2 = DisjointInterval();
+    const auto di = DisjointInterval::intersect(di1, di2);
+    EXPECT_EQ(di, di2);
+  }
+
+  {
+    const auto di1 = makeTestDI();
+    const auto di2 = DisjointInterval({Interval(-88, -78), Interval(45, 46)});
+    const auto di = DisjointInterval::intersect(di1, DisjointInterval());
+  }
+
+  {
+    const auto di1 = makeTestDI();
+    const auto di2 = DisjointInterval({Interval(0.0, 10.0)});
+    const auto di = DisjointInterval::intersect(di1, di2);
+    EXPECT_EQ(di, di1);
+  }
+
+  {
+    const auto di1 = makeTestDI();
+    const auto di2 = DisjointInterval({Interval(0.5, 2.5)});
+    const auto di = DisjointInterval::intersect(di1, di2);
+    EXPECT_EQ(di, DisjointInterval({Interval(0.5, 1.0), Interval(2.0, 2.5)}));
+  }
+}
+
 TEST(Maeve_Geometry_Disjoint_Interval, testContains) {
   const auto di = makeTestDI();
   EXPECT_TRUE(DisjointInterval::contains(di, 0.5));

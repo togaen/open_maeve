@@ -31,6 +31,59 @@ DisjointInterval::DisjointInterval(const std::vector<Interval>& intervals) {
                 });
 }
 
+DisjointInterval DisjointInterval::intersect(
+    const DisjointInterval& disjoint_interval1,
+    const DisjointInterval& disjoint_interval2) {
+  // Capture iterators.
+  auto it1 = DisjointInterval::begin(disjoint_interval1);
+  auto it1_end = DisjointInterval::end(disjoint_interval1);
+  auto it2 = DisjointInterval::begin(disjoint_interval2);
+  auto it2_end = DisjointInterval::end(disjoint_interval2);
+
+  // Build return set.
+  auto disjoint_interval = DisjointInterval();
+
+  // Walk sets, compute intersection.
+  while ((it1 != it1_end) && (it2 != it2_end)) {
+    // Capture references.
+    const auto& i1 = *it1;
+    const auto& i2 = *it2;
+
+    // Capture bounds.
+    double min1, max1, min2, max2;
+    std::tie(min1, max1) = Interval::bounds(i1);
+    std::tie(min2, max2) = Interval::bounds(i2);
+
+    // Compute intersection.
+    const auto i = Interval::intersect(i1, i2);
+
+    // No intersection: Discard the interval that has no more intersections.
+    if (Interval::empty(i)) {
+      const auto discard1 = (max1 <= min2);
+      if (discard1) {
+        ++it1;
+      } else {
+        ++it2;
+      }
+
+      // Walk forward.
+      continue;
+    }
+
+    // Intersection: Add and discard the consumed interval.
+    DisjointInterval::insert(disjoint_interval, i);
+    const auto discard1 = (max1 <= max2);
+    if (discard1) {
+      ++it1;
+    } else {
+      ++it2;
+    }
+  }
+
+  // Done.
+  return disjoint_interval;
+}
+
 bool DisjointInterval::contains(const DisjointInterval& disjoint_interval,
                                 const double value) {
   return std::any_of(std::begin(disjoint_interval.set_),
@@ -50,7 +103,7 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
   // If set is empty, no merging is possible, just insert. Done.
   if (disjoint_interval.set_.empty()) {
     return disjoint_interval.set_.insert(std::end(disjoint_interval.set_),
-                                         std::move(interval));
+                                         interval);
   }
 
   // Find first element greater than or equal to 'interval'.
@@ -115,7 +168,7 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
   //
 
   // Done.
-  return disjoint_interval.set_.insert(it_hint, std::move(interval));
+  return disjoint_interval.set_.insert(it_hint, interval);
 }
 
 std::set<Interval>::const_iterator DisjointInterval::begin(
@@ -136,7 +189,7 @@ std::set<Interval>::size_type DisjointInterval::size(
 std::ostream& operator<<(std::ostream& os,
                          const DisjointInterval& disjoint_interval) {
   if (disjoint_interval.set_.empty()) {
-    return os << "{(empty)}";
+    return os << "{}";
   }
   os << "{";
   const auto it_sentry = --(std::end(disjoint_interval.set_));

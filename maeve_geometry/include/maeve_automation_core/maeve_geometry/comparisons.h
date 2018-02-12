@@ -25,6 +25,21 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief Convenience method for performing logical exclusive or ops.
+ *
+ * @tparam T The input type; this must be convertible to bool.
+ *
+ * @param a The first value.
+ * @param b The second value.
+ *
+ * @return True if exactly one of 'a' and 'b' is true; otherwise false.
+ */
+template <typename T>
+inline bool exclusiveOr(const T& a, const T& b) {
+  return (!static_cast<bool>(a) != !static_cast<bool>(b));
+}
+
+/**
  * @brief Check for approximate equality in absolute terms.
  *
  * @tparam T The type of value to check.
@@ -42,6 +57,21 @@ inline bool approxEq(const T& a, const T& b, const T& eps) {
 }
 
 /**
+ * @brief If 'val' is within 'espilon' of zero, return zero. Otherwise return
+ * 'val'.
+ *
+ * @tparam T The type of the arguments.
+ * @param val The value being clamped.
+ * @param epsilon The range about zero to perform a clamp.
+ *
+ * @return Zero if val is within epsilon of zero; otherwise val.
+ */
+template <typename T>
+inline T clampToZero(const T& val, const T& eps) {
+  return ((std::abs(val) < eps) ? 0.0 : val);
+}
+
+/**
  * @brief Check for approximate inequality in absolute terms.
  *
  * @tparam T The type of value to check.
@@ -56,6 +86,21 @@ inline bool approxEq(const T& a, const T& b, const T& eps) {
 template <typename T>
 inline bool approxNe(const T& a, const T& b, const T& eps) {
   return std::abs(a - b) >= eps;
+}
+
+/**
+ * @brief Check whether a value is within epsilon of zero.
+ *
+ * @tparam T The type of the value to check.
+ *
+ * @param a The value to check.
+ * @param eps The absolute range within with to assume equality.
+ *
+ * @return True if 'a' is within 'eps' of zero; otherwise false.
+ */
+template <typename T>
+inline bool approxZero(const T& a, const T& eps) {
+  return approxEq(a, T(0), eps);
 }
 
 /**

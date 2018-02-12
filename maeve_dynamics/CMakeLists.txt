@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(maeve_geometry)
+project(maeve_dynamics)
 
 ## Set build type
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
@@ -16,11 +16,12 @@ add_definitions(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  maeve_geometry
   roscpp
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 
 
@@ -112,7 +113,7 @@ find_package(Eigen3 REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp
+  CATKIN_DEPENDS maeve_geometry roscpp
   DEPENDS EIGEN3
 )
 
@@ -124,17 +125,15 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
  include
-  ${catkin_INCLUDE_DIRS}
-# TODO: Check names of system library include directories (Eigen3)
-  ${EIGEN3_INCLUDE_DIRS}
-)
+ ${catkin_INCLUDE_DIRS}
+ ${Boost_INCLUDE_DIRS}
+ )
 
 ## Declare a C++ library
-add_library(${PROJECT_NAME}
-  src/${PROJECT_NAME}/interval.cpp
-  src/${PROJECT_NAME}/disjoint_interval.cpp
-  src/${PROJECT_NAME}/polynomial.cpp
-)
+ add_library(${PROJECT_NAME}
+   src/${PROJECT_NAME}/pst_reachability.cpp
+   src/${PROJECT_NAME}/pst_connector.cpp
+ )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -144,7 +143,7 @@ add_library(${PROJECT_NAME}
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/maeve_geometry_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/maeve_dynamics_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -157,9 +156,9 @@ add_library(${PROJECT_NAME}
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-)
+ target_link_libraries(${PROJECT_NAME}
+   ${catkin_LIBRARIES}
+ )
 
 #############
 ## Install ##
@@ -203,15 +202,12 @@ target_link_libraries(${PROJECT_NAME}
 ## Add gtest based cpp test target and link libraries
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_main.cpp
-  test/test_comparisons.cpp
-  test/test_interval.cpp
-  test/test_aabb.cpp
-  test/test_disjoint_interval.cpp
-  test/test_polynomial.cpp
-  test/test_powers.cpp
+  test/test_interval_constraints.cpp
+  test/test_pst_connector.cpp
+  test/test_pst_reachability.cpp
   )
 if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME} ${catkin_LIBRARIES})
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 endif()
 
 ## Add folders to be run by python nosetests
