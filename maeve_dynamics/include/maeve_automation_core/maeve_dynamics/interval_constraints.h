@@ -101,10 +101,12 @@ class IntervalConstraints {
   /**
    * @brief Constructor: Build and initialize constraint object explicitly.
    *
+   * @param epsilon_bounds Padding values for approximate floating point
+   * comparisons.
    * @param t_bounds Feasible time interval.
    * @param s_bounds Array of feasible s intervals indexed by order.
    */
-  IntervalConstraints(const Interval& t_bounds,
+  IntervalConstraints(const Interval& epsilon_bounds, const Interval& t_bounds,
                       const std::array<Interval, Order + 1>& s_bounds);
 
   /**
@@ -146,6 +148,15 @@ class IntervalConstraints {
                                        const IntervalConstraints& constraints2);
 
   /**
+   * @brief Get a reference to the epsilon bounds of this constraint set.
+   *
+   * @param constraints The constraint set.
+   *
+   * @return A reference to the epsilon padding values.
+   */
+  static const Interval& epsilon(const IntervalConstraints& constraints);
+
+  /**
    * @brief Get a reference to the temporal bounds of this constraint set.
    *
    * @param constraints The constraint set.
@@ -172,6 +183,9 @@ class IntervalConstraints {
    */
   IntervalConstraints() = default;
 
+  /** @brief Zero-centered padding range for floating point error. */
+  Interval epsilon_bounds_;
+
   /** @brief Interval of feasible time values. */
   Interval t_bounds_;
 
@@ -186,8 +200,11 @@ class IntervalConstraints {
 
 template <unsigned int Order>
 IntervalConstraints<Order>::IntervalConstraints(
-    const Interval& t_bounds, const std::array<Interval, Order + 1>& s_bounds)
-    : t_bounds_(t_bounds), s_bounds_(s_bounds) {}
+    const Interval& epsilon_bounds, const Interval& t_bounds,
+    const std::array<Interval, Order + 1>& s_bounds)
+    : epsilon_bounds_(epsilon_bounds),
+      t_bounds_(t_bounds),
+      s_bounds_(s_bounds) {}
 
 template <unsigned int Order>
 bool IntervalConstraints<Order>::valid(const IntervalConstraints& constraints) {
@@ -221,6 +238,12 @@ IntervalConstraints<Order> IntervalConstraints<Order>::intersect(
                                          constraints2.s_bounds_[i]);
   }
   return c;
+}
+
+template <unsigned int Order>
+const Interval& IntervalConstraints<Order>::epsilon(
+    const IntervalConstraints& constraints) {
+  return constraints.epsilon_bounds_;
 }
 
 template <unsigned int Order>

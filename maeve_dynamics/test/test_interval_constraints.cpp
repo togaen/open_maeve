@@ -24,9 +24,13 @@
 #include "maeve_automation_core/maeve_dynamics/interval_constraints.h"
 
 namespace maeve_automation_core {
+namespace {
+const auto eps_bounds = Interval(0.0, 0.0);
+}  // namespace
+
 TEST(Maeve_Dynamics_Interval_Constraints, testAccessors) {
   {
-    const auto c = IntervalConstraints<2>(Interval(0, 1),
+    const auto c = IntervalConstraints<2>(eps_bounds, Interval(0, 1),
                                           {Interval(2, 3), Interval(4, 5)});
 
     const auto& t = IntervalConstraints<2>::boundsT(c);
@@ -40,7 +44,7 @@ TEST(Maeve_Dynamics_Interval_Constraints, testAccessors) {
   }
 
   {
-    const auto c = IntervalConstraints<2>(Interval(0, 1),
+    const auto c = IntervalConstraints<2>(eps_bounds, Interval(0, 1),
                                           {Interval(2, 3), Interval(4, 5)});
 
     // This should not compile.
@@ -51,7 +55,7 @@ TEST(Maeve_Dynamics_Interval_Constraints, testAccessors) {
 
 TEST(Maeve_Dynamics_Interval_Constraints, testIntersect) {
   {
-    const auto c1 = IntervalConstraints<1>(Interval(0, 1),
+    const auto c1 = IntervalConstraints<1>(eps_bounds, Interval(0, 1),
                                            {Interval(0, 1), Interval(2, 3)});
     const auto c2 = c1;
     const auto c = IntervalConstraints<1>::intersect(c1, c2);
@@ -59,65 +63,72 @@ TEST(Maeve_Dynamics_Interval_Constraints, testIntersect) {
   }
 
   {
-    const auto c1 = IntervalConstraints<1>(Interval(0, 1),
+    const auto c1 = IntervalConstraints<1>(eps_bounds, Interval(0, 1),
                                            {Interval(0, 1), Interval(2, 3)});
-    const auto c2 =
-        IntervalConstraints<1>(Interval(), {Interval(0, 1), Interval(2, 3)});
+    const auto c2 = IntervalConstraints<1>(eps_bounds, Interval(),
+                                           {Interval(0, 1), Interval(2, 3)});
     const auto c = IntervalConstraints<1>::intersect(c1, c2);
     EXPECT_NE(c, c1);
-    EXPECT_EQ(c, IntervalConstraints<1>(Interval(),
+    EXPECT_EQ(c, IntervalConstraints<1>(eps_bounds, Interval(),
                                         {Interval(0, 1), Interval(2, 3)}));
   }
 
   {
-    const auto c1 =
-        IntervalConstraints<1>(Interval(0, 1), {Interval(), Interval(2, 3)});
-    const auto c2 =
-        IntervalConstraints<1>(Interval(), {Interval(0, 1), Interval(2, 3)});
+    const auto c1 = IntervalConstraints<1>(eps_bounds, Interval(0, 1),
+                                           {Interval(), Interval(2, 3)});
+    const auto c2 = IntervalConstraints<1>(eps_bounds, Interval(),
+                                           {Interval(0, 1), Interval(2, 3)});
+    const auto c = IntervalConstraints<1>::intersect(c1, c2);
+    EXPECT_NE(c, c1);
+    EXPECT_EQ(c, IntervalConstraints<1>(eps_bounds, Interval(),
+                                        {Interval(), Interval(2, 3)}));
+  }
+
+  {
+    const auto c1 = IntervalConstraints<1>(eps_bounds, Interval(0, 1),
+                                           {Interval(0, 1), Interval(2, 3)});
+    const auto c2 = IntervalConstraints<1>(
+        eps_bounds, Interval(-2, 5), {Interval(0.5, 0.75), Interval(2.3, 3.7)});
     const auto c = IntervalConstraints<1>::intersect(c1, c2);
     EXPECT_NE(c, c1);
     EXPECT_EQ(c,
-              IntervalConstraints<1>(Interval(), {Interval(), Interval(2, 3)}));
-  }
-
-  {
-    const auto c1 = IntervalConstraints<1>(Interval(0, 1),
-                                           {Interval(0, 1), Interval(2, 3)});
-    const auto c2 = IntervalConstraints<1>(
-        Interval(-2, 5), {Interval(0.5, 0.75), Interval(2.3, 3.7)});
-    const auto c = IntervalConstraints<1>::intersect(c1, c2);
-    EXPECT_NE(c, c1);
-    EXPECT_EQ(c, IntervalConstraints<1>(
-                     Interval(0, 1), {Interval(0.5, 0.75), Interval(2.3, 3)}));
+              IntervalConstraints<1>(eps_bounds, Interval(0, 1),
+                                     {Interval(0.5, 0.75), Interval(2.3, 3)}));
   }
 }
+
 TEST(Maeve_Dynamics_Interval_Constraints, testSatisfiable) {
   {
-    const auto c = IntervalConstraints<0>(Interval(0, 1), {Interval()});
+    const auto c =
+        IntervalConstraints<0>(eps_bounds, Interval(0, 1), {Interval()});
     EXPECT_FALSE(IntervalConstraints<0>::satisfiable(c));
     EXPECT_TRUE(IntervalConstraints<0>::valid(c));
   }
 
   {
-    const auto c = IntervalConstraints<0>(Interval(), {Interval(0, 1)});
+    const auto c =
+        IntervalConstraints<0>(eps_bounds, Interval(), {Interval(0, 1)});
     EXPECT_FALSE(IntervalConstraints<0>::satisfiable(c));
     EXPECT_TRUE(IntervalConstraints<0>::valid(c));
   }
 
   {
-    const auto c = IntervalConstraints<0>(Interval(0, 1), {Interval(1, 0)});
+    const auto c =
+        IntervalConstraints<0>(eps_bounds, Interval(0, 1), {Interval(1, 0)});
     EXPECT_FALSE(IntervalConstraints<0>::satisfiable(c));
     EXPECT_FALSE(IntervalConstraints<0>::valid(c));
   }
 
   {
-    const auto c = IntervalConstraints<0>(Interval(0, 1), {Interval(0, 1)});
+    const auto c =
+        IntervalConstraints<0>(eps_bounds, Interval(0, 1), {Interval(0, 1)});
     EXPECT_TRUE(IntervalConstraints<0>::satisfiable(c));
     EXPECT_TRUE(IntervalConstraints<0>::valid(c));
   }
 
   {
-    const auto c = IntervalConstraints<0>(Interval(1, 0), {Interval()});
+    const auto c =
+        IntervalConstraints<0>(eps_bounds, Interval(1, 0), {Interval()});
     EXPECT_FALSE(IntervalConstraints<0>::satisfiable(c));
     EXPECT_FALSE(IntervalConstraints<0>::valid(c));
   }
@@ -125,19 +136,22 @@ TEST(Maeve_Dynamics_Interval_Constraints, testSatisfiable) {
 
 TEST(Maeve_Dynamics_Interval_Constraints, testValid) {
   {
-    const auto c = IntervalConstraints<0>(Interval(0, 1), {Interval(1, 0)});
+    const auto c =
+        IntervalConstraints<0>(eps_bounds, Interval(0, 1), {Interval(1, 0)});
     EXPECT_FALSE(IntervalConstraints<0>::valid(c));
     EXPECT_FALSE(IntervalConstraints<0>::satisfiable(c));
   }
 
   {
-    const auto c = IntervalConstraints<0>(Interval(0, 1), {Interval(0, 1)});
+    const auto c =
+        IntervalConstraints<0>(eps_bounds, Interval(0, 1), {Interval(0, 1)});
     EXPECT_TRUE(IntervalConstraints<0>::valid(c));
     EXPECT_TRUE(IntervalConstraints<0>::satisfiable(c));
   }
 
   {
-    const auto c = IntervalConstraints<0>(Interval(1, 0), {Interval(0, 1)});
+    const auto c =
+        IntervalConstraints<0>(eps_bounds, Interval(1, 0), {Interval(0, 1)});
     EXPECT_FALSE(IntervalConstraints<0>::valid(c));
     EXPECT_FALSE(IntervalConstraints<0>::satisfiable(c));
   }
@@ -145,7 +159,7 @@ TEST(Maeve_Dynamics_Interval_Constraints, testValid) {
 
 TEST(Maeve_Dynamics_Interval_Constraints, testComparisons) {
   {
-    const auto c1 = IntervalConstraints<1>(Interval(0, 1),
+    const auto c1 = IntervalConstraints<1>(eps_bounds, Interval(0, 1),
                                            {Interval(0, 1), Interval(2, 3)});
     const auto c2 = c1;
     EXPECT_EQ(c1, c2);
@@ -153,9 +167,9 @@ TEST(Maeve_Dynamics_Interval_Constraints, testComparisons) {
   }
 
   {
-    const auto c1 = IntervalConstraints<1>(Interval(0, 1),
+    const auto c1 = IntervalConstraints<1>(eps_bounds, Interval(0, 1),
                                            {Interval(0, 1), Interval(2, 3)});
-    const auto c2 = IntervalConstraints<1>(Interval(1, 2),
+    const auto c2 = IntervalConstraints<1>(eps_bounds, Interval(1, 2),
                                            {Interval(0, 1), Interval(2, 3)});
     EXPECT_NE(c1, c2);
     EXPECT_FALSE((c1 == c2));
@@ -164,13 +178,14 @@ TEST(Maeve_Dynamics_Interval_Constraints, testComparisons) {
 
 TEST(Maeve_Dynamics_Interval_Constraints, testConstruction) {
   {
-    const auto c = IntervalConstraints<0>(Interval(0, 1), {Interval(0, 1)});
+    const auto c =
+        IntervalConstraints<0>(eps_bounds, Interval(0, 1), {Interval(0, 1)});
     EXPECT_TRUE(true);
   }
 
   {
     // This should not compile.
-    // const auto c = IntervalConstraints<0>(Interval(0, 1),
+    // const auto c = IntervalConstraints<0>(eps_bounds, Interval(0, 1),
     //                                      {Interval(0, 1), Interval(2, 3)});
     // EXPECT_TRUE(false);
   }
