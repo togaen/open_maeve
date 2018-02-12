@@ -21,6 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   controller_interface_msgs
   ros_parameter_loading
+  image_transport
 )
 
 ## System dependencies are found with CMake's conventions

@@ -49,6 +49,7 @@
   <depend>controller_interface_msgs</depend>
   <depend>maeve_macros</depend>
   <depend>ros_parameter_loading</depend>
+  <depend>image_transport</depend>
 
   <!-- This is to add a dependency on OpenCV:
        http://wiki.ros.org/opencv3#package.xml -->
