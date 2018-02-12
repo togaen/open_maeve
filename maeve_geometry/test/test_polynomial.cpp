@@ -85,9 +85,12 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
 
     std::stringstream ss1, ss2;
     ss1 << p1;
-    EXPECT_EQ(ss1.str(), std::string("{a: 2.00000, b:-4.00000, c:3.00000}"));
+    EXPECT_EQ(ss1.str(),
+              std::string("{\"a\": 2.00000, \"b\": -4.00000, \"c\": 3.00000}"));
     ss2 << p2;
-    EXPECT_EQ(ss2.str(), std::string("{a: 2.00000, b:-12.00000, c:19.00000}"));
+    EXPECT_EQ(
+        ss2.str(),
+        std::string("{\"a\": 2.00000, \"b\": -12.00000, \"c\": 19.00000}"));
   }
 
   {
@@ -107,9 +110,11 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
 
     std::stringstream ss1, ss2;
     ss1 << p1;
-    EXPECT_EQ(ss1.str(), std::string("{a: 2.00000, b:0.89898, c:0.10102}"));
+    EXPECT_EQ(ss1.str(),
+              std::string("{\"a\": 2.00000, \"b\": 0.89898, \"c\": 0.10102}"));
     ss2 << p2;
-    EXPECT_EQ(ss2.str(), std::string("{a: 2.00000, b:-8.89898, c:9.89898}"));
+    EXPECT_EQ(ss2.str(),
+              std::string("{\"a\": 2.00000, \"b\": -8.89898, \"c\": 9.89898}"));
   }
 
   {
@@ -129,9 +134,11 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
 
     std::stringstream ss1, ss2;
     ss1 << p1;
-    EXPECT_EQ(ss1.str(), std::string("{a: 1.00000, b:1.46410, c:0.53590}"));
+    EXPECT_EQ(ss1.str(),
+              std::string("{\"a\": 1.00000, \"b\": 1.46410, \"c\": 0.53590}"));
     ss2 << p2;
-    EXPECT_EQ(ss2.str(), std::string("{a: 1.00000, b:-5.46410, c:7.46410}"));
+    EXPECT_EQ(ss2.str(),
+              std::string("{\"a\": 1.00000, \"b\": -5.46410, \"c\": 7.46410}"));
   }
 }
 
@@ -155,64 +162,6 @@ TEST(Maeve_Geometry_Polynomial, testUniqueCriticalPoint) {
     EXPECT_NEAR(c->x(), (-9.0 / 6.0), epsilon);
     EXPECT_NEAR(c->y(), p(c->x()), epsilon);
     EXPECT_NEAR(Polynomial::dx(p, c->x()), 0.0, epsilon);
-  }
-}
-
-TEST(Maeve_Geometry_Polynomial, testType) {
-  {
-    const auto p = Polynomial(1, 2, 3);
-    EXPECT_FALSE(Polynomial::isConstant(p));
-    EXPECT_FALSE(Polynomial::isLinear(p));
-    EXPECT_TRUE(Polynomial::isQuadratic(p));
-  }
-
-  {
-    const auto p = Polynomial(0, 2, 3);
-    EXPECT_FALSE(Polynomial::isConstant(p));
-    EXPECT_TRUE(Polynomial::isLinear(p));
-    EXPECT_FALSE(Polynomial::isQuadratic(p));
-  }
-
-  {
-    const auto p = Polynomial(0, 0, 3);
-    EXPECT_TRUE(Polynomial::isConstant(p));
-    EXPECT_FALSE(Polynomial::isLinear(p));
-    EXPECT_FALSE(Polynomial::isQuadratic(p));
-  }
-
-  {
-    const auto p = Polynomial(0, 0, 0);
-    EXPECT_TRUE(Polynomial::isConstant(p));
-    EXPECT_FALSE(Polynomial::isLinear(p));
-    EXPECT_FALSE(Polynomial::isQuadratic(p));
-  }
-
-  {
-    const auto p = Polynomial(1, 0, 3);
-    EXPECT_FALSE(Polynomial::isConstant(p));
-    EXPECT_FALSE(Polynomial::isLinear(p));
-    EXPECT_TRUE(Polynomial::isQuadratic(p));
-  }
-
-  {
-    const auto p = Polynomial(1, 0, 0);
-    EXPECT_FALSE(Polynomial::isConstant(p));
-    EXPECT_FALSE(Polynomial::isLinear(p));
-    EXPECT_TRUE(Polynomial::isQuadratic(p));
-  }
-
-  {
-    const auto p = Polynomial(Inf, 0, 0);
-    EXPECT_FALSE(Polynomial::isConstant(p));
-    EXPECT_FALSE(Polynomial::isLinear(p));
-    EXPECT_FALSE(Polynomial::isQuadratic(p));
-  }
-
-  {
-    const auto p = Polynomial(1, 0, NaN);
-    EXPECT_FALSE(Polynomial::isConstant(p));
-    EXPECT_FALSE(Polynomial::isLinear(p));
-    EXPECT_FALSE(Polynomial::isQuadratic(p));
   }
 }
 

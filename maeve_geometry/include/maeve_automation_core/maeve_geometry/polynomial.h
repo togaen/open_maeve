@@ -36,8 +36,6 @@ namespace maeve_automation_core {
  * @brief This class defines a functor that evaluates a polynomial.
  *
  * @note The class only supports polynomials up to order 2.
- *
- * TODO(me): Would be great to template this on degree and specialize.
  */
 class Polynomial {
  public:
@@ -193,33 +191,6 @@ class Polynomial {
    */
   static std::tuple<double, double, double> coefficients(
       const Polynomial& polynomial);
-
-  /**
-   * @brief Whether the polynomial is a linear function.
-   *
-   * @param polynomial The polynomial.
-   *
-   * @return True if the polynomial is a linear function; otherwise false.
-   */
-  static bool isLinear(const Polynomial& polynomial);
-
-  /**
-   * @brief Whether the polynomial is a quadratic function.
-   *
-   * @param polynomial The polynomial.
-   *
-   * @return True if the polynomial is a quadratic function; otherwise false.
-   */
-  static bool isQuadratic(const Polynomial& polynomial);
-
-  /**
-   * @brief Whether the polynomial is a constant function.
-   *
-   * @param polynomial The polynomial.
-   *
-   * @return True if the polynomial is a constant function; otherwise false.
-   */
-  static bool isConstant(const Polynomial& polynomial);
 
   /**
    * @brief Find tangent points of rays through 'p_r' tangent to 'polynomial'.
