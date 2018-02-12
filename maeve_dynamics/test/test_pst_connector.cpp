@@ -30,7 +30,7 @@ namespace maeve_automation_core {
 namespace {
 const auto epsilon = 0.0001;
 }  // namespace
-#if 0
+
 TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
   {
     const Eigen::Vector2d p1(3, 2);
@@ -209,15 +209,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
     ASSERT_NO_THROW({
       const auto connector =
           PST_Connector::computePP(p1, p1_dt, p1_ddt, p2, p2_ddt);
-      ASSERT_FALSE(!connector);
-      std::stringstream ss;
-      ss << *connector;
-      EXPECT_EQ(ss.str(),
-                "{\"switching_times\": [0, 0.34808, 0.34808, 1], "
-                "\"parabola_coefficients\": [{\"a\": 2.00000, \"b\": "
-                "1.00000, \"c\": 0.00000}, {\"a\": 0.00000, \"b\": 2.39232, "
-                "\"c\": -0.24232}, {\"a\": -2.00000, \"b\": 3.78464, \"c\": "
-                "-0.48464}]}");
+      ASSERT_TRUE(!connector);
     });
   }
 
@@ -452,9 +444,8 @@ TEST(Maeve_Dynamics_PST_Connector, testEndPoints) {
     }
   }
 }
-#endif
+
 TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
-#if 0
   {
     auto exception_thrown = false;
     try {
@@ -466,10 +457,9 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
       std::cout << "Exception caught: " << e.what() << std::endl;
       exception_thrown = true;
     }
-    EXPECT_FALSE(exception_thrown);
+    EXPECT_TRUE(exception_thrown);
   }
-#endif
-#if 0
+
   {
     const auto p = Polynomial(1, 1, 1);
     auto exception_thrown = false;
@@ -497,6 +487,5 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
     }
     EXPECT_TRUE(exception_thrown);
   }
-#endif
 }
 }  // namespace maeve_automation_core
