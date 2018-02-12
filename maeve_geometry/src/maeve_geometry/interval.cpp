@@ -73,6 +73,12 @@ Interval::Interval(const double minimum, const double maximum)
   }
 }
 
+Interval Interval::add(const Interval& interval1, const Interval& interval2) {
+  const auto min = (Interval::min(interval1) + Interval::min(interval2));
+  const auto max = (Interval::max(interval1) + Interval::max(interval2));
+  return Interval(min, max);
+}
+
 bool Interval::isSubsetEq(const Interval& interval1,
                           const Interval& interval2) {
   const auto lower_contained =

@@ -246,6 +246,16 @@ class Interval {
   static bool isSubsetEq(const Interval& interval1, const Interval& interval2);
 
   /**
+   * @brief Add intervals by adding their bounds
+   *
+   * @param interval1 The first interval.
+   * @param interval2 The second interval.
+   *
+   * @return The result of interval1 + interval2.
+   */
+  static Interval add(const Interval& interval1, const Interval& interval2);
+
+  /**
    * @brief Compute the intersection of two intervals as a new interval.
    *
    * @param interval1 The first interval.
