@@ -492,16 +492,23 @@ bool PST_Connector::boundedInteriorTimes(const PST_Connector& connector,
 
 bool PST_Connector::dynamicallyFeasible(
     const PST_Connector& connector, const IntervalConstraints<2>& constraints) {
+  const auto& padding = IntervalConstraints<2>::epsilon(constraints);
   const auto& time_bounds = IntervalConstraints<2>::boundsT(constraints);
   const auto& s_bounds = IntervalConstraints<2>::boundsS<0>(constraints);
   const auto& s_dot_bounds = IntervalConstraints<2>::boundsS<1>(constraints);
   const auto& s_ddot_bounds = IntervalConstraints<2>::boundsS<2>(constraints);
 
-  return (
-      PST_Connector::boundedInteriorTimes(connector, time_bounds) &&
-      PST_Connector::boundedInteriorPositions(connector, s_bounds) &&
-      PST_Connector::boundedInteriorSpeeds(connector, s_dot_bounds) &&
-      PST_Connector::boundedInteriorAccelerations(connector, s_ddot_bounds));
+  const auto times_valid =
+      PST_Connector::boundedInteriorTimes(connector, time_bounds);
+  const auto positions_valid = PST_Connector::boundedInteriorPositions(
+      connector, Interval::add(s_bounds, padding));
+  const auto speeds_valid = PST_Connector::boundedInteriorSpeeds(
+      connector, Interval::add(s_dot_bounds, padding));
+  const auto accelerations_valid = PST_Connector::boundedInteriorAccelerations(
+      connector, Interval::add(s_ddot_bounds, padding));
+
+  return (times_valid && positions_valid && speeds_valid &&
+          accelerations_valid);
 }
 
 bool PST_Connector::valid(const PST_Connector& connector) {
