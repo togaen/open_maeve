@@ -37,6 +37,8 @@ class DisjointInterval {
   /**
    * @brief Stream overload for DisjointInterval types.
    *
+   * @note The serialization is JSON compatible.
+   *
    * @param os The output stream.
    * @param disjoint_interval The disjoint interval to serialize.
    *

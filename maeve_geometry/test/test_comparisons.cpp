@@ -21,6 +21,8 @@
  */
 #include <gtest/gtest.h>
 
+#include "boost/optional.hpp"
+
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 
 namespace {
@@ -34,6 +36,31 @@ const auto epsilon = 0.0001;
 }  // namespace
 
 namespace maeve_automation_core {
+TEST(Maeve_Geometry_Comparisons, testExclusiveOr) {
+  EXPECT_TRUE(exclusiveOr(0, 1));
+  EXPECT_TRUE(exclusiveOr(1, 0));
+  EXPECT_FALSE(exclusiveOr(0, 0));
+  EXPECT_FALSE(exclusiveOr(1, 1));
+
+  EXPECT_TRUE(exclusiveOr(false, true));
+  EXPECT_TRUE(exclusiveOr(true, false));
+  EXPECT_FALSE(exclusiveOr(false, false));
+  EXPECT_FALSE(exclusiveOr(true, true));
+
+  const boost::optional<std::string> a_true = std::string("Hello, world!");
+  const boost::optional<std::string> a_false = boost::none;
+
+  EXPECT_TRUE(exclusiveOr(a_false, a_true));
+  EXPECT_TRUE(exclusiveOr(a_true, a_false));
+  EXPECT_FALSE(exclusiveOr(a_false, a_false));
+  EXPECT_FALSE(exclusiveOr(a_true, a_true));
+}
+
+TEST(Maeve_Geometry_Comparisons, testClampToZero) {
+  EXPECT_EQ(clampToZero(0.05, 0.1), 0.0);
+  EXPECT_EQ(clampToZero(-0.05, 0.1), 0.0);
+  EXPECT_EQ(clampToZero(1.0, 0.04), 1.0);
+}
 
 TEST(Maeve_Geometry_Comparisons, testZero) {
   EXPECT_TRUE(approxZero(d, epsilon));

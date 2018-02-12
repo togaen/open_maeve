@@ -36,7 +36,8 @@ DisjointInterval makeTestDI() {
 TEST(Maeve_Geometry_Disjoint_Interval, testIntersection) {
   {
     const auto di1 = makeTestDI();
-    const auto di2 = DisjointInterval({Interval(0.5, 0.75), Interval(2.5, 2.8), Interval(6.3, 6.6)});
+    const auto di2 = DisjointInterval(
+        {Interval(0.5, 0.75), Interval(2.5, 2.8), Interval(6.3, 6.6)});
     const auto di = DisjointInterval::intersect(di1, di2);
     EXPECT_EQ(di, di2);
   }

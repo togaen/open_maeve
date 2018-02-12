@@ -22,6 +22,7 @@
 #pragma once
 
 #include <iostream>
+#include <limits>
 #include <tuple>
 
 namespace maeve_automation_core {
@@ -30,6 +31,15 @@ namespace maeve_automation_core {
  */
 class Interval {
  public:
+  /** @name Special interval bound values
+   *
+   * These values are used to construct special types of intervals.
+   */
+  static constexpr auto Min = std::numeric_limits<double>::lowest();
+  static constexpr auto Max = std::numeric_limits<double>::max();
+  static constexpr auto Inf = std::numeric_limits<double>::infinity();
+  /** @} */
+
   /** @name Comparison operations
    *
    * Comparison operations for Interval types. For sorting, these operators sort
@@ -129,7 +139,8 @@ class Interval {
   /**
    * @brief Stream overload for Interval types.
    *
-   * @note Output precision is fixed inside the function definition.
+   * @note Output precision is fixed inside the function definition, and the
+   * serialization is JSON compatible.
    *
    * @param os The output stream.
    * @param interval The interval to serialize.
@@ -171,11 +182,24 @@ class Interval {
    * @note For empty or invalid intervals, NaN is returned. See Interval::empty
    * for note on distinction between length zero and the emptiness property.
    *
-   * @param interval
+   * @param interval The interval to check.
    *
    * @return The length of the interval.
    */
   static double length(const Interval& interval);
+
+  /**
+   * @brief Utility for checking whether an interval has zero length.
+   *
+   * @note For empty or invalid intervals, false is returned. See
+   * Interval::empty
+   * for note on distinction between length zero and the emptiness property.
+   *
+   * @param interval The interval to check.
+   *
+   * @return True if the interval has zero length; otherwise false.
+   */
+  static bool zeroLength(const Interval& interval);
 
   /**
    * @brief Whether the interval is empty or not.
@@ -212,6 +236,26 @@ class Interval {
   static bool contains(const Interval& interval, const double value);
 
   /**
+   * @brief Test for whether 'interval1' \subseteq 'interval2'
+   *
+   * @param interval1 The first interval.
+   * @param interval2 The second interval.
+   *
+   * @return True if interval1 \subseteq interval2; otherwise false.
+   */
+  static bool isSubsetEq(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Add intervals by adding their bounds
+   *
+   * @param interval1 The first interval.
+   * @param interval2 The second interval.
+   *
+   * @return The result of interval1 + interval2.
+   */
+  static Interval add(const Interval& interval1, const Interval& interval2);
+
+  /**
    * @brief Compute the intersection of two intervals as a new interval.
    *
    * @param interval1 The first interval.
@@ -221,6 +265,17 @@ class Interval {
    */
   static Interval intersect(const Interval& interval1,
                             const Interval& interval2);
+
+  /**
+   * @brief Project a scalar 'val' onto 'interval'.
+   *
+   * @param interval The interval to project onto.
+   * @param val The value to project.
+   *
+   * @return If 'val' \in 'interval', return 'val'; otherwise return the nearer
+   * interval bound.
+   */
+  static double projectToInterval(const Interval& interval, const double val);
 
   /**
    * @brief Compute the convex hull of two intervals as a new interval.
@@ -248,6 +303,36 @@ class Interval {
    * @return The merged interval.
    */
   static Interval merge(const Interval& interval1, const Interval& interval2);
+
+  /**
+   * @brief Factory method to build the set of affinely extended reals.
+   *
+   * @return [-\infty, +\infty]
+   */
+  static Interval affinelyExtendedReals();
+
+  /**
+   * @brief Factory method to build the set of machien representable reals.
+   *
+   * @return [-DBL_MAX, DBL_MAX]
+   */
+  static Interval maxRepresentableReals();
+
+  /**
+   * @brief Factory method to build the set of machine representatble
+   * non-negative reals.
+   *
+   * @return [0, DBL_MAX]
+   */
+  static Interval nonNegativeReals();
+
+  /**
+   * @brief Factory method to build the set of machine representatble
+   * non-positive reals.
+   *
+   * @return [-DBL_MAX, 0]
+   */
+  static Interval nonPositiveReals();
 
   /**
    * @brief Constructor: initialize and empty interval with members set to NaN.

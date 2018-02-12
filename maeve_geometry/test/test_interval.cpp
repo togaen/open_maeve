@@ -20,14 +20,55 @@
  * IN THE SOFTWARE.
  */
 #include <gtest/gtest.h>
+
 #include <cmath>
+#include <limits>
 
 #include "maeve_automation_core/maeve_geometry/interval.h"
 
 namespace maeve_automation_core {
 namespace {
+const auto Inf = std::numeric_limits<double>::infinity();
+const auto Min = std::numeric_limits<double>::lowest();
+const auto Max = std::numeric_limits<double>::max();
+const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto epsilon = 0.00001;
 }  // namespace
+
+TEST(Maeve_Geometry_Interval, testIsSubsetEq) {
+  EXPECT_TRUE(Interval::isSubsetEq(Interval(-0.5, 0.5), Interval(-1.0, 1.0)));
+  EXPECT_TRUE(Interval::isSubsetEq(Interval(3.2, 4.2), Interval(3.2, 4.2)));
+  EXPECT_FALSE(Interval::isSubsetEq(Interval(-3.0, -1.0), Interval(1.0, 3.0)));
+  EXPECT_FALSE(Interval::isSubsetEq(Interval(1.0, 3.0), Interval(2.0, 4.0)));
+  EXPECT_FALSE(Interval::isSubsetEq(Interval(), Interval()));
+  EXPECT_FALSE(Interval::isSubsetEq(Interval(3.0, 2.0), Interval(1.0, 1.0)));
+}
+
+TEST(Maeve_Geometry_Interval, testProjectToInterval) {
+  const auto i = Interval(-1, 1);
+  {
+    const auto val = 0.0;
+    const auto p = Interval::projectToInterval(i, val);
+    EXPECT_EQ(p, val);
+  }
+
+  {
+    const auto val = -3.4;
+    const auto p = Interval::projectToInterval(i, val);
+    EXPECT_EQ(p, Interval::min(i));
+  }
+
+  {
+    const auto val = 2.7;
+    const auto p = Interval::projectToInterval(i, val);
+    EXPECT_EQ(p, Interval::max(i));
+  }
+}
+
+TEST(Maeve_Geometry_Interval, testFactories) {
+  EXPECT_EQ(Interval::affinelyExtendedReals(), Interval(-Inf, Inf));
+  EXPECT_EQ(Interval::maxRepresentableReals(), Interval(Min, Max));
+}
 
 TEST(Maeve_Geometry_Interval, testMerge) {
   {
@@ -222,6 +263,28 @@ TEST(Maeve_Geometry_Interval, testEmpty) {
     const auto i4 = Interval::convexHull(i1, i2);
     EXPECT_FALSE(Interval::valid(i4));
     EXPECT_FALSE(Interval::empty(i4));
+  }
+}
+
+TEST(Maeve_Geometry_Interval, testZeroLength) {
+  {
+    const auto i = Interval(0, 1);
+    EXPECT_FALSE(Interval::zeroLength(i));
+  }
+
+  {
+    const auto i = Interval(1, 0);
+    EXPECT_FALSE(Interval::zeroLength(i));
+  }
+
+  {
+    const auto i = Interval();
+    EXPECT_FALSE(Interval::zeroLength(i));
+  }
+
+  {
+    const auto i = Interval(2, 2);
+    EXPECT_TRUE(Interval::zeroLength(i));
   }
 }
 

@@ -52,7 +52,7 @@ class AABB {
    *
    * @param bounds The ordered array of axis bounds.
    */
-  explicit AABB(std::array<Interval, Dim>&& bounds);
+  explicit AABB(const std::array<Interval, Dim>& bounds);
 
   /**
    * @brief The minimum bound of the AABB along a given axis.
@@ -150,8 +150,8 @@ AABB<Dim>::AABB() {
 }
 
 template <int Dim>
-AABB<Dim>::AABB(std::array<Interval, Dim>&& bounds)
-    : axis_bounds_(std::move(bounds)) {
+AABB<Dim>::AABB(const std::array<Interval, Dim>& bounds)
+    : axis_bounds_(bounds) {
   static_assert(Dim > 0, "AABBs must have strictly positive dimensionality.");
 }
 
@@ -211,7 +211,7 @@ AABB<Dim> AABB<Dim>::intersect(const AABB<Dim>& aabb1, const AABB<Dim>& aabb2) {
     bounds[i] =
         Interval::intersect(aabb1.axis_bounds_[i], aabb2.axis_bounds_[i]);
   }
-  return AABB<Dim>(std::move(bounds));
+  return AABB<Dim>(bounds);
 }
 
 template <int Dim>
@@ -222,7 +222,7 @@ AABB<Dim> AABB<Dim>::convexHull(const AABB<Dim>& aabb1,
     bounds[i] =
         Interval::convexHull(aabb1.axis_bounds_[i], aabb2.axis_bounds_[i]);
   }
-  return AABB<Dim>(std::move(bounds));
+  return AABB<Dim>(bounds);
 }
 
 }  // namespace maeve_automation_core

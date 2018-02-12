@@ -22,7 +22,6 @@
 #include "maeve_automation_core/maeve_geometry/interval.h"
 
 #include <algorithm>
-#include <limits>
 
 #include "boost/io/ios_state.hpp"
 
@@ -31,7 +30,6 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
 namespace maeve_automation_core {
-
 double Interval::min(const Interval& interval) {
   return std::get<0>(interval.bounds_);
 }
@@ -44,16 +42,50 @@ const std::tuple<double, double>& Interval::bounds(const Interval& interval) {
   return interval.bounds_;
 }
 
+bool Interval::zeroLength(const Interval& interval) {
+  if (Interval::empty(interval)) {
+    return false;
+  }
+
+  return (Interval::min(interval) == Interval::max(interval));
+}
+
 bool Interval::empty(const Interval& interval) { return interval.empty_; }
 
-Interval::Interval()
-    : bounds_(std::move(std::make_tuple(NaN, NaN))), empty_(true) {}
+Interval Interval::affinelyExtendedReals() {
+  return Interval(-Interval::Inf, Interval::Inf);
+}
+
+Interval Interval::maxRepresentableReals() {
+  return Interval(Interval::Min, Interval::Max);
+}
+
+Interval Interval::nonNegativeReals() { return Interval(0.0, Max); }
+
+Interval Interval::nonPositiveReals() { return Interval(Min, 0.0); }
+
+Interval::Interval() : bounds_(std::make_tuple(NaN, NaN)), empty_(true) {}
 
 Interval::Interval(const double minimum, const double maximum)
-    : bounds_(std::move(std::make_tuple(minimum, maximum))), empty_(false) {
+    : bounds_(std::make_tuple(minimum, maximum)), empty_(false) {
   if (!Interval::valid(*this)) {
-    bounds_ = std::move(std::make_tuple(NaN, NaN));
+    bounds_ = std::make_tuple(NaN, NaN);
   }
+}
+
+Interval Interval::add(const Interval& interval1, const Interval& interval2) {
+  const auto min = (Interval::min(interval1) + Interval::min(interval2));
+  const auto max = (Interval::max(interval1) + Interval::max(interval2));
+  return Interval(min, max);
+}
+
+bool Interval::isSubsetEq(const Interval& interval1,
+                          const Interval& interval2) {
+  const auto lower_contained =
+      (Interval::min(interval1) >= Interval::min(interval2));
+  const auto upper_contained =
+      (Interval::max(interval1) <= Interval::max(interval2));
+  return (lower_contained && upper_contained);
 }
 
 bool Interval::contains(const Interval& interval, const double value) {
@@ -142,6 +174,14 @@ Interval Interval::intersect(const Interval& interval1,
 
   // Otherwise, the intersection is empty.
   return Interval();
+}
+
+double Interval::projectToInterval(const Interval& interval, const double val) {
+  if (Interval::contains(interval, val)) {
+    return val;
+  }
+  return ((val < Interval::min(interval)) ? Interval::min(interval)
+                                          : Interval::max(interval));
 }
 
 bool Interval::exhibitsOrdering(const Interval& interval) {
@@ -288,14 +328,14 @@ std::ostream& operator<<(std::ostream& os, const Interval& interval) {
 
   // Do stream output.
   if (!Interval::valid(interval)) {
-    return os << "[(invalid)]";
+    return os << "null";
   }
 
   if (Interval::empty(interval)) {
-    return os << "[(empty)]";
+    return os << "{}";
   }
 
-  return os << "[" << Interval::min(interval) << ", " << Interval::max(interval)
-            << "]";
+  return os << "{\"min\": " << Interval::min(interval)
+            << ", \"max\": " << Interval::max(interval) << "}";
 }
 }  // namespace maeve_automation_core
