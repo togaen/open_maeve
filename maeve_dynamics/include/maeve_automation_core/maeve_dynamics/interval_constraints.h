@@ -146,34 +146,6 @@ class IntervalConstraints {
                                        const IntervalConstraints& constraints2);
 
   /**
-   * @brief Whether a give time value is feasible according to this constraint
-   * set.
-   *
-   * @param constraints The constraint set to check against.
-   * @param time The time value to test.
-   *
-   * @return True if 'time' is feasible; otherwise false.
-   */
-  static bool feasibleT(const IntervalConstraints& constraints,
-                        const double time);
-
-  /**
-   * @brief Whether a given s value of the given order is feasible according to
-   * this constraint set.
-   *
-   * @note Behavior is undefined if the given order exceeds the order specified
-   * by this constraint type.
-   *
-   * @param constraints The constraint set to check against.
-   * @param order The order of the s value.
-   * @param s The s value to test.
-   *
-   * @return True if the s value to the give order is feasible; otherwise false.
-   */
-  static bool feasibleS(const IntervalConstraints& constraints, const int order,
-                        const double s);
-
-  /**
    * @brief Get a reference to the temporal bounds of this constraint set.
    *
    * @param constraints The constraint set.
@@ -249,19 +221,6 @@ IntervalConstraints<Order> IntervalConstraints<Order>::intersect(
                                          constraints2.s_bounds_[i]);
   }
   return c;
-}
-
-template <unsigned int Order>
-bool IntervalConstraints<Order>::feasibleT(
-    const IntervalConstraints& constraints, const double time) {
-  return Interval::contains(constraints.t_bounds_, time);
-}
-
-template <unsigned int Order>
-bool IntervalConstraints<Order>::feasibleS(
-    const IntervalConstraints& constraints, const int order, const double s) {
-  // Throw an exception if 'order' violates array bounds.
-  return Interval::contains(constraints.s_bounds_.at(order), s);
 }
 
 template <unsigned int Order>
