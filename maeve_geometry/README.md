@@ -7,6 +7,7 @@ for representating and operating on:
 * Real number intervals
 * Disjoint interval sets
 * Axis-aligned Bounding Boxes
+* Quadratic polynomials
 
 In addition, methods for approximate comparisons with an absolute epsilon are
 included. See the unit tests for usage.
