@@ -95,7 +95,8 @@ namespace maeve_automation_core {
   // Define speeds available at start point (p1).
   //
 
-  const auto initial_speeds = Interval(1.0, 1.0);
+  constexpr auto speed = 1.0;
+  const auto initial_speeds = Interval(speed, speed);
 
   //
   // Compute and display reachability.
@@ -103,15 +104,26 @@ namespace maeve_automation_core {
 
   if (const auto reachability =
           PST_Reachability::compute(initial_speeds, p1, p2, constraints)) {
-    std::cout << *reachability << std::endl;
+      std::cout << "Starting at time-path point (" << p1.x() << ", " << p1.y()
+                << ") with speed " << speed
+                << ", the set of achievable speeds at time-path point ("
+                << p2.x() << ", " << p2.y() << ") is: "
+                << PST_Reachability::reachableInterval(*reachability) << "\n";
   }
-
 }  // namespace maeve_automation_core
 ```
 
-Running the above code will compute reachability and print a JSON serialization
-to console. The output should resemble the below (although it won't be so nicely
-formatted):
+Running the above code will compute reachability and print
+the following to console:
+
+```
+Starting at time-path point (0, 0) with speed 1, the set of achievable speeds
+at time-path point (1, 0.5) is: {"min": 0.00000, "max": 1.73205}
+
+```
+
+The reachability object can also be printed directly to console, and will yeild
+the below (although it won't be so nicely formatted):
 
 ```json
 {
