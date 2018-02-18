@@ -41,7 +41,7 @@ parts of the trajectory.
 See the "Example Usage" for what a connector object looks like.
 
 ## IntervalConstraints ##
-This class contains a data structre and methods for
+This class contains a data structure and methods for
 representing and manipulating the dynamic constraints under which to compute
 reachability. It descibes time, path, speed, and acceleration bounds as
 real-valued intervals. It also contains an epsilon parameter that is used for
