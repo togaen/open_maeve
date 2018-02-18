@@ -117,8 +117,7 @@ Running the above code will compute reachability and print
 the following to console:
 
 ```
-Starting at time-path point (0, 0) with speed 1, the set of achievable speeds
-at time-path point (1, 0.5) is: {"min": 0.00000, "max": 1.73205}
+Starting at time-path point (0, 0) with speed 1, the set of achievable speeds at time-path point (1, 0.5) is: {"min": 0.00000, "max": 1.73205}
 
 ```
 
