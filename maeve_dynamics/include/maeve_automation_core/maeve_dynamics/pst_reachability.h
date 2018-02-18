@@ -38,10 +38,23 @@ namespace maeve_automation_core {
 class PST_Reachability {
  public:
   /**
-   * @brief The interval of reachable speeds.
+   * @brief Stream overload for PST reachability objects.
    *
-   * @return An interval object of reachable speeds.
+   * @note The serialization is JSON compatible.
+   *
+   * @param os The output stream.
+   * @param reachability The PST reachability object.
+   *
+   * @return The output stream with the object serialized.
    */
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const PST_Reachability& reachability);
+
+  /**
+  * @brief The interval of reachable speeds.
+  *
+  * @return An interval object of reachable speeds.
+  */
   static Interval reachableInterval(const PST_Reachability& reachability);
 
   /**
@@ -156,5 +169,10 @@ class PST_Reachability {
   /** @brief the PST connector that achieves maximum terminal speed. */
   PST_Connector max_terminal_;
 };  // class PST_Reachability
+
+if (const auto reachability =
+        PST_Reachability::compute(initial_speeds, p1, p2, constraints)) {
+  std::cout << *reachability << std::endl;
+}
 
 }  // namespace maeve_automation_core

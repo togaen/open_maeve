@@ -33,6 +33,13 @@ const auto Inf = std::numeric_limits<double>::infinity();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }
 
+std::ostream& operator<<(std::ostream& os,
+                         const PST_Reachability& reachability) {
+  os << "{\"min_speed_connector\": " << reachability.min_terminal_
+     << ", \"max_speed_connector\": " << reachability.max_terminal_ << "}";
+  return os;
+}
+
 PST_Reachability::PST_Reachability(const PST_Connector& min_terminal,
                                    const PST_Connector& max_terminal,
                                    const IntervalConstraints<2>& constraints)
