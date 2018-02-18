@@ -92,7 +92,7 @@ namespace maeve_automation_core {
       eps_bounds, t_bounds, {s_bounds, s_dot_bounds, s_ddot_bounds});
 
   //
-  // Define speeds at start point (p1).
+  // Define speeds available at start point (p1).
   //
 
   const auto initial_speeds = Interval(1.0, 1.0);
