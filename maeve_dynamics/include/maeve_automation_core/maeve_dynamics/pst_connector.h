@@ -52,12 +52,13 @@ class PST_Connector {
    * @note The serialization is JSON compatible.
    *
    * @param os The output stream.
-   * @param constraints The PST connector object.
+   * @param connector The PST connector object.
    *
    * @return The output stream with the object serialized.
    */
   friend std::ostream& operator<<(std::ostream& os,
                                   const PST_Connector& connector);
+
   /**
    * @brief Constructor: explicitly initialize the connector.
    *
