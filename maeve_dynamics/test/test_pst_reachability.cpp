@@ -32,7 +32,8 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
   auto s_bounds = Interval(0.0, 10.0);
   auto s_dot_bounds = Interval(0.0, 50.0);
   auto s_ddot_bounds = Interval(-2.0, 2.0);
-  const auto constraints = IntervalConstraints<2>(
+  constexpr auto ORDER = 2;
+  const auto constraints = IntervalConstraints<ORDER>(
       eps_bounds, t_bounds, {s_bounds, s_dot_bounds, s_ddot_bounds});
 
   {
@@ -64,13 +65,17 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
       ASSERT_FALSE(!reachability);
       ASSERT_FALSE(!connector);
       std::stringstream ss;
-      ss << *connector;
-      EXPECT_EQ(ss.str(),
-                "{\"switching_times\": [0, 0.25, 0.566987, 1], "
-                "\"parabola_coefficients\": [{\"a\": -2.00000, \"b\": 1.00000, "
-                "\"c\": 0.00000}, {\"a\": 0.00000, \"b\": 0.00000, \"c\": "
-                "0.12500}, {\"a\": 2.00000, \"b\": -2.26795, \"c\": "
-                "0.76795}]}");
+      ss << *reachability;
+      EXPECT_EQ(
+          ss.str(),
+          "{\"min_speed_connector\": {\"switching_times\": [0, 0.125, 0.875, "
+          "1], \"parabola_coefficients\": [{\"a\": -2.00000, \"b\": 1.00000, "
+          "\"c\": -0.00000}, {\"a\": 0.00000, \"b\": 0.50000, \"c\": 0.03125}, "
+          "{\"a\": -2.00000, \"b\": 4.00000, \"c\": -1.50000}]}, "
+          "\"max_speed_connector\": {\"switching_times\": [0, 0.25, 0.566987, "
+          "1], \"parabola_coefficients\": [{\"a\": -2.00000, \"b\": 1.00000, "
+          "\"c\": 0.00000}, {\"a\": 0.00000, \"b\": 0.00000, \"c\": 0.12500}, "
+          "{\"a\": 2.00000, \"b\": -2.26795, \"c\": 0.76795}]}}");
     });
   }
 
