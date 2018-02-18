@@ -4,7 +4,7 @@ This package contains a dynamics library for computing reachability under
 acceleration constraints in a Path-Speed-Time (PST) space. The main components
 of the library are described below.
 
-## `PST_Reachability` ##
+## PST\_Reachability ##
 This class contains a data structure and methods for representing and computing
 reachability in PST space. Specifically, the methods in this class can determine
 whether a given point in the path-time plane can be reached from another given
@@ -21,7 +21,7 @@ trajectories is described below.
 
 See the "Example Usage" for what a reachability object looks like.
 
-## `PST_Connector` ##
+## PST\_Connector ##
 This class contains a data structor and methods for representing and
 manipulating the connecting trajectories used by the `PST_Reachability` class
 for computing reachability. PST connectors are bang-singular-bang (BSB) trajectories
@@ -40,7 +40,7 @@ parts of the trajectory.
 
 See the "Example Usage" for what a connector object looks like.
 
-## `IntervalConstraints` ##
+## IntervalConstraints ##
 This class contains a data structre and methods for
 representing and manipulating the dynamic constraints under which to compute
 reachability. It descibes time, path, speed, and acceleration bounds as
