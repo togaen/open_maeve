@@ -121,7 +121,7 @@ Starting at time-path point (0, 0) with speed 1, the set of achievable speeds at
 
 ```
 
-The reachability object can also be printed directly to console, and will yeild
+The reachability object can also be printed directly to console, and will yield
 the below (although it won't be so nicely formatted):
 
 ```json
