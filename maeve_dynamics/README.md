@@ -4,6 +4,12 @@ This package contains a dynamics library for computing reachability under
 acceleration constraints in a Path-Speed-Time (PST) space. The main components
 of the library are described below.
 
+All objects in the `maeve_dynamics` library have ostream overloads that
+serialize them into [JSON](https://json.org) format. This is intended to make
+it easy to quickly to share data with other languages, such as python or matlab,
+especially for generating plots. Note, however, that the serialization loses
+precision, so it should not be used for numerical applications.
+
 ## PST\_Reachability ##
 This class contains a data structure and methods for representing and computing
 reachability in PST space. Specifically, the methods in this class can determine
