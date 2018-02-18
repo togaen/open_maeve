@@ -23,7 +23,7 @@
 
 namespace maeve_automation_core {
 /**
- * @brief These make it slightly easier to raise expressions to powers.
+ * @brief Useful for raising expressions to powers.
  * @{
  */
 inline double square(const double x) { return (x * x); }
