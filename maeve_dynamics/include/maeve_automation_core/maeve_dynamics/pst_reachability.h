@@ -169,10 +169,4 @@ class PST_Reachability {
   /** @brief the PST connector that achieves maximum terminal speed. */
   PST_Connector max_terminal_;
 };  // class PST_Reachability
-
-if (const auto reachability =
-        PST_Reachability::compute(initial_speeds, p1, p2, constraints)) {
-  std::cout << *reachability << std::endl;
-}
-
 }  // namespace maeve_automation_core
