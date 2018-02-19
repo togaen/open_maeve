@@ -66,6 +66,8 @@ reachability object.
 ```c++
 #include "maeve_automation_core/maeve_dynamics/pst_reachability.h"
 
+#include <iostream>
+
 namespace maeve_automation_core {
   //
   // Construct start and target points (time, path position)
@@ -150,3 +152,5 @@ the below (although it won't be so nicely formatted):
   }
 }
 ```
+
+See the unit tests for additional usage examples.
