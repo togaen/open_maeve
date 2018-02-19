@@ -293,9 +293,10 @@ class Interval {
   /**
    * @brief Compute the interval that exactly contains the input intervals.
    *
-   * This method computes and returns a convex hull of two intervals iff they
-   * intersect. If the two intervals do not intersect, there is no interval that
-   * exactly contains the input intervals, so an invalid interval is returned.
+   * This method implements interval union. It computes and returns a convex
+   * hull of two intervals iff they intersect. If the two intervals do not
+   * intersect, there is no interval that exactly contains the input intervals,
+   * so an invalid interval is returned.
    *
    * @param interval1 The first interval to merge.
    * @param interval2 The second interval to merge.
