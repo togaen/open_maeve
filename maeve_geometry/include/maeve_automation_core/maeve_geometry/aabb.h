@@ -43,6 +43,33 @@ template <int Dim>
 class AABB {
  public:
   /**
+   * @brief Stream overload for AABB types.
+   *
+   * This method serializes the AABB as an array of axis index and interval
+   * bound pairs.
+   *
+   * @param os The output stream.
+   * @param aabb The AABB to serialize.
+   *
+   * @return The output stream with the serialized AABB.
+   */
+  friend std::ostream& operator<<(std::ostream& os, const AABB& aabb) {
+    auto print = [](std::ostream& os, const Interval& interval,
+                    const int axis) {
+      os << "{\"axis\": " << axis << ", \"bounds\": " << interval << "}";
+    };
+
+    os << "[";
+    const auto sentry = (static_cast<int>(aabb.axis_bounds_.size()) - 1);
+    for (auto i = 0; i < sentry; ++i) {
+      print(os, aabb.axis_bounds_[i], i);
+      os << ", ";
+    }
+    print(os, aabb.axis_bounds_[sentry], sentry);
+    return os << "]";
+  }
+
+  /**
    * @brief Default constructor: rely on default constructor of Interval.
    */
   AABB();
