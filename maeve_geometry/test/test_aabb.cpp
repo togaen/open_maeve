@@ -46,10 +46,10 @@ TEST(Maeve_Geometry_AABB, testOperations) {
     const auto c = AABB<2>::intersect(a, b);
     EXPECT_TRUE(AABB<2>::valid(c));
     EXPECT_FALSE(AABB<2>::empty(c));
-    EXPECT_NEAR(AABB<2>::min(c, 0), 0.5, epsilon);
-    EXPECT_NEAR(AABB<2>::max(c, 0), 1.0, epsilon);
-    EXPECT_NEAR(AABB<2>::min(c, 1), 0.25, epsilon);
-    EXPECT_NEAR(AABB<2>::max(c, 1), 0.75, epsilon);
+    EXPECT_EQ(AABB<2>::min(c, 0), 0.5);
+    EXPECT_EQ(AABB<2>::max(c, 0), 1.0);
+    EXPECT_EQ(AABB<2>::min(c, 1), 0.25);
+    EXPECT_EQ(AABB<2>::max(c, 1), 0.75);
     EXPECT_NEAR(AABB<2>::volume(c), 0.25, epsilon);
   }
 
@@ -59,10 +59,10 @@ TEST(Maeve_Geometry_AABB, testOperations) {
     const auto c = AABB<2>::convexHull(a, b);
     EXPECT_TRUE(AABB<2>::valid(c));
     EXPECT_FALSE(AABB<2>::empty(c));
-    EXPECT_NEAR(AABB<2>::min(c, 0), 0.0, epsilon);
-    EXPECT_NEAR(AABB<2>::max(c, 0), 1.5, epsilon);
-    EXPECT_NEAR(AABB<2>::min(c, 1), 0.0, epsilon);
-    EXPECT_NEAR(AABB<2>::max(c, 1), 1.0, epsilon);
+    EXPECT_EQ(AABB<2>::min(c, 0), 0.0);
+    EXPECT_EQ(AABB<2>::max(c, 0), 1.5);
+    EXPECT_EQ(AABB<2>::min(c, 1), 0.0);
+    EXPECT_EQ(AABB<2>::max(c, 1), 1.0);
     EXPECT_NEAR(AABB<2>::volume(c), 1.5, epsilon);
   }
 }
