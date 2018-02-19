@@ -36,7 +36,7 @@ namespace maeve_automation_core {
  */
 template <typename T>
 inline bool exclusiveOr(const T& a, const T& b) {
-  return (!static_cast<bool>(a) != !static_cast<bool>(b));
+  return (static_cast<bool>(a) != static_cast<bool>(b));
 }
 
 /**
