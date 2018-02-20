@@ -283,6 +283,94 @@ namespace maeve_automation_core {
 }  // namespace maeve_automation_core
 ```
 
+## Polynomial ##
+
+This class implements representation and operations for first- and
+second-order polynomials. Evaluation and derivative operations are implemented
+in addition to several geometric operations described below:
+
+* **roots:** This is a numerically stable method for computing the roots of
+a polynomial.
+* **uniqueCriticalPoint:** This method computes the unique critical point for
+quadratic polynomials.
+* **tangentRaysThroughPoint:** This method applies to quadratic polynomials.
+For a point outside the parabola, up to to two lines pass through the point
+tangent to the parabola. This function computes and returns the tangent points
+on the parabola for those lines. If only one such line exists the two tangent
+points are identical. If no such lines exist, such as for interior points, a
+disengaged optional is returned.
+* **fromPointWithDerivatives:** This method computes polynomial coefficients
+given a point and the first and second derivatives at that point.
+* **quadraticPointAtDerivative:** For a quadratic polynomial and derivative
+value, this method computes the point at which the the quadratic has a
+derivative equal to the given value.
+* **findConstrainedCriticalPoints:** For a given second derivative, horizontal
+line, and a point not on that line, exactly two parabolas pass through the point
+and have critical points on the line. This function computes and returns the
+critical points of those parabolas.
+
+
+### Example Usage ###
+
+```c++
+#include "maeve_automation_core/maeve_geometry/polynomial.h"
+
+#include <iostream>
+
+namespace maeve_automation_core {
+  //
+  // Construct a quadratic.
+  //
+
+  const auto q = Polynomial(1.0, 1.0, 1.0);
+  std::cout << q << "\n";
+  // Prints: {"a": 1.0, "b": 1.0, "c": 1.0}
+
+  //
+  // Test properties.
+  //
+
+  std::cout << q(1.0) << "\n";
+  // Prints: 3.0
+
+  std::cout << Polynomial::dx(q, 1.0) << " " << Polynomial::ddx(q) << "\n";
+  // Prints: 3 1 
+
+  std::cout << !Polynomial::roots(q) << "\n";
+  // Prints: true
+
+  if (const auto roots = Polynomial::roots(Polynomial(1.0, 2.0, 1.0))) {
+    double r1, r2;
+    std::tie(r1, r2) = *roots;
+    std::cout << r1 << " " << r2 << "\n";
+    // Prints: -1 -1
+  }
+
+  //
+  // Test operations.
+  //
+
+  const auto q1 = Polynomial(3.0, 9.0, 5.0);
+  const auto cp = Polynomial::uniqueCriticalPoint(q1);
+  std::cout << cp.x() << ", " << cp.y() << "\n";
+  // Prints: -1.5 -1.75 
+
+  const auto q2 = Polynomial(1.0, 0.0, 1.0);
+  const auto p = Eigen::Vector2d(0.0, 0.0);
+  if (const auto t = Polynomial::tangentRaysThroughPoint(q2, p)) {
+    Eigen::Vector2d p1, p2;
+    std::tie(p1, p2) = *t;
+    std::cout << p1.x() << ", " << p1.y() << " | " << p2.x() << ", " << p2.y();
+    // Prints: -1 2 1 2 
+  }
+  
+
+  static Polynomial fromPointWithDerivatives(const Eigen::Vector2d& p,
+  static Eigen::Vector2d quadraticPointAtDerivative(const Polynomial& P,
+  findConstrainedCriticalPoints(const Eigen::Vector2d& p,
+}  // namespace maeve_automation_core
+```
+
 ## Powers ##
 
 This header just contains convenience functions for raising values to integer
