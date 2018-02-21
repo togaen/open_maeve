@@ -364,10 +364,35 @@ namespace maeve_automation_core {
     // Prints: -1 2 1 2 
   }
   
+  {
+    const auto p = Eigen::Vector2d(3.0, 1.0)
+    const auto dx = 0.0;
+    const auto ddx = 2.0;
+    const auto qp = Polynomial::fromPointWithDerivatives(p, dx, ddx);
+    std::cout << qp << "\n";
+    // Prints: {"a": 2.0, "b": -12.0, "c": 19.0}
+  }
 
-  static Polynomial fromPointWithDerivatives(const Eigen::Vector2d& p,
-  static Eigen::Vector2d quadraticPointAtDerivative(const Polynomial& P,
-  findConstrainedCriticalPoints(const Eigen::Vector2d& p,
+  {
+    const auto dx = 1.0;
+    const auto p = Polynomial::quadraticPointAtDerivative(q, dx);
+    std::cout << p.x() << " " << p.y() << "\n";
+    // Prints: 0 1
+  }
+
+  {
+    const auto p = Eigen::Vector2d(2.0, 3.0);
+    const auto y_critical = 0.0;
+    const auto ddx = 2.0;
+    if (const auto points =
+            Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx)) {
+      Eigen::Vector2d pt1, pt2;
+      std::tie(pt1, pt2) = *points;
+      std::cout << pt1.x() << " " << pt1.y() << " " << pt2.x() << " " << pt2.y()
+                << "\n";
+      // Prints: 1 1 3 1
+    }
+  }
 }  // namespace maeve_automation_core
 ```
 
