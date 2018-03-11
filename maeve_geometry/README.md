@@ -9,60 +9,6 @@ it easy to quickly to share data with other languages, such as python or matlab,
 especially for generating plots. Note, however, that the serialization loses
 precision, so it should not be used for numerical applications.
 
-## AABB ##
-This class contains representation and functionality for manipulating
-axis-aligned bounding boxes (AABBs). The AABB generalizes the real interval
-to dimensions 2 and higher. In this implementation, the dimension is given as
-a template parameter. The implementation contains functionality for computing:
-
-* Extents along a given axis
-* Volume
-* Emptiness and validity checks
-* Convex hull of two AABBs
-* Point containment within an AABB
-* Intersection of two AABBs
-
-### Example Usage ###
-
-```c++
-#include "maeve_automation_core/maeve_geometry/aabb.h"
-
-#include <cassert>
-#include <iostream>
-
-namespace maeve_automation_core {
-  //
-  // Construct a 2D unit AABB.
-  //
-
-  const auto aabb = AABB<2>({Interval(0, 1), Interval(2, 3)});
-
-  //
-  // Test validity and emptiness.
-  //
-
-  assert(AABB<2>::valid(aabb));
-  assert(!AABB<2>::empty(aabb));
-
-  //
-  // Print some properties.
-  //
-
-  std::cout << aabb << "\n";
-  // Prints:
-  // [{"axis": 0, "bounds": {"min": 0.00000, "max": 1.00000}},
-  //  {"axis": 1, "bounds": {"min": 2.00000, "max": 3.00000}}]
-
-  std::cout << AABB<2>::min(aabb, 0) << " " << AABB<2>::min(aabb, 1) << "\n";
-  // Prints:
-  // 0 2
-
-  std::cout << AABB<2>::volume(aabb) << "\n";
-  // Prints:
-  // 1
-}  // namespace maeve_automation_core
-```
-
 ## Comparisons ##
 
 This is a simple set of comparison operations primarily for performing
