@@ -205,7 +205,6 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_main.cpp
   test/test_comparisons.cpp
   test/test_interval.cpp
-  test/test_aabb.cpp
   test/test_disjoint_interval.cpp
   test/test_polynomial.cpp
   test/test_powers.cpp
