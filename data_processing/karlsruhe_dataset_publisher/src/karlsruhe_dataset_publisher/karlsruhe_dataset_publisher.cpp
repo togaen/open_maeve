@@ -39,6 +39,8 @@ insdataRow insdataRow::createInsdataRow(const uint32_t _sec,
                     invalid_pitch, _yaw);
 }
 
+//------------------------------------------------------------------------------
+
 sensor_msgs::NavSatFix insdataRow::convertToNavSatFix(
     const insdataRow& row, const std::string& frame_id) {
   sensor_msgs::NavSatFix msg;
@@ -54,6 +56,8 @@ sensor_msgs::NavSatFix insdataRow::convertToNavSatFix(
   return msg;
 }
 
+//------------------------------------------------------------------------------
+
 std_msgs::Header insdataRow::getNavSatFixHeader(const insdataRow& row,
                                                 const std::string& frame_id) {
   std_msgs::Header header;
@@ -61,6 +65,8 @@ std_msgs::Header insdataRow::getNavSatFixHeader(const insdataRow& row,
   header.frame_id = frame_id;
   return header;
 }
+
+//------------------------------------------------------------------------------
 
 sensor_msgs::NavSatStatus insdataRow::getNavSatFixStatus() {
   sensor_msgs::NavSatStatus status;
