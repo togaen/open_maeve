@@ -21,4 +21,52 @@
  */
 #include "karlsruhe_dataset_publisher/karlsruhe_dataset_publisher.h"
 
-namespace maeve_automation_core {}  // namespace maeve_automation_core
+#include <limits>
+
+namespace maeve_automation_core {
+static constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
+
+insdataRow insdataRow::createInsdataRow(const uint32_t _sec,
+                                        const uint32_t _nsec, const double _lat,
+                                        const double _lon, const double _alt,
+                                        const double _x, const double _y,
+                                        const double _z, const double _roll,
+                                        const double _pitch,
+                                        const double _yaw) {
+  static constexpr auto invalid_roll = NaN;
+  static constexpr auto invalid_pitch = NaN;
+  return insdataRow(_sec, _nsec, _lat, _lon, _alt, _x, _y, _z, invalid_roll,
+                    invalid_pitch, _yaw);
+}
+
+sensor_msgs::NavSatFix insdataRow::convertToNavSatFix(
+    const insdataRow& row, const std::string& frame_id) {
+  sensor_msgs::NavSatFix msg;
+  msg.header = insdataRow::getNavSatFixHeader(row, frame_id);
+  msg.status = insdataRow::getNavSatFixStatus();
+  msg.latitude = row.lat;
+  msg.longitude = row.lon;
+  msg.altitude = row.alt;
+  msg.position_covariance_type =
+      sensor_msgs::NavSatFix::COVARIANCE_TYPE_UNKNOWN;
+  std::fill(std::begin(msg.position_covariance),
+            std::end(msg.position_covariance), NaN);
+  return msg;
+}
+
+std_msgs::Header insdataRow::getNavSatFixHeader(const insdataRow& row,
+                                                const std::string& frame_id) {
+  std_msgs::Header header;
+  header.stamp = ros::Time(row.sec, row.nsec);
+  header.frame_id = frame_id;
+  return header;
+}
+
+sensor_msgs::NavSatStatus insdataRow::getNavSatFixStatus() {
+  sensor_msgs::NavSatStatus status;
+  status.status = sensor_msgs::NavSatStatus::STATUS_FIX;
+  status.service = sensor_msgs::NavSatStatus::SERVICE_GPS;
+  return status;
+}
+
+}  // namespace maeve_automation_core
