@@ -30,7 +30,27 @@
 #include <ros/console.h>
 
 namespace maeve_automation_core {
+namespace karlsruhe_dataset_publisher {
+
 static constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
+
+//------------------------------------------------------------------------------
+
+geometry_msgs::Transform getTransformFromOdomToCamera() {
+  geometry_msgs::Vector3 T;
+  T.x = 1.6;
+  T.y = 0.05;
+  T.z = 0.6;
+  geometry_msgs::Quaternion R;
+  R.w = 0.999999756306074;
+  R.x = 0.0;
+  R.y = -0.000698131644088;
+  R.z = 0.0;
+  geometry_msgs::Transform Tx;
+  Tx.translation = T;
+  Tx.rotation = R;
+  return Tx;
+}
 
 //------------------------------------------------------------------------------
 
@@ -157,4 +177,5 @@ std::tuple<uint32_t, uint32_t> insdataRow::parseTime(
   return std::make_tuple(sec, nsec);
 }
 
+}  // namespace karlsruhe_dataset_publisher
 }  // namespace maeve_automation_core

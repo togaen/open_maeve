@@ -23,9 +23,16 @@
 #include "karlsruhe_dataset_publisher/karlsruhe_dataset_publisher.h"
 
 namespace maeve_automation_core {
+const geometry_msgs::Transform
+    KarlsruheDatasetPublisherNodeHandler::CAMERA_T_ODOM =
+        karlsruhe_dataset_publisher::getTransformFromOdomToCamera();
+
+//------------------------------------------------------------------------------
 
 KarlsruheDatasetPublisherNodeHandler::KarlsruheDatasetPublisherNodeHandler(
     const ros::NodeHandle& nh) {}
+
+//------------------------------------------------------------------------------
 
 void KarlsruheDatasetPublisherNodeHandler::publish() {}
 

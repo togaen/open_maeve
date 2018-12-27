@@ -21,23 +21,24 @@
  */
 #pragma once
 
-#include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Transform.h>
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 
 namespace maeve_automation_core {
 class KarlsruheDatasetPublisherNodeHandler {
  public:
+  static constexpr auto CAMERA_FRAME_ID = "camera";
+  static constexpr auto ODOM_FRAME_ID = "odom";
+  static const geometry_msgs::Transform CAMERA_T_ODOM;
+
   /**
    * @brief Construct the ROS interface.
-   *
-   * @param params The ROS node params.
-   * @param nh The ROS node handle.
    */
   KarlsruheDatasetPublisherNodeHandler(const ros::NodeHandle& nh);
 
   /**
-   * @brief Publish the odometry and left/right image messages.
+   * @brief Publish the GPS and left/right image messages.
    */
   void publish();
 

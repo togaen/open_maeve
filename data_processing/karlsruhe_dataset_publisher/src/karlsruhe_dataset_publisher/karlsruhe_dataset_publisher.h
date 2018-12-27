@@ -24,9 +24,16 @@
 #include <cstdint>
 #include <tuple>
 
+#include <geometry_msgs/Transform.h>
 #include <sensor_msgs/NavSatFix.h>
 
 namespace maeve_automation_core {
+namespace karlsruhe_dataset_publisher {
+
+/**
+ * @brief Transform a point from odom frame to camera frame
+ */
+geometry_msgs::Transform getTransformFromOdomToCamera();
 
 /**
  * @brief Holds one row of data from an insdata.txt file
@@ -103,4 +110,5 @@ struct insdataRow {
   static sensor_msgs::NavSatStatus getNavSatFixStatus();
 };  // struct insdataRow
 
+}  // namespace karlsruhe_dataset_publisher
 }  // namespace maeve_automation_core
