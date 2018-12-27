@@ -76,22 +76,20 @@ struct insdataRow {
   const double yaw;
 
   /**
-   * @brief Parse a 19-digit nanosecond time string to seconds and nanoseconds
-   */
-  static std::tuple<uint32_t, uint32_t> parseTime(const std::string& time_text);
-
-  /**
-   * @brief Factory method for an insdataRow object.
+   * @brief Explicit constructor
    *
    * @note The roll and pitch are replaced with NaN because the data in the file
    * are corrupt (see link to dataset in README.md)
    */
-  static insdataRow createInsdataRow(const uint32_t sec, const uint32_t nsec,
-                                     const double lat, const double lon,
-                                     const double alt, const double x,
-                                     const double y, const double z,
-                                     const double roll, const double pitch,
-                                     const double yaw);
+  insdataRow(const uint32_t _sec, const uint32_t _nsec, const double _lat,
+             const double _lon, const double _alt, const double _x,
+             const double _y, const double _z, const double _roll,
+             const double _pitch, const double _yaw);
+
+  /**
+   * @brief Parse a 19-digit nanosecond time string to seconds and nanoseconds
+   */
+  static std::tuple<uint32_t, uint32_t> parseTime(const std::string& time_text);
 
   /**
    * @brief Store insdata row timestamp and given frame id in a header message
@@ -103,14 +101,6 @@ struct insdataRow {
    * @brief Status is set to STATUS_FIX and service to SERVICE_GPS
    */
   static sensor_msgs::NavSatStatus getNavSatFixStatus();
-
-  /**
-   * @brief Explicit constructor
-   */
-  insdataRow(const uint32_t _sec, const uint32_t _nsec, const double _lat,
-             const double _lon, const double _alt, const double _x,
-             const double _y, const double _z, const double _roll,
-             const double _pitch, const double _yaw);
 };  // struct insdataRow
 
 }  // namespace maeve_automation_core

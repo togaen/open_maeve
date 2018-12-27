@@ -34,17 +34,24 @@ static constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
 
 //------------------------------------------------------------------------------
 
-insdataRow insdataRow::createInsdataRow(const uint32_t sec, const uint32_t nsec,
-                                        const double lat, const double lon,
-                                        const double alt, const double x,
-                                        const double y, const double z,
-                                        const double roll, const double pitch,
-                                        const double yaw) {
-  static constexpr auto invalid_roll = NaN;
-  static constexpr auto invalid_pitch = NaN;
-  return insdataRow(sec, nsec, lat, lon, alt, x, y, z, invalid_roll,
-                    invalid_pitch, yaw);
-}
+insdataRow::insdataRow(const uint32_t _sec, const uint32_t _nsec,
+                       const double _lat, const double _lon, const double _alt,
+                       const double _x, const double _y, const double _z,
+                       const double _roll, const double _pitch,
+                       const double _yaw)
+    : sec(_sec),
+      nsec(_nsec),
+      lat(_lat),
+      lon(_lon),
+      alt(_alt),
+      x(_x),
+      y(_y),
+      z(_z),
+      roll(NaN),
+      pitch(NaN),
+      yaw(_yaw)
+
+{}
 
 //------------------------------------------------------------------------------
 
@@ -122,8 +129,7 @@ insdataRow insdataRow::createInsdataRow(const std::string& row_text) {
     const auto pitch = std::stod(tokens[8]);
     const auto yaw = std::stod(tokens[9]);
 
-    return createInsdataRow(sec, nsec, lat, lon, alt, x, y, z, roll, pitch,
-                            yaw);
+    return insdataRow(sec, nsec, lat, lon, alt, x, y, z, roll, pitch, yaw);
   } catch (const std::exception& e) {
     std::stringstream ss;
     ss << "Error parsing one or more of the following values: ";
