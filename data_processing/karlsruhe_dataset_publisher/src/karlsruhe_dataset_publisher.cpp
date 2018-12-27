@@ -20,21 +20,10 @@
  * IN THE SOFTWARE.
  */
 
-#include "karlsruhe_dataset_publisher/karlsruhe_dataset_publisher_node_handler.h"
+#include "karlsruhe_dataset_publisher/karlsruhe_dataset_publisher.h"
 
-int main(int argc, char* argv[]) {
-  const auto node_name = std::string("karlsruhe_dataset_publisher");
+static constexpr auto DATA_PATH =
+    "/mnt/hgfs/VM Shared/data/Karlsruhe Stereo Sequences";
+static constexpr auto DATA_NAME = "2009_09_08_drive_0010";
 
-  // Initialize ROS node.
-  ros::init(argc, argv, node_name);
-  ros::NodeHandle nh(node_name);
-
-  // Create handler.
-  maeve_automation_core::KarlsruheDatasetPublisherNodeHandler handler(nh);
-
-  // Kick it off.
-  ros::spin();
-
-  // Done.
-  return EXIT_SUCCESS;
-}
+int main(int argc, char* argv[]) { return EXIT_SUCCESS; }

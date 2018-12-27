@@ -25,10 +25,16 @@
 #include <tuple>
 
 #include <geometry_msgs/Transform.h>
+#include <sensor_msgs/CameraInfo.h>
+#include <sensor_msgs/Image.h>
 #include <sensor_msgs/NavSatFix.h>
 
 namespace maeve_automation_core {
 namespace karlsruhe_dataset_publisher {
+
+// TODO(jeffj): merge this
+sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
+    const sensor_msgs::ImagePtr& img_ptr);
 
 /**
  * @brief Transform a point from odom frame to camera frame
