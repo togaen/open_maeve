@@ -22,6 +22,7 @@
 #pragma once
 
 #include <cstdint>
+#include <tuple>
 
 #include <sensor_msgs/NavSatFix.h>
 
@@ -31,30 +32,15 @@ namespace maeve_automation_core {
  * @brief Holds one row of data from an insdata.txt file
  */
 struct insdataRow {
-  const uint32_t sec;
-  const uint32_t nsec;
-  const double lat;
-  const double lon;
-  const double alt;
-  const double x;
-  const double y;
-  const double z;
-  const double roll;
-  const double pitch;
-  const double yaw;
-
   /**
-   * @brief Factory method for an insdataRow object.
+   * @brief Parse and single row of space-delimited insdata text to create an
+   * insdata object
    *
-   * @note The roll and pitch are replaced with NaN because the data in the file
-   * are corrupt (see link to dataset in README.md)
+   * The columns are: 'timestamp lat lon alt x y z roll pitch yaw'
+   *
+   * @note An exception is thrown if the row text is malformed
    */
-  static insdataRow createInsdataRow(const uint32_t _sec, const uint32_t _nsec,
-                                     const double _lat, const double _lon,
-                                     const double _alt, const double _x,
-                                     const double _y, const double _z,
-                                     const double _roll, const double _pitch,
-                                     const double _yaw);
+  static insdataRow createInsdataRow(const std::string& row_text);
 
   /**
    * @brief Build a ROS NavSatFix message containing the information from an
@@ -68,6 +54,45 @@ struct insdataRow {
                                                    const std::string& frame_id);
 
  private:
+  /**
+   * @brief This struct is intended strictly as an intermediary between
+   * insdata.txt files and message objects. Only the static methods should ever
+   * have access these members.
+   */
+  static constexpr auto ROW_DELIMITER = ' ';
+  static constexpr auto ROW_TOKEN_COUNT = 10;
+  static constexpr auto TIMESTAMP_DIGITS = 19;
+
+  const uint32_t sec;
+  const uint32_t nsec;
+  const double lat;
+  const double lon;
+  const double alt;
+  const double x;
+  const double y;
+  const double z;
+  const double roll;
+  const double pitch;
+  const double yaw;
+
+  /**
+   * @brief Parse a 19-digit nanosecond time string to seconds and nanoseconds
+   */
+  static std::tuple<uint32_t, uint32_t> parseTime(const std::string& time_text);
+
+  /**
+   * @brief Factory method for an insdataRow object.
+   *
+   * @note The roll and pitch are replaced with NaN because the data in the file
+   * are corrupt (see link to dataset in README.md)
+   */
+  static insdataRow createInsdataRow(const uint32_t sec, const uint32_t nsec,
+                                     const double lat, const double lon,
+                                     const double alt, const double x,
+                                     const double y, const double z,
+                                     const double roll, const double pitch,
+                                     const double yaw);
+
   /**
    * @brief Store insdata row timestamp and given frame id in a header message
    */

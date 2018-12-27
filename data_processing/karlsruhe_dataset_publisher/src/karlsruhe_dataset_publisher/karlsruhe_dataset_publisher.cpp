@@ -21,22 +21,29 @@
  */
 #include "karlsruhe_dataset_publisher/karlsruhe_dataset_publisher.h"
 
+#include <array>
+#include <exception>
+#include <iostream>
 #include <limits>
+#include <sstream>
+
+#include <ros/console.h>
 
 namespace maeve_automation_core {
 static constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
 
-insdataRow insdataRow::createInsdataRow(const uint32_t _sec,
-                                        const uint32_t _nsec, const double _lat,
-                                        const double _lon, const double _alt,
-                                        const double _x, const double _y,
-                                        const double _z, const double _roll,
-                                        const double _pitch,
-                                        const double _yaw) {
+//------------------------------------------------------------------------------
+
+insdataRow insdataRow::createInsdataRow(const uint32_t sec, const uint32_t nsec,
+                                        const double lat, const double lon,
+                                        const double alt, const double x,
+                                        const double y, const double z,
+                                        const double roll, const double pitch,
+                                        const double yaw) {
   static constexpr auto invalid_roll = NaN;
   static constexpr auto invalid_pitch = NaN;
-  return insdataRow(_sec, _nsec, _lat, _lon, _alt, _x, _y, _z, invalid_roll,
-                    invalid_pitch, _yaw);
+  return insdataRow(sec, nsec, lat, lon, alt, x, y, z, invalid_roll,
+                    invalid_pitch, yaw);
 }
 
 //------------------------------------------------------------------------------
@@ -73,6 +80,75 @@ sensor_msgs::NavSatStatus insdataRow::getNavSatFixStatus() {
   status.status = sensor_msgs::NavSatStatus::STATUS_FIX;
   status.service = sensor_msgs::NavSatStatus::SERVICE_GPS;
   return status;
+}
+
+//------------------------------------------------------------------------------
+
+insdataRow insdataRow::createInsdataRow(const std::string& row_text) {
+  std::istringstream is(row_text);
+  std::string token;
+  std::array<std::string, ROW_TOKEN_COUNT> tokens;
+  auto count = 0;
+  while (std::getline(is, token, ROW_DELIMITER)) {
+    if (token.empty()) {
+      continue;
+    }
+    if (count < ROW_TOKEN_COUNT) {
+      tokens[count] = token;
+    }
+    count++;
+  }
+
+  if (count != ROW_TOKEN_COUNT) {
+    std::stringstream ss;
+    ss << "Error parsing insdata row string \"" << row_text
+       << "\": expected exactly " << ROW_TOKEN_COUNT << " tokens, got "
+       << count;
+    throw std::runtime_error(ss.str());
+  }
+
+  try {
+    uint32_t sec = 0;
+    uint32_t nsec = 0;
+    std::tie(sec, nsec) = parseTime(tokens[0]);
+
+    const auto lat = std::stod(tokens[1]);
+    const auto lon = std::stod(tokens[2]);
+    const auto alt = std::stod(tokens[3]);
+    const auto x = std::stod(tokens[4]);
+    const auto y = std::stod(tokens[5]);
+    const auto z = std::stod(tokens[6]);
+    const auto roll = std::stod(tokens[7]);
+    const auto pitch = std::stod(tokens[8]);
+    const auto yaw = std::stod(tokens[9]);
+
+    return createInsdataRow(sec, nsec, lat, lon, alt, x, y, z, roll, pitch,
+                            yaw);
+  } catch (const std::exception& e) {
+    std::stringstream ss;
+    ss << "Error parsing one or more of the following values: ";
+    std::for_each(std::begin(tokens), std::end(tokens),
+                  [&ss](const std::string& val) { ss << val << " "; });
+    ss << "\n" << e.what();
+    throw std::runtime_error(ss.str());
+  }
+}
+
+//------------------------------------------------------------------------------
+
+std::tuple<uint32_t, uint32_t> insdataRow::parseTime(
+    const std::string& time_text) {
+  if (time_text.length() != TIMESTAMP_DIGITS) {
+    std::stringstream ss;
+    ss << "Timestamp has invalid length (must be " << TIMESTAMP_DIGITS << ")";
+    throw std::runtime_error(ss.str());
+  }
+
+  const auto sec_string = time_text.substr(0, 10);
+  const auto nsec_string = time_text.substr(11, 9);
+  const uint32_t sec = std::stoul(sec_string);
+  const uint32_t nsec = std::stoul(nsec_string);
+  return std::make_tuple(sec, nsec);
 }
 
 }  // namespace maeve_automation_core
