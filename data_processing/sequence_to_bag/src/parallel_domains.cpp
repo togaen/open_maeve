@@ -29,7 +29,7 @@
 #include <rosbag/bag.h>
 #include <rosgraph_msgs/Clock.h>
 
-#include "sequence_to_bag/io.h"
+#include "sequence_to_bag/parallel_domains/io.h"
 
 int main(int argc, char** argv) {
   // Make sure all required arguments are specified.
@@ -46,8 +46,9 @@ int main(int argc, char** argv) {
   const auto output_path = std::string(argv[2]);
   const auto image_1_topic = std::string(argv[3]);
   const auto image_2_topic = std::string(argv[4]);
-  const auto clock_hz_param = maeve_automation_core::getClockHz(
-      (argc > 5) ? std::string(argv[5]) : std::string(""));
+  const auto clock_hz_param =
+      maeve_automation_core::parallel_domains::getClockHz(
+          (argc > 5) ? std::string(argv[5]) : std::string(""));
 
   // Let people know what's going on.
   ROS_INFO_STREAM("\nUsing data set path: "
@@ -57,11 +58,13 @@ int main(int argc, char** argv) {
                   << "\nClock hz: " << clock_hz_param);
 
   // Get meta information.
-  const auto meta_info = maeve_automation_core::getMetaInfo(data_set_path);
+  const auto meta_info =
+      maeve_automation_core::parallel_domains::getMetaInfo(data_set_path);
   if (!meta_info) {
     ROS_FATAL_STREAM(
         "Failed retrieving meta info; does "
-        << maeve_automation_core::constructMetaYamlPath(data_set_path)
+        << maeve_automation_core::parallel_domains::constructMetaYamlPath(
+               data_set_path)
         << " exit?");
     return EXIT_FAILURE;
   }
@@ -70,8 +73,9 @@ int main(int argc, char** argv) {
   // Get files.
   std::map<int, sensor_msgs::ImagePtr> raw_images_idx;
   std::map<int, sensor_msgs::ImagePtr> seg_images_idx;
-  if (auto m = maeve_automation_core::getSortedIndexedImageLists(
-          meta_info->raw_image_dir, meta_info->seg_image_dir)) {
+  if (auto m =
+          maeve_automation_core::parallel_domains::getSortedIndexedImageLists(
+              meta_info->raw_image_dir, meta_info->seg_image_dir)) {
     std::tie(raw_images_idx, seg_images_idx) = *m;
   } else {
     ROS_FATAL_STREAM("Error in data set image sets.");

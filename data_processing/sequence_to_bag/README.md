@@ -1,19 +1,30 @@
 # README #
 
-This package is a command line utility for converting image segmentation
-sequence data sets into bag files. Usage and the specification for the data set
-structure is given below.
+This package contains various utilities for converting data sequences to bag files. Currently two data sequence formats are supported:
+* Parallel Domains
+* Karlsruhe Dataset
+
+The two usages are detailed below.
+
+## Karlsruhe Dataset: Stereo Video Sequences + rough GPS Poses ##
+
+TODO
+
+## Parallel Domains ##
+
+This utility for converts image segmentation sequence data sets into bag files.
+Usage and the specification for the data set structure is given below.
 
 The utility looks for camera\_info.yaml in data-set-path in order to record
 camera parameters to the bag file. If the file doesn't exist, the utility
 synthesizes parameters with unit focal lengths, centered optical center, and no
 distortion.
 
-## Usage ##
+### Usage ###
 
 To use the converter, issue a command like this:
 
-    rosrun sequence_to_bag sequence_to_bag data-set-path bag-output-dir raw-image-camera-name segmented-image-camera-name
+    rosrun sequence_to_bag parallel_domains data-set-path bag-output-dir raw-image-camera-name segmented-image-camera-name
 
 The images in the 'camera-frames' directory will be published to:
 
@@ -23,7 +34,7 @@ The images in the 'segmented-frames' directory will be published to:
 
     /segmented-image-camera-name/image
 
-## Image Segmentation Sequence Data Set ##
+### Image Segmentation Sequence Data Set ###
 
 The data set consists of a sequence of image frames and corresponding sequence
 of segmentation frames. The image frames are the images that the camera creates,
