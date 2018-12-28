@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
         "Failed retrieving meta info; does "
         << maeve_automation_core::parallel_domains::constructMetaYamlPath(
                data_set_path)
-        << " exit?");
+        << " exist?");
     return EXIT_FAILURE;
   }
   ROS_INFO_STREAM("Meta info:\n" << *meta_info);
