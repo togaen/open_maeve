@@ -136,11 +136,11 @@ include_directories(
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}_lib
-  src/${PROJECT_NAME}/io.cpp
+  src/${PROJECT_NAME}/sequence_to_bag.cpp
 )
 
 add_library(parallel_domains_lib
-  src/${PROJECT_NAME}/parallel_domains/io.cpp
+  src/${PROJECT_NAME}/parallel_domains/parallel_domains.cpp
 )
 
 add_library(karlsruhe_dataset_lib

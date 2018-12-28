@@ -21,7 +21,7 @@
  */
 #pragma once
 
-#include "sequence_to_bag/io.h"
+#include "sequence_to_bag/sequence_to_bag.h"
 
 #include <array>
 #include <iostream>

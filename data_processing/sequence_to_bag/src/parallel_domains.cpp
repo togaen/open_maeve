@@ -29,7 +29,7 @@
 #include <rosbag/bag.h>
 #include <rosgraph_msgs/Clock.h>
 
-#include "sequence_to_bag/parallel_domains/io.h"
+#include "sequence_to_bag/parallel_domains/parallel_domains.h"
 
 int main(int argc, char** argv) {
   // Make sure all required arguments are specified.

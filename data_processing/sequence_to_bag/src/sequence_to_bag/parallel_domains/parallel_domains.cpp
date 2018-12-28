@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "sequence_to_bag/parallel_domains/io.h"
+#include "sequence_to_bag/parallel_domains/parallel_domains.h"
 
 #include <cv_bridge/cv_bridge.h>
 #include <std_msgs/Header.h>

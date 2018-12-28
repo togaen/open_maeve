@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "sequence_to_bag/io.h"
+#include "sequence_to_bag/sequence_to_bag.h"
 
 #include <boost/range/iterator_range.hpp>
 
