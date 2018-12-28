@@ -23,15 +23,40 @@
 #include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
 namespace {
-constexpr auto DATA_PATH =
-    "/mnt/hgfs/VM Shared/data/Karlsruhe Stereo Sequences";
-constexpr auto DATA_NAME = "2009_09_08_drive_0010";
 namespace po = boost::program_options;
 }  // namespace
 
 int main(int argc, char** argv) {
+  constexpr auto HELP = "help";
   boost::optional<std::string> data_set_path_opt;
   boost::optional<std::string> output_path_opt;
-  boost::optional<std::string> camera_name;
+  boost::optional<std::string> camera_name_opt;
+
+  po::options_description desc(
+      "Available arguments. All required arguments must be set");
+  desc.add_options()(HELP, "Print help and exit.")(
+      "data-set-path", po::value(&data_set_path_opt),
+      "[Required]: Absolute path to the data set.")(
+      "bag-output-dir", po::value(&output_path_opt),
+      "Absolute path to the directory that will contain the output bag file.")(
+      "camera-name", po::value(&camera_name_opt),
+      "[Required]: Camera name to use for the stereo image stream.");
+
+  po::variables_map vm;
+  po::store(po::parse_command_line(argc, argv, desc), vm);
+  po::notify(vm);
+
+  const auto help_requested = vm.count(HELP);
+  const auto required_arg_not_set =
+      !(data_set_path_opt && output_path_opt && camera_name_opt);
+  if (help_requested || required_arg_not_set) {
+    std::cout << desc << "\n";
+    return EXIT_SUCCESS;
+  }
+
+  const auto data_set_path = *data_set_path_opt;
+  const auto output_path = *output_path_opt;
+  const auto camera_name = *camera_name_opt;
+
   return EXIT_SUCCESS;
 }

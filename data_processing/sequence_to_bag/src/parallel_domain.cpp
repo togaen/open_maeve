@@ -33,6 +33,7 @@ namespace po = boost::program_options;
 }  // namespace
 
 int main(int argc, char** argv) {
+  constexpr auto HELP = "help";
   boost::optional<std::string> data_set_path_opt;
   boost::optional<std::string> output_path_opt;
   boost::optional<std::string> image_1_topic_opt;
@@ -40,9 +41,9 @@ int main(int argc, char** argv) {
 
   po::options_description desc(
       "Available arguments. All required arguments must be set:");
-  desc.add_options()("help", "Print help and exit.")(
+  desc.add_options()(HELP, "Print help and exit.")(
       "data-set-path", po::value(&data_set_path_opt),
-      "[Required] Absolute path to the data set.")(
+      "[Required]: Absolute path to the data set.")(
       "bag-output-dir", po::value(&output_path_opt),
       "[Required]: Absolute path to the directory that will contain the output "
       "bag file.")("raw-image-camera-name", po::value(&image_1_topic_opt),
@@ -54,7 +55,7 @@ int main(int argc, char** argv) {
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);
 
-  const auto help_requested = vm.count("help");
+  const auto help_requested = vm.count(HELP);
   const auto required_arg_not_set = !(data_set_path_opt && output_path_opt &&
                                       image_1_topic_opt && image_2_topic_opt);
   if (help_requested || required_arg_not_set) {
