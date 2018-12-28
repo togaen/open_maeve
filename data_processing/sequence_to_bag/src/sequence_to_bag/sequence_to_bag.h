@@ -21,9 +21,14 @@
  */
 #pragma once
 
+#include <cstdlib>
+
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 
+#include <ros/console.h>
+#include <rosbag/bag.h>
+#include <rosgraph_msgs/Clock.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
 

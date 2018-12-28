@@ -19,17 +19,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
+
+#include "sequence_to_bag/parallel_domains/parallel_domains.h"
+
 #include <algorithm>
 #include <cstdlib>
 #include <map>
 #include <string>
 
 #include <camera_calibration_parsers/parse.h>
-#include <ros/console.h>
-#include <rosbag/bag.h>
-#include <rosgraph_msgs/Clock.h>
-
-#include "sequence_to_bag/parallel_domains/parallel_domains.h"
 
 int main(int argc, char** argv) {
   // Make sure all required arguments are specified.

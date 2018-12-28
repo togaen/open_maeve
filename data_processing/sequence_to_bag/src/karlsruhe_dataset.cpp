@@ -26,4 +26,4 @@ static constexpr auto DATA_PATH =
     "/mnt/hgfs/VM Shared/data/Karlsruhe Stereo Sequences";
 static constexpr auto DATA_NAME = "2009_09_08_drive_0010";
 
-int main(int argc, char* argv[]) { return EXIT_SUCCESS; }
+int main(int argc, char** argv) { return EXIT_SUCCESS; }
