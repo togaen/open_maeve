@@ -40,13 +40,18 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>cv_bridge</depend>
-  <depend>rosbag</depend>
-  <depend>rosgraph_msgs</depend>
-  <depend>yaml-cpp</depend>
-  <depend>camera_calibration_parsers</depend>
-  <depend>sensor_msgs</depend>
-
+  <build_depend>cv_bridge</build_depend>
+  <exec_depend>cv_bridge</exec_depend>>
+  <build_depend>rosbag</build_depend>
+  <exec_depend>rosbag</exec_depend>
+  <build_depend>rosgraph_msgs</build_depend>
+  <exec_depend>rosgraph_msgs</exec_depend>
+  <build_depend>yaml-cpp</build_depend>
+  <exec_depend>yaml-cpp</exec_depend>
+  <build_depend>camera_calibration_parsers</build_depend>
+  <exec_depend>camera_calibration_parsers</exec_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <exec_depend>sensor_msgs</exec_depend>
   <build_depend>geometry_msgs</build_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <build_depend>gps_common</build_depend>
