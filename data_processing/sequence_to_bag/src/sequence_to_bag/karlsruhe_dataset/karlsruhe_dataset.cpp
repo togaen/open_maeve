@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "karlsruhe_dataset_publisher/karlsruhe_dataset_publisher.h"
+#include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
 #include <array>
 #include <exception>

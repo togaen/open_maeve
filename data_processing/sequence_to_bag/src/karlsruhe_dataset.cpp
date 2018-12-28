@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Maeve Automation
+ * Copyright 2017 Maeve Automation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -19,29 +19,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#pragma once
 
-#include <geometry_msgs/Transform.h>
-#include <ros/ros.h>
-#include <tf/transform_broadcaster.h>
+#include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
-namespace maeve_automation_core {
-class KarlsruheDatasetPublisherNodeHandler {
- public:
-  static constexpr auto CAMERA_FRAME_ID = "camera";
-  static constexpr auto ODOM_FRAME_ID = "odom";
-  static const geometry_msgs::Transform CAMERA_T_ODOM;
+static constexpr auto DATA_PATH =
+    "/mnt/hgfs/VM Shared/data/Karlsruhe Stereo Sequences";
+static constexpr auto DATA_NAME = "2009_09_08_drive_0010";
 
-  /**
-   * @brief Construct the ROS interface.
-   */
-  KarlsruheDatasetPublisherNodeHandler(const ros::NodeHandle& nh);
-
-  /**
-   * @brief Publish the GPS and left/right image messages.
-   */
-  void publish();
-
- private:
-};  // class KarlsruheDatasetPublisherNodeHandler
-}  // namespace maeve_automation_core
+int main(int argc, char* argv[]) { return EXIT_SUCCESS; }

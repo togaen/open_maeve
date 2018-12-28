@@ -21,6 +21,9 @@ find_package(catkin REQUIRED COMPONENTS
   rosgraph_msgs
   camera_calibration_parsers
   sensor_msgs
+  geometry_msgs
+  gps_common
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -126,7 +129,6 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
   src
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
@@ -141,6 +143,10 @@ add_library(parallel_domains_lib
   src/${PROJECT_NAME}/parallel_domains/io.cpp
 )
 
+add_library(karlsruhe_dataset_lib
+  src/${PROJECT_NAME}/karlsruhe_dataset/karlsruhe_dataset.cpp
+)
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -151,6 +157,10 @@ add_library(parallel_domains_lib
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(parallel_domains
   src/parallel_domains.cpp
+)
+
+add_executable(karlsruhe_dataset
+  src/karlsruhe_dataset.cpp
 )
 
 ## Rename C++ executable without prefix
@@ -170,6 +180,12 @@ target_link_libraries(parallel_domains
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   yaml-cpp
+)
+
+target_link_libraries(karlsruhe_dataset
+  karlsruhe_dataset_lib
+  ${PROJECT_NAME}_lib
+  ${catkin_LIBRARIES}
 )
 
 #############
