@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Maeve Automation
+ * Copyright 2018 Maeve Automation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,8 +22,16 @@
 
 #include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
-static constexpr auto DATA_PATH =
+namespace {
+constexpr auto DATA_PATH =
     "/mnt/hgfs/VM Shared/data/Karlsruhe Stereo Sequences";
-static constexpr auto DATA_NAME = "2009_09_08_drive_0010";
+constexpr auto DATA_NAME = "2009_09_08_drive_0010";
+namespace po = boost::program_options;
+}  // namespace
 
-int main(int argc, char** argv) { return EXIT_SUCCESS; }
+int main(int argc, char** argv) {
+  boost::optional<std::string> data_set_path_opt;
+  boost::optional<std::string> output_path_opt;
+  boost::optional<std::string> camera_name;
+  return EXIT_SUCCESS;
+}

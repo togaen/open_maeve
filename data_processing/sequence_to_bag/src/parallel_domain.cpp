@@ -28,7 +28,9 @@
 
 #include <camera_calibration_parsers/parse.h>
 
+namespace {
 namespace po = boost::program_options;
+}  // namespace
 
 int main(int argc, char** argv) {
   boost::optional<std::string> data_set_path_opt;

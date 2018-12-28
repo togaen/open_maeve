@@ -21,20 +21,16 @@
  */
 #pragma once
 
+#include "sequence_to_bag/sequence_to_bag.h"
+
 #include <cstdint>
 #include <tuple>
 
 #include <geometry_msgs/Transform.h>
-#include <sensor_msgs/CameraInfo.h>
-#include <sensor_msgs/Image.h>
 #include <sensor_msgs/NavSatFix.h>
 
 namespace maeve_automation_core {
-namespace karlsruhe_dataset_publisher {
-
-// TODO(jeffj): merge this
-sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
-    const sensor_msgs::ImagePtr& img_ptr);
+namespace karlsruhe_dataset {
 
 /**
  * @brief Transform a point from odom frame to camera frame
@@ -116,5 +112,5 @@ struct insdataRow {
   static sensor_msgs::NavSatStatus getNavSatFixStatus();
 };  // struct insdataRow
 
-}  // namespace karlsruhe_dataset_publisher
+}  // namespace karlsruhe_dataset
 }  // namespace maeve_automation_core
