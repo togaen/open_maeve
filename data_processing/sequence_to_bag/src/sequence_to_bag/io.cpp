@@ -21,6 +21,8 @@
  */
 #include "sequence_to_bag/io.h"
 
+#include <boost/range/iterator_range.hpp>
+
 namespace maeve_automation_core {
 
 sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
@@ -84,6 +86,26 @@ sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
   cam_info_msg.roi.do_rectify = false;
 
   return cam_info_msg;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<boost::filesystem::path> getFileList(const std::string& path) {
+  std::vector<boost::filesystem::path> file_list;
+
+  if (boost::filesystem::is_directory(path)) {
+    for (auto& entry : boost::make_iterator_range(
+             boost::filesystem::directory_iterator(path), {})) {
+      const auto f = entry.path().filename().string();
+      if (boost::filesystem::is_directory(entry) || f.empty() ||
+          (f[0] == '.')) {
+        continue;
+      }
+      file_list.push_back(entry.path());
+    }
+  }
+
+  return file_list;
 }
 
 }  // namespace maeve_automation_core

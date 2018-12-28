@@ -23,9 +23,6 @@
 
 #include "sequence_to_bag/io.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/optional.hpp>
-
 #include <array>
 #include <iostream>
 #include <map>
@@ -128,16 +125,6 @@ std::map<int, sensor_msgs::ImagePtr> getSortedIndexedImages(
  */
 std::map<int, std::string> getSortedIndexedFileList(
     const std::vector<boost::filesystem::path>& file_list);
-
-/**
- * @brief Get a list of all non-hidden files in the given path.
- *
- * @param path The path of the directory to list files for.
- *
- * @return A vector of fully qualifed filenames. If 'path' is not a valid
- * directory the returned vector will be empty.
- */
-std::vector<boost::filesystem::path> getFileList(const std::string& path);
 
 }  // namespace parallel_domains
 }  // namespace maeve_automation_core

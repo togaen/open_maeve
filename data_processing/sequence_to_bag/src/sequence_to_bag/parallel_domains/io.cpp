@@ -24,7 +24,6 @@
 #include <cv_bridge/cv_bridge.h>
 #include <std_msgs/Header.h>
 #include <yaml-cpp/yaml.h>
-#include <boost/range/iterator_range.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <algorithm>
@@ -156,24 +155,6 @@ std::map<int, std::string> getSortedIndexedFileList(
                 });
 
   return indexed_file_list;
-}
-
-std::vector<boost::filesystem::path> getFileList(const std::string& path) {
-  std::vector<boost::filesystem::path> file_list;
-
-  if (boost::filesystem::is_directory(path)) {
-    for (auto& entry : boost::make_iterator_range(
-             boost::filesystem::directory_iterator(path), {})) {
-      const auto f = entry.path().filename().string();
-      if (boost::filesystem::is_directory(entry) || f.empty() ||
-          (f[0] == '.')) {
-        continue;
-      }
-      file_list.push_back(entry.path());
-    }
-  }
-
-  return file_list;
 }
 
 }  // namespace parallel_domains

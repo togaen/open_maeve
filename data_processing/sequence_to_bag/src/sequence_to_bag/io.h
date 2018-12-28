@@ -21,10 +21,14 @@
  */
 #pragma once
 
+#include <boost/filesystem.hpp>
+#include <boost/optional.hpp>
+
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
 
 namespace maeve_automation_core {
+
 /**
  * @brief Synthesize a camera info message from an image message.
  *
@@ -37,4 +41,15 @@ namespace maeve_automation_core {
  */
 sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
     const sensor_msgs::ImagePtr& img_ptr);
+
+/**
+ * @brief Get a list of all non-hidden files in the given path.
+ *
+ * @param path The path of the directory to list files for.
+ *
+ * @return A vector of fully qualifed filenames. If 'path' is not a valid
+ * directory the returned vector will be empty.
+ */
+std::vector<boost::filesystem::path> getFileList(const std::string& path);
+
 }  // namespace maeve_automation_core
