@@ -25,6 +25,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
+#include <boost/program_options.hpp>
 
 #include <ros/console.h>
 #include <rosbag/bag.h>

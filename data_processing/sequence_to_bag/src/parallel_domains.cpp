@@ -23,27 +23,47 @@
 #include "sequence_to_bag/parallel_domains/parallel_domains.h"
 
 #include <algorithm>
-#include <cstdlib>
 #include <map>
 #include <string>
 
 #include <camera_calibration_parsers/parse.h>
 
+namespace po = boost::program_options;
+
 int main(int argc, char** argv) {
-  // Make sure all required arguments are specified.
-  if (argc < 4) {
-    ROS_FATAL_STREAM(
-        "Provided "
-        << (argc - 1)
-        << " arguments. Must provide at least four arguments: "
-           "'data-set-path' 'bag-output-dir' 'raw-image-camera-name' "
-           "'segmented-image-camera-name'");
-    return EXIT_FAILURE;
+  boost::optional<std::string> data_set_path_opt;
+  boost::optional<std::string> output_path_opt;
+  boost::optional<std::string> image_1_topic_opt;
+  boost::optional<std::string> image_2_topic_opt;
+
+  po::options_description desc(
+      "Available arguments. All required arguments must be set:");
+  desc.add_options()("help", "Print help and exit.")(
+      "data-set-path", po::value(&data_set_path_opt),
+      "[Required] Absolute path to the data set.")(
+      "bag-output-dir", po::value(&output_path_opt),
+      "[Required]: Absolute path to the directory that will contain the output "
+      "bag file.")("raw-image-camera-name", po::value(&image_1_topic_opt),
+                   "[Required]: Camera name to use for the raw image stream.")(
+      "segmented-image-camera-name", po::value(&image_2_topic_opt),
+      "[Required]: Camera name to use for the segmented image stream.");
+
+  po::variables_map vm;
+  po::store(po::parse_command_line(argc, argv, desc), vm);
+  po::notify(vm);
+
+  const auto help_requested = vm.count("help");
+  const auto required_arg_not_set = !(data_set_path_opt && output_path_opt &&
+                                      image_1_topic_opt && image_2_topic_opt);
+  if (help_requested || required_arg_not_set) {
+    std::cout << desc << "\n";
+    return EXIT_SUCCESS;
   }
-  const auto data_set_path = std::string(argv[1]);
-  const auto output_path = std::string(argv[2]);
-  const auto image_1_topic = std::string(argv[3]);
-  const auto image_2_topic = std::string(argv[4]);
+
+  const auto data_set_path = *data_set_path_opt;
+  const auto output_path = *output_path_opt;
+  const auto image_1_topic = *image_1_topic_opt;
+  const auto image_2_topic = *image_2_topic_opt;
   const auto clock_hz_param =
       maeve_automation_core::parallel_domains::getClockHz(
           (argc > 5) ? std::string(argv[5]) : std::string(""));
