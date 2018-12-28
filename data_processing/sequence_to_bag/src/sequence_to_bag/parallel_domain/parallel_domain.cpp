@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "sequence_to_bag/parallel_domains/parallel_domains.h"
+#include "sequence_to_bag/parallel_domain/parallel_domain.h"
 
 #include <cv_bridge/cv_bridge.h>
 #include <std_msgs/Header.h>
@@ -38,7 +38,7 @@ const auto CLOCK_HZ_DEFAULT = 1000;
 }  // namespace
 
 namespace maeve_automation_core {
-namespace parallel_domains {
+namespace parallel_domain {
 
 std::ostream& operator<<(std::ostream& os, const MetaInfo& meta_info) {
   os << meta_info.name << "\n";
@@ -157,5 +157,5 @@ std::map<int, std::string> getSortedIndexedFileList(
   return indexed_file_list;
 }
 
-}  // namespace parallel_domains
+}  // namespace parallel_domain
 }  // namespace maeve_automation_core

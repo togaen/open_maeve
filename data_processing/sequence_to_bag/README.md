@@ -1,7 +1,7 @@
 # README #
 
 This package contains various utilities for converting data sequences to bag files. Currently two data sequence formats are supported:
-* Parallel Domains
+* Parallel Domain
 * Karlsruhe Dataset
 
 The two usages are detailed below.
@@ -10,7 +10,7 @@ The two usages are detailed below.
 
 TODO
 
-## Parallel Domains ##
+## Parallel Domain ##
 
 This utility for converts image segmentation sequence data sets into bag files.
 Usage and the specification for the data set structure is given below.
@@ -24,7 +24,7 @@ distortion.
 
 To use the converter, issue a command like this:
 
-    rosrun sequence_to_bag parallel_domains data-set-path bag-output-dir raw-image-camera-name segmented-image-camera-name
+    rosrun sequence_to_bag parallel_domain data-set-path bag-output-dir raw-image-camera-name segmented-image-camera-name
 
 The images in the 'camera-frames' directory will be published to:
 

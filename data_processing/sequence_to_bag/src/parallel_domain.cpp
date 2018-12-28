@@ -20,7 +20,7 @@
  * IN THE SOFTWARE.
  */
 
-#include "sequence_to_bag/parallel_domains/parallel_domains.h"
+#include "sequence_to_bag/parallel_domain/parallel_domain.h"
 
 #include <algorithm>
 #include <map>
@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
   const auto image_1_topic = *image_1_topic_opt;
   const auto image_2_topic = *image_2_topic_opt;
   const auto clock_hz_param =
-      maeve_automation_core::parallel_domains::getClockHz(
+      maeve_automation_core::parallel_domain::getClockHz(
           (argc > 5) ? std::string(argv[5]) : std::string(""));
 
   // Let people know what's going on.
@@ -77,11 +77,11 @@ int main(int argc, char** argv) {
 
   // Get meta information.
   const auto meta_info =
-      maeve_automation_core::parallel_domains::getMetaInfo(data_set_path);
+      maeve_automation_core::parallel_domain::getMetaInfo(data_set_path);
   if (!meta_info) {
     ROS_FATAL_STREAM(
         "Failed retrieving meta info; does "
-        << maeve_automation_core::parallel_domains::constructMetaYamlPath(
+        << maeve_automation_core::parallel_domain::constructMetaYamlPath(
                data_set_path)
         << " exist?");
     return EXIT_FAILURE;
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
   std::map<int, sensor_msgs::ImagePtr> raw_images_idx;
   std::map<int, sensor_msgs::ImagePtr> seg_images_idx;
   if (auto m =
-          maeve_automation_core::parallel_domains::getSortedIndexedImageLists(
+          maeve_automation_core::parallel_domain::getSortedIndexedImageLists(
               meta_info->raw_image_dir, meta_info->seg_image_dir)) {
     std::tie(raw_images_idx, seg_images_idx) = *m;
   } else {

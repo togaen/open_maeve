@@ -32,7 +32,7 @@
 #include <vector>
 
 namespace maeve_automation_core {
-namespace parallel_domains {
+namespace parallel_domain {
 
 /**
  * @brief Data structure to store information from meta.yaml.
@@ -126,5 +126,5 @@ std::map<int, sensor_msgs::ImagePtr> getSortedIndexedImages(
 std::map<int, std::string> getSortedIndexedFileList(
     const std::vector<boost::filesystem::path>& file_list);
 
-}  // namespace parallel_domains
+}  // namespace parallel_domain
 }  // namespace maeve_automation_core
