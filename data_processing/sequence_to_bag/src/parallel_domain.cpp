@@ -33,63 +33,65 @@ namespace po = boost::program_options;
 }  // namespace
 
 int main(int argc, char** argv) {
-  constexpr auto HELP = "help";
+  // Command line arguments
   boost::optional<std::string> data_set_path_opt;
   boost::optional<std::string> output_path_opt;
-  boost::optional<std::string> image_1_topic_opt;
-  boost::optional<std::string> image_2_topic_opt;
+  constexpr auto RAW_IMAGE_CAMERA_DEFAULT = "raw";
+  constexpr auto SEGMENTED_IMAGE_CAMERA_DEFAULT = "segmented";
 
   po::options_description desc(
-      "Available arguments. All required arguments must be set:");
-  desc.add_options()(HELP, "Print help and exit.")(
-      "data-set-path", po::value(&data_set_path_opt),
-      "[Required]: Absolute path to the data set.")(
-      "bag-output-dir", po::value(&output_path_opt),
-      "[Required]: Absolute path to the directory that will contain the output "
-      "bag file.")("raw-image-camera-name", po::value(&image_1_topic_opt),
-                   "[Required]: Camera name to use for the raw image stream.")(
-      "segmented-image-camera-name", po::value(&image_2_topic_opt),
-      "[Required]: Camera name to use for the segmented image stream.");
+      "Parallel Domain data set sequencer. Arguments without "
+      "default values are required",
+      maeve_automation_core::PROGRAM_OPTIONS_LINE_LENGTH);
+  desc.add_options()("help,h", "Print help and exit.")(
+      "data-set-path,d", po::value(&data_set_path_opt)->required(),
+      "Absolute path to the data set.")(
+      "bag-output-dir,o", po::value(&output_path_opt)->required(),
+      "Absolute path to the directory for the output bag file.")(
+      "raw-image-camera,r",
+      po::value<std::string>()->default_value(RAW_IMAGE_CAMERA_DEFAULT),
+      "Camera name to use for the raw image stream.")(
+      "segmented-image-camera,s",
+      po::value<std::string>()->default_value(SEGMENTED_IMAGE_CAMERA_DEFAULT),
+      "Camera name to use for the segmented image stream.");
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
-  po::notify(vm);
 
-  const auto help_requested = vm.count(HELP);
-  const auto required_arg_not_set = !(data_set_path_opt && output_path_opt &&
-                                      image_1_topic_opt && image_2_topic_opt);
-  if (help_requested || required_arg_not_set) {
+  const auto help_requested = vm.count("help");
+  if (help_requested) {
     std::cout << desc << "\n";
     return EXIT_SUCCESS;
   }
 
+  try {
+    po::notify(vm);
+  } catch (boost::program_options::required_option& e) {
+    std::cerr << "Ensure that all required options are specified: " << e.what()
+              << "\n\n";
+    std::cerr << desc << "\n";
+    return EXIT_FAILURE;
+  }
+
   const auto data_set_path = *data_set_path_opt;
   const auto output_path = *output_path_opt;
-  const auto image_1_topic = *image_1_topic_opt;
-  const auto image_2_topic = *image_2_topic_opt;
+  const auto image_1_topic = vm["raw-image-camera"].as<std::string>();
+  const auto image_2_topic = vm["segmented-image-camera"].as<std::string>();
   const auto clock_hz_param =
       maeve_automation_core::parallel_domain::getClockHz(
           (argc > 5) ? std::string(argv[5]) : std::string(""));
-
-  // Let people know what's going on.
-  ROS_INFO_STREAM("\nUsing data set path: "
-                  << data_set_path << "\nUsing output path: " << output_path
-                  << "\nUsing image 1 topic: " << image_1_topic
-                  << "\nUsing image 2 topic: " << image_2_topic
-                  << "\nClock hz: " << clock_hz_param);
 
   // Get meta information.
   const auto meta_info =
       maeve_automation_core::parallel_domain::getMetaInfo(data_set_path);
   if (!meta_info) {
-    ROS_FATAL_STREAM(
-        "Failed retrieving meta info; does "
-        << maeve_automation_core::parallel_domain::constructMetaYamlPath(
-               data_set_path)
-        << " exist?");
+    std::cerr << "Failed retrieving meta info; does "
+              << maeve_automation_core::parallel_domain::constructMetaYamlPath(
+                     data_set_path)
+              << " exist?\n";
     return EXIT_FAILURE;
   }
-  ROS_INFO_STREAM("Meta info:\n" << *meta_info);
+  std::cout << "Meta info:\n" << *meta_info << "\n";
 
   // Get files.
   std::map<int, sensor_msgs::ImagePtr> raw_images_idx;
@@ -99,12 +101,12 @@ int main(int argc, char** argv) {
               meta_info->raw_image_dir, meta_info->seg_image_dir)) {
     std::tie(raw_images_idx, seg_images_idx) = *m;
   } else {
-    ROS_FATAL_STREAM("Error in data set image sets.");
+    std::cerr << "Error in data set image sets.\n";
     return EXIT_FAILURE;
   }
 
   if (seg_images_idx.empty() || raw_images_idx.empty()) {
-    ROS_FATAL_STREAM("No files found.");
+    std::cerr << "No files found.\n";
     return EXIT_FAILURE;
   }
 
@@ -134,8 +136,8 @@ int main(int argc, char** argv) {
       std::begin(raw_images_idx), std::end(raw_images_idx),
       [&](const std::map<int, sensor_msgs::ImagePtr>::value_type& p) {
         if (seg_images_idx.find(p.first) == seg_images_idx.end()) {
-          ROS_ERROR_STREAM("Failed to find image index "
-                           << p.first << " in segmented data set.");
+          std::cerr << "Failed to find image index " << p.first
+                    << " in segmented data set.\n";
           return;
         }
 

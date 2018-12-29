@@ -35,6 +35,9 @@
 
 namespace maeve_automation_core {
 
+/** @brief When printing program options to terminal, use this line length */
+static constexpr unsigned int PROGRAM_OPTIONS_LINE_LENGTH = 120u;
+
 /**
  * @brief Synthesize a camera info message from an image message.
  *

@@ -27,36 +27,43 @@ namespace po = boost::program_options;
 }  // namespace
 
 int main(int argc, char** argv) {
-  constexpr auto HELP = "help";
   boost::optional<std::string> data_set_path_opt;
   boost::optional<std::string> output_path_opt;
-  boost::optional<std::string> camera_name_opt;
+  constexpr auto CAMERA_DEFAULT = "camera";
 
   po::options_description desc(
-      "Available arguments. All required arguments must be set");
-  desc.add_options()(HELP, "Print help and exit.")(
-      "data-set-path", po::value(&data_set_path_opt),
-      "[Required]: Absolute path to the data set.")(
-      "bag-output-dir", po::value(&output_path_opt),
-      "Absolute path to the directory that will contain the output bag file.")(
-      "camera-name", po::value(&camera_name_opt),
-      "[Required]: Camera name to use for the stereo image stream.");
+      "Karlsruhe Dataset sequencer. Arguments without default "
+      "values are required",
+      maeve_automation_core::PROGRAM_OPTIONS_LINE_LENGTH);
+  desc.add_options()("help,h", "Print help and exit.")(
+      "data-set-path,d", po::value(&data_set_path_opt)->required(),
+      "Absolute path to the data set.")(
+      "bag-output-dir,o", po::value(&output_path_opt)->required(),
+      "Absolute path to the directory for the output bag file.")(
+      "camera-name,c", po::value<std::string>()->default_value(CAMERA_DEFAULT),
+      "Camera name to use for the stereo image stream.");
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
-  po::notify(vm);
 
-  const auto help_requested = vm.count(HELP);
-  const auto required_arg_not_set =
-      !(data_set_path_opt && output_path_opt && camera_name_opt);
-  if (help_requested || required_arg_not_set) {
+  const auto help_requested = vm.count("help");
+  if (help_requested) {
     std::cout << desc << "\n";
     return EXIT_SUCCESS;
   }
 
+  try {
+    po::notify(vm);
+  } catch (boost::program_options::required_option& e) {
+    std::cerr << "Ensure that all required options are specified: " << e.what()
+              << "\n\n";
+    std::cerr << desc << "\n";
+    return EXIT_FAILURE;
+  }
+
   const auto data_set_path = *data_set_path_opt;
   const auto output_path = *output_path_opt;
-  const auto camera_name = *camera_name_opt;
+  const auto camera_name = vm["camera-name"].as<std::string>();
 
   return EXIT_SUCCESS;
 }
