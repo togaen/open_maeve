@@ -40,7 +40,8 @@ int main(int argc, char** argv) {
   constexpr auto SEGMENTED_IMAGE_CAMERA_DEFAULT = "segmented";
 
   po::options_description desc(
-      "Parallel Domain data set sequencer. Arguments without "
+      "Parallel Domain data set sequencer. See README.md for "
+      "details.\nAvailable options are listed below. Arguments without "
       "default values are required",
       maeve_automation_core::PROGRAM_OPTIONS_LINE_LENGTH);
   desc.add_options()("help,h", "Print help and exit.")(

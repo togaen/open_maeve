@@ -32,7 +32,8 @@ int main(int argc, char** argv) {
   constexpr auto CAMERA_DEFAULT = "camera";
 
   po::options_description desc(
-      "Karlsruhe Dataset sequencer. Arguments without default "
+      "Karlsruhe Dataset sequencer. See README.md for details.\nAvailable "
+      "options are listed below. Arguments without default "
       "values are required",
       maeve_automation_core::PROGRAM_OPTIONS_LINE_LENGTH);
   desc.add_options()("help,h", "Print help and exit.")(
