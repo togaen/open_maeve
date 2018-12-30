@@ -21,6 +21,8 @@
  */
 
 #include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
+#include "sequence_to_bag/karlsruhe_dataset/calib.h"
+#include "sequence_to_bag/karlsruhe_dataset/insdata.h"
 
 namespace {
 namespace po = boost::program_options;

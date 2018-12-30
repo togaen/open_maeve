@@ -144,6 +144,8 @@ add_library(parallel_domain_lib
 )
 
 add_library(karlsruhe_dataset_lib
+  src/${PROJECT_NAME}/karlsruhe_dataset/calib.cpp
+  src/${PROJECT_NAME}/karlsruhe_dataset/insdata.cpp
   src/${PROJECT_NAME}/karlsruhe_dataset/karlsruhe_dataset.cpp
 )
 
