@@ -23,6 +23,7 @@
 
 #include "sequence_to_bag/sequence_to_bag.h"
 
+#include <array>
 #include <cstdint>
 #include <tuple>
 
@@ -37,9 +38,14 @@ namespace karlsruhe_dataset {
  */
 geometry_msgs::Transform getTransformFromOdomToCamera();
 
-/**
- * @brief Holds one row of data from an insdata.txt file
- */
+/** @brief Holds the data contained in one calib.txt file */
+struct calib {
+ private:
+  const std::array<double, 12> P1_roi;
+  const std::array<double, 12> P2_roi;
+};  // struct calib
+
+/** @brief Holds one row of data from an insdata.txt file */
 struct insdataRow {
   /**
    * @brief Parse and single row of space-delimited insdata text to create an

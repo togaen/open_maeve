@@ -21,7 +21,6 @@
  */
 #include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
-#include <array>
 #include <exception>
 #include <iostream>
 #include <limits>
