@@ -110,7 +110,7 @@ calib calib::createCalib(const std::string& text) {
     return std::stod(str);
   };
 
-  const auto get_3x3 = [](const boost::array<double, 12>& M) {
+  const auto get_3x3_from_3x4 = [](const boost::array<double, 12>& M) {
     boost::array<double, 9> A;
     for (auto i = 0; i < 3; ++i) {
       for (auto j = 0; j < 3; ++j) {
@@ -125,11 +125,11 @@ calib calib::createCalib(const std::string& text) {
   boost::array<double, 12> P1_roi;
   std::transform(std::begin(P1_roi_tokens), std::end(P1_roi_tokens),
                  std::begin(P1_roi), string_to_double);
-  const auto K1 = get_3x3(P1_roi);
+  const auto K1 = get_3x3_from_3x4(P1_roi);
   boost::array<double, 12> P2_roi;
   std::transform(std::begin(P2_roi_tokens), std::end(P2_roi_tokens),
                  std::begin(P2_roi), string_to_double);
-  const auto K2 = get_3x3(P2_roi);
+  const auto K2 = get_3x3_from_3x4(P2_roi);
 
   return calib(P1_roi, K1, P2_roi, K2);
 }
