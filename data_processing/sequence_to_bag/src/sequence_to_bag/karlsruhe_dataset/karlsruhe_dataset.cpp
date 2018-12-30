@@ -56,6 +56,13 @@ geometry_msgs::Transform getTransformFromOdomToCamera() {
 calib::calib(std::array<double, M> _P1_roi, std::array<double, M> _P2_roi)
     : P1_roi(_P1_roi), P2_roi(_P2_roi) {}
 
+sensor_msgs::CameraInfo convertToCameraInfo(const std::string& text,
+                                            const int image_width,
+                                            const int image_height) {
+  sensor_msgs::CameraInfo camera_info;
+  return camera_info;
+}
+
 //------------------------------------------------------------------------------
 
 calib calib::createCalib(const std::string& text) {

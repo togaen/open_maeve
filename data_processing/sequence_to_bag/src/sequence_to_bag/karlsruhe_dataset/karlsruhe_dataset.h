@@ -45,6 +45,15 @@ geometry_msgs::Transform getTransformFromOdomToCamera();
  * objects. Only the static methods should ever have access to data members.
  */
 struct calib {
+  /**
+   * @brief Get the CameraInfo message corresponding to the given calib text
+   *
+   * @note An exception is thrown if the text is malformed
+   */
+  static sensor_msgs::CameraInfo convertToCameraInfo(const std::string& text,
+                                                     const int image_width,
+                                                     const int image_height);
+
  private:
   static constexpr auto ROW_DELIMITER = ' ';
   static constexpr auto P1_roi_prefix = "P1_roi";
