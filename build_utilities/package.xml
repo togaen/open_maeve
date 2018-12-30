@@ -45,6 +45,7 @@
   <exec_depend>clang-format</exec_depend>
   <exec_depend>python-pep8</exec_depend>
   <exec_depend>python-autopep8</exec_depend>
+  <exec_depend>python-cpplint</exec_depend>
 
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>
