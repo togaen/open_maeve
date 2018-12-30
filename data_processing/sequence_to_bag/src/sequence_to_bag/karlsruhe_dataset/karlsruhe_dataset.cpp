@@ -53,14 +53,32 @@ geometry_msgs::Transform getTransformFromOdomToCamera() {
 
 //------------------------------------------------------------------------------
 
-calib::calib(std::array<double, M> _P1_roi, std::array<double, M> _P2_roi)
-    : P1_roi(_P1_roi), P2_roi(_P2_roi) {}
+calib::calib(boost::array<double, 12> _P1_roi, boost::array<double, 9> _K1,
+             boost::array<double, 12> _P2_roi, boost::array<double, 9> _K2)
+    : P1_roi(_P1_roi), K1(_K1), P2_roi(_P2_roi), K2(_K2) {}
 
-sensor_msgs::CameraInfo convertToCameraInfo(const std::string& text,
-                                            const int image_width,
-                                            const int image_height) {
-  sensor_msgs::CameraInfo camera_info;
-  return camera_info;
+//------------------------------------------------------------------------------
+
+calib::stereoCameraInfo calib::convertToCameraInfo(const ros::Time& timestamp,
+                                                   const std::string& frame_id,
+                                                   const std::string& text,
+                                                   const int image_width,
+                                                   const int image_height) {
+  const auto c = createCalib(text);
+
+  std_msgs::Header header;
+  header.stamp = timestamp;
+  header.frame_id = frame_id;
+  auto camera_info =
+      getUndistortedCameraInfo(header, image_width, image_height);
+  stereoCameraInfo stereo_camera_info = {camera_info, camera_info};
+
+  stereo_camera_info.left.P = c.P1_roi;
+  stereo_camera_info.left.K = c.K1;
+  stereo_camera_info.right.P = c.P2_roi;
+  stereo_camera_info.right.K = c.K2;
+
+  return stereo_camera_info;
 }
 
 //------------------------------------------------------------------------------
@@ -78,13 +96,13 @@ calib calib::createCalib(const std::string& text) {
 
   const auto P1_roi_tokens = stringSplit(*P1_roi_opt, ROW_DELIMITER);
   const auto P2_roi_tokens = stringSplit(*P2_roi_opt, ROW_DELIMITER);
-  if ((P1_roi_tokens.size() != M) || (P2_roi_tokens.size() != M)) {
+  if ((P1_roi_tokens.size() != 12) || (P2_roi_tokens.size() != 12)) {
     std::stringstream ss;
     ss << "Found " << P1_roi_tokens.size() << " tokens in the P1_roi row and "
        << P2_roi_tokens.size()
        << " tokens in the P2_roi row, but both rows are required to have "
           "exactly "
-       << M << " tokens";
+       << 12 << " tokens";
     throw std::runtime_error(ss.str());
   }
 
@@ -92,14 +110,28 @@ calib calib::createCalib(const std::string& text) {
     return std::stod(str);
   };
 
-  std::array<double, M> P1_roi;
+  const auto get_3x3 = [](const boost::array<double, 12>& M) {
+    boost::array<double, 9> A;
+    for (auto i = 0; i < 3; ++i) {
+      for (auto j = 0; j < 3; ++j) {
+        const auto A_idx = ((i * 3) + j);
+        const auto M_idx = ((i * 4) + j);
+        A[A_idx] = M[M_idx];
+      }
+    }
+    return A;
+  };
+
+  boost::array<double, 12> P1_roi;
   std::transform(std::begin(P1_roi_tokens), std::end(P1_roi_tokens),
                  std::begin(P1_roi), string_to_double);
-  std::array<double, M> P2_roi;
+  const auto K1 = get_3x3(P1_roi);
+  boost::array<double, 12> P2_roi;
   std::transform(std::begin(P2_roi_tokens), std::end(P2_roi_tokens),
                  std::begin(P2_roi), string_to_double);
+  const auto K2 = get_3x3(P2_roi);
 
-  return calib(P1_roi, P2_roi);
+  return calib(P1_roi, K1, P2_roi, K2);
 }
 
 //------------------------------------------------------------------------------

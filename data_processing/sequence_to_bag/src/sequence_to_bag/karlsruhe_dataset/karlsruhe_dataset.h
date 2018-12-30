@@ -45,22 +45,30 @@ geometry_msgs::Transform getTransformFromOdomToCamera();
  * objects. Only the static methods should ever have access to data members.
  */
 struct calib {
+  struct stereoCameraInfo {
+    sensor_msgs::CameraInfo left;
+    sensor_msgs::CameraInfo right;
+  };
+
   /**
    * @brief Get the CameraInfo message corresponding to the given calib text
    *
    * @note An exception is thrown if the text is malformed
    */
-  static sensor_msgs::CameraInfo convertToCameraInfo(const std::string& text,
-                                                     const int image_width,
-                                                     const int image_height);
+  static stereoCameraInfo convertToCameraInfo(const ros::Time& timestamp,
+                                              const std::string& frame_id,
+                                              const std::string& text,
+                                              const int image_width,
+                                              const int image_height);
 
  private:
   static constexpr auto ROW_DELIMITER = ' ';
   static constexpr auto P1_roi_prefix = "P1_roi";
   static constexpr auto P2_roi_prefix = "P2_roi";
-  static constexpr auto M = 12;
-  const std::array<double, M> P1_roi;
-  const std::array<double, M> P2_roi;
+  const boost::array<double, 12> P1_roi;
+  const boost::array<double, 9> K1;
+  const boost::array<double, 12> P2_roi;
+  const boost::array<double, 9> K2;
 
   /**
    * @brief Create a calib object from the text of a calib.txt file
@@ -73,7 +81,8 @@ struct calib {
   static calib createCalib(const std::string& text);
 
   /** @brief Explicit constructor */
-  calib(std::array<double, M> _P1_roi, std::array<double, M> _P2_roi);
+  calib(boost::array<double, 12> _P1_roi, boost::array<double, 9> _K1,
+        boost::array<double, 12> _P2_roi, boost::array<double, 9> _K2);
 };  // struct calib
 
 /**
