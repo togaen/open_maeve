@@ -58,6 +58,10 @@
   <exec_depend>gps_common</exec_depend>
   <build_depend>tf</build_depend>
   <exec_depend>tf</exec_depend>
+  <build_depend>tf2</build_depend>
+  <exec_depend>tf2</exec_depend>
+  <build_depend>tf2_ros</build_depend>
+  <exec_depend>tf2_ros</exec_depend>
 
   <doc_depend>doxygen</doc_depend>
   <doc_depend>rosdoc_lite</doc_depend>

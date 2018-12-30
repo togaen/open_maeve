@@ -25,6 +25,10 @@
 #include <sstream>
 #include <stdexcept>
 
+#include <geometry_msgs/Quaternion.h>
+#include <tf/transform_datatypes.h>
+#include <tf2/LinearMath/Quaternion.h>
+
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
 
@@ -53,10 +57,18 @@ insdataRow::insdataRow(const uint32_t _sec, const uint32_t _nsec,
 
 //------------------------------------------------------------------------------
 
+insdataRow::GPS_IMU insdataRow::convertToGPS_IMU(const std::string& row_text,
+                                                 const std::string& frame_id) {
+  const auto row = createInsdataRow(row_text);
+  return {convertToNavSatFix(row, frame_id), convertToOdometry(row, frame_id)};
+}
+
+//------------------------------------------------------------------------------
+
 sensor_msgs::NavSatFix insdataRow::convertToNavSatFix(
     const insdataRow& row, const std::string& frame_id) {
   sensor_msgs::NavSatFix msg;
-  msg.header = insdataRow::getNavSatFixHeader(row, frame_id);
+  msg.header = insdataRow::getHeader(row, frame_id);
   msg.status = insdataRow::getNavSatFixStatus();
   msg.latitude = row.lat;
   msg.longitude = row.lon;
@@ -70,8 +82,46 @@ sensor_msgs::NavSatFix insdataRow::convertToNavSatFix(
 
 //------------------------------------------------------------------------------
 
-std_msgs::Header insdataRow::getNavSatFixHeader(const insdataRow& row,
-                                                const std::string& frame_id) {
+nav_msgs::Odometry insdataRow::convertToOdometry(const insdataRow& row,
+                                                 const std::string& frame_id) {
+  nav_msgs::Odometry msg;
+  msg.header = getHeader(row, frame_id);
+  msg.child_frame_id = frame_id;
+
+  geometry_msgs::Point position;
+  position.x = row.x;
+  position.y = row.y;
+  position.z = row.z;
+  geometry_msgs::Pose P;
+  P.position = position;
+  P.orientation = tf::createQuaternionMsgFromYaw(row.yaw);
+
+  geometry_msgs::PoseWithCovariance P_C;
+  P_C.pose = P;
+  std::fill(std::begin(P_C.covariance), std::end(P_C.covariance), NaN);
+
+  geometry_msgs::Vector3 invalid_velocity;
+  invalid_velocity.x = NaN;
+  invalid_velocity.y = NaN;
+  invalid_velocity.z = NaN;
+  geometry_msgs::Twist T;
+  T.linear = invalid_velocity;
+  T.angular = invalid_velocity;
+
+  geometry_msgs::TwistWithCovariance T_C;
+  T_C.twist = T;
+  std::fill(std::begin(T_C.covariance), std::end(T_C.covariance), NaN);
+
+  msg.pose = P_C;
+  msg.twist = T_C;
+
+  return msg;
+}
+
+//------------------------------------------------------------------------------
+
+std_msgs::Header insdataRow::getHeader(const insdataRow& row,
+                                       const std::string& frame_id) {
   std_msgs::Header header;
   header.stamp = ros::Time(row.sec, row.nsec);
   header.frame_id = frame_id;

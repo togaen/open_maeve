@@ -24,7 +24,9 @@
 #include "sequence_to_bag/sequence_to_bag.h"
 
 #include <cstdint>
+#include <tuple>
 
+#include <nav_msgs/Odometry.h>
 #include <sensor_msgs/NavSatFix.h>
 
 namespace maeve_automation_core {
@@ -37,26 +39,25 @@ namespace karlsruhe_dataset {
  * objects. Only the static methods should ever have access to data members.
  */
 struct insdataRow {
-  /**
-   * @brief Parse and single row of space-delimited insdata text to create an
-   * insdata object
-   *
-   * The columns are: 'timestamp lat lon alt x y z roll pitch yaw'
-   *
-   * @note An exception is thrown if the row text is malformed
-   */
-  static insdataRow createInsdataRow(const std::string& row_text);
+  struct GPS_IMU {
+    sensor_msgs::NavSatFix gps;
+    nav_msgs::Odometry imu;
+  };  // struct
 
   /**
-   * @brief Build a ROS NavSatFix message containing the information from an
-   * insdataRow object
+   * @brief Construct and return the GPS and IMU messages for a given row
    *
-   * @note insdata.txt files contain no covariance information, therefore the
-   * position covariance matrix is filled with NaN and covariance type is set to
-   * UNKNOWN
+   * @note An exception is thrown if the row text is malformed
+   *
+   * @note The roll and pitch values from the IMU are corrupt in the insdata.txt
+   * files (see link to dataset description in README.md), therefore only yaw is
+   * set and roll and pitch are zeroed
+   *
+   * @note insdata.txt files contain no covariance or velocity information,
+   * therefore all such values are set to NaN
    */
-  static sensor_msgs::NavSatFix convertToNavSatFix(const insdataRow& row,
-                                                   const std::string& frame_id);
+  static GPS_IMU convertToGPS_IMU(const std::string& row_text,
+                                  const std::string& frame_id);
 
  private:
   static constexpr auto ROW_DELIMITER = ' ';
@@ -87,6 +88,41 @@ struct insdataRow {
              const double _pitch, const double _yaw);
 
   /**
+   * @brief Parse and single row of space-delimited insdata text to create an
+   * insdata object
+   *
+   * The columns are: 'timestamp lat lon alt x y z roll pitch yaw'
+   *
+   * @note An exception is thrown if the row text is malformed
+   */
+  static insdataRow createInsdataRow(const std::string& row_text);
+
+  /**
+   * @brief Build a ROS NavSatFix message containing the information from an
+   * insdataRow object
+   *
+   * @note insdata.txt files contain no covariance information, therefore the
+   * position covariance matrix is filled with NaN and covariance type is set to
+   * UNKNOWN
+   */
+  static sensor_msgs::NavSatFix convertToNavSatFix(const insdataRow& row,
+                                                   const std::string& frame_id);
+
+  /**
+   * @brief Build a ROS Odometry message containing the information from an
+   * insdataRow object
+   *
+   * @note insdata.txt files contain no velocity information and corrupted roll
+   * and pitch information, therefore only position and yaw are usable in the
+   * Odometry message
+   *
+   * @note The odometer is treated as the base link of the robot, so it is its
+   * own child frame
+   */
+  static nav_msgs::Odometry convertToOdometry(const insdataRow& row,
+                                              const std::string& frame_id);
+
+  /**
    * @brief Parse a 19-digit nanosecond time string to seconds and nanoseconds
    */
   static std::tuple<uint32_t, uint32_t> parseTime(const std::string& time_text);
@@ -94,8 +130,8 @@ struct insdataRow {
   /**
    * @brief Store insdata row timestamp and given frame id in a header message
    */
-  static std_msgs::Header getNavSatFixHeader(const insdataRow& row,
-                                             const std::string& frame_id);
+  static std_msgs::Header getHeader(const insdataRow& row,
+                                    const std::string& frame_id);
 
   /**
    * @brief Status is set to STATUS_FIX and service to SERVICE_GPS
