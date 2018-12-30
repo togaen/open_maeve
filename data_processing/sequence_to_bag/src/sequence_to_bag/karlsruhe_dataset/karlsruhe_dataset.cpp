@@ -23,6 +23,8 @@
 
 #include <exception>
 #include <limits>
+#include <sstream>
+#include <stdexcept>
 
 #include <ros/console.h>
 
@@ -47,6 +49,50 @@ geometry_msgs::Transform getTransformFromOdomToCamera() {
   Tx.translation = T;
   Tx.rotation = R;
   return Tx;
+}
+
+//------------------------------------------------------------------------------
+
+calib::calib(std::array<double, M> _P1_roi, std::array<double, M> _P2_roi)
+    : P1_roi(_P1_roi), P2_roi(_P2_roi) {}
+
+//------------------------------------------------------------------------------
+
+calib calib::createCalib(const std::string& text) {
+  const auto P1_roi_opt = getPrefixedRow(P1_roi_prefix, text);
+  const auto P2_roi_opt = getPrefixedRow(P1_roi_prefix, text);
+  if (!P1_roi_opt || !P2_roi_opt) {
+    std::stringstream ss;
+    ss << "At least one of '" << P1_roi_prefix << "' or '" << P2_roi_prefix
+       << "' not found in calib text:\n"
+       << text;
+    throw std::invalid_argument(ss.str());
+  }
+
+  const auto P1_roi_tokens = stringSplit(*P1_roi_opt, ROW_DELIMITER);
+  const auto P2_roi_tokens = stringSplit(*P2_roi_opt, ROW_DELIMITER);
+  if ((P1_roi_tokens.size() != M) || (P2_roi_tokens.size() != M)) {
+    std::stringstream ss;
+    ss << "Found " << P1_roi_tokens.size() << " tokens in the P1_roi row and "
+       << P2_roi_tokens.size()
+       << " tokens in the P2_roi row, but both rows are required to have "
+          "exactly "
+       << M << " tokens";
+    throw std::runtime_error(ss.str());
+  }
+
+  const auto string_to_double = [](const std::string& str) {
+    return std::stod(str);
+  };
+
+  std::array<double, M> P1_roi;
+  std::transform(std::begin(P1_roi_tokens), std::end(P1_roi_tokens),
+                 std::begin(P1_roi), string_to_double);
+  std::array<double, M> P2_roi;
+  std::transform(std::begin(P2_roi_tokens), std::end(P2_roi_tokens),
+                 std::begin(P2_roi), string_to_double);
+
+  return calib(P1_roi, P2_roi);
 }
 
 //------------------------------------------------------------------------------

@@ -38,14 +38,41 @@ namespace karlsruhe_dataset {
  */
 geometry_msgs::Transform getTransformFromOdomToCamera();
 
-/** @brief Holds the data contained in one calib.txt file */
+/**
+ * @brief Holds the data contained in one calib.txt file
+ *
+ * This is intended strictly as an intermediary between the data set and message
+ * objects. Only the static methods should ever have access to data members.
+ */
 struct calib {
  private:
-  const std::array<double, 12> P1_roi;
-  const std::array<double, 12> P2_roi;
+  static constexpr auto ROW_DELIMITER = ' ';
+  static constexpr auto P1_roi_prefix = "P1_roi";
+  static constexpr auto P2_roi_prefix = "P2_roi";
+  static constexpr auto M = 12;
+  const std::array<double, M> P1_roi;
+  const std::array<double, M> P2_roi;
+
+  /**
+   * @brief Create a calib object from the text of a calib.txt file
+   *
+   * @note Only the P1_roi and P2_roi data are captured because the images are
+   * already rectified (see link to dataset description in README.md)
+   *
+   * @note An exception is thrown if the text is malformed
+   */
+  static calib createCalib(const std::string& text);
+
+  /** @brief Explicit constructor */
+  calib(std::array<double, M> _P1_roi, std::array<double, M> _P2_roi);
 };  // struct calib
 
-/** @brief Holds one row of data from an insdata.txt file */
+/**
+ * @brief Holds one row of data from an insdata.txt file
+ *
+ * This is intended strictly as an intermediary between the data set and message
+ * objects. Only the static methods should ever have access to data members.
+ */
 struct insdataRow {
   /**
    * @brief Parse and single row of space-delimited insdata text to create an
@@ -69,11 +96,6 @@ struct insdataRow {
                                                    const std::string& frame_id);
 
  private:
-  /**
-   * @brief This struct is intended strictly as an intermediary between
-   * insdata.txt files and message objects. Only the static methods should ever
-   * have access these members.
-   */
   static constexpr auto ROW_DELIMITER = ' ';
   static constexpr auto ROW_TOKEN_COUNT = 10;
   static constexpr auto TIMESTAMP_DIGITS = 19;
@@ -94,7 +116,7 @@ struct insdataRow {
    * @brief Explicit constructor
    *
    * @note The roll and pitch are replaced with NaN because the data in the file
-   * are corrupt (see link to dataset in README.md)
+   * are corrupt (see link to dataset description in README.md)
    */
   insdataRow(const uint32_t _sec, const uint32_t _nsec, const double _lat,
              const double _lon, const double _alt, const double _x,
