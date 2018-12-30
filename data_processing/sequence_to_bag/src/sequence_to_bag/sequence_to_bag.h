@@ -39,6 +39,24 @@ namespace maeve_automation_core {
 static constexpr unsigned int PROGRAM_OPTIONS_LINE_LENGTH = 120u;
 
 /**
+ * @brief Get the first row, if any, from 'str' prefixed by 'prefix'
+ *
+ * @note Leading and trailing whitespace is trimmed from the result
+ *
+ * For input:
+ *  prefix = "B:"
+ *  str    =
+ *     "A: This is row 1
+ *      B: This is row 2
+ *      C: This is row 3
+ *      B: This is row 4"
+ *
+ * The output is: "This is row 2"
+ */
+boost::optional<std::string> getPrefixedRow(const std::string& prefix,
+                                            const std::string& str);
+
+/**
  * @brief Tokenize a string according to the given delimiter
  */
 std::vector<std::string> stringSplit(const std::string& str, const char delim);

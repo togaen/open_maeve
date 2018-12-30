@@ -24,9 +24,26 @@
 #include <iostream>
 #include <sstream>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/range/iterator_range.hpp>
 
 namespace maeve_automation_core {
+
+boost::optional<std::string> getPrefixedRow(const std::string& prefix,
+                                            const std::string& str) {
+  std::string row;
+  std::istringstream is(str);
+  while (std::getline(is, row)) {
+    if (row.find(prefix) == 0) {
+      auto suffix = row.substr(prefix.length());
+      boost::trim(suffix);
+      return suffix;
+    }
+  }
+  return boost::none;
+}
+
+//------------------------------------------------------------------------------
 
 std::vector<std::string> stringSplit(const std::string& str, const char delim) {
   std::string token;
