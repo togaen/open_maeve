@@ -21,8 +21,6 @@
  */
 #pragma once
 
-#include "sequence_to_bag/sequence_to_bag.h"
-
 #include <sensor_msgs/CameraInfo.h>
 
 namespace maeve_automation_core {

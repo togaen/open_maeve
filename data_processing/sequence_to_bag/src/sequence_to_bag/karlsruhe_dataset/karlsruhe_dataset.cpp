@@ -21,8 +21,29 @@
  */
 #include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
+#include <fstream>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
+
+calib::stereoCameraInfo getCameraInfo(const ros::Time& camera_info_timestamp,
+                                      const std::string& camera_name,
+                                      const int image_width,
+                                      const int image_height,
+                                      const std::string& dataset_path) {
+  const auto calib_path = (dataset_path + "/" + CALIBRATION_FILENAME);
+  std::ifstream ifs(calib_path);
+  std::string text((std::istreambuf_iterator<char>(ifs)),
+                   (std::istreambuf_iterator<char>()));
+
+  return calib::convertToCameraInfo(camera_info_timestamp, camera_name, text,
+                                    image_width, image_height);
+}
+
+//------------------------------------------------------------------------------
 
 geometry_msgs::Transform getTransformFromOdomToCamera() {
   geometry_msgs::Vector3 T;

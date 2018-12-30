@@ -21,6 +21,8 @@
  */
 #include "sequence_to_bag/karlsruhe_dataset/insdata.h"
 
+#include "sequence_to_bag/sequence_to_bag.h"
+
 #include <limits>
 #include <sstream>
 #include <stdexcept>

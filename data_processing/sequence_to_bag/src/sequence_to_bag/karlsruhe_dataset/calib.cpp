@@ -21,6 +21,8 @@
  */
 #include "sequence_to_bag/karlsruhe_dataset/calib.h"
 
+#include "sequence_to_bag/sequence_to_bag.h"
+
 #include <sstream>
 #include <stdexcept>
 

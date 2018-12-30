@@ -21,10 +21,26 @@
  */
 #pragma once
 
+#include "sequence_to_bag/karlsruhe_dataset/calib.h"
+
+#include "sequence_to_bag/sequence_to_bag.h"
+
 #include <geometry_msgs/Transform.h>
 
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
+static constexpr auto CALIBRATION_FILENAME = "calib.txt";
+
+/**
+ * @brief Load the calibration file from the given data set path
+ *
+ * @note An exception is thrown if the path is malformed
+ */
+calib::stereoCameraInfo getCameraInfo(const ros::Time& camera_info_timestamp,
+                                      const std::string& camera_name,
+                                      const int image_width,
+                                      const int image_height,
+                                      const std::string& dataset_path);
 
 /**
  * @brief Transform a point from odom frame to camera frame
