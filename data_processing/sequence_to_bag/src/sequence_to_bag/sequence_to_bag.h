@@ -39,6 +39,11 @@ namespace maeve_automation_core {
 static constexpr unsigned int PROGRAM_OPTIONS_LINE_LENGTH = 120u;
 
 /**
+ * @brief Tokenize a string according to the given delimiter
+ */
+std::vector<std::string> stringSplit(const std::string& str, const char delim);
+
+/**
  * @brief Synthesize a camera info message from an image message.
  *
  * This message assumes unit focal lengths, no distortion, and perfect optical

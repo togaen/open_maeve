@@ -22,9 +22,7 @@
 #include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
 #include <exception>
-#include <iostream>
 #include <limits>
-#include <sstream>
 
 #include <ros/console.h>
 
@@ -111,25 +109,13 @@ sensor_msgs::NavSatStatus insdataRow::getNavSatFixStatus() {
 //------------------------------------------------------------------------------
 
 insdataRow insdataRow::createInsdataRow(const std::string& row_text) {
-  std::istringstream is(row_text);
-  std::string token;
-  std::array<std::string, ROW_TOKEN_COUNT> tokens;
-  auto count = 0;
-  while (std::getline(is, token, ROW_DELIMITER)) {
-    if (token.empty()) {
-      continue;
-    }
-    if (count < ROW_TOKEN_COUNT) {
-      tokens[count] = token;
-    }
-    count++;
-  }
+  const auto tokens = stringSplit(row_text, ROW_DELIMITER);
 
-  if (count != ROW_TOKEN_COUNT) {
+  if (tokens.size() != ROW_TOKEN_COUNT) {
     std::stringstream ss;
     ss << "Error parsing insdata row string \"" << row_text
        << "\": expected exactly " << ROW_TOKEN_COUNT << " tokens, got "
-       << count;
+       << tokens.size();
     throw std::runtime_error(ss.str());
   }
 

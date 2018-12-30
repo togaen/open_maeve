@@ -21,9 +21,24 @@
  */
 #include "sequence_to_bag/sequence_to_bag.h"
 
+#include <iostream>
+#include <sstream>
+
 #include <boost/range/iterator_range.hpp>
 
 namespace maeve_automation_core {
+
+std::vector<std::string> stringSplit(const std::string& str, const char delim) {
+  std::string token;
+  std::istringstream is(str);
+  std::vector<std::string> tokens;
+  while (std::getline(is, token, delim)) {
+    tokens.push_back(std::move(token));
+  }
+  return tokens;
+}
+
+//------------------------------------------------------------------------------
 
 sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
     const sensor_msgs::ImagePtr& img_ptr) {
