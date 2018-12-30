@@ -21,6 +21,7 @@
  */
 #pragma once
 
+#include <algorithm>
 #include <cstdlib>
 
 #include <boost/filesystem.hpp>
@@ -37,6 +38,27 @@ namespace maeve_automation_core {
 
 /** @brief When printing program options to terminal, use this line length */
 static constexpr unsigned int PROGRAM_OPTIONS_LINE_LENGTH = 120u;
+
+/**
+ * @brief Get an identity matrix with side length 'size'
+ *
+ * This function is only usefule for initializing matrices stored in ROS
+ * messages. Otherwise, use std::array.
+ *
+ * @note The returned matrix is flat
+ */
+template <int SIZE>
+boost::array<double, (SIZE * SIZE)> getIdentityMatrix() {
+  boost::array<double, (SIZE * SIZE)> matrix;
+  std::for_each(std::begin(matrix), std::end(matrix),
+                [](double& val) { val = 0.0; });
+
+  for (auto i = 0; i < SIZE; ++i) {
+    const auto idx = (i + (i * SIZE));
+    matrix[idx] = 1.0;
+  }
+  return matrix;
+}
 
 /**
  * @brief Get the first row, if any, from 'str' prefixed by 'prefix'
@@ -73,6 +95,15 @@ std::vector<std::string> stringSplit(const std::string& str, const char delim);
  */
 sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
     const sensor_msgs::ImagePtr& img_ptr);
+
+/**
+ * @brief Get camera info for a perfect, undistored camera
+ *
+ * @note A "plumb bob" distortion model is set
+ */
+sensor_msgs::CameraInfo getUndistortedCameraInfo(const std_msgs::Header& header,
+                                                 const int image_width,
+                                                 const int image_height);
 
 /**
  * @brief Get a list of all non-hidden files in the given path.
