@@ -117,7 +117,8 @@ sensor_msgs::CameraInfo getUndistortedCameraInfo(const std_msgs::Header& header,
 
 //------------------------------------------------------------------------------
 
-std::vector<boost::filesystem::path> getFileList(const std::string& path) {
+std::vector<boost::filesystem::path> getFileList(
+    const std::string& path, boost::optional<std::string> extension) {
   std::vector<boost::filesystem::path> file_list;
 
   if (boost::filesystem::is_directory(path)) {
@@ -126,6 +127,9 @@ std::vector<boost::filesystem::path> getFileList(const std::string& path) {
       const auto f = entry.path().filename().string();
       if (boost::filesystem::is_directory(entry) || f.empty() ||
           (f[0] == '.')) {
+        continue;
+      }
+      if (extension && (entry.path().extension() != *extension)) {
         continue;
       }
       file_list.push_back(entry.path());

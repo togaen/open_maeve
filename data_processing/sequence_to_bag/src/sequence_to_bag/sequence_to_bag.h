@@ -108,11 +108,16 @@ sensor_msgs::CameraInfo getUndistortedCameraInfo(const std_msgs::Header& header,
 /**
  * @brief Get a list of all non-hidden files in the given path.
  *
- * @param path The path of the directory to list files for.
+ * @param path       The path of the directory to list files for.
+ * @param extension  Optional: only include files with the given extension
+ *
+ * @note When specifying an extension, include the dot (e.g., ".png")
  *
  * @return A vector of fully qualifed filenames. If 'path' is not a valid
  * directory the returned vector will be empty.
  */
-std::vector<boost::filesystem::path> getFileList(const std::string& path);
+std::vector<boost::filesystem::path> getFileList(
+    const std::string& path,
+    boost::optional<std::string> extension = boost::none);
 
 }  // namespace maeve_automation_core
