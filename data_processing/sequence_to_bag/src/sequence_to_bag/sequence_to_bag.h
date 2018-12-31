@@ -61,6 +61,11 @@ boost::array<double, (SIZE * SIZE)> getIdentityMatrix() {
 }
 
 /**
+ * @brief Get the contents of the file at 'path' and load it into a string
+ */
+std::string getFileText(const std::string& path);
+
+/**
  * @brief Get the first row, if any, from 'str' prefixed by 'prefix'
  *
  * @note Leading and trailing whitespace is trimmed from the result

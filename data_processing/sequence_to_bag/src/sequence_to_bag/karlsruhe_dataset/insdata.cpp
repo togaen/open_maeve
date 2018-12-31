@@ -59,6 +59,13 @@ insdataRow::insdataRow(const uint32_t _sec, const uint32_t _nsec,
 
 //------------------------------------------------------------------------------
 
+std_msgs::Header insdataRow::getStampedHeader(const std::string& row_text) {
+  const auto row = createInsdataRow(row_text);
+  return getHeader(row, "");
+}
+
+//------------------------------------------------------------------------------
+
 insdataRow::GPS_IMU insdataRow::convertToGPS_IMU(const std::string& row_text,
                                                  const std::string& frame_id) {
   const auto row = createInsdataRow(row_text);

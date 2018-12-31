@@ -43,8 +43,7 @@ struct calib {
    *
    * @note An exception is thrown if the text is malformed
    */
-  static stereoCameraInfo convertToCameraInfo(const ros::Time& timestamp,
-                                              const std::string& frame_id,
+  static stereoCameraInfo convertToCameraInfo(const std_msgs::Header& header,
                                               const std::string& text,
                                               const int image_width,
                                               const int image_height);

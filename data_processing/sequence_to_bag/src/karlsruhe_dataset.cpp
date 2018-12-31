@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
   boost::optional<std::string> output_path_opt;
   constexpr auto CAMERA_NAME_DEFAULT = "camera";
   constexpr auto ODOM_NAME_DEFAULT = "odom";
+  constexpr auto IMU_NAME_DEFAULT = "imu";
 
   po::options_description desc(
       "Karlsruhe Dataset sequencer. See README.md for details.\nAvailable "
@@ -48,7 +49,11 @@ int main(int argc, char** argv) {
       po::value<std::string>()->default_value(CAMERA_NAME_DEFAULT),
       "Frame name to use for the stereo camera image stream.")(
       "odom-name,m", po::value<std::string>()->default_value(ODOM_NAME_DEFAULT),
-      "Frame name to use for the odom message stream.");
+      "Name to use for the global odom frame in which the IMU measures "
+      "motion.")("imu-name,i",
+                 po::value<std::string>()->default_value(IMU_NAME_DEFAULT),
+                 "Name to use for the local IMU frame as it moves in the "
+                 "global odom frame.");
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -72,6 +77,47 @@ int main(int argc, char** argv) {
   const auto output_path = *output_path_opt;
   const auto camera_name = vm["camera-name"].as<std::string>();
   const auto odom_name = vm["odom-name"].as<std::string>();
+  const auto imu_name = vm["imu-name"].as<std::string>();
+
+  const auto calib_text =
+      maeve_automation_core::karlsruhe_dataset::getCalibText(data_set_path);
+  const auto insdata_text =
+      maeve_automation_core::karlsruhe_dataset::getInsdataText(data_set_path);
+
+  // Look at the first row of the insdata file to get timestamp information for
+  // static transforms and camera info
+  std::string first_row;
+  std::istringstream ss(insdata_text);
+  if (!std::getline(ss, first_row)) {
+    std::cerr << "Failed to read first row of insdata.txt\n";
+    return EXIT_FAILURE;
+  }
+
+  const auto stamped_header =
+      maeve_automation_core::karlsruhe_dataset::insdataRow::getStampedHeader(
+          first_row);
+
+  auto camera_header = stamped_header;
+  camera_header.frame_id = camera_name;
+
+  auto odom_header = stamped_header;
+  odom_header.frame_id = odom_name;
+
+  // Look at the first stereo image to get dimensions for camera info
+  const auto stereo_image_paths =
+      maeve_automation_core::karlsruhe_dataset::getStereoImageFiles(
+          data_set_path);
+  const auto img = maeve_automation_core::karlsruhe_dataset::getImageMessage(
+      camera_header, *stereo_image_paths.left.begin());
+
+  // Get the camera info
+  const auto camera_info =
+      maeve_automation_core::karlsruhe_dataset::calib::convertToCameraInfo(
+          camera_header, calib_text, img->width, img->height);
+
+  // Get the static transform between odom and camera
+  const auto odom_T_camera = maeve_automation_core::karlsruhe_dataset::
+      getStampedTransformFromOdomToCamera(odom_header, imu_name);
 
   return EXIT_SUCCESS;
 }

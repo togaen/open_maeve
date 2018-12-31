@@ -35,16 +35,11 @@ calib::calib(boost::array<double, 12> _P1_roi, boost::array<double, 9> _K1,
 
 //------------------------------------------------------------------------------
 
-calib::stereoCameraInfo calib::convertToCameraInfo(const ros::Time& timestamp,
-                                                   const std::string& frame_id,
-                                                   const std::string& text,
-                                                   const int image_width,
-                                                   const int image_height) {
+calib::stereoCameraInfo calib::convertToCameraInfo(
+    const std_msgs::Header& header, const std::string& text,
+    const int image_width, const int image_height) {
   const auto c = createCalib(text);
 
-  std_msgs::Header header;
-  header.stamp = timestamp;
-  header.frame_id = frame_id;
   auto camera_info =
       getUndistortedCameraInfo(header, image_width, image_height);
   stereoCameraInfo stereo_camera_info = {camera_info, camera_info};

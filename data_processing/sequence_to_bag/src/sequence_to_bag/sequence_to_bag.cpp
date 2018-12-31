@@ -31,6 +31,14 @@
 
 namespace maeve_automation_core {
 
+std::string getFileText(const std::string& path) {
+  std::ifstream ifs(path);
+  return std::string((std::istreambuf_iterator<char>(ifs)),
+                     (std::istreambuf_iterator<char>()));
+}
+
+//------------------------------------------------------------------------------
+
 boost::optional<std::string> getPrefixedRow(const std::string& prefix,
                                             const std::string& str) {
   std::string row;

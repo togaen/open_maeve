@@ -32,6 +32,20 @@
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
 
+std::string getCalibText(const std::string& data_set_path) {
+  const auto calib_path = (data_set_path + "/" + CALIBRATION_FILENAME);
+  return getFileText(calib_path);
+}
+
+//------------------------------------------------------------------------------
+
+std::string getInsdataText(const std::string& data_set_path) {
+  const auto insdata_path = (data_set_path + "/" + INSDATA_FILENAME);
+  return getFileText(insdata_path);
+}
+
+//------------------------------------------------------------------------------
+
 sensor_msgs::ImagePtr getImageMessage(const std_msgs::Header& header,
                                       const std::string& image_path) {
   cv::Mat img = cv::imread(image_path);
@@ -43,9 +57,12 @@ sensor_msgs::ImagePtr getImageMessage(const std_msgs::Header& header,
 StereoImageFilePaths::StereoImageFilePaths(std::set<std::string> _left,
                                            std::set<std::string> _right)
     : left(std::move(_left)), right(std::move(_right)) {
-  if (left.size() != right.size()) {
+  const bool empty = left.empty();
+  const bool sizes_unequal = (left.size() != right.size());
+  if (empty || sizes_unequal) {
     std::stringstream ss;
-    ss << "Data set must contian an equal number of left and right images, but "
+    ss << "Data set must contian an equal non-zero number of left and right "
+          "images, but "
        << left.size() << " and " << right.size()
        << " were found, respectively.";
     throw std::invalid_argument(ss.str());
@@ -80,23 +97,8 @@ bool isLeftImage(const std::string& filename) {
 
 //------------------------------------------------------------------------------
 
-calib::stereoCameraInfo getCameraInfo(const ros::Time& camera_info_timestamp,
-                                      const std::string& camera_name,
-                                      const int image_width,
-                                      const int image_height,
-                                      const std::string& dataset_path) {
-  const auto calib_path = (dataset_path + "/" + CALIBRATION_FILENAME);
-  std::ifstream ifs(calib_path);
-  std::string text((std::istreambuf_iterator<char>(ifs)),
-                   (std::istreambuf_iterator<char>()));
-
-  return calib::convertToCameraInfo(camera_info_timestamp, camera_name, text,
-                                    image_width, image_height);
-}
-
-//------------------------------------------------------------------------------
-
-geometry_msgs::Transform getTransformFromOdomToCamera() {
+geometry_msgs::TransformStamped getStampedTransformFromOdomToCamera(
+    const std_msgs::Header& header, const std::string& child_frame_id) {
   geometry_msgs::Vector3 T;
   T.x = 1.6;
   T.y = 0.05;
@@ -109,7 +111,13 @@ geometry_msgs::Transform getTransformFromOdomToCamera() {
   geometry_msgs::Transform Tx;
   Tx.translation = T;
   Tx.rotation = R;
-  return Tx;
+
+  geometry_msgs::TransformStamped Tx_stamped;
+  Tx_stamped.header = header;
+  Tx_stamped.child_frame_id = child_frame_id;
+  Tx_stamped.transform = Tx;
+
+  return Tx_stamped;
 }
 
 }  // namespace karlsruhe_dataset

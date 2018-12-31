@@ -43,6 +43,15 @@ struct insdataRow {
   };  // struct
 
   /**
+   * @brief Get a header with the timestamp from the given row of the insdata
+   * file
+   *
+   * @post The returned header only has its stamp field set; other fields are
+   * uninitializaed
+   */
+  static std_msgs::Header getStampedHeader(const std::string& row_text);
+
+  /**
    * @brief Construct and return the GPS and IMU messages for a given row
    *
    * @note An exception is thrown if the row text is malformed

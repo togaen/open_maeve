@@ -21,7 +21,7 @@
  */
 #pragma once
 
-#include <geometry_msgs/Transform.h>
+#include <geometry_msgs/TransformStamped.h>
 
 #include <set>
 #include <string>
@@ -38,6 +38,16 @@ static constexpr auto INSDATA_FILENAME = "insdata.txt";
 static constexpr auto LEFT_IMAGE_PREFIX = "I1";
 
 /**
+ * @brief Get the contents of the calib.txt file as a string
+ */
+std::string getCalibText(const std::string& data_set_path);
+
+/**
+ * @brief Get the contents of the insdata.txt file as a string
+ */
+std::string getInsdataText(const std::string& data_set_path);
+
+/**
  * @brief Load the image at the given path into a ROS message
  */
 sensor_msgs::ImagePtr getImageMessage(const std_msgs::Header& header,
@@ -46,9 +56,11 @@ sensor_msgs::ImagePtr getImageMessage(const std_msgs::Header& header,
 /**
  * @brief Container for sets of paths of left/right image pairs
  *
- * @post The left/right sets are of equal size if construction succeeds
+ * @post The left/right sets are of equal size and non-empty if construction
+ * succeeds
  *
- * @note An exception is thrown if the left/right sets are unequal in size
+ * @note An exception is thrown if the left/right sets are unequal in size or
+ * empty
  */
 struct StereoImageFilePaths {
   const std::set<std::string> left;
@@ -70,20 +82,10 @@ StereoImageFilePaths getStereoImageFiles(const std::string& dataset_path);
 bool isLeftImage(const std::string& filename);
 
 /**
- * @brief Load the calibration file from the given data set path
- *
- * @note An exception is thrown if the path is malformed
- */
-calib::stereoCameraInfo getCameraInfo(const ros::Time& camera_info_timestamp,
-                                      const std::string& camera_name,
-                                      const int image_width,
-                                      const int image_height,
-                                      const std::string& dataset_path);
-
-/**
  * @brief Transform a point from odom frame to camera frame
  */
-geometry_msgs::Transform getTransformFromOdomToCamera();
+geometry_msgs::TransformStamped getStampedTransformFromOdomToCamera(
+    const std_msgs::Header& header, const std::string& child_frame_id);
 
 }  // namespace karlsruhe_dataset
 }  // namespace maeve_automation_core
