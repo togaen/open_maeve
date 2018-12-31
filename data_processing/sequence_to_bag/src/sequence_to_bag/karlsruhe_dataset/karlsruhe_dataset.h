@@ -32,8 +32,15 @@
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
 static constexpr auto CALIBRATION_FILENAME = "calib.txt";
+static constexpr auto CV_IMAGE_ENCODING = "mono8";
 static constexpr auto IMAGE_EXTENSION = ".png";
 static constexpr auto LEFT_IMAGE_PREFIX = "I1";
+
+/**
+ * @brief Load the image at the given path into a ROS message
+ */
+sensor_msgs::ImagePtr getImageMessage(const std_msgs::Header& header,
+                                      const std::string& image_path);
 
 /**
  * @brief Container for sets of paths of left/right image pairs

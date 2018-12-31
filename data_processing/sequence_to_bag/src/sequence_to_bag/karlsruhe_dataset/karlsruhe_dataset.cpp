@@ -21,12 +21,24 @@
  */
 #include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/opencv.hpp>
+
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <vector>
 
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
+
+sensor_msgs::ImagePtr getImageMessage(const std_msgs::Header& header,
+                                      const std::string& image_path) {
+  cv::Mat img = cv::imread(image_path);
+  return cv_bridge::CvImage(header, CV_IMAGE_ENCODING, img).toImageMsg();
+}
+
+//------------------------------------------------------------------------------
 
 StereoImageFilePaths::StereoImageFilePaths(std::set<std::string> _left,
                                            std::set<std::string> _right)
