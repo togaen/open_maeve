@@ -28,6 +28,12 @@
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
 
+bool isLeftImage(const std::string& filename) {
+  return (filename.find(LEFT_IMAGE_PREFIX) == 0);
+}
+
+//------------------------------------------------------------------------------
+
 calib::stereoCameraInfo getCameraInfo(const ros::Time& camera_info_timestamp,
                                       const std::string& camera_name,
                                       const int image_width,

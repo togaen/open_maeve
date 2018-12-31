@@ -31,6 +31,12 @@
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
 static constexpr auto CALIBRATION_FILENAME = "calib.txt";
+static constexpr auto LEFT_IMAGE_PREFIX = "I1";
+
+/**
+ * @brief Test whether a filename belongs to left camera
+ */
+bool isLeftImage(const std::string& filename);
 
 /**
  * @brief Load the calibration file from the given data set path
