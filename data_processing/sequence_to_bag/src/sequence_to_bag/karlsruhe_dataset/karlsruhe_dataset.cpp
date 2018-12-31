@@ -24,7 +24,6 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-#include <string>
 
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {

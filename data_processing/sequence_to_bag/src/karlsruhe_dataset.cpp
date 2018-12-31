@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
       maeve_automation_core::PROGRAM_OPTIONS_LINE_LENGTH);
   desc.add_options()("help,h", "Print help and exit.")(
       "data-set-path,d", po::value(&data_set_path_opt)->required(),
-      "Absolute path to the data set.")(
+      "Absolute path to the data set directory.")(
       "bag-output-dir,o", po::value(&output_path_opt)->required(),
       "Absolute path to the directory for the output bag file.")(
       "camera-name,c", po::value<std::string>()->default_value(CAMERA_DEFAULT),

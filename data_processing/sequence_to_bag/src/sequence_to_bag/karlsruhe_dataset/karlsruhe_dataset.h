@@ -21,11 +21,12 @@
  */
 #pragma once
 
-#include "sequence_to_bag/karlsruhe_dataset/calib.h"
-
-#include "sequence_to_bag/sequence_to_bag.h"
-
 #include <geometry_msgs/Transform.h>
+
+#include <string>
+
+#include "sequence_to_bag/karlsruhe_dataset/calib.h"
+#include "sequence_to_bag/sequence_to_bag.h"
 
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
