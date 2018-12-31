@@ -31,7 +31,8 @@ namespace po = boost::program_options;
 int main(int argc, char** argv) {
   boost::optional<std::string> data_set_path_opt;
   boost::optional<std::string> output_path_opt;
-  constexpr auto CAMERA_DEFAULT = "camera";
+  constexpr auto CAMERA_NAME_DEFAULT = "camera";
+  constexpr auto ODOM_NAME_DEFAULT = "odom";
 
   po::options_description desc(
       "Karlsruhe Dataset sequencer. See README.md for details.\nAvailable "
@@ -43,8 +44,11 @@ int main(int argc, char** argv) {
       "Absolute path to the data set directory.")(
       "bag-output-dir,o", po::value(&output_path_opt)->required(),
       "Absolute path to the directory for the output bag file.")(
-      "camera-name,c", po::value<std::string>()->default_value(CAMERA_DEFAULT),
-      "Camera name to use for the stereo image stream.");
+      "camera-name,c",
+      po::value<std::string>()->default_value(CAMERA_NAME_DEFAULT),
+      "Frame name to use for the stereo camera image stream.")(
+      "odom-name,m", po::value<std::string>()->default_value(ODOM_NAME_DEFAULT),
+      "Frame name to use for the odom message stream.");
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -67,6 +71,7 @@ int main(int argc, char** argv) {
   const auto data_set_path = *data_set_path_opt;
   const auto output_path = *output_path_opt;
   const auto camera_name = vm["camera-name"].as<std::string>();
+  const auto odom_name = vm["odom-name"].as<std::string>();
 
   return EXIT_SUCCESS;
 }
