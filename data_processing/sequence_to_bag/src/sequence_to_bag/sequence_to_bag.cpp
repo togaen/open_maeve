@@ -23,6 +23,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/range/iterator_range.hpp>
