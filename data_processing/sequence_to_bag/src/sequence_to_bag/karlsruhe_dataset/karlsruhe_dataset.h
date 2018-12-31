@@ -23,6 +23,7 @@
 
 #include <geometry_msgs/Transform.h>
 
+#include <set>
 #include <string>
 
 #include "sequence_to_bag/karlsruhe_dataset/calib.h"
@@ -31,7 +32,29 @@
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
 static constexpr auto CALIBRATION_FILENAME = "calib.txt";
+static constexpr auto IMAGE_EXTENSION = ".png";
 static constexpr auto LEFT_IMAGE_PREFIX = "I1";
+
+/**
+ * @brief Container for sets of paths of left/right image pairs
+ *
+ * @post The left/right sets are of equal size if construction succeeds
+ *
+ * @note An exception is thrown if the left/right sets are unequal in size
+ */
+struct StereoImageFilePaths {
+  const std::set<std::string> left;
+  const std::set<std::string> right;
+  StereoImageFilePaths(std::set<std::string> _left,
+                       std::set<std::string> _right);
+};  // struct StereoImageFilePaths
+
+/**
+ * @brief Get the set of left/right image pairs for a given dataset path
+ *
+ * @note An exception is thrown if left and right image counts differ
+ */
+StereoImageFilePaths getStereoImageFiles(const std::string& dataset_path);
 
 /**
  * @brief Test whether a filename belongs to left camera

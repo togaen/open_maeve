@@ -28,6 +28,40 @@
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
 
+StereoImageFilePaths::StereoImageFilePaths(std::set<std::string> _left,
+                                           std::set<std::string> _right)
+    : left(std::move(_left)), right(std::move(_right)) {
+  if (left.size() != right.size()) {
+    std::stringstream ss;
+    ss << "Data set must contian an equal number of left and right images, but "
+       << left.size() << " and " << right.size()
+       << " were found, respectively.";
+    throw std::invalid_argument(ss.str());
+  }
+}
+
+//------------------------------------------------------------------------------
+
+StereoImageFilePaths getStereoImageFiles(const std::string& dataset_path) {
+  const auto file_list =
+      getFileList(dataset_path, std::string(IMAGE_EXTENSION));
+
+  std::set<std::string> left;
+  std::set<std::string> right;
+  std::for_each(std::begin(file_list), std::end(file_list),
+                [&left, &right](const boost::filesystem::path& path) {
+                  if (isLeftImage(path.filename().string())) {
+                    left.insert(path.string());
+                  } else {
+                    right.insert(path.string());
+                  }
+                });
+
+  return StereoImageFilePaths(std::move(left), std::move(right));
+}
+
+//------------------------------------------------------------------------------
+
 bool isLeftImage(const std::string& filename) {
   return (filename.find(LEFT_IMAGE_PREFIX) == 0);
 }
