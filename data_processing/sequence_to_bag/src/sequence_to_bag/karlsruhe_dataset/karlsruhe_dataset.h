@@ -34,6 +34,7 @@ namespace karlsruhe_dataset {
 static constexpr auto CALIBRATION_FILENAME = "calib.txt";
 static constexpr auto CV_IMAGE_ENCODING = "mono8";
 static constexpr auto IMAGE_EXTENSION = ".png";
+static constexpr auto INSDATA_FILENAME = "insdata.txt";
 static constexpr auto LEFT_IMAGE_PREFIX = "I1";
 
 /**
