@@ -52,8 +52,8 @@ struct calib {
 
  private:
   static constexpr auto ROW_DELIMITER = ' ';
-  static constexpr auto P1_roi_prefix = "P1_roi";
-  static constexpr auto P2_roi_prefix = "P2_roi";
+  static constexpr auto P1_roi_prefix = "P1_roi:";
+  static constexpr auto P2_roi_prefix = "P2_roi:";
   const boost::array<double, 12> P1_roi;
   const boost::array<double, 9> K1;
   const boost::array<double, 12> P2_roi;
