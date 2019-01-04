@@ -34,8 +34,10 @@ namespace karlsruhe_dataset {
  */
 struct calib {
   struct stereoCameraInfo {
-    sensor_msgs::CameraInfo left;
-    sensor_msgs::CameraInfo right;
+    const sensor_msgs::CameraInfo left;
+    const sensor_msgs::CameraInfo right;
+    stereoCameraInfo(sensor_msgs::CameraInfo _left,
+                     sensor_msgs::CameraInfo _right);
   };
 
   /**

@@ -31,6 +31,8 @@
 
 namespace maeve_automation_core {
 
+//------------------------------------------------------------------------------
+
 std::string getFileText(const std::string& path) {
   std::ifstream ifs(path);
   return std::string((std::istreambuf_iterator<char>(ifs)),
@@ -148,5 +150,7 @@ std::vector<boost::filesystem::path> getFileList(
 
   return file_list;
 }
+
+//------------------------------------------------------------------------------
 
 }  // namespace maeve_automation_core

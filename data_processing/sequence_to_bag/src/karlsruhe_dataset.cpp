@@ -74,6 +74,7 @@ int main(int argc, char** argv) {
   }
 
   const auto data_set_path = *data_set_path_opt;
+  const auto data_set_name = boost::filesystem::path(data_set_path).filename();
   const auto output_path = *output_path_opt;
   const auto camera_name = vm["camera-name"].as<std::string>();
   const auto odom_name = vm["odom-name"].as<std::string>();
@@ -110,14 +111,23 @@ int main(int argc, char** argv) {
   const auto img = maeve_automation_core::karlsruhe_dataset::getImageMessage(
       camera_header, *stereo_image_paths.left.begin());
 
-  // Get the camera info
-  const auto camera_info =
-      maeve_automation_core::karlsruhe_dataset::calib::convertToCameraInfo(
-          camera_header, calib_text, img->width, img->height);
+  try {
+    // Get the camera info
+    const auto camera_info =
+        maeve_automation_core::karlsruhe_dataset::calib::convertToCameraInfo(
+            camera_header, calib_text, img->width, img->height);
 
-  // Get the static transform between odom and camera
-  const auto odom_T_camera = maeve_automation_core::karlsruhe_dataset::
-      getStampedTransformFromOdomToCamera(odom_header, imu_name);
+    // Get the static transform between odom and camera
+    const auto odom_T_camera = maeve_automation_core::karlsruhe_dataset::
+        getStampedTransformFromOdomToCamera(odom_header, imu_name);
+
+    // Build rosbag
+
+  } catch (const std::exception& e) {
+    std::cerr << "Error encountered building bag file: " << e.what()
+              << "\nCannot continue.\n";
+    return EXIT_FAILURE;
+  }
 
   return EXIT_SUCCESS;
 }

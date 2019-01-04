@@ -29,6 +29,12 @@
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
 
+calib::stereoCameraInfo::stereoCameraInfo(sensor_msgs::CameraInfo _left,
+                                          sensor_msgs::CameraInfo _right)
+    : left(std::move(_left)), right(std::move(_right)) {}
+
+//------------------------------------------------------------------------------
+
 calib::calib(boost::array<double, 12> _P1_roi, boost::array<double, 9> _K1,
              boost::array<double, 12> _P2_roi, boost::array<double, 9> _K2)
     : P1_roi(_P1_roi), K1(_K1), P2_roi(_P2_roi), K2(_K2) {}
@@ -40,16 +46,15 @@ calib::stereoCameraInfo calib::convertToCameraInfo(
     const int image_width, const int image_height) {
   const auto c = createCalib(text);
 
-  auto camera_info =
-      getUndistortedCameraInfo(header, image_width, image_height);
-  stereoCameraInfo stereo_camera_info = {camera_info, camera_info};
+  auto left = getUndistortedCameraInfo(header, image_width, image_height);
+  auto right = left;
 
-  stereo_camera_info.left.P = c.P1_roi;
-  stereo_camera_info.left.K = c.K1;
-  stereo_camera_info.right.P = c.P2_roi;
-  stereo_camera_info.right.K = c.K2;
+  left.P = c.P1_roi;
+  left.K = c.K1;
+  right.P = c.P2_roi;
+  right.K = c.K2;
 
-  return stereo_camera_info;
+  return stereoCameraInfo(std::move(left), std::move(right));
 }
 
 //------------------------------------------------------------------------------
@@ -104,6 +109,8 @@ calib calib::createCalib(const std::string& text) {
 
   return calib(P1_roi, K1, P2_roi, K2);
 }
+
+//------------------------------------------------------------------------------
 
 }  // namespace karlsruhe_dataset
 }  // namespace maeve_automation_core
