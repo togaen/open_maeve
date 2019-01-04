@@ -130,7 +130,8 @@ int main(int argc, char** argv) {
   rosbag::Bag bag;
   ros::Time::init();
   auto t = ros::Time::now();
-  bag.open(output_path + "/" + meta_info->name + ".bag",
+  bag.open(output_path + "/" + meta_info->name +
+               maeve_automation_core::BAG_FILE_EXTENSION,
            rosbag::bagmode::Write);
   auto elapsed_time = 0.0;
   std::for_each(

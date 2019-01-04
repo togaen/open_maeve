@@ -39,6 +39,7 @@ namespace maeve_automation_core {
 /** @brief When printing program options to terminal, use this line length */
 static constexpr unsigned int PROGRAM_OPTIONS_LINE_LENGTH = 120u;
 
+static constexpr auto BAG_FILE_EXTENSION = ".bag";
 static constexpr auto TF_TOPIC = "/tf";
 static constexpr auto STATIC_TF_TOPIC = "/tf_static";
 

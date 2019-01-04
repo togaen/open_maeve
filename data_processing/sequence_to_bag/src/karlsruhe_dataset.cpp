@@ -31,7 +31,7 @@ namespace po = boost::program_options;
 int main(int argc, char** argv) {
   boost::optional<std::string> data_set_path_opt;
   boost::optional<std::string> output_path_opt;
-  constexpr auto CAMERA_NAME_DEFAULT = "camera";
+  constexpr auto CAMERA_NAME_DEFAULT = "stereo";
   constexpr auto ODOM_NAME_DEFAULT = "odom";
   constexpr auto IMU_NAME_DEFAULT = "imu";
 
@@ -74,7 +74,8 @@ int main(int argc, char** argv) {
   }
 
   const auto data_set_path = *data_set_path_opt;
-  const auto data_set_name = boost::filesystem::path(data_set_path).filename();
+  const auto data_set_name =
+      boost::filesystem::path(data_set_path).filename().string();
   const auto output_path = *output_path_opt;
   const auto camera_name = vm["camera-name"].as<std::string>();
   const auto odom_name = vm["odom-name"].as<std::string>();
@@ -122,7 +123,66 @@ int main(int argc, char** argv) {
         getStampedTransformFromOdomToCamera(odom_header, imu_name);
 
     // Build rosbag
+    rosbag::Bag bag;
+    bag.open(output_path + "/" + data_set_name +
+                 maeve_automation_core::BAG_FILE_EXTENSION,
+             rosbag::bagmode::Write);
 
+    auto error_encountered = false;
+    auto it_left_image_path = stereo_image_paths.left.begin();
+    auto it_right_image_path = stereo_image_paths.right.begin();
+    std::string insdata_row_text;
+    std::istringstream insdata_stream(insdata_text);
+    while (std::getline(insdata_stream, insdata_row_text)) {
+      // Check input
+      const auto left_error =
+          (it_left_image_path == std::end(stereo_image_paths.left));
+      const auto right_error =
+          (it_right_image_path == std::end(stereo_image_paths.right));
+      if (left_error || right_error) {
+        std::cerr << "Mismatch in number of left or right camera images and "
+                     "insdata rows. Cannot continue.";
+        error_encountered = true;
+        break;
+      }
+
+      // Get messages
+      const auto gps_imu_msg = maeve_automation_core::karlsruhe_dataset::
+          insdataRow::convertToGPS_IMU(insdata_row_text, imu_name);
+
+      auto img_header = gps_imu_msg.imu.header;
+      img_header.frame_id = camera_name;
+      const auto left_camera_msg =
+          maeve_automation_core::karlsruhe_dataset::getImageMessage(
+              img_header, *it_left_image_path);
+      const auto right_camera_msg =
+          maeve_automation_core::karlsruhe_dataset::getImageMessage(
+              img_header, *it_right_image_path);
+
+      // TODO(me): publish static transform for left/right cameras?
+
+      bag.write("/" + camera_name + "/left/image", img_header.stamp,
+                *left_camera_msg);
+      bag.write("/" + camera_name + "/left/camera_info",
+                camera_info.left.header.stamp, camera_info.left);
+      bag.write("/" + camera_name + "/right/image", img_header.stamp,
+                *right_camera_msg);
+      bag.write("/" + camera_name + "/right/camera_info",
+                camera_info.right.header.stamp, camera_info.right);
+      bag.write("/" + odom_name, gps_imu_msg.imu.header.stamp, gps_imu_msg.imu);
+      bag.write("/" + imu_name, gps_imu_msg.gps.header.stamp, gps_imu_msg.gps);
+
+      // Get next round of info
+      ++it_left_image_path;
+      ++it_right_image_path;
+    }
+
+    // Done writing to bag file
+    bag.close();
+
+    if (error_encountered) {
+      return EXIT_FAILURE;
+    }
   } catch (const std::exception& e) {
     std::cerr << "Error encountered building bag file: " << e.what()
               << "\nCannot continue.\n";
