@@ -196,7 +196,7 @@ std::tuple<uint32_t, uint32_t> insdataRow::parseTime(
   }
 
   const auto sec_string = time_text.substr(0, 10);
-  const auto nsec_string = time_text.substr(11, 9);
+  const auto nsec_string = time_text.substr(10, 9);
   const uint32_t sec = std::stoul(sec_string);
   const uint32_t nsec = std::stoul(nsec_string);
   return std::make_tuple(sec, nsec);
