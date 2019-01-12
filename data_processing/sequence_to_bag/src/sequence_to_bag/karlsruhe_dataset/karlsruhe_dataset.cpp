@@ -22,6 +22,7 @@
 #include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
 #include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 #include <opencv2/opencv.hpp>
 
 #include <fstream>
@@ -31,6 +32,8 @@
 
 namespace maeve_automation_core {
 namespace karlsruhe_dataset {
+
+const std::string CV_IMAGE_ENCODING = sensor_msgs::image_encodings::BGR8;
 
 std::string getCalibText(const std::string& data_set_path) {
   const auto calib_path = (data_set_path + "/" + CALIBRATION_FILENAME);
