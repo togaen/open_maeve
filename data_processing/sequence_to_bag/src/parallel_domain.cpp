@@ -78,9 +78,6 @@ int main(int argc, char** argv) {
   const auto output_path = *output_path_opt;
   const auto image_1_topic = vm["raw-image-camera"].as<std::string>();
   const auto image_2_topic = vm["segmented-image-camera"].as<std::string>();
-  const auto clock_hz_param =
-      maeve_automation_core::parallel_domain::getClockHz(
-          (argc > 5) ? std::string(argv[5]) : std::string(""));
 
   // Get meta information.
   const auto meta_info =
