@@ -28,6 +28,8 @@
 #include <boost/optional.hpp>
 #include <boost/program_options.hpp>
 
+#include <geometry_msgs/Pose.h>
+#include <geometry_msgs/TransformStamped.h>
 #include <ros/console.h>
 #include <rosbag/bag.h>
 #include <rosgraph_msgs/Clock.h>
@@ -128,5 +130,12 @@ sensor_msgs::CameraInfo getUndistortedCameraInfo(const std_msgs::Header& header,
 std::vector<boost::filesystem::path> getFileList(
     const std::string& path,
     boost::optional<std::string> extension = boost::none);
+
+/**
+ * @brief Convert a pose to a stamped transform for the given frames
+ */
+geometry_msgs::TransformStamped getStampedTransformFromPose(
+    const std_msgs::Header& header, const geometry_msgs::Pose& pose,
+    const std::string& frame_id, const std::string& child_frame_id);
 
 }  // namespace maeve_automation_core

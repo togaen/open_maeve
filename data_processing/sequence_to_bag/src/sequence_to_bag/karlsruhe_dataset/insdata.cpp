@@ -66,10 +66,12 @@ std_msgs::Header insdataRow::getStampedHeader(const std::string& row_text) {
 
 //------------------------------------------------------------------------------
 
-insdataRow::GPS_IMU insdataRow::convertToGPS_IMU(const std::string& row_text,
-                                                 const std::string& frame_id) {
+insdataRow::GPS_IMU insdataRow::convertToGPS_IMU(
+    const std::string& row_text, const std::string& frame_id,
+    const std::string& child_frame_id) {
   const auto row = createInsdataRow(row_text);
-  return {convertToNavSatFix(row, frame_id), convertToOdometry(row, frame_id)};
+  return {convertToNavSatFix(row, frame_id),
+          convertToOdometry(row, frame_id, child_frame_id)};
 }
 
 //------------------------------------------------------------------------------
@@ -91,11 +93,12 @@ sensor_msgs::NavSatFix insdataRow::convertToNavSatFix(
 
 //------------------------------------------------------------------------------
 
-nav_msgs::Odometry insdataRow::convertToOdometry(const insdataRow& row,
-                                                 const std::string& frame_id) {
+nav_msgs::Odometry insdataRow::convertToOdometry(
+    const insdataRow& row, const std::string& frame_id,
+    const std::string& child_frame_id) {
   nav_msgs::Odometry msg;
   msg.header = getHeader(row, frame_id);
-  msg.child_frame_id = frame_id;
+  msg.child_frame_id = child_frame_id;
 
   geometry_msgs::Point position;
   position.x = row.x;
@@ -103,6 +106,8 @@ nav_msgs::Odometry insdataRow::convertToOdometry(const insdataRow& row,
   position.z = row.z;
   geometry_msgs::Pose P;
   P.position = position;
+
+  // Only use yaw because roll and pitch are corrupted in data file
   P.orientation = tf::createQuaternionMsgFromYaw(row.yaw);
 
   geometry_msgs::PoseWithCovariance P_C;

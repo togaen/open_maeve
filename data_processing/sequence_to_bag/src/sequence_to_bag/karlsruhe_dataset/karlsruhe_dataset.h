@@ -84,8 +84,9 @@ bool isLeftImage(const std::string& filename);
 /**
  * @brief Transform a point from odom frame to camera frame
  */
-geometry_msgs::TransformStamped getStampedTransformFromOdomToCamera(
-    const std_msgs::Header& header, const std::string& child_frame_id);
+geometry_msgs::TransformStamped getStampedTransformFromCameraToIMU(
+    const std_msgs::Header& header, const std::string& imu_name,
+    const std::string& camera_name);
 
 }  // namespace karlsruhe_dataset
 }  // namespace maeve_automation_core

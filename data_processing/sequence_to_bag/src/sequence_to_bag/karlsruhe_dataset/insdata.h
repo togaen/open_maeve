@@ -64,7 +64,8 @@ struct insdataRow {
    * therefore all such values are set to NaN
    */
   static GPS_IMU convertToGPS_IMU(const std::string& row_text,
-                                  const std::string& frame_id);
+                                  const std::string& frame_id,
+                                  const std::string& child_frame_id);
 
  private:
   static constexpr auto ROW_DELIMITER = ' ';
@@ -122,12 +123,10 @@ struct insdataRow {
    * @note insdata.txt files contain no velocity information and corrupted roll
    * and pitch information, therefore only position and yaw are usable in the
    * Odometry message
-   *
-   * @note The odometer is treated as the base link of the robot, so it is its
-   * own child frame
    */
-  static nav_msgs::Odometry convertToOdometry(const insdataRow& row,
-                                              const std::string& frame_id);
+  static nav_msgs::Odometry convertToOdometry(
+      const insdataRow& row, const std::string& frame_id,
+      const std::string& child_frame_id);
 
   /**
    * @brief Parse a 19-digit nanosecond time string to seconds and nanoseconds

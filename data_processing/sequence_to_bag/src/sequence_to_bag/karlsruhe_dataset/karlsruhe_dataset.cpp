@@ -22,9 +22,13 @@
 #include "sequence_to_bag/karlsruhe_dataset/karlsruhe_dataset.h"
 
 #include <cv_bridge/cv_bridge.h>
+#include <geometry_msgs/Pose.h>
 #include <sensor_msgs/image_encodings.h>
+#include <tf2/LinearMath/Quaternion.h>
 #include <opencv2/opencv.hpp>
 
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -100,24 +104,30 @@ bool isLeftImage(const std::string& filename) {
 
 //------------------------------------------------------------------------------
 
-geometry_msgs::TransformStamped getStampedTransformFromOdomToCamera(
-    const std_msgs::Header& header, const std::string& child_frame_id) {
+geometry_msgs::TransformStamped getStampedTransformFromCameraToIMU(
+    const std_msgs::Header& header, const std::string& imu_name,
+    const std::string& camera_name) {
   geometry_msgs::Vector3 T;
   T.x = 1.6;
   T.y = 0.05;
   T.z = 0.6;
+
+  // Align orientation of camera frame with IMU
+  tf2::Quaternion q;
+  q.setRPY(0.0, (M_PI_2 + 0.08), M_PI_2);
   geometry_msgs::Quaternion R;
-  R.w = 0.999999756306074;
-  R.x = 0.0;
-  R.y = -0.000698131644088;
-  R.z = 0.0;
+  R.w = q.w();
+  R.x = q.x();
+  R.y = q.y();
+  R.z = q.z();
   geometry_msgs::Transform Tx;
   Tx.translation = T;
   Tx.rotation = R;
 
   geometry_msgs::TransformStamped Tx_stamped;
   Tx_stamped.header = header;
-  Tx_stamped.child_frame_id = child_frame_id;
+  Tx_stamped.header.frame_id = camera_name;
+  Tx_stamped.child_frame_id = imu_name;
   Tx_stamped.transform = Tx;
 
   return Tx_stamped;

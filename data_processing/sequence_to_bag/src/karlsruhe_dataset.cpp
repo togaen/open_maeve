@@ -24,6 +24,8 @@
 #include "sequence_to_bag/karlsruhe_dataset/calib.h"
 #include "sequence_to_bag/karlsruhe_dataset/insdata.h"
 
+#include <tf2_msgs/TFMessage.h>
+
 namespace {
 namespace po = boost::program_options;
 }  // namespace
@@ -32,7 +34,7 @@ int main(int argc, char** argv) {
   boost::optional<std::string> data_set_path_opt;
   boost::optional<std::string> output_path_opt;
   constexpr auto CAMERA_NAME_DEFAULT = "stereo";
-  constexpr auto ODOM_NAME_DEFAULT = "odom";
+  constexpr auto GLOBAL_NAME_DEFAULT = "world";
   constexpr auto IMU_NAME_DEFAULT = "imu";
 
   po::options_description desc(
@@ -48,12 +50,13 @@ int main(int argc, char** argv) {
       "camera-name,c",
       po::value<std::string>()->default_value(CAMERA_NAME_DEFAULT),
       "Frame name to use for the stereo camera image stream.")(
-      "odom-name,m", po::value<std::string>()->default_value(ODOM_NAME_DEFAULT),
-      "Name to use for the global odom frame in which the IMU measures "
+      "global-name,g",
+      po::value<std::string>()->default_value(GLOBAL_NAME_DEFAULT),
+      "Name to use for the global frame in which the IMU measures "
       "motion.")("imu-name,i",
                  po::value<std::string>()->default_value(IMU_NAME_DEFAULT),
                  "Name to use for the local IMU frame as it moves in the "
-                 "global odom frame.");
+                 "global frame.");
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -78,7 +81,7 @@ int main(int argc, char** argv) {
       boost::filesystem::path(data_set_path).filename().string();
   const auto output_path = *output_path_opt;
   const auto camera_name = vm["camera-name"].as<std::string>();
-  const auto odom_name = vm["odom-name"].as<std::string>();
+  const auto global_name = vm["global-name"].as<std::string>();
   const auto imu_name = vm["imu-name"].as<std::string>();
 
   const auto calib_text =
@@ -102,9 +105,6 @@ int main(int argc, char** argv) {
   auto camera_header = stamped_header;
   camera_header.frame_id = camera_name;
 
-  auto odom_header = stamped_header;
-  odom_header.frame_id = odom_name;
-
   // Look at the first stereo image to get dimensions for camera info
   const auto stereo_image_paths =
       maeve_automation_core::karlsruhe_dataset::getStereoImageFiles(
@@ -117,10 +117,6 @@ int main(int argc, char** argv) {
     const auto camera_info =
         maeve_automation_core::karlsruhe_dataset::calib::convertToCameraInfo(
             camera_header, calib_text, img->width, img->height);
-
-    // Get the static transform between odom and camera
-    const auto odom_T_camera = maeve_automation_core::karlsruhe_dataset::
-        getStampedTransformFromOdomToCamera(odom_header, imu_name);
 
     // Build rosbag
     rosbag::Bag bag;
@@ -148,7 +144,7 @@ int main(int argc, char** argv) {
 
       // Get messages
       const auto gps_imu_msg = maeve_automation_core::karlsruhe_dataset::
-          insdataRow::convertToGPS_IMU(insdata_row_text, imu_name);
+          insdataRow::convertToGPS_IMU(insdata_row_text, global_name, imu_name);
 
       auto img_header = gps_imu_msg.imu.header;
       img_header.frame_id = camera_name;
@@ -159,7 +155,24 @@ int main(int argc, char** argv) {
           maeve_automation_core::karlsruhe_dataset::getImageMessage(
               img_header, *it_right_image_path);
 
+      // Get transform from world to odom
+      const auto world_T_odom =
+          maeve_automation_core::getStampedTransformFromPose(
+              gps_imu_msg.imu.header, gps_imu_msg.imu.pose.pose, imu_name,
+              global_name);
+
+      // Get transform from odom to camera
+      const auto odom_T_camera = maeve_automation_core::karlsruhe_dataset::
+          getStampedTransformFromCameraToIMU(gps_imu_msg.imu.header, imu_name,
+                                             camera_name);
+
+      // Publish tf tree
       // TODO(me): publish static transform for left/right cameras?
+      const auto& imu_stamp = gps_imu_msg.imu.header.stamp;
+      tf2_msgs::TFMessage tf_msg;
+      tf_msg.transforms.push_back(odom_T_camera);
+      tf_msg.transforms.push_back(world_T_odom);
+      bag.write(maeve_automation_core::TF_TOPIC, imu_stamp, tf_msg);
 
       bag.write("/" + camera_name + "/left/image", img_header.stamp,
                 *left_camera_msg);
@@ -169,8 +182,10 @@ int main(int argc, char** argv) {
                 *right_camera_msg);
       bag.write("/" + camera_name + "/right/camera_info",
                 camera_info.right.header.stamp, camera_info.right);
-      bag.write("/" + odom_name, gps_imu_msg.imu.header.stamp, gps_imu_msg.imu);
-      bag.write("/" + imu_name, gps_imu_msg.gps.header.stamp, gps_imu_msg.gps);
+      bag.write("/" + imu_name + "/odom", gps_imu_msg.imu.header.stamp,
+                gps_imu_msg.imu);
+      bag.write("/" + imu_name + "/gps", gps_imu_msg.gps.header.stamp,
+                gps_imu_msg.gps);
 
       // Get next round of info
       ++it_left_image_path;

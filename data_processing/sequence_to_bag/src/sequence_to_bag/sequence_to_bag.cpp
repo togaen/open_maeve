@@ -153,4 +153,21 @@ std::vector<boost::filesystem::path> getFileList(
 
 //------------------------------------------------------------------------------
 
+geometry_msgs::TransformStamped getStampedTransformFromPose(
+    const std_msgs::Header& header, const geometry_msgs::Pose& pose,
+    const std::string& frame_id, const std::string& child_frame_id) {
+  geometry_msgs::TransformStamped T;
+  auto& t = T.transform.translation;
+  t.x = pose.position.x;
+  t.y = pose.position.y;
+  t.z = pose.position.z;
+  T.transform.rotation = pose.orientation;
+  T.header = header;
+  T.header.frame_id = frame_id;
+  T.child_frame_id = child_frame_id;
+  return T;
+}
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
