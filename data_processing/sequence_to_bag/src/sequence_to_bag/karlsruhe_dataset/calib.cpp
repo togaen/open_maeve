@@ -42,10 +42,8 @@ calib::calib(boost::array<double, 12> _P1_roi, boost::array<double, 9> _K1,
 //------------------------------------------------------------------------------
 
 calib::stereoCameraInfo calib::convertToCameraInfo(
-    const std_msgs::Header& header, const std::string& text,
-    const int image_width, const int image_height) {
-  const auto c = createCalib(text);
-
+    const std_msgs::Header& header, const calib& c, const int image_width,
+    const int image_height) {
   auto left = getUndistortedCameraInfo(header, image_width, image_height);
   auto right = left;
 

@@ -114,9 +114,9 @@ int main(int argc, char** argv) {
 
   try {
     // Get the camera info
-    const auto camera_info =
-        maeve_automation_core::karlsruhe_dataset::calib::convertToCameraInfo(
-            camera_header, calib_text, img->width, img->height);
+    const auto calib =
+        maeve_automation_core::karlsruhe_dataset::calib::createCalib(
+            calib_text);
 
     // Build rosbag
     rosbag::Bag bag;
@@ -155,6 +155,10 @@ int main(int argc, char** argv) {
           maeve_automation_core::karlsruhe_dataset::getImageMessage(
               img_header, *it_right_image_path);
 
+      const auto camera_info =
+          maeve_automation_core::karlsruhe_dataset::calib::convertToCameraInfo(
+              img_header, calib, img->width, img->height);
+
       // Get transform from world to odom
       const auto world_T_odom =
           maeve_automation_core::getStampedTransformFromPose(
@@ -172,13 +176,13 @@ int main(int argc, char** argv) {
       tf2_msgs::TFMessage tf_msg;
       tf_msg.transforms.push_back(odom_T_camera);
       tf_msg.transforms.push_back(world_T_odom);
-      bag.write(maeve_automation_core::TF_TOPIC, imu_stamp, tf_msg);
+      //      bag.write(maeve_automation_core::TF_TOPIC, imu_stamp, tf_msg);
 
-      bag.write("/" + camera_name + "/left/image", img_header.stamp,
+      bag.write("/" + camera_name + "/left/image_raw", img_header.stamp,
                 *left_camera_msg);
       bag.write("/" + camera_name + "/left/camera_info",
                 camera_info.left.header.stamp, camera_info.left);
-      bag.write("/" + camera_name + "/right/image", img_header.stamp,
+      bag.write("/" + camera_name + "/right/image_raw", img_header.stamp,
                 *right_camera_msg);
       bag.write("/" + camera_name + "/right/camera_info",
                 camera_info.right.header.stamp, camera_info.right);

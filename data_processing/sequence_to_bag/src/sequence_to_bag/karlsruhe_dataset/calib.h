@@ -41,12 +41,22 @@ struct calib {
   };
 
   /**
+   * @brief Create a calib object from the text of a calib.txt file
+   *
+   * @note Only the P1_roi and P2_roi data are captured because the images are
+   * already rectified (see link to dataset description in README.md)
+   *
+   * @note An exception is thrown if the text is malformed
+   */
+  static calib createCalib(const std::string& text);
+
+  /**
    * @brief Get the CameraInfo message corresponding to the given calib text
    *
    * @note An exception is thrown if the text is malformed
    */
   static stereoCameraInfo convertToCameraInfo(const std_msgs::Header& header,
-                                              const std::string& text,
+                                              const calib& c,
                                               const int image_width,
                                               const int image_height);
 
@@ -58,16 +68,6 @@ struct calib {
   const boost::array<double, 9> K1;
   const boost::array<double, 12> P2_roi;
   const boost::array<double, 9> K2;
-
-  /**
-   * @brief Create a calib object from the text of a calib.txt file
-   *
-   * @note Only the P1_roi and P2_roi data are captured because the images are
-   * already rectified (see link to dataset description in README.md)
-   *
-   * @note An exception is thrown if the text is malformed
-   */
-  static calib createCalib(const std::string& text);
 
   /** @brief Explicit constructor */
   calib(boost::array<double, 12> _P1_roi, boost::array<double, 9> _K1,
