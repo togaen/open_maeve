@@ -1,6 +1,7 @@
 # README #
 
-This package contains various utilities for converting data sequences to bag files. Currently two data sequence formats are supported:
+This package contains various utilities for converting data sequences to bag
+files. Currently two data sequence formats are supported:
 * Parallel Domain
 * Karlsruhe Dataset
 
@@ -8,12 +9,17 @@ The two usages are detailed below.
 
 ## Karlsruhe Dataset: Stereo Video Sequences + rough GPS Poses ##
 
-This utility converts data sets from the [Karlsruhe Stereo Video Sequences + rough GPS Poses](http://www.cvlibs.net/datasets/karlsruhe_sequences/) collection
-into bag files. The stereo images are recorded to bag along with camera calibration
-information and the GPS and IMU poses. All messages are timestamped with the
-recorded time.
+This utility converts data sets from the [Karlsruhe Stereo Video Sequences + rough GPS Poses](http://www.cvlibs.net/datasets/karlsruhe_sequences/)
+collection into bag files. The stereo images are recorded to bag along with
+camera calibration information and the GPS and IMU poses. All messages are
+timestamped with the recorded time.
 
-Visit the [dataset web page](http://www.cvlibs.net/datasets/karlsruhe_sequences/) for more information about the data format.
+Visit the [dataset web page](http://www.cvlibs.net/datasets/karlsruhe_sequences/)
+for more information about the data format.
+
+Bag files generated with this tool can be used with the ROS package
+[stereo\_image\_proc](https://wiki.ros.org/stereo_image_proc) to generate point
+clouds and disparity images.
 
 ### Usage ###
 
