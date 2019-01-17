@@ -8,7 +8,28 @@ The two usages are detailed below.
 
 ## Karlsruhe Dataset: Stereo Video Sequences + rough GPS Poses ##
 
-TODO
+This utility converts data sets from the [Karlsruhe Stereo Video Sequences + rough GPS Poses](http://www.cvlibs.net/datasets/karlsruhe_sequences/) collection
+into bag files. The stereo images are recorded to bag along with camera calibration
+information and the GPS and IMU poses. All messages are timestamped with the
+recorded time.
+
+Visit the [dataset web page](http://www.cvlibs.net/datasets/karlsruhe_sequences/) for more information about the data format.
+
+### Usage ###
+
+Issue the following command to see usage:
+
+    rosrun sequence_to_bag karlsruhe_dataset --help
+
+This will display a list of options as below:
+
+    Available options are listed below. Arguments without default values are required:
+      -h [ --help ]                      Print help and exit.
+      -d [ --data-set-path ] arg         Absolute path to the data set directory.
+      -o [ --bag-output-dir ] arg        Absolute path to the directory for the output bag file.
+      -c [ --camera-name ] arg (=stereo) Frame name to use for the stereo camera image stream.
+      -g [ --global-name ] arg (=world)  Name to use for the global frame in which the IMU measures motion.
+      -i [ --imu-name ] arg (=imu)       Name to use for the local IMU frame as it moves in the global frame.
 
 ## Parallel Domain ##
 
@@ -22,17 +43,18 @@ distortion.
 
 ### Usage ###
 
-To use the converter, issue a command like this:
+Issue the following command to see usage:
 
-    rosrun sequence_to_bag parallel_domain data-set-path bag-output-dir raw-image-camera-name segmented-image-camera-name
+    rosrun sequence_to_bag parallel_domain --help
 
-The images in the 'camera-frames' directory will be published to:
+This will display a list of options as below:
 
-    /raw-image-camera-name/image
-
-The images in the 'segmented-frames' directory will be published to:
-
-    /segmented-image-camera-name/image
+    Available options are listed below. Arguments without default values are required:
+      -h [ --help ]                                    Print help and exit.
+      -d [ --data-set-path ] arg                       Absolute path to the data set.
+      -o [ --bag-output-dir ] arg                      Absolute path to the directory for the output bag file.
+      -r [ --raw-image-camera ] arg (=raw)             Camera name to use for the raw image stream.
+      -s [ --segmented-image-camera ] arg (=segmented) Camera name to use for the segmented image stream.
 
 ### Image Segmentation Sequence Data Set ###
 
