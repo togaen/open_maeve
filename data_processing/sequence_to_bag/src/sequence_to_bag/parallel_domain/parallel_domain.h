@@ -21,10 +21,7 @@
  */
 #pragma once
 
-#include <sensor_msgs/CameraInfo.h>
-#include <sensor_msgs/Image.h>
-#include <boost/filesystem.hpp>
-#include <boost/optional.hpp>
+#include "sequence_to_bag/sequence_to_bag.h"
 
 #include <array>
 #include <iostream>
@@ -35,6 +32,8 @@
 #include <vector>
 
 namespace maeve_automation_core {
+namespace parallel_domain {
+
 /**
  * @brief Data structure to store information from meta.yaml.
  */
@@ -50,19 +49,6 @@ struct MetaInfo {
   /** @brief The framerate the data were captured at. */
   double fps;
 };  // struct MetaInfo
-
-/**
- * @brief Synthesize a camera info message from an image message.
- *
- * This message assumes unit focal lengths, no distortion, and perfect optical
- * center.
- *
- * @param img_ptr Image message pointer.
- *
- * @return A camera info message.
- */
-sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
-    const sensor_msgs::ImagePtr& img_ptr);
 
 /**
  * @brief Stream overload for meta info struct.
@@ -140,13 +126,5 @@ std::map<int, sensor_msgs::ImagePtr> getSortedIndexedImages(
 std::map<int, std::string> getSortedIndexedFileList(
     const std::vector<boost::filesystem::path>& file_list);
 
-/**
- * @brief Get a list of all non-hidden files in the given path.
- *
- * @param path The path of the directory to list files for.
- *
- * @return A vector of fully qualifed filenames. If 'path' is not a valid
- * directory the returned vector will be empty.
- */
-std::vector<boost::filesystem::path> getFileList(const std::string& path);
+}  // namespace parallel_domain
 }  // namespace maeve_automation_core

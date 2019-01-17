@@ -21,6 +21,11 @@ find_package(catkin REQUIRED COMPONENTS
   rosgraph_msgs
   camera_calibration_parsers
   sensor_msgs
+  geometry_msgs
+  gps_common
+  tf
+  tf2
+  tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -126,16 +131,25 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
   src
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/sequence_to_bag.cpp
-# )
+add_library(${PROJECT_NAME}_lib
+  src/${PROJECT_NAME}/sequence_to_bag.cpp
+)
+
+add_library(parallel_domain_lib
+  src/${PROJECT_NAME}/parallel_domain/parallel_domain.cpp
+)
+
+add_library(karlsruhe_dataset_lib
+  src/${PROJECT_NAME}/karlsruhe_dataset/calib.cpp
+  src/${PROJECT_NAME}/karlsruhe_dataset/insdata.cpp
+  src/${PROJECT_NAME}/karlsruhe_dataset/karlsruhe_dataset.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -145,9 +159,12 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}
-  src/sequence_to_bag.cpp
-  src/sequence_to_bag/io.cpp
+add_executable(parallel_domain
+  src/parallel_domain.cpp
+)
+
+add_executable(karlsruhe_dataset
+  src/karlsruhe_dataset.cpp
 )
 
 ## Rename C++ executable without prefix
@@ -161,10 +178,18 @@ add_executable(${PROJECT_NAME}
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(parallel_domain
+  parallel_domain_lib
+  ${PROJECT_NAME}_lib
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   yaml-cpp
+)
+
+target_link_libraries(karlsruhe_dataset
+  karlsruhe_dataset_lib
+  ${PROJECT_NAME}_lib
+  ${catkin_LIBRARIES}
 )
 
 #############

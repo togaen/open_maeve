@@ -1,29 +1,68 @@
 # README #
 
-This package is a command line utility for converting image segmentation
-sequence data sets into bag files. Usage and the specification for the data set
-structure is given below.
+This package contains various utilities for converting data sequences to bag
+files. Currently two data sequence formats are supported:
+* Parallel Domain
+* Karlsruhe Dataset
+
+The two usages are detailed below.
+
+## Karlsruhe Dataset: Stereo Video Sequences + rough GPS Poses ##
+
+This utility converts data sets from the [Karlsruhe Stereo Video Sequences + rough GPS Poses](http://www.cvlibs.net/datasets/karlsruhe_sequences/)
+collection into bag files. The stereo images are recorded to bag along with
+camera calibration information and the GPS and IMU poses. All messages are
+timestamped with the recorded time.
+
+Visit the [dataset web page](http://www.cvlibs.net/datasets/karlsruhe_sequences/)
+for more information about the data format.
+
+Bag files generated with this tool can be used with the ROS package
+[stereo\_image\_proc](https://wiki.ros.org/stereo_image_proc) to generate point
+clouds and disparity images.
+
+### Usage ###
+
+Issue the following command to see usage:
+
+    rosrun sequence_to_bag karlsruhe_dataset --help
+
+This will display a list of options as below:
+
+    Available options are listed below. Arguments without default values are required:
+      -h [ --help ]                      Print help and exit.
+      -d [ --data-set-path ] arg         Absolute path to the data set directory.
+      -o [ --bag-output-dir ] arg        Absolute path to the directory for the output bag file.
+      -c [ --camera-name ] arg (=stereo) Frame name to use for the stereo camera image stream.
+      -g [ --global-name ] arg (=world)  Name to use for the global frame in which the IMU measures motion.
+      -i [ --imu-name ] arg (=imu)       Name to use for the local IMU frame as it moves in the global frame.
+
+## Parallel Domain ##
+
+This utility for converts image segmentation sequence data sets into bag files.
+Usage and the specification for the data set structure is given below.
 
 The utility looks for camera\_info.yaml in data-set-path in order to record
 camera parameters to the bag file. If the file doesn't exist, the utility
 synthesizes parameters with unit focal lengths, centered optical center, and no
 distortion.
 
-## Usage ##
+### Usage ###
 
-To use the converter, issue a command like this:
+Issue the following command to see usage:
 
-    rosrun sequence_to_bag sequence_to_bag data-set-path bag-output-dir raw-image-camera-name segmented-image-camera-name
+    rosrun sequence_to_bag parallel_domain --help
 
-The images in the 'camera-frames' directory will be published to:
+This will display a list of options as below:
 
-    /raw-image-camera-name/image
+    Available options are listed below. Arguments without default values are required:
+      -h [ --help ]                                    Print help and exit.
+      -d [ --data-set-path ] arg                       Absolute path to the data set.
+      -o [ --bag-output-dir ] arg                      Absolute path to the directory for the output bag file.
+      -r [ --raw-image-camera ] arg (=raw)             Camera name to use for the raw image stream.
+      -s [ --segmented-image-camera ] arg (=segmented) Camera name to use for the segmented image stream.
 
-The images in the 'segmented-frames' directory will be published to:
-
-    /segmented-image-camera-name/image
-
-## Image Segmentation Sequence Data Set ##
+### Image Segmentation Sequence Data Set ###
 
 The data set consists of a sequence of image frames and corresponding sequence
 of segmentation frames. The image frames are the images that the camera creates,

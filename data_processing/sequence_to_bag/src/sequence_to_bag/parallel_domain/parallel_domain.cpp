@@ -19,12 +19,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "sequence_to_bag/io.h"
+#include "sequence_to_bag/parallel_domain/parallel_domain.h"
 
 #include <cv_bridge/cv_bridge.h>
 #include <std_msgs/Header.h>
 #include <yaml-cpp/yaml.h>
-#include <boost/range/iterator_range.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <algorithm>
@@ -39,6 +38,8 @@ const auto CLOCK_HZ_DEFAULT = 1000;
 }  // namespace
 
 namespace maeve_automation_core {
+namespace parallel_domain {
+
 std::ostream& operator<<(std::ostream& os, const MetaInfo& meta_info) {
   os << meta_info.name << "\n";
   os << meta_info.description << "\n";
@@ -48,84 +49,17 @@ std::ostream& operator<<(std::ostream& os, const MetaInfo& meta_info) {
   return os;
 }
 
-sensor_msgs::CameraInfo synthesizeCameraInfoFromImageMsg(
-    const sensor_msgs::ImagePtr& img_ptr) {
-  sensor_msgs::CameraInfo cam_info_msg;
-
-  cam_info_msg.header = img_ptr->header;
-  cam_info_msg.width = img_ptr->width;
-  cam_info_msg.height = img_ptr->height;
-  cam_info_msg.distortion_model = "plumb_bob";
-
-  cam_info_msg.D.resize(5);
-  cam_info_msg.D[0] = 0.0;
-  cam_info_msg.D[1] = 0.0;
-  cam_info_msg.D[2] = 0.0;
-  cam_info_msg.D[3] = 0.0;
-  cam_info_msg.D[4] = 0.0;
-
-  cam_info_msg.K[0] = 1.0;
-  cam_info_msg.K[1] = 0.0;
-  cam_info_msg.K[2] = static_cast<double>(img_ptr->width) / 2.0;
-  cam_info_msg.K[3] = 0.0;
-  cam_info_msg.K[4] = 1.0;
-  cam_info_msg.K[5] = static_cast<double>(img_ptr->height) / 2.0;
-  cam_info_msg.K[6] = 0.0;
-  cam_info_msg.K[7] = 0.0;
-  cam_info_msg.K[8] = 1.0;
-
-  cam_info_msg.R[0] = 1.0;
-  cam_info_msg.R[1] = 0.0;
-  cam_info_msg.R[2] = 0.0;
-  cam_info_msg.R[3] = 0.0;
-  cam_info_msg.R[4] = 1.0;
-  cam_info_msg.R[5] = 0.0;
-  cam_info_msg.R[6] = 0.0;
-  cam_info_msg.R[7] = 0.0;
-  cam_info_msg.R[8] = 1.0;
-
-  cam_info_msg.P[0] = 1.0;
-  cam_info_msg.P[1] = 0.0;
-  cam_info_msg.P[2] = static_cast<double>(img_ptr->width) / 2.0;
-  cam_info_msg.P[3] = 0.0;
-
-  cam_info_msg.P[4] = 1.0;
-  cam_info_msg.P[5] = static_cast<double>(img_ptr->height) / 2.0;
-  cam_info_msg.P[6] = 0.0;
-  cam_info_msg.P[7] = 0.0;
-
-  cam_info_msg.P[8] = 0.0;
-  cam_info_msg.P[9] = 0.0;
-  cam_info_msg.P[10] = 1.0;
-  cam_info_msg.P[11] = 0.0;
-
-  cam_info_msg.binning_x = 1;
-  cam_info_msg.binning_y = 1;
-
-  cam_info_msg.roi.width = img_ptr->width;
-  cam_info_msg.roi.height = img_ptr->height;
-  cam_info_msg.roi.x_offset = 0;
-  cam_info_msg.roi.y_offset = 0;
-  cam_info_msg.roi.do_rectify = false;
-
-  return cam_info_msg;
-}
-
 boost::optional<std::tuple<std::map<int, sensor_msgs::ImagePtr>,
                            std::map<int, sensor_msgs::ImagePtr>>>
 getSortedIndexedImageLists(const std::string& raw_image_dir,
                            const std::string& seg_image_dir) {
-  const auto raw_files = maeve_automation_core::getFileList(raw_image_dir);
-  const auto raw_files_idx =
-      maeve_automation_core::getSortedIndexedFileList(raw_files);
-  const auto raw_images_idx =
-      maeve_automation_core::getSortedIndexedImages(raw_files_idx);
+  const auto raw_files = getFileList(raw_image_dir);
+  const auto raw_files_idx = getSortedIndexedFileList(raw_files);
+  const auto raw_images_idx = getSortedIndexedImages(raw_files_idx);
 
-  const auto seg_files = maeve_automation_core::getFileList(seg_image_dir);
-  const auto seg_files_idx =
-      maeve_automation_core::getSortedIndexedFileList(seg_files);
-  const auto seg_images_idx =
-      maeve_automation_core::getSortedIndexedImages(seg_files_idx);
+  const auto seg_files = getFileList(seg_image_dir);
+  const auto seg_files_idx = getSortedIndexedFileList(seg_files);
+  const auto seg_images_idx = getSortedIndexedImages(seg_files_idx);
 
   if (raw_files_idx.size() != seg_images_idx.size()) {
     return boost::none;
@@ -223,21 +157,5 @@ std::map<int, std::string> getSortedIndexedFileList(
   return indexed_file_list;
 }
 
-std::vector<boost::filesystem::path> getFileList(const std::string& path) {
-  std::vector<boost::filesystem::path> file_list;
-
-  if (boost::filesystem::is_directory(path)) {
-    for (auto& entry : boost::make_iterator_range(
-             boost::filesystem::directory_iterator(path), {})) {
-      const auto f = entry.path().filename().string();
-      if (boost::filesystem::is_directory(entry) || f.empty() ||
-          (f[0] == '.')) {
-        continue;
-      }
-      file_list.push_back(entry.path());
-    }
-  }
-
-  return file_list;
-}
+}  // namespace parallel_domain
 }  // namespace maeve_automation_core
