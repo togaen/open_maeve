@@ -1,7 +1,7 @@
 # README #
 
-This package contains various utilities for converting data sequences to bag
-files. Currently two data sequence formats are supported:
+This package contains various utilities for converting data sequences to bag files. Currently two data sequence formats are supported:
+
 * Parallel Domain
 * Karlsruhe Dataset
 
@@ -9,17 +9,11 @@ The two usages are detailed below.
 
 ## Karlsruhe Dataset: Stereo Video Sequences + rough GPS Poses ##
 
-This utility converts data sets from the [Karlsruhe Stereo Video Sequences + rough GPS Poses](http://www.cvlibs.net/datasets/karlsruhe_sequences/)
-collection into bag files. The stereo images are recorded to bag along with
-camera calibration information and the GPS and IMU poses. All messages are
-timestamped with the recorded time.
+This utility converts data sets from the [Karlsruhe Stereo Video Sequences + rough GPS Poses](http://www.cvlibs.net/datasets/karlsruhe_sequences/) collection into bag files. The stereo images are recorded to bag along with camera calibration information and the GPS and IMU poses. All messages are timestamped with the recorded time.
 
-Visit the [dataset web page](http://www.cvlibs.net/datasets/karlsruhe_sequences/)
-for more information about the data format.
+Visit the [dataset web page](http://www.cvlibs.net/datasets/karlsruhe_sequences/) for more information about the data format.
 
-Bag files generated with this tool can be used with the ROS package
-[stereo\_image\_proc](https://wiki.ros.org/stereo_image_proc) to generate point
-clouds and disparity images.
+Bag files generated with this tool can be used with the ROS package [stereo\_image\_proc](https://wiki.ros.org/stereo_image_proc) to generate point clouds and disparity images.
 
 ### Usage ###
 
@@ -39,13 +33,9 @@ This will display a list of options as below:
 
 ## Parallel Domain ##
 
-This utility for converts image segmentation sequence data sets into bag files.
-Usage and the specification for the data set structure is given below.
+This utility for converts image segmentation sequence data sets into bag files. Usage and the specification for the data set structure is given below.
 
-The utility looks for camera\_info.yaml in data-set-path in order to record
-camera parameters to the bag file. If the file doesn't exist, the utility
-synthesizes parameters with unit focal lengths, centered optical center, and no
-distortion.
+The utility looks for camera\_info.yaml in data-set-path in order to record camera parameters to the bag file. If the file doesn't exist, the utility synthesizes parameters with unit focal lengths, centered optical center, and no distortion.
 
 ### Usage ###
 
@@ -64,11 +54,7 @@ This will display a list of options as below:
 
 ### Image Segmentation Sequence Data Set ###
 
-The data set consists of a sequence of image frames and corresponding sequence
-of segmentation frames. The image frames are the images that the camera creates,
-and the segmentation frames are per-pixel labeled versions of the camera frames.
-The data set is a directory containing [YAML](http://www.yaml.org/start.html)
-files and two sub-directories containing the camera and segmented images:
+The data set consists of a sequence of image frames and corresponding sequence of segmentation frames. The image frames are the images that the camera creates, and the segmentation frames are per-pixel labeled versions of the camera frames. The data set is a directory containing [YAML](http://www.yaml.org/start.html) files and two sub-directories containing the camera and segmented images:
 
     data-set
      |
@@ -83,23 +69,15 @@ files and two sub-directories containing the camera and segmented images:
         |- frame-02.png
         |- etc.
 
-The camera and segmentation frames shall have the same dimensions, and there
-shall be a one-to-one correspondence between the files indicated by the number
-in their names. The numbering shall be integral and sequential. The number
-intended to act as the index shall be the last sub-string in the basename. For
-example, the following files have indices 3, 4, and 9, respectively:
+The camera and segmentation frames shall have the same dimensions, and there shall be a one-to-one correspondence between the files indicated by the number in their names. The numbering shall be integral and sequential. The number intended to act as the index shall be the last sub-string in the basename. For example, the following files have indices 3, 4, and 9, respectively:
 
     path/to/file-003.png
     path/to/01-file-004.png
     path/to/9.png
 
-It is not required that indexing be gapless nor that it start with one
-(i.e., "1, 2, 3" in the above example instead of "3, 4, 9"), but it is
-encouraged. The rest of the filename is arbitrary and only useful for human
-readability.
+It is not required that indexing be gapless nor that it start with one (i.e., "1, 2, 3" in the above example instead of "3, 4, 9"), but it is encouraged. The rest of the filename is arbitrary and only useful for human readability.
 
-The meta file shall have the format given below, and provides information useful
-for data processing purposes:
+The meta file shall have the format given below, and provides information useful for data processing purposes:
 
 ```yaml
 # meta.yaml
