@@ -86,9 +86,8 @@ cv::Point2d PotentialTransform<ConstraintType::SOFT>::operator()(
                         (pixel_value.x - p_.translation - p_.rangeMidPoint())));
 
   // Compute 0th order potential.
-  return_value.x =
-      p_.range_min +
-      (p_.range_max - p_.range_min) / std::pow(1.0 + e_term, 1.0 / p_.beta);
+  return_value.x = p_.range_min + (p_.range_max - p_.range_min) /
+                                      std::pow(1.0 + e_term, 1.0 / p_.beta);
 
   // Compute 1st order potential: make sure num. doesn't take an infinite value.
   const auto numerator =

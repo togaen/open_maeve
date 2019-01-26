@@ -31,7 +31,7 @@ namespace maeve_automation_core {
 namespace {
 const auto Inf = std::numeric_limits<double>::infinity();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
-}
+}  // namespace
 
 std::ostream& operator<<(std::ostream& os,
                          const PST_Reachability& reachability) {
@@ -246,11 +246,11 @@ boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
   //
 
   // Comparator for finding best target speed.
-  const auto comp = [](
-      const std::tuple<double, boost::optional<PST_Connector>>& a,
-      const std::tuple<double, boost::optional<PST_Connector>>& b) {
-    return (std::get<0>(a) < std::get<0>(b));
-  };
+  const auto comp =
+      [](const std::tuple<double, boost::optional<PST_Connector>>& a,
+         const std::tuple<double, boost::optional<PST_Connector>>& b) {
+        return (std::get<0>(a) < std::get<0>(b));
+      };
 
   // Pair the connectors with their distances to the target speed.
   const auto PL_0P_tuple = std::make_tuple(PL_0P_delta, PL_0P);

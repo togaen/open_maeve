@@ -51,10 +51,10 @@ class PST_Reachability {
                                   const PST_Reachability& reachability);
 
   /**
-  * @brief The interval of reachable speeds.
-  *
-  * @return An interval object of reachable speeds.
-  */
+   * @brief The interval of reachable speeds.
+   *
+   * @return An interval object of reachable speeds.
+   */
   static Interval reachableInterval(const PST_Reachability& reachability);
 
   /**

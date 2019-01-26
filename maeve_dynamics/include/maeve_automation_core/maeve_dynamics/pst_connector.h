@@ -135,19 +135,19 @@ class PST_Connector {
       const PST_Connector& connector);
 
   /**
-    * @brief Compute an LP connector between 'p1' and 'p1'.
-    *
-    * The computed connector shall have a P segement that passes through 'p2'
-    * with derivatives 'p2_dt' and 'p2_ddt', and an L segment through 'p1' and
-    * 'p2'.
-    *
-    * @param p1 The initial point in PT space.
-    * @param p2 The terminal point in PT space.
-    * @param p2_dt Connector first derivative at 'p2'.
-    * @param p2_ddt Connector second derivative.
-    *
-    * @return A nullable of object of either the connector or boost::none.
-    */
+   * @brief Compute an LP connector between 'p1' and 'p1'.
+   *
+   * The computed connector shall have a P segement that passes through 'p2'
+   * with derivatives 'p2_dt' and 'p2_ddt', and an L segment through 'p1' and
+   * 'p2'.
+   *
+   * @param p1 The initial point in PT space.
+   * @param p2 The terminal point in PT space.
+   * @param p2_dt Connector first derivative at 'p2'.
+   * @param p2_ddt Connector second derivative.
+   *
+   * @return A nullable of object of either the connector or boost::none.
+   */
   static boost::optional<PST_Connector> computeLP(const Eigen::Vector2d& p1,
                                                   const Eigen::Vector2d& p2,
                                                   const double p2_dt,

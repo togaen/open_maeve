@@ -31,9 +31,9 @@
 namespace maeve_automation_core {
 
 /**
-  * @brief Perform temporal segmentation and tracking based on feature
-  * correlation.
-  */
+ * @brief Perform temporal segmentation and tracking based on feature
+ * correlation.
+ */
 class FeatureFlow {
  public:
   /** @brief Homography with corresponding matches. */
