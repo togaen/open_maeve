@@ -1,6 +1,6 @@
 # README #
 
-This is a collection of ROS packages maintained by Maeve Automation for
+This is a collection of ROS packages maintained by [Maeve Automation](https://maeveautomation.com) for
 experimentation purposes. It is released under open source license as a service
 to the robotics community in the hope that some may find it useful; however, no
 warranty or guarantee is made to the usefulness or correctness of the code. 
@@ -31,7 +31,7 @@ fixes but may also include incomplete or broken code, so caveat emptor.
 Maeve Automation maintains a release of Ubuntu MATE 16.04.3 LTS for Raspberry
 Pi 3 that is intended for use on mobile autonomous robots in conjunction with
 the packages in this repository. For details and download, see
-[https://maeveautomation.org/development](https://maeveautomation.org/development).
+[https://maeveautomation.com/development](https://maeveautomation.com/development).
 
 ## Collaboration ##
 
@@ -56,4 +56,4 @@ If any code in these libraries is useful for published work, a citation is appre
 
 ## Data Sets ##
 
-Maeve maintains and distributes data sets used and recorded during the development of the libraries. A list of data sets can be found on the [Data Sets](https://maeveautomation.org/data-sets/) web page.
+Maeve maintains and distributes data sets used and recorded during the development of the libraries. A list of data sets can be found on the [Data Sets](https://maeveautomation.com/data-sets/) web page.
