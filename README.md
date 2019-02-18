@@ -1,11 +1,14 @@
 # README #
 
 This is a collection of ROS packages maintained by Maeve Automation for
-research and development purposes. Each package contains its own README with
-details about its contents.
+experimentation purposes. It is released under open source license as a service
+to the robotics community in the hope that some may find it useful; however, no
+warranty or guarantee is made to the usefulness or correctness of the code. 
 
-All packages are released under open source licenses, however, not all code is
-under the same license.
+Each package contains its own README with details about its contents.
+
+If using the code, be aware that different licenses may apply to different parts
+of the code.
 
 ## Cloning ##
 
