@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/isp_field/tau.h"
+#include "maeve_automation_core/maeve_geometry/tau.h"
 
 #include <limits>
 

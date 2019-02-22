@@ -33,8 +33,8 @@
 
 #include "ar_isp_field/geometry.h"
 #include "maeve_automation_core/isp_field/isp_field.h"
-#include "maeve_automation_core/isp_field/tau.h"
 #include "maeve_automation_core/isp_field/visualize.h"
+#include "maeve_automation_core/maeve_geometry/tau.h"
 
 namespace maeve_automation_core {
 namespace {

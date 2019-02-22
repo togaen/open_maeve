@@ -17,6 +17,7 @@ add_definitions(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   maeve_macros
+  maeve_geometry
   cv_bridge
   roscpp
   ros_parameter_loading
@@ -133,7 +134,6 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/isp_field.cpp
   src/${PROJECT_NAME}/shape_parameters.cpp
-  src/${PROJECT_NAME}/tau.cpp
   src/${PROJECT_NAME}/visualize.cpp
   src/${PROJECT_NAME}/potential_transforms.cpp
 )

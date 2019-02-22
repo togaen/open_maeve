@@ -134,6 +134,7 @@ add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/interval.cpp
   src/${PROJECT_NAME}/disjoint_interval.cpp
   src/${PROJECT_NAME}/polynomial.cpp
+  src/${PROJECT_NAME}/tau.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -208,6 +209,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_disjoint_interval.cpp
   test/test_polynomial.cpp
   test/test_powers.cpp
+  test/test_tau.cpp
   )
 if(TARGET ${PROJECT_NAME}-test)
   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME} ${catkin_LIBRARIES})
