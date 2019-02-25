@@ -20,10 +20,11 @@
  * IN THE SOFTWARE.
  */
 #include "maeve_automation_core/maeve_geometry/tau.h"
-#include "maeve_automation_core/maeve_geometry/comparisons.h"
 
 #include <cmath>
 #include <limits>
+
+#include "maeve_automation_core/maeve_geometry/comparisons.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -85,7 +86,7 @@ double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
                                      const double actor1_speed_0,
                                      const double actor1_speed_t,
                                      const double epsilon) {
-  // TODO: handle v0 = v1
+  // TODO(me): handle v0 = v1
 
   if (tau_0 == INF) {
     return actor1_speed_0;
@@ -95,7 +96,7 @@ double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
 
   const auto denominator = (tau_t - tau_0 + t);
   if (approxZero(denominator, epsilon)) {
-    // TODO: figure out what to do in this case
+    // TODO(me): figure out what to do in this case
     return NaN;
   }
   const auto numerator =
