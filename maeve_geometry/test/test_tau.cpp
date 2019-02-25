@@ -234,6 +234,32 @@ TEST(Tau, tau_range2) {
 
 //------------------------------------------------------------------------------
 
+TEST(Tau, tau_range_at_t) {
+  {
+    const auto range_0 = 10.0;
+    const auto t = 1.0;
+    const auto actor2_speed = 1.0;
+    const auto actor1_distance_delta = 1.0;
+    const auto expected_range_t = 10.0;
+    const auto computed_range_t =
+        tau_range_at_t(range_0, t, actor2_speed, actor1_distance_delta);
+    EXPECT_EQ(computed_range_t, expected_range_t);
+  }
+
+  {
+    const auto range_0 = 10.0;
+    const auto t = 1.0;
+    const auto actor2_speed = 1.0;
+    const auto actor1_distance_delta = 2.0;
+    const auto expected_range_t = 9.0;
+    const auto computed_range_t =
+        tau_range_at_t(range_0, t, actor2_speed, actor1_distance_delta);
+    EXPECT_EQ(computed_range_t, expected_range_t);
+  }
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Tau, speed_and_relative_distance1) {
   constexpr auto a1 = 1.0;
   constexpr auto a2 = 0.0;

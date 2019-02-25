@@ -83,6 +83,16 @@ double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
                                      const double actor1_speed_t,
                                      const double epsilon);
 
+/**
+ * @brief Compute the range at time 't0 + t' given the following parameters:
+ *
+ * @param range_0                The range at t0 (i.e., the initial range)
+ * @param t                      The time that has passed
+ * @param actor2_speed           The speed of actor2
+ * @param actor1_distance_delta  Change in distance of actor1 over time 't'
+ *
+ * @note 'actor2_speed' is assumed to be constant throughout time 't'.
+ */
 double tau_range_at_t(const double range_0, const double t,
                       const double actor2_speed,
                       const double actor1_distance_delta);
