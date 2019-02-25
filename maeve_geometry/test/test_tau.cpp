@@ -252,14 +252,14 @@ TEST(Tau, speed_and_relative_distance1) {
   std::cout << "tau_0: " << tau_0 << ", tau_t: " << tau_t << std::endl;
   std::cout << "D: " << D_0 << ", D_t: " << D_t << std::endl;
 
-  const auto other_speed = compute_other_speed_from_tau(
+  const auto actor2_speed = compute_actor2_speed_from_tau(
       tau_0, tau_t, t, std::get<0>(state1_at_t), v1_0, std::get<1>(state1_at_t),
       tau_tolerance::EPS);
 
-  const auto range_t = compute_range_from_other_speed_and_tau(
-      t, tau_0, other_speed, v1_0, std::get<0>(state1_at_t));
+  const auto range_t = compute_range_from_actor2_speed_and_tau(
+      t, tau_0, actor2_speed, v1_0, std::get<0>(state1_at_t));
 
-  EXPECT_NEAR(other_speed, v2, tau_tolerance::EPS);
+  EXPECT_NEAR(actor2_speed, v2, tau_tolerance::EPS);
   EXPECT_NEAR(range_t, D_t, tau_tolerance::EPS);
 }
 

@@ -76,19 +76,19 @@ double tau_range(const double tau_0, const double actor1_speed,
                  const double actor2_speed);
 /** @} */
 
+double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
+                                     const double t,
+                                     const double actor1_distance_delta,
+                                     const double actor1_speed_0,
+                                     const double actor1_speed_t,
+                                     const double epsilon);
+
 double tau_range_at_t(const double range_0, const double t,
-                      const double other_speed,
+                      const double actor2_speed,
                       const double actor1_distance_delta);
 
-double compute_other_speed_from_tau(const double tau_0, const double tau_t,
-                                    const double t,
-                                    const double actor1_distance_delta,
-                                    const double actor1_speed_0,
-                                    const double actor1_speed_t,
-                                    const double epsilon);
-
-double compute_range_from_other_speed_and_tau(
-    const double t, const double tau_0, const double other_speed,
+double compute_range_from_actor2_speed_and_tau(
+    const double t, const double tau_0, const double actor2_speed,
     const double actor1_speed_0, const double actor1_distance_delta);
 
 /**
