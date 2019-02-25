@@ -260,33 +260,64 @@ TEST(Tau, tau_range_at_t) {
 
 //------------------------------------------------------------------------------
 
-TEST(Tau, speed_and_relative_distance1) {
-  constexpr auto a1 = 1.0;
-  constexpr auto a2 = 0.0;
+TEST(Tau, range_and_actor2_speed_exact0) {
+  constexpr auto actor1_accel = 0.0;
+  constexpr auto actor2_accel = 0.0;
   constexpr auto t = 1.0;
-  constexpr auto v1_0 = 2.7;
-  constexpr auto v2 = 3.0;
-  constexpr auto D_0 = 10.0;
+  constexpr auto actor1_speed_0 = 2.0;
+  constexpr auto actor2_speed = 1.0;
+  constexpr auto range_0 = 10.0;
 
-  const auto state1_at_t = simple_motion(t, v1_0, a1);
-  const auto state2_at_t = simple_motion(t, v2, a2);
+  const auto actor1_state_at_t = simple_motion(t, actor1_speed_0, actor1_accel);
+  const auto actor2_state_at_t = simple_motion(t, actor2_speed, actor2_accel);
 
-  const auto D_t = tau_range_at_t(D_0, t, v2, std::get<0>(state1_at_t));
-  const auto tau_0 = tau(D_0, v1_0, v2, tau_tolerance::EPS);
-  const auto tau_t = tau(D_t, std::get<1>(state1_at_t), v2, tau_tolerance::EPS);
+  const auto range_t =
+      tau_range_at_t(range_0, t, actor2_speed, std::get<0>(actor1_state_at_t));
+  const auto tau_0 =
+      tau(range_0, actor1_speed_0, actor2_speed, tau_tolerance::EPS);
+  const auto tau_t = tau(range_t, std::get<1>(actor1_state_at_t), actor2_speed,
+                         tau_tolerance::EPS);
 
-  std::cout << "tau_0: " << tau_0 << ", tau_t: " << tau_t << std::endl;
-  std::cout << "D: " << D_0 << ", D_t: " << D_t << std::endl;
+  const auto computed_actor2_speed = compute_actor2_speed_from_tau(
+      tau_0, tau_t, t, std::get<0>(actor1_state_at_t), actor1_speed_0,
+      std::get<1>(actor1_state_at_t), tau_tolerance::EPS);
 
-  const auto actor2_speed = compute_actor2_speed_from_tau(
-      tau_0, tau_t, t, std::get<0>(state1_at_t), v1_0, std::get<1>(state1_at_t),
-      tau_tolerance::EPS);
+  const auto computed_range_t = compute_range_from_actor2_speed_and_tau(
+      t, tau_0, actor2_speed, actor1_speed_0, std::get<0>(actor1_state_at_t));
 
-  const auto range_t = compute_range_from_actor2_speed_and_tau(
-      t, tau_0, actor2_speed, v1_0, std::get<0>(state1_at_t));
+  EXPECT_EQ(computed_actor2_speed, actor2_speed);
+  EXPECT_EQ(computed_range_t, range_t);
+}
 
-  EXPECT_NEAR(actor2_speed, v2, tau_tolerance::EPS);
-  EXPECT_NEAR(range_t, D_t, tau_tolerance::EPS);
+//------------------------------------------------------------------------------
+
+TEST(Tau, range_and_actor2_speed_exact1) {
+  constexpr auto actor1_accel = 1.0;
+  constexpr auto actor2_accel = 0.0;
+  constexpr auto t = 1.0;
+  constexpr auto actor1_speed_0 = 2.0;
+  constexpr auto actor2_speed = 1.0;
+  constexpr auto range_0 = 10.0;
+
+  const auto actor1_state_at_t = simple_motion(t, actor1_speed_0, actor1_accel);
+  const auto actor2_state_at_t = simple_motion(t, actor2_speed, actor2_accel);
+
+  const auto range_t =
+      tau_range_at_t(range_0, t, actor2_speed, std::get<0>(actor1_state_at_t));
+  const auto tau_0 =
+      tau(range_0, actor1_speed_0, actor2_speed, tau_tolerance::EPS);
+  const auto tau_t = tau(range_t, std::get<1>(actor1_state_at_t), actor2_speed,
+                         tau_tolerance::EPS);
+
+  const auto computed_actor2_speed = compute_actor2_speed_from_tau(
+      tau_0, tau_t, t, std::get<0>(actor1_state_at_t), actor1_speed_0,
+      std::get<1>(actor1_state_at_t), tau_tolerance::EPS);
+
+  const auto computed_range_t = compute_range_from_actor2_speed_and_tau(
+      t, tau_0, actor2_speed, actor1_speed_0, std::get<0>(actor1_state_at_t));
+
+  EXPECT_EQ(computed_actor2_speed, actor2_speed);
+  EXPECT_EQ(computed_range_t, range_t);
 }
 
 //------------------------------------------------------------------------------

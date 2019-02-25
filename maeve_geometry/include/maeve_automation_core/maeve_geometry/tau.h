@@ -77,6 +77,12 @@ double tau_range(const double tau_0, const double actor1_speed,
                  const double actor2_speed);
 /** @} */
 
+/**
+ * @brief Given two measurements of tau and two measurements of actor1 state
+ * taken 't' seconds apart, compute a constant speed for actor2 over 't' that
+ * explains both tau measurements.
+ *
+ */
 double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
                                      const double t,
                                      const double actor1_distance_delta,
