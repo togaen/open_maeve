@@ -158,6 +158,82 @@ TEST(Tau, tau2) {
 
 //------------------------------------------------------------------------------
 
+TEST(Tau, tau_range1) {
+  {
+    const auto tau_0 = 1.0;
+    const auto relative_speed = 1.0;
+    const auto expected_range = 1.0;
+    const auto computed_range = tau_range(tau_0, relative_speed);
+    EXPECT_EQ(computed_range, expected_range);
+  }
+
+  {
+    const auto tau_0 = 1.0;
+    const auto relative_speed = 10.0;
+    const auto expected_range = 10.0;
+    const auto computed_range = tau_range(tau_0, relative_speed);
+    EXPECT_EQ(computed_range, expected_range);
+  }
+
+  {
+    const auto tau_0 = 0.5;
+    const auto relative_speed = 10.0;
+    const auto expected_range = 5.0;
+    const auto computed_range = tau_range(tau_0, relative_speed);
+    EXPECT_EQ(computed_range, expected_range);
+  }
+
+  {
+    const auto tau_0 = -1.0;
+    const auto relative_speed = -1.0;
+    const auto expected_range = 1.0;
+    const auto computed_range = tau_range(tau_0, relative_speed);
+    EXPECT_EQ(computed_range, expected_range);
+  }
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Tau, tau_range2) {
+  {
+    const auto tau_0 = 1.0;
+    const auto actor1_speed = 2.0;
+    const auto actor2_speed = 1.0;
+    const auto expected_range = 1.0;
+    const auto computed_range = tau_range(tau_0, actor1_speed, actor2_speed);
+    EXPECT_EQ(computed_range, expected_range);
+  }
+
+  {
+    const auto tau_0 = 1.0;
+    const auto actor1_speed = 11.0;
+    const auto actor2_speed = 1.0;
+    const auto expected_range = 10.0;
+    const auto computed_range = tau_range(tau_0, actor1_speed, actor2_speed);
+    EXPECT_EQ(computed_range, expected_range);
+  }
+
+  {
+    const auto tau_0 = 0.5;
+    const auto actor1_speed = 11.0;
+    const auto actor2_speed = 1.0;
+    const auto expected_range = 5.0;
+    const auto computed_range = tau_range(tau_0, actor1_speed, actor2_speed);
+    EXPECT_EQ(computed_range, expected_range);
+  }
+
+  {
+    const auto tau_0 = -1.0;
+    const auto actor1_speed = 1.0;
+    const auto actor2_speed = 2.0;
+    const auto expected_range = 1.0;
+    const auto computed_range = tau_range(tau_0, actor1_speed, actor2_speed);
+    EXPECT_EQ(computed_range, expected_range);
+  }
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Tau, speed_and_relative_distance1) {
   constexpr auto a1 = 1.0;
   constexpr auto a2 = 0.0;
