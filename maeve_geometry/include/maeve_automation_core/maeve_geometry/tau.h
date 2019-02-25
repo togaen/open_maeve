@@ -22,6 +22,7 @@
 #pragma once
 
 namespace maeve_automation_core {
+/** @brief A tolerance to use when checking proximity to singularities. */
 struct tau_tolerance {
   static constexpr auto EPS = 1e-4;
 };  // struct
