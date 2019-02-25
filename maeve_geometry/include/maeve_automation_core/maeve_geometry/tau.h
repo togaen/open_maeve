@@ -26,8 +26,23 @@ struct tau_tolerance {
   static constexpr auto EPS = 1e-4;
 };  // struct
 
-// TODO: put little utility functions that codify ttc computation conventions
-
+/**
+ * @brief Compute time to contact (tau) between two objects separated by
+ * straight line distance 'range' and approaching each other at
+ * 'relative_speed'.
+ *
+ * @note Sign convention for tau is: positive as objects approach each other and
+ * negative as they separate.
+ *
+ * @note Value convention for tau is: infinite when they are stationary w.r.t.
+ * each other, zero when they are in contact, and otherwise finite.
+ *
+ * @note The objects are considered stationary w.r.t. each other when
+ * the magnitude of 'relative_speed' is less than epsilon.
+ *
+ * @pre The sign of 'relative_speed' should be: negative if the objects are
+ * moving apart and positive otherwise.
+ */
 double tau(const double range, const double relative_speed,
            const double epsilon);
 

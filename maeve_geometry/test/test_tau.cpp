@@ -30,7 +30,9 @@
 
 namespace maeve_automation_core {
 namespace {
-const auto epsilon = 0.00001;
+constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
+constexpr auto INF = std::numeric_limits<double>::infinity();
+
 double extent(const double Z, const Eigen::Vector2d& p1,
               const Eigen::Vector2d& p2) {
   const auto d = (p1 - p2).norm();
@@ -48,21 +50,45 @@ std::tuple<double, double> simple_motion(const double t, const double v_0,
 
 //------------------------------------------------------------------------------
 
-TEST(Tau, verifyScaling) {
-  const auto Z = 17.0;
-  const auto Z_dot = -1.2;
-  const Eigen::Vector2d P1(2.3, 3.13);
-  const Eigen::Vector2d P2(5.67, -1.32);
+TEST(Tau, tau1) {
+  {
+    const auto range = 1.0;
+    const auto relative_speed = 1.0;
+    const auto expected_tau = 1.0;
+    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    EXPECT_EQ(computed_tau, expected_tau);
+  }
 
-  auto t_delta = 10.37;
-  auto tau = -(Z + Z_dot * t_delta) / Z_dot;
-  const auto e1 = extent(Z, P1, P2);
-  const auto e2 = extent(Z + Z_dot * t_delta, P1, P2);
-  const auto e_dot = (e2 - e1) / t_delta;
-  const auto tau_estimated =
-      tauFromDiscreteScaleDt(e2, e_dot, t_delta, tau_tolerance::EPS);
-  EXPECT_NEAR(tau_estimated, tau, 0.0001)
-      << "e1: " << e1 << ", e2: " << e2 << ", e_dot: " << e_dot;
+  {
+    const auto range = 1.0;
+    const auto relative_speed = -1.0;
+    const auto expected_tau = -1.0;
+    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    EXPECT_EQ(computed_tau, expected_tau);
+  }
+
+  {
+    const auto range = 1.0;
+    const auto relative_speed = 0.0;
+    const auto expected_tau = INF;
+    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    EXPECT_EQ(computed_tau, expected_tau);
+  }
+
+  {
+    const auto range = 1.0;
+    const auto relative_speed = (0.5 * tau_tolerance::EPS);
+    const auto expected_tau = INF;
+    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    EXPECT_EQ(computed_tau, expected_tau);
+  }
+
+  {
+    const auto range = 1.0;
+    const auto relative_speed = (2.0 * tau_tolerance::EPS);
+    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    EXPECT_TRUE(std::isfinite(computed_tau));
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -92,8 +118,27 @@ TEST(Tau, speed_and_relative_distance1) {
   const auto range_t = compute_range_from_other_speed_and_tau(
       t, tau_0, other_speed, v1_0, std::get<0>(state1_at_t));
 
-  EXPECT_NEAR(other_speed, v2, epsilon);
-  EXPECT_NEAR(range_t, D_t, epsilon);
+  EXPECT_NEAR(other_speed, v2, tau_tolerance::EPS);
+  EXPECT_NEAR(range_t, D_t, tau_tolerance::EPS);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Tau, verifyScaling) {
+  const auto Z = 17.0;
+  const auto Z_dot = -1.2;
+  const Eigen::Vector2d P1(2.3, 3.13);
+  const Eigen::Vector2d P2(5.67, -1.32);
+
+  auto t_delta = 10.37;
+  auto tau = -(Z + Z_dot * t_delta) / Z_dot;
+  const auto e1 = extent(Z, P1, P2);
+  const auto e2 = extent(Z + Z_dot * t_delta, P1, P2);
+  const auto e_dot = (e2 - e1) / t_delta;
+  const auto tau_estimated =
+      tauFromDiscreteScaleDt(e2, e_dot, t_delta, tau_tolerance::EPS);
+  EXPECT_NEAR(tau_estimated, tau, 0.0001)
+      << "e1: " << e1 << ", e2: " << e2 << ", e_dot: " << e_dot;
 }
 
 //------------------------------------------------------------------------------
