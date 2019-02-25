@@ -57,21 +57,6 @@ inline bool approxEq(const T& a, const T& b, const T& eps) {
 }
 
 /**
- * @brief If 'val' is within 'espilon' of zero, return zero. Otherwise return
- * 'val'.
- *
- * @tparam T The type of the arguments.
- * @param val The value being clamped.
- * @param epsilon The range about zero to perform a clamp.
- *
- * @return Zero if val is within epsilon of zero; otherwise val.
- */
-template <typename T>
-inline T clampToZero(const T& val, const T& eps) {
-  return ((std::abs(val) < eps) ? 0.0 : val);
-}
-
-/**
  * @brief Check for approximate inequality in absolute terms.
  *
  * @tparam T The type of value to check.
@@ -85,7 +70,7 @@ inline T clampToZero(const T& val, const T& eps) {
  */
 template <typename T>
 inline bool approxNe(const T& a, const T& b, const T& eps) {
-  return std::abs(a - b) >= eps;
+  return !approxEq(a, b, eps);
 }
 
 /**
@@ -100,7 +85,22 @@ inline bool approxNe(const T& a, const T& b, const T& eps) {
  */
 template <typename T>
 inline bool approxZero(const T& a, const T& eps) {
-  return approxEq(a, T(0), eps);
+  return (std::abs(a) < eps);
+}
+
+/**
+ * @brief If 'val' is within 'espilon' of zero, return zero. Otherwise return
+ * 'val'.
+ *
+ * @tparam T The type of the arguments.
+ * @param val The value being clamped.
+ * @param epsilon The range about zero to perform a clamp.
+ *
+ * @return Zero if val is within epsilon of zero; otherwise val.
+ */
+template <typename T>
+inline T clampToZero(const T& val, const T& eps) {
+  return (approxZero(val, eps) ? 0.0 : val);
 }
 
 /**
@@ -117,6 +117,23 @@ inline bool approxZero(const T& a, const T& eps) {
 template <typename T>
 inline bool approxLt(const T& a, const T& b, const T& eps) {
   return (a < (b - eps));
+}
+
+/**
+ * @brief Check for approximate greater than or equal in absolute terms.
+ *
+ * @tparam T The type of value to check.
+ *
+ * @param a The first value in comparison.
+ * @param b The second value in comparison.
+ * @param eps The absolute range within which to assume greater than or equal.
+ *
+ * @return True if 'a' is greater than or equal to 'b' minus 'eps'; otherwise
+ * false.
+ */
+template <typename T>
+inline bool approxGe(const T& a, const T& b, const T& eps) {
+  return !approxLt(a, b, eps);
 }
 
 /**
@@ -148,23 +165,6 @@ inline bool approxLe(const T& a, const T& b, const T& eps) {
  */
 template <typename T>
 inline bool approxGt(const T& a, const T& b, const T& eps) {
-  return (a > (b + eps));
-}
-
-/**
- * @brief Check for approximate greater than or equal in absolute terms.
- *
- * @tparam T The type of value to check.
- *
- * @param a The first value in comparison.
- * @param b The second value in comparison.
- * @param eps The absolute range within which to assume greater than or equal.
- *
- * @return True if 'a' is greater than or equal to 'b' minus 'eps'; otherwise
- * false.
- */
-template <typename T>
-inline bool approxGe(const T& a, const T& b, const T& eps) {
-  return (a >= (b - eps));
+  return !approxLe(a, b, eps);
 }
 }  // namespace maeve_automation_core
