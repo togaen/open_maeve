@@ -82,6 +82,9 @@ double tau_range(const double tau_0, const double actor1_speed,
  * taken 't' seconds apart, compute a constant speed for actor2 over 't' that
  * explains both tau measurements.
  *
+ * @note This function is extremely sensitive to the assumption that actor2
+ * speed is constant. If that assumption is violated even slightly, the result
+ * is almost certainly garbage.
  */
 double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
                                      const double t,
@@ -111,9 +114,12 @@ double tau_range_at_t(const double range_0, const double t,
                       const double actor2_speed,
                       const double actor1_distance_delta);
 
-double compute_range_from_actor2_speed_and_tau(
-    const double t, const double tau_0, const double actor2_speed,
-    const double actor1_speed_0, const double actor1_distance_delta);
+/**
+ * @brief Overload for the above function that computes range_0 using tau_0.
+ */
+double tau_range_at_t(const double t, const double tau_0,
+                      const double actor2_speed, const double actor1_speed_0,
+                      const double actor1_distance_delta);
 
 /**
  * @brief Given scale, scale time derivative, and timestemp, compute tau.

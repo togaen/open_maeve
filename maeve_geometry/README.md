@@ -346,3 +346,8 @@ namespace maeve_automation_core {
 
 This header just contains convenience functions for raising values to integer
 powers. They are useful for raising expressions to powers.
+
+## Tau ##
+
+This library contains some utility functions for computing time to contatct
+(tau).

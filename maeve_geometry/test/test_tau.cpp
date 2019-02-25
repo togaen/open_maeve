@@ -72,20 +72,14 @@ range_and_speed_info computed_speed_and_range(const double actor1_accel,
       tau(range_0, actor1_speed_0, actor2_speed_0, tau_tolerance::EPS);
   const auto tau_t = tau(range_t, std::get<1>(actor1_state_at_t),
                          std::get<1>(actor2_state_at_t), tau_tolerance::EPS);
-#if 0
-  std::cout << "v1_0: " << actor1_speed_0
-            << ", v1_t: " << std::get<1>(actor1_state_at_t) << std::endl;
-  std::cout << "t: " << t << ", tau_0: " << tau_0 << ", tau_t: " << tau_t
-            << ", p1_delta: " << std::get<0>(actor1_state_at_t)
-            << ", range_t: " << range_t << std::endl;
-#endif
+
   const auto computed_actor2_speed = compute_actor2_speed_from_tau(
       tau_0, tau_t, t, std::get<0>(actor1_state_at_t), actor1_speed_0,
       std::get<1>(actor1_state_at_t), tau_tolerance::EPS);
 
-  const auto computed_range_t = compute_range_from_actor2_speed_and_tau(
-      t, tau_0, computed_actor2_speed, actor1_speed_0,
-      std::get<0>(actor1_state_at_t));
+  const auto computed_range_t =
+      tau_range_at_t(t, tau_0, computed_actor2_speed, actor1_speed_0,
+                     std::get<0>(actor1_state_at_t));
 
   return {range_t, std::get<1>(actor2_state_at_t), computed_range_t,
           computed_actor2_speed};

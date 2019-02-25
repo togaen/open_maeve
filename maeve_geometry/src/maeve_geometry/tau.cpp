@@ -131,11 +131,12 @@ double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
 
 //------------------------------------------------------------------------------
 
-double compute_range_from_actor2_speed_and_tau(
-    const double t, const double tau_0, const double actor2_speed,
-    const double actor1_speed_0, const double actor1_distance_delta) {
+double tau_range_at_t(const double t, const double tau_0,
+                      const double actor2_speed, const double actor1_speed_0,
+                      const double actor1_distance_delta) {
   const auto range_0 = tau_range(tau_0, actor1_speed_0, actor2_speed);
-  return tau_range_at_t(range_0, t, actor2_speed, actor1_distance_delta);
+  const auto actor2_distance_delta = (t * actor2_speed);
+  return tau_range_at_t(range_0, actor1_distance_delta, actor2_distance_delta);
 }
 
 //------------------------------------------------------------------------------
