@@ -37,4 +37,15 @@ namespace maeve_automation_core {
  */
 double tauFromDiscreteScaleDt(const double s, const double s_dot,
                               const double t_delta);
+
+// TODO: put little utility functions that codify ttc computation conventions
+
+struct speed_and_relative_distance {
+  const double speed;
+  const double distance;
+};
+
+speed_and_relative_distance compute_speed_and_relative_distance(
+    const double tau_0, const double tau_t, const double t,
+    const double delta_p1, const double p1_dot_0, const double p1_dot_t);
 }  // namespace maeve_automation_core

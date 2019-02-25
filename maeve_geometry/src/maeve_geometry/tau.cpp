@@ -21,15 +21,49 @@
  */
 #include "maeve_automation_core/maeve_geometry/tau.h"
 
+#include <iostream>
 #include <limits>
 
 namespace maeve_automation_core {
 namespace {
-static const auto INF = std::numeric_limits<double>::infinity();
+static constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
+static constexpr auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
+
+//------------------------------------------------------------------------------
 
 double tauFromDiscreteScaleDt(const double s, const double s_dot,
                               const double t_delta) {
   return (s_dot == 0.0) ? INF : ((s / s_dot) - t_delta);
 }
+
+//------------------------------------------------------------------------------
+
+speed_and_relative_distance compute_speed_and_relative_distance(
+    const double tau_0, const double tau_t, const double t,
+    const double delta_p1, const double p1_dot_0, const double p1_dot_t) {
+  const auto compute_speed = [&]() {
+    if (tau_0 == INF) {
+      return p1_dot_0;
+    } else if (tau_t == INF) {
+      return p1_dot_t;
+    } else {
+      const auto denominator = (tau_t - tau_0 - t);
+      if (denominator == 0.0) {  // TODO: figure out what to do in this case
+        return NaN;
+      }
+      const auto numerator = (tau_t * p1_dot_t - tau_0 * p1_dot_0 - delta_p1);
+      return (numerator / denominator);
+    }
+  };
+
+  const auto speed = compute_speed();
+  const auto D0 = (tau_0 * (p1_dot_0 - speed));
+  const auto distance = (D0 - t * speed + delta_p1);
+
+  return {speed, distance};
+}
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
