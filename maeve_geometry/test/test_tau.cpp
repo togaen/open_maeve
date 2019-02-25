@@ -68,18 +68,26 @@ TEST(Tau, verifyScaling) {
 TEST(Tau, speed_and_relative_distance1) {
   constexpr auto a = 1.0;
   constexpr auto t = 1.0;
-  constexpr auto v1_0 = 0.0;
+  constexpr auto v1_0 = 2.7;
   constexpr auto v2 = 3.0;
   constexpr auto D_0 = 10.0;
 
   const auto state1_at_t = simple_motion(t, v1_0, a);
   const auto state2_at_t = simple_motion(t, v2, 0.0);
 
+  std::cout << "s1: " << state1_at_t.speed << ", " << state1_at_t.distance
+            << std::endl;
+  std::cout << "s2: " << state2_at_t.speed << ", " << state2_at_t.distance
+            << std::endl;
+
   const auto VR_0 = (v1_0 - v2);
   const auto VR_t = (state1_at_t.speed - v2);
-  const auto D_t = (D_0 - state2_at_t.distance + state1_at_t.distance);
+  const auto D_t = (D_0 + t * v2 - state1_at_t.distance);
   const auto tau_0 = (D_0 / VR_0);
   const auto tau_t = (D_t / VR_t);
+
+  std::cout << "tau_0: " << tau_0 << ", tau_t: " << tau_t << std::endl;
+  std::cout << "D: " << D_0 << ", D_t: " << D_t << std::endl;
 
   const auto sd = compute_speed_and_relative_distance(
       tau_0, tau_t, t, state1_at_t.distance, v1_0, state1_at_t.speed);
@@ -87,7 +95,7 @@ TEST(Tau, speed_and_relative_distance1) {
   EXPECT_NEAR(sd.speed, v2, epsilon);
   EXPECT_NEAR(sd.distance, D_t, epsilon);
 }
-
+#if 0
 //------------------------------------------------------------------------------
 
 TEST(Tau, speed_and_relative_distance2) {
@@ -120,19 +128,20 @@ TEST(Tau, speed_and_relative_distance3) {
   constexpr auto t = 0.1;
   constexpr auto v1_0 = 30.0;
   constexpr auto v2 = 25.0;
-  constexpr auto a2 = 6.0;
-  constexpr auto D_0 = 10.0;
+  constexpr auto a2 = 0.0;
+  constexpr auto D_0 = -10.0;
 
   const auto state1_at_t = simple_motion(t, v1_0, a);
   const auto state2_at_t = simple_motion(t, v2, a2);
 
   const auto VR_0 = (v1_0 - v2);
   const auto VR_t = (state1_at_t.speed - v2);
-  const auto D_t = (D_0 - state2_at_t.distance + state1_at_t.distance);
+  const auto D_t = (D_0 - (t * v2) + state1_at_t.distance);
   const auto tau_0 = (D_0 / VR_0);
   const auto tau_t = (D_t / VR_t);
 
   std::cout << "tau_0: " << tau_0 << ", tau_t: " << tau_t << std::endl;
+  std::cout << "D: " << D_0 << ", D_t: " << D_t << std::endl;
 
   const auto sd = compute_speed_and_relative_distance(
       tau_0, tau_t, t, state1_at_t.distance, v1_0, state1_at_t.speed);
@@ -142,5 +151,5 @@ TEST(Tau, speed_and_relative_distance3) {
 }
 
 //------------------------------------------------------------------------------
-
+#endif
 }  // namespace maeve_automation_core
