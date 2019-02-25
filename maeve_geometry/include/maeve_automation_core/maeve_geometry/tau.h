@@ -47,6 +47,20 @@ double tau(const double range, const double relative_speed,
            const double epsilon);
 
 /**
+ * This function encodes the convention used by this library that relative speed
+ * is computed as:
+ *
+ *     (actor1_speed - actor2_speed)
+ *
+ * For example, in a scene containing two actors where one is approaching from
+ * behind, the convention would be that the rear, approaching actor is 'actor1'
+ * and the other, leading actor is 'actor2'.
+ *
+ */
+double compute_relative_speed_for_tau(const double actor1_speed,
+                                      const double actor2_speed);
+
+/**
  * @brief This is an overload for the above function that computes
  * 'relative_speed' as:
  *
@@ -54,6 +68,8 @@ double tau(const double range, const double relative_speed,
  */
 double tau(const double range, const double actor1_speed,
            const double actor2_speed, const double epsilon);
+
+double tau_range_at_0(const double tau_0, const double relative_speed);
 
 double tau_range_at_0(const double tau_0, const double actor1_speed,
                       const double actor2_speed);

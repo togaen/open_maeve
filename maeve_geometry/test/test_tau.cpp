@@ -93,6 +93,37 @@ TEST(Tau, tau1) {
 
 //------------------------------------------------------------------------------
 
+TEST(Tau, compute_relative_speed_for_tau) {
+  {
+    const auto actor1_speed = 2.0;
+    const auto actor2_speed = 1.0;
+    const auto expected_relative_speed = 1.0;
+    const auto computed_relative_speed =
+        compute_relative_speed_for_tau(actor1_speed, actor2_speed);
+    EXPECT_EQ(computed_relative_speed, expected_relative_speed);
+  }
+
+  {
+    const auto actor1_speed = 1.0;
+    const auto actor2_speed = 2.0;
+    const auto expected_relative_speed = -1.0;
+    const auto computed_relative_speed =
+        compute_relative_speed_for_tau(actor1_speed, actor2_speed);
+    EXPECT_EQ(computed_relative_speed, expected_relative_speed);
+  }
+
+  {
+    const auto actor1_speed = 1.0;
+    const auto actor2_speed = 1.0;
+    const auto expected_relative_speed = 0.0;
+    const auto computed_relative_speed =
+        compute_relative_speed_for_tau(actor1_speed, actor2_speed);
+    EXPECT_EQ(computed_relative_speed, expected_relative_speed);
+  }
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Tau, tau2) {
   {
     const auto range = 1.0;
