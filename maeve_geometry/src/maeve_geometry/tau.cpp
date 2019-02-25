@@ -23,6 +23,8 @@
 
 #include <cmath>
 #include <limits>
+#include <sstream>
+#include <stdexcept>
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 
@@ -72,10 +74,18 @@ double tau_range(const double tau_0, const double actor1_speed,
 
 //------------------------------------------------------------------------------
 
+double tau_range_at_t(const double range_0, const double actor1_distance_delta,
+                      const double actor2_distance_delta) {
+  return (range_0 + actor2_distance_delta - actor1_distance_delta);
+}
+
+//------------------------------------------------------------------------------
+
 double tau_range_at_t(const double range_0, const double t,
                       const double actor2_speed,
                       const double actor1_distance_delta) {
-  return (range_0 + (t * actor2_speed) - actor1_distance_delta);
+  const double actor2_distance_delta = (t * actor2_speed);
+  return tau_range_at_t(range_0, actor1_distance_delta, actor2_distance_delta);
 }
 
 //------------------------------------------------------------------------------
@@ -86,8 +96,14 @@ double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
                                      const double actor1_speed_0,
                                      const double actor1_speed_t,
                                      const double epsilon) {
-  // TODO(me): handle v0 = v1
+  // TODO(me): handle v0 == v1 case
 
+  // Actor speed information is destroyed by the singularity at tau = 0
+  if (approxZero(tau_0, epsilon) || approxZero(tau_t, epsilon)) {
+    return NaN;
+  }
+
+  // Relative speed is zero, so actor2 speed is same as actor1 speed
   if (tau_0 == INF) {
     return actor1_speed_0;
   } else if (tau_t == INF) {
@@ -95,10 +111,19 @@ double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
   }
 
   const auto denominator = (tau_t - tau_0 + t);
+
+  // If relative speed does not change, there is not enough information to back
+  // out actor2 speed
   if (approxZero(denominator, epsilon)) {
-    // TODO(me): figure out what to do in this case
+    // Verify assumptions
+    const auto sum = (tau_t + t);
+    if (approxZero(sum, epsilon)) {
+      throw std::runtime_error("Actor collision detected after guard.");
+    }
+
     return NaN;
   }
+
   const auto numerator =
       (tau_t * actor1_speed_t - tau_0 * actor1_speed_0 + actor1_distance_delta);
   return (numerator / denominator);

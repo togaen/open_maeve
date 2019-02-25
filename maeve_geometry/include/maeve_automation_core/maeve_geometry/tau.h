@@ -91,6 +91,13 @@ double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
                                      const double epsilon);
 
 /**
+ * @brief Compute the range at some future time when actors 1 and 2 have moved
+ * by the given deltas.
+ */
+double tau_range_at_t(const double range_0, const double actor1_distance_delta,
+                      const double actor2_distance_delta);
+
+/**
  * @brief Compute the range at time 't0 + t' given the following parameters:
  *
  * @param range_0                The range at t0 (i.e., the initial range)
