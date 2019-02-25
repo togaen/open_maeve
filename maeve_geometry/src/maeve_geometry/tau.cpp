@@ -22,50 +22,85 @@
 #include "maeve_automation_core/maeve_geometry/tau.h"
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 
-#include <iostream>
+#include <cmath>
 #include <limits>
 
 namespace maeve_automation_core {
 namespace {
-static constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
-static constexpr auto INF = std::numeric_limits<double>::infinity();
+constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
+constexpr auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
 
 //------------------------------------------------------------------------------
 
-double tauFromDiscreteScaleDt(const double s, const double s_dot,
-                              const double t_delta) {
-  return (s_dot == 0.0) ? INF : ((s / s_dot) - t_delta);
+double tau(const double range, const double relative_speed,
+           const double epsilon) {
+  return (approxZero(relative_speed, epsilon) ? INF : (range / relative_speed));
 }
 
 //------------------------------------------------------------------------------
 
-speed_and_relative_distance compute_speed_and_relative_distance(
-    const double tau_0, const double tau_t, const double t,
-    const double delta_p1, const double p1_dot_0, const double p1_dot_t) {
-  // TODO: handle v1 = v0
+double tau(const double range, const double actor1_speed,
+           const double actor2_speed, const double epsilon) {
+  const double relative_speed = (actor1_speed - actor2_speed);
+  return tau(range, relative_speed, epsilon);
+}
 
-  const auto compute_speed = [&]() {
-    if (tau_0 == INF) {
-      return p1_dot_0;
-    } else if (tau_t == INF) {
-      return p1_dot_t;
-    } else {
-      const auto denominator = (tau_t - tau_0 + t);
-      if (approxZero(denominator,
-                     1e-3)) {  // TODO: figure out what to do in this case
-        return NaN;
-      }
-      const auto numerator = (tau_t * p1_dot_t - tau_0 * p1_dot_0 + delta_p1);
-      return (numerator / denominator);
-    }
-  };
+//------------------------------------------------------------------------------
 
-  const auto speed = compute_speed();
-  const auto D0 = (tau_0 * (p1_dot_0 - speed));
-  const auto distance = (D0 + t * speed - delta_p1);
+double tau_range_at_0(const double tau_0, const double actor1_speed,
+                      const double actor2_speed) {
+  return (tau_0 * (actor1_speed - actor2_speed));
+}
 
-  return {speed, distance};
+//------------------------------------------------------------------------------
+
+double tau_range_at_t(const double range_0, const double t,
+                      const double other_speed,
+                      const double actor1_distance_delta) {
+  return (range_0 + (t * other_speed) - actor1_distance_delta);
+}
+
+//------------------------------------------------------------------------------
+
+double compute_other_speed_from_tau(const double tau_0, const double tau_t,
+                                    const double t,
+                                    const double actor1_distance_delta,
+                                    const double actor1_speed_0,
+                                    const double actor1_speed_t,
+                                    const double epsilon) {
+  // TODO: handle v0 = v1
+
+  if (tau_0 == INF) {
+    return actor1_speed_0;
+  } else if (tau_t == INF) {
+    return actor1_speed_t;
+  }
+
+  const auto denominator = (tau_t - tau_0 + t);
+  if (approxZero(denominator, epsilon)) {
+    // TODO: figure out what to do in this case
+    return NaN;
+  }
+  const auto numerator =
+      (tau_t * actor1_speed_t - tau_0 * actor1_speed_0 + actor1_distance_delta);
+  return (numerator / denominator);
+}
+
+//------------------------------------------------------------------------------
+
+double compute_range_from_other_speed_and_tau(
+    const double t, const double tau_0, const double other_speed,
+    const double actor1_speed_0, const double actor1_distance_delta) {
+  const auto range_0 = tau_range_at_0(tau_0, actor1_speed_0, other_speed);
+  return tau_range_at_t(range_0, t, other_speed, actor1_distance_delta);
+}
+
+//------------------------------------------------------------------------------
+
+double tauFromDiscreteScaleDt(const double s, const double s_dot,
+                              const double t_delta, const double epsilon) {
+  return (tau(s, s_dot, epsilon) - t_delta);
 }
 
 //------------------------------------------------------------------------------

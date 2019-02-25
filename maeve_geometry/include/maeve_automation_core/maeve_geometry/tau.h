@@ -22,6 +22,36 @@
 #pragma once
 
 namespace maeve_automation_core {
+struct tau_tolerance {
+  static constexpr auto EPS = 1e-4;
+};  // struct
+
+// TODO: put little utility functions that codify ttc computation conventions
+
+double tau(const double range, const double relative_speed,
+           const double epsilon);
+
+double tau(const double range, const double actor1_speed,
+           const double actor2_speed, const double epsilon);
+
+double tau_range_at_0(const double tau_0, const double actor1_speed,
+                      const double actor2_speed);
+
+double tau_range_at_t(const double range_0, const double t,
+                      const double other_speed,
+                      const double actor1_distance_delta);
+
+double compute_other_speed_from_tau(const double tau_0, const double tau_t,
+                                    const double t,
+                                    const double actor1_distance_delta,
+                                    const double actor1_speed_0,
+                                    const double actor1_speed_t,
+                                    const double epsilon);
+
+double compute_range_from_other_speed_and_tau(
+    const double t, const double tau_0, const double other_speed,
+    const double actor1_speed_0, const double actor1_distance_delta);
+
 /**
  * @brief Given scale, scale time derivative, and timestemp, compute tau.
  *
@@ -36,16 +66,6 @@ namespace maeve_automation_core {
  * @return Time to contact (tau).
  */
 double tauFromDiscreteScaleDt(const double s, const double s_dot,
-                              const double t_delta);
+                              const double t_delta, const double epsilon);
 
-// TODO: put little utility functions that codify ttc computation conventions
-
-struct speed_and_relative_distance {
-  const double speed;
-  const double distance;
-};
-
-speed_and_relative_distance compute_speed_and_relative_distance(
-    const double tau_0, const double tau_t, const double t,
-    const double delta_p1, const double p1_dot_0, const double p1_dot_t);
 }  // namespace maeve_automation_core

@@ -188,7 +188,8 @@ bool AR_ISPFieldNodeHandler::computePotentialFields(
           // recently become empty. It's expected and probably not an error.
           return;
         }
-        const auto tau = tauFromDiscreteScaleDt(s, s_dot, t_delta);
+        const auto tau =
+            tauFromDiscreteScaleDt(s, s_dot, t_delta, tau_tolerance::EPS);
         const auto tau_dot = 0.0;
 
         // Compute potential values.
