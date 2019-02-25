@@ -46,6 +46,12 @@ struct tau_tolerance {
 double tau(const double range, const double relative_speed,
            const double epsilon);
 
+/**
+ * @brief This is an overload for the above function that computes
+ * 'relative_speed' as:
+ *
+ *     (actor1_speed - actor2_speed)
+ */
 double tau(const double range, const double actor1_speed,
            const double actor2_speed, const double epsilon);
 

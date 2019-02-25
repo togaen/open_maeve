@@ -93,6 +93,40 @@ TEST(Tau, tau1) {
 
 //------------------------------------------------------------------------------
 
+TEST(Tau, tau2) {
+  {
+    const auto range = 1.0;
+    const auto actor1_speed = 2.0;
+    const auto actor2_speed = 1.0;
+    const auto expected_tau = 1.0;
+    const auto computed_tau =
+        tau(range, actor1_speed, actor2_speed, tau_tolerance::EPS);
+    EXPECT_EQ(computed_tau, expected_tau);
+  }
+
+  {
+    const auto range = 1.0;
+    const auto actor1_speed = 1.0;
+    const auto actor2_speed = 2.0;
+    const auto expected_tau = -1.0;
+    const auto computed_tau =
+        tau(range, actor1_speed, actor2_speed, tau_tolerance::EPS);
+    EXPECT_EQ(computed_tau, expected_tau);
+  }
+
+  {
+    const auto range = 1.0;
+    const auto actor1_speed = 1.0;
+    const auto actor2_speed = 1.0;
+    const auto expected_tau = INF;
+    const auto computed_tau =
+        tau(range, actor1_speed, actor2_speed, tau_tolerance::EPS);
+    EXPECT_EQ(computed_tau, expected_tau);
+  }
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Tau, speed_and_relative_distance1) {
   constexpr auto a1 = 1.0;
   constexpr auto a2 = 0.0;
