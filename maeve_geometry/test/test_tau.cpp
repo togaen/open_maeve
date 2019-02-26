@@ -473,4 +473,45 @@ TEST(Tau, tau_at_t_1) {
 
 //------------------------------------------------------------------------------
 
+TEST(Tau, compute_tau_desired_accel) {
+  constexpr auto actor1_accel = 0.0;
+  constexpr auto actor2_accel = 0.0;
+  constexpr auto t = 0.1;
+  constexpr auto actor1_speed_0 = 25.0;
+  constexpr auto actor2_speed_0 = 20.0;
+  constexpr auto range_0 = 20.0;
+
+  constexpr auto a_min = -4.0;
+  constexpr auto tau_min = 3.0;
+
+  const auto desired_control =
+      compute_tau_desired_accel(t, range_0, actor1_speed_0, actor2_speed_0,
+                                a_min, tau_min, tau_tolerance::EPS);
+
+  const auto tau_t = tau_at_t(range_0, t, actor1_speed_0, actor2_speed_0,
+                              desired_control, a_min, tau_tolerance::EPS);
+  EXPECT_NEAR(tau_t, tau_min, tau_tolerance::EPS);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Tau, compute_tau_desired_accel_singularity) {
+  constexpr auto actor1_accel = 0.0;
+  constexpr auto actor2_accel = 0.0;
+  constexpr auto t = 0.1;
+  constexpr auto actor1_speed_0 = 25.0;
+  constexpr auto actor2_speed_0 = 20.0;
+  constexpr auto range_0 = 20.0;
+
+  constexpr auto a_min = -4.0;
+  constexpr auto tau_min = (-0.5 * t);
+
+  EXPECT_THROW(
+      compute_tau_desired_accel(t, range_0, actor1_speed_0, actor2_speed_0,
+                                a_min, tau_min, tau_tolerance::EPS),
+      std::runtime_error);
+}
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core

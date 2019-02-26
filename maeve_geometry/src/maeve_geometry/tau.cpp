@@ -181,4 +181,26 @@ double tau_at_t(const double range_0, const double t,
 
 //------------------------------------------------------------------------------
 
+double compute_tau_desired_accel(const double t, const double range_0,
+                                 const double actor1_speed_0,
+                                 const double actor2_speed_0,
+                                 const double actor2_accel,
+                                 const double tau_desired,
+                                 const double epsilon) {
+  const auto singular_point = (-0.5 * t);
+  if (approxEq(tau_desired, singular_point, epsilon)) {
+    throw std::runtime_error("TODO(me): figure out what to do in this case.");
+  }
+
+  const auto delta_tau = (tau_desired + t);
+  const auto relative_speed =
+      compute_relative_dynamics_for_tau(actor1_speed_0, actor2_speed_0);
+
+  const auto numerator = (delta_tau * relative_speed - range_0);
+  const auto denominator = (0.5 * square(t) - (t * delta_tau));
+  return ((numerator / denominator) + actor2_accel);
+}
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
