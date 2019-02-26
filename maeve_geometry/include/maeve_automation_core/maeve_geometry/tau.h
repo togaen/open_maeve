@@ -137,4 +137,7 @@ double tau_range_at_t(const double t, const double tau_0,
 double tauFromDiscreteScaleDt(const double s, const double s_dot,
                               const double t_delta, const double epsilon);
 
+/** @brief Solve the tau function for actor2 speed */
+double tau_actor2_speed(const double tau, const double actor1_speed,
+                        const double range);
 }  // namespace maeve_automation_core

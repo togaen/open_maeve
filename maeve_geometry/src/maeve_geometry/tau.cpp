@@ -148,4 +148,11 @@ double tauFromDiscreteScaleDt(const double s, const double s_dot,
 
 //------------------------------------------------------------------------------
 
+double tau_actor2_speed(const double tau, const double actor1_speed,
+                        const double range) {
+  return (actor1_speed - range / tau);
+}
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core

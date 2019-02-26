@@ -56,6 +56,10 @@ struct range_and_speed_info {
   const double expected_speed;
   const double computed_range;
   const double computed_speed;
+  const double actor1_speed_t;
+  const double actor2_speed_t;
+  const double tau_0;
+  const double tau_t;
 };
 range_and_speed_info computed_speed_and_range(const double actor1_accel,
                                               const double actor2_accel,
@@ -81,8 +85,14 @@ range_and_speed_info computed_speed_and_range(const double actor1_accel,
       tau_range_at_t(t, tau_0, computed_actor2_speed, actor1_speed_0,
                      std::get<0>(actor1_state_at_t));
 
-  return {range_t, std::get<1>(actor2_state_at_t), computed_range_t,
-          computed_actor2_speed};
+  return {range_t,
+          std::get<1>(actor2_state_at_t),
+          computed_range_t,
+          computed_actor2_speed,
+          std::get<1>(actor1_state_at_t),
+          std::get<1>(actor2_state_at_t),
+          tau_0,
+          tau_t};
 }
 
 }  // namespace
@@ -333,25 +343,6 @@ TEST(Tau, range_and_actor2_speed_exact) {
 
 //------------------------------------------------------------------------------
 
-TEST(Tau, range_and_actor2_speed_approximate0) {
-  constexpr auto actor1_accel = 1.0;
-  constexpr auto actor2_accel = 0.0;
-  constexpr auto t = 0.1;
-  constexpr auto actor1_speed_0 = 25.0;
-  constexpr auto actor2_speed_0 = 20.0;
-  constexpr auto range_0 = 50.0;
-
-  const auto range_and_speed = computed_speed_and_range(
-      actor1_accel, actor2_accel, t, actor1_speed_0, actor2_speed_0, range_0);
-
-  EXPECT_NEAR(range_and_speed.computed_speed, range_and_speed.expected_speed,
-              tau_tolerance::EPS);
-  EXPECT_NEAR(range_and_speed.computed_range, range_and_speed.expected_range,
-              tau_tolerance::EPS);
-}
-
-//------------------------------------------------------------------------------
-
 TEST(Tau, verifyScaling) {
   const auto Z = 17.0;
   const auto Z_dot = -1.2;
@@ -367,6 +358,54 @@ TEST(Tau, verifyScaling) {
       tauFromDiscreteScaleDt(e2, e_dot, t_delta, tau_tolerance::EPS);
   EXPECT_NEAR(tau_estimated, tau, 0.0001)
       << "e1: " << e1 << ", e2: " << e2 << ", e_dot: " << e_dot;
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Tau, compute_actor2_speed_0_1) {
+  constexpr auto actor1_accel = 1.0;
+  constexpr auto actor2_accel = 0.0;
+  constexpr auto t = 1.0;
+  constexpr auto actor1_speed_0 = 2.0;
+  constexpr auto actor2_speed_0 = 1.0;
+  constexpr auto range_0 = 10.0;
+
+  const auto range_and_speed = computed_speed_and_range(
+      actor1_accel, actor2_accel, t, actor1_speed_0, actor2_speed_0, range_0);
+
+  const auto computed_speed_0 =
+      tau_actor2_speed(range_and_speed.tau_0, actor1_speed_0, range_0);
+
+  EXPECT_EQ(computed_speed_0, actor2_speed_0);
+
+  const auto computed_speed_t =
+      tau_actor2_speed(range_and_speed.tau_t, range_and_speed.actor1_speed_t,
+                       range_and_speed.expected_range);
+  EXPECT_EQ(computed_speed_t, range_and_speed.actor2_speed_t);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Tau, compute_actor2_speed_0_2) {
+  constexpr auto actor1_accel = 3.1;
+  constexpr auto actor2_accel = 1.37;
+  constexpr auto t = 1.0;
+  constexpr auto actor1_speed_0 = 2.0;
+  constexpr auto actor2_speed_0 = 1.23;
+  constexpr auto range_0 = 10.0;
+
+  const auto range_and_speed = computed_speed_and_range(
+      actor1_accel, actor2_accel, t, actor1_speed_0, actor2_speed_0, range_0);
+
+  const auto computed_speed_0 =
+      tau_actor2_speed(range_and_speed.tau_0, actor1_speed_0, range_0);
+
+  EXPECT_EQ(computed_speed_0, actor2_speed_0);
+
+  const auto computed_speed_t =
+      tau_actor2_speed(range_and_speed.tau_t, range_and_speed.actor1_speed_t,
+                       range_and_speed.expected_range);
+  EXPECT_EQ(computed_speed_t, range_and_speed.actor2_speed_t);
 }
 
 //------------------------------------------------------------------------------
