@@ -76,6 +76,8 @@ TEST(Maeve_Geometry_Comparisons, testEquality) {
   EXPECT_FALSE(approxEq(e, c, 0.0));
   EXPECT_FALSE(approxEq(a, b, epsilon));
   EXPECT_FALSE(approxEq(b, a, epsilon));
+  EXPECT_TRUE(approxEq(a, a, epsilon));
+  EXPECT_TRUE(approxEq(a, a, 0.0));
 }
 
 TEST(Maeve_Geometry_Comparisons, testInequality) {

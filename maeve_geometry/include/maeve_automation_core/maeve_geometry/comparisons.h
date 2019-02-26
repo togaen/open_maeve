@@ -53,7 +53,8 @@ inline bool exclusiveOr(const T& a, const T& b) {
  */
 template <typename T>
 inline bool approxEq(const T& a, const T& b, const T& eps) {
-  return std::abs(a - b) < eps;
+  // TODO(me): make this use relative magnitude comparison
+  return std::abs(a - b) <= eps;
 }
 
 /**
@@ -116,7 +117,23 @@ inline T clampToZero(const T& val, const T& eps) {
  */
 template <typename T>
 inline bool approxLt(const T& a, const T& b, const T& eps) {
-  return (a < (b - eps));
+  return (approxNe(a, b, eps) && (a < b));
+}
+
+/**
+ * @brief Check for approximate less than or equal in absolute terms.
+ *
+ * @tparam T The type of value to check.
+ *
+ * @param a The first value in comparison.
+ * @param b The second value in comparison.
+ * @param eps The absolute range within which to assume less than or equal.
+ *
+ * @return True if 'a' is less than or equal to 'b' plus 'eps'; otherwise false.
+ */
+template <typename T>
+inline bool approxLe(const T& a, const T& b, const T& eps) {
+  return (approxEq(a, b, eps) || (a < b));
 }
 
 /**
@@ -134,22 +151,6 @@ inline bool approxLt(const T& a, const T& b, const T& eps) {
 template <typename T>
 inline bool approxGe(const T& a, const T& b, const T& eps) {
   return !approxLt(a, b, eps);
-}
-
-/**
- * @brief Check for approximate less than or equal in absolute terms.
- *
- * @tparam T The type of value to check.
- *
- * @param a The first value in comparison.
- * @param b The second value in comparison.
- * @param eps The absolute range within which to assume less than or equal.
- *
- * @return True if 'a' is less than or equal to 'b' plus 'eps'; otherwise false.
- */
-template <typename T>
-inline bool approxLe(const T& a, const T& b, const T& eps) {
-  return (a <= (b + eps));
 }
 
 /**
