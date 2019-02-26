@@ -27,6 +27,7 @@
 #include <stdexcept>
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
+#include "maeve_automation_core/maeve_geometry/powers.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -43,9 +44,9 @@ double tau(const double range, const double relative_speed,
 
 //------------------------------------------------------------------------------
 
-double compute_relative_speed_for_tau(const double actor1_speed,
-                                      const double actor2_speed) {
-  return (actor1_speed - actor2_speed);
+double compute_relative_dynamics_for_tau(const double actor1_component,
+                                         const double actor2_component) {
+  return (actor1_component - actor2_component);
 }
 
 //------------------------------------------------------------------------------
@@ -53,7 +54,7 @@ double compute_relative_speed_for_tau(const double actor1_speed,
 double tau(const double range, const double actor1_speed,
            const double actor2_speed, const double epsilon) {
   const double relative_speed =
-      compute_relative_speed_for_tau(actor1_speed, actor2_speed);
+      compute_relative_dynamics_for_tau(actor1_speed, actor2_speed);
   return tau(range, relative_speed, epsilon);
 }
 
@@ -68,7 +69,7 @@ double tau_range(const double tau_0, const double relative_speed) {
 double tau_range(const double tau_0, const double actor1_speed,
                  const double actor2_speed) {
   const auto relative_speed =
-      compute_relative_speed_for_tau(actor1_speed, actor2_speed);
+      compute_relative_dynamics_for_tau(actor1_speed, actor2_speed);
   return tau_range(tau_0, relative_speed);
 }
 
@@ -151,6 +152,27 @@ double tauFromDiscreteScaleDt(const double s, const double s_dot,
 double tau_actor2_speed(const double tau, const double actor1_speed,
                         const double range) {
   return (actor1_speed - range / tau);
+}
+
+//------------------------------------------------------------------------------
+
+double tau_at_t(const double range_0, const double t,
+                const double actor1_speed_0, const double actor2_speed_0,
+                const double actor1_accel, const double actor2_accel,
+                const double epsilon) {
+  const double t_relative_accel =
+      (t * compute_relative_dynamics_for_tau(actor1_accel, actor2_accel));
+  const double relative_speed =
+      compute_relative_dynamics_for_tau(actor1_speed_0, actor2_speed_0);
+
+  const double numerator = (range_0 + 0.5 * t * t_relative_accel);
+  const double denominator = (relative_speed + t_relative_accel);
+
+  if (approxZero(denominator, epsilon)) {
+    return INF;
+  }
+
+  return ((numerator / denominator) - t);
 }
 
 //------------------------------------------------------------------------------

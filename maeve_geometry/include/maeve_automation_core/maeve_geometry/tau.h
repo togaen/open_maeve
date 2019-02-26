@@ -28,18 +28,18 @@ struct tau_tolerance {
 };  // struct
 
 /**
- * This function encodes the convention used by this library that relative speed
- * is computed as:
+ * This function encodes the convention used by this library that relative
+ * dynamics are computed as:
  *
- *     (actor1_speed - actor2_speed)
+ *     (actor1_component - actor2_component)
  *
  * For example, in a scene containing two actors where one is approaching from
  * behind, the convention would be that the rear, approaching actor is 'actor1'
  * and the other, leading actor is 'actor2'.
  *
  */
-double compute_relative_speed_for_tau(const double actor1_speed,
-                                      const double actor2_speed);
+double compute_relative_dynamics_for_tau(const double actor1_component,
+                                         const double actor2_component);
 
 /**
  * @brief Compute time to contact (tau) between two objects separated by
@@ -140,4 +140,13 @@ double tauFromDiscreteScaleDt(const double s, const double s_dot,
 /** @brief Solve the tau function for actor2 speed */
 double tau_actor2_speed(const double tau, const double actor1_speed,
                         const double range);
+
+/**
+ * @brief For a given initial range and actor dynamics, compute tau at time t
+ * under constant acceleration assumption.
+ */
+double tau_at_t(const double range_0, const double t,
+                const double actor1_speed_0, const double actor2_speed_0,
+                const double actor1_accel, const double actor2_accel,
+                const double epsilon);
 }  // namespace maeve_automation_core
