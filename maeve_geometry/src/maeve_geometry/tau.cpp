@@ -39,7 +39,11 @@ constexpr auto INF = std::numeric_limits<double>::infinity();
 
 double tau(const double range, const double relative_speed,
            const double epsilon) {
-  return (approxZero(relative_speed, epsilon) ? INF : (range / relative_speed));
+  if (approxZero(relative_speed, epsilon)) {
+    return INF;
+  }
+
+  return (range / relative_speed);
 }
 
 //------------------------------------------------------------------------------
@@ -97,8 +101,6 @@ double compute_actor2_speed_from_tau(const double tau_0, const double tau_t,
                                      const double actor1_speed_0,
                                      const double actor1_speed_t,
                                      const double epsilon) {
-  // TODO(me): handle v0 == v1 case
-
   // Actor speed information is destroyed by the singularity at tau = 0
   if (approxZero(tau_0, epsilon) || approxZero(tau_t, epsilon)) {
     return NaN;

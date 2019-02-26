@@ -433,6 +433,28 @@ TEST(Tau, compute_actor2_speed_0_3) {
 
 //------------------------------------------------------------------------------
 
+TEST(Tau, compute_actor2_speed_0_4) {
+  constexpr auto actor1_accel = 0.0;
+  constexpr auto actor2_accel = 0.0;
+  constexpr auto t = 1.0;
+  constexpr auto actor1_speed_0 = 2.0;
+  constexpr auto actor2_speed_0 = 1.0;
+  constexpr auto range_0 = 10.0;
+
+  const auto info = compute_problem_info(
+      actor1_accel, actor2_accel, t, actor1_speed_0, actor2_speed_0, range_0);
+
+  const auto computed_actor2_speed_t_0 =
+      tau_actor2_speed(info.tau_0, actor1_speed_0, range_0, tau_tolerance::EPS);
+  EXPECT_EQ(computed_actor2_speed_t_0, actor2_speed_0);
+
+  const auto computed_actor2_speed_t_t = tau_actor2_speed(
+      info.tau_t, info.actor1_speed_t, info.range_t, tau_tolerance::EPS);
+  EXPECT_EQ(computed_actor2_speed_t_t, info.actor2_speed_t);
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Tau, tau_at_t_0) {
   constexpr auto actor1_accel = 3.1;
   constexpr auto actor2_accel = 1.37;
