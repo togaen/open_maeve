@@ -139,7 +139,7 @@ double tauFromDiscreteScaleDt(const double s, const double s_dot,
 
 /** @brief Solve the tau function for actor2 speed */
 double tau_actor2_speed(const double tau, const double actor1_speed,
-                        const double range);
+                        const double range, const double epsilon);
 
 /**
  * @brief For a given initial range and actor dynamics, compute tau at time t
