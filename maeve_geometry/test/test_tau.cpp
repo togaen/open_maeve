@@ -495,6 +495,26 @@ TEST(Tau, tau_at_t_1) {
 
 //------------------------------------------------------------------------------
 
+TEST(Tau, tau_at_t_2) {
+  constexpr auto actor1_accel = 10.0;
+  constexpr auto actor2_accel = 0.0;
+  constexpr auto t = 20.0;
+  constexpr auto actor1_speed_0 = 2.0;
+  constexpr auto actor2_speed_0 = 1.0;
+  constexpr auto range_0 = 10.0;
+
+  const auto info = compute_problem_info(
+      actor1_accel, actor2_accel, t, actor1_speed_0, actor2_speed_0, range_0);
+
+  const double computed_tau_t =
+      tau_at_t(range_0, t, actor1_speed_0, actor2_speed_0, actor1_accel,
+               actor2_accel, tau_tolerance::EPS);
+
+  EXPECT_EQ(computed_tau_t, info.tau_t);
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Tau, compute_tau_desired_accel) {
   constexpr auto actor1_accel = 0.0;
   constexpr auto actor2_accel = 0.0;
