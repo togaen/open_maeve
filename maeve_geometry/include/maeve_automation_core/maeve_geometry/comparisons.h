@@ -48,8 +48,7 @@ inline bool exclusiveOr(const T& a, const T& b) {
  * @param b The second value in comparison.
  * @param eps The absolute range within which to assume equality.
  *
- * @return True if 'a' and 'b' are within 'eps' of each other (non-inclusive);
- * otherwise false.
+ * @return True if 'a' and 'b' are within 'eps' of each other; otherwise false.
  */
 template <typename T>
 inline bool approxEq(const T& a, const T& b, const T& eps) {
