@@ -101,7 +101,7 @@ inline bool approxZero(const T& a, const T& eps) {
  */
 template <typename T>
 inline T clampToZero(const T& val, const T& eps) {
-  return (approxZero(val, eps) ? 0.0 : val);
+  return (approxZero(val, eps) ? T(0) : val);
 }
 
 /**
