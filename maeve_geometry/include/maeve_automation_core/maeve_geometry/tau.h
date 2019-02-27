@@ -151,7 +151,7 @@ double tau_at_t(const double range_0, const double t,
                 const double epsilon);
 
 /**
- * @brief Compute the acceleration for actor1 that achieves 'tau_threshold'
+ * @brief Compute the acceleration for actor1 that achieves 'tau_desired'
  * w.r.t. actor2 at time 't' given the problem information and assuming constant
  * acceleration motion for both actors.
  */
