@@ -183,12 +183,12 @@ double tau_at_t(const double range_0, const double t,
 
 //------------------------------------------------------------------------------
 
-double compute_tau_desired_accel(const double t, const double range_0,
-                                 const double actor1_speed_0,
-                                 const double actor2_speed_0,
-                                 const double actor2_accel,
-                                 const double tau_desired,
-                                 const double epsilon) {
+double compute_actor1_accel_to_tau_desired(const double t, const double range_0,
+                                           const double actor1_speed_0,
+                                           const double actor2_speed_0,
+                                           const double actor2_accel,
+                                           const double tau_desired,
+                                           const double epsilon) {
   const auto singular_point = (-0.5 * t);
   if (approxEq(tau_desired, singular_point, epsilon)) {
     throw std::runtime_error("TODO(me): figure out what to do in this case.");

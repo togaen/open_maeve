@@ -515,7 +515,7 @@ TEST(Tau, tau_at_t_2) {
 
 //------------------------------------------------------------------------------
 
-TEST(Tau, compute_tau_desired_accel) {
+TEST(Tau, compute_actor1_accel_to_tau_desired) {
   constexpr auto actor1_accel = 0.0;
   constexpr auto actor2_accel = 0.0;
   constexpr auto t = 0.1;
@@ -526,9 +526,9 @@ TEST(Tau, compute_tau_desired_accel) {
   constexpr auto a_min = -4.0;
   constexpr auto tau_min = 3.0;
 
-  const auto desired_control =
-      compute_tau_desired_accel(t, range_0, actor1_speed_0, actor2_speed_0,
-                                a_min, tau_min, tau_tolerance::EPS);
+  const auto desired_control = compute_actor1_accel_to_tau_desired(
+      t, range_0, actor1_speed_0, actor2_speed_0, a_min, tau_min,
+      tau_tolerance::EPS);
 
   const auto tau_t = tau_at_t(range_0, t, actor1_speed_0, actor2_speed_0,
                               desired_control, a_min, tau_tolerance::EPS);
@@ -537,7 +537,7 @@ TEST(Tau, compute_tau_desired_accel) {
 
 //------------------------------------------------------------------------------
 
-TEST(Tau, compute_tau_desired_accel_singularity) {
+TEST(Tau, compute_actor1_accel_to_tau_desired_singularity) {
   constexpr auto actor1_accel = 0.0;
   constexpr auto actor2_accel = 0.0;
   constexpr auto t = 0.1;
@@ -548,10 +548,10 @@ TEST(Tau, compute_tau_desired_accel_singularity) {
   constexpr auto a_min = -4.0;
   constexpr auto tau_min = (-0.5 * t);
 
-  EXPECT_THROW(
-      compute_tau_desired_accel(t, range_0, actor1_speed_0, actor2_speed_0,
-                                a_min, tau_min, tau_tolerance::EPS),
-      std::runtime_error);
+  EXPECT_THROW(compute_actor1_accel_to_tau_desired(t, range_0, actor1_speed_0,
+                                                   actor2_speed_0, a_min,
+                                                   tau_min, tau_tolerance::EPS),
+               std::runtime_error);
 }
 
 //------------------------------------------------------------------------------
