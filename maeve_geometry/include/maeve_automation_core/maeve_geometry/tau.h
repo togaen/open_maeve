@@ -161,4 +161,16 @@ double compute_actor1_accel_to_tau_desired(const double t, const double range_0,
                                            const double actor2_accel,
                                            const double tau_desired,
                                            const double epsilon);
+
+/** @brief Untested. */
+double partial_of_tau_wrt_actor1_accel(
+    const double t, const double actor1_speed_0, const double actor2_speed_0,
+    const double range_0, const double actor1_accel, const double actor2_accel,
+    const double epsilon);
+
+/** @brief Untested. */
+double partial_of_tau_wrt_actor2_accel(
+    const double t, const double actor1_speed_0, const double actor2_speed_0,
+    const double range_0, const double actor1_accel, const double actor2_accel,
+    const double epsilon);
 }  // namespace maeve_automation_core

@@ -205,4 +205,36 @@ double compute_actor1_accel_to_tau_desired(const double t, const double range_0,
 
 //------------------------------------------------------------------------------
 
+double partial_of_tau_wrt_actor1_accel(
+    const double t, const double actor1_speed_0, const double actor2_speed_0,
+    const double range_0, const double actor1_accel, const double actor2_accel,
+    const double epsilon) {
+  const double relative_accel =
+      compute_relative_dynamics_for_tau(actor1_accel, actor2_accel);
+
+  const double relative_speed =
+      compute_relative_dynamics_for_tau(actor1_speed_0, actor2_speed_0);
+
+  const double numerator = (t * (0.5 * t * relative_speed - range_0));
+  const double denominator = square(relative_speed + t * relative_accel);
+  if (approxZero(denominator, epsilon)) {
+    return NaN;
+  }
+
+  return (numerator / denominator);
+}
+
+//------------------------------------------------------------------------------
+
+double partial_of_tau_wrt_actor2_accel(
+    const double t, const double actor1_speed_0, const double actor2_speed_0,
+    const double range_0, const double actor1_accel, const double actor2_accel,
+    const double epsilon) {
+  return -partial_of_tau_wrt_actor1_accel(t, actor1_speed_0, actor2_speed_0,
+                                          range_0, actor1_accel, actor2_accel,
+                                          epsilon);
+}
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
