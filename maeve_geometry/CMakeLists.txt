@@ -134,7 +134,6 @@ add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/interval.cpp
   src/${PROJECT_NAME}/disjoint_interval.cpp
   src/${PROJECT_NAME}/polynomial.cpp
-  src/${PROJECT_NAME}/tau.cpp
 )
 
 ## Add cmake target dependencies of the library

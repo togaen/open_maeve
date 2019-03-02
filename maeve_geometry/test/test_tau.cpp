@@ -30,8 +30,6 @@
 
 namespace maeve_automation_core {
 namespace {
-constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
-constexpr auto INF = std::numeric_limits<double>::infinity();
 
 //------------------------------------------------------------------------------
 
@@ -82,13 +80,14 @@ info_info compute_problem_info(const double actor1_accel,
   const auto range_t = tau_range_at_t(range_0, std::get<0>(actor1_state_at_t),
                                       std::get<0>(actor2_state_at_t));
   const auto tau_0 =
-      tau(range_0, actor1_speed_0, actor2_speed_0, tau_tolerance::EPS);
-  const auto tau_t = tau(range_t, std::get<1>(actor1_state_at_t),
-                         std::get<1>(actor2_state_at_t), tau_tolerance::EPS);
+      tau(range_0, actor1_speed_0, actor2_speed_0, tau_constants<double>::EPS);
+  const auto tau_t =
+      tau(range_t, std::get<1>(actor1_state_at_t),
+          std::get<1>(actor2_state_at_t), tau_constants<double>::EPS);
 
   const auto computed_actor2_speed = compute_actor2_speed_from_tau(
       tau_0, tau_t, t, std::get<0>(actor1_state_at_t), actor1_speed_0,
-      std::get<1>(actor1_state_at_t), tau_tolerance::EPS);
+      std::get<1>(actor1_state_at_t), tau_constants<double>::EPS);
 
   const auto computed_range_t =
       tau_range_at_t(t, tau_0, computed_actor2_speed, actor1_speed_0,
@@ -112,7 +111,8 @@ TEST(Tau, tau1) {
     const auto range = 1.0;
     const auto relative_speed = 1.0;
     const auto expected_tau = 1.0;
-    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    const auto computed_tau =
+        tau(range, relative_speed, tau_constants<double>::EPS);
     EXPECT_EQ(computed_tau, expected_tau);
   }
 
@@ -120,30 +120,34 @@ TEST(Tau, tau1) {
     const auto range = 1.0;
     const auto relative_speed = -1.0;
     const auto expected_tau = -1.0;
-    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    const auto computed_tau =
+        tau(range, relative_speed, tau_constants<double>::EPS);
     EXPECT_EQ(computed_tau, expected_tau);
   }
 
   {
     const auto range = 1.0;
     const auto relative_speed = 0.0;
-    const auto expected_tau = INF;
-    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    const auto expected_tau = tau_constants<double>::INF;
+    const auto computed_tau =
+        tau(range, relative_speed, tau_constants<double>::EPS);
     EXPECT_EQ(computed_tau, expected_tau);
   }
 
   {
     const auto range = 1.0;
-    const auto relative_speed = (0.5 * tau_tolerance::EPS);
-    const auto expected_tau = INF;
-    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    const auto relative_speed = (0.5 * tau_constants<double>::EPS);
+    const auto expected_tau = tau_constants<double>::INF;
+    const auto computed_tau =
+        tau(range, relative_speed, tau_constants<double>::EPS);
     EXPECT_EQ(computed_tau, expected_tau);
   }
 
   {
     const auto range = 1.0;
-    const auto relative_speed = (2.0 * tau_tolerance::EPS);
-    const auto computed_tau = tau(range, relative_speed, tau_tolerance::EPS);
+    const auto relative_speed = (2.0 * tau_constants<double>::EPS);
+    const auto computed_tau =
+        tau(range, relative_speed, tau_constants<double>::EPS);
     EXPECT_TRUE(std::isfinite(computed_tau));
   }
 }
@@ -188,7 +192,7 @@ TEST(Tau, tau2) {
     const auto actor2_speed = 1.0;
     const auto expected_tau = 1.0;
     const auto computed_tau =
-        tau(range, actor1_speed, actor2_speed, tau_tolerance::EPS);
+        tau(range, actor1_speed, actor2_speed, tau_constants<double>::EPS);
     EXPECT_EQ(computed_tau, expected_tau);
   }
 
@@ -198,7 +202,7 @@ TEST(Tau, tau2) {
     const auto actor2_speed = 2.0;
     const auto expected_tau = -1.0;
     const auto computed_tau =
-        tau(range, actor1_speed, actor2_speed, tau_tolerance::EPS);
+        tau(range, actor1_speed, actor2_speed, tau_constants<double>::EPS);
     EXPECT_EQ(computed_tau, expected_tau);
   }
 
@@ -206,9 +210,9 @@ TEST(Tau, tau2) {
     const auto range = 1.0;
     const auto actor1_speed = 1.0;
     const auto actor2_speed = 1.0;
-    const auto expected_tau = INF;
+    const auto expected_tau = tau_constants<double>::INF;
     const auto computed_tau =
-        tau(range, actor1_speed, actor2_speed, tau_tolerance::EPS);
+        tau(range, actor1_speed, actor2_speed, tau_constants<double>::EPS);
     EXPECT_EQ(computed_tau, expected_tau);
   }
 }
@@ -363,7 +367,7 @@ TEST(Tau, verifyScaling) {
   const auto e2 = extent(Z + Z_dot * t_delta, P1, P2);
   const auto e_dot = (e2 - e1) / t_delta;
   const auto tau_estimated =
-      tauFromDiscreteScaleDt(e2, e_dot, t_delta, tau_tolerance::EPS);
+      tauFromDiscreteScaleDt(e2, e_dot, t_delta, tau_constants<double>::EPS);
   EXPECT_NEAR(tau_estimated, tau, 0.0001)
       << "e1: " << e1 << ", e2: " << e2 << ", e_dot: " << e_dot;
 }
@@ -381,12 +385,13 @@ TEST(Tau, compute_actor2_speed_0_1) {
   const auto info = compute_problem_info(
       actor1_accel, actor2_accel, t, actor1_speed_0, actor2_speed_0, range_0);
 
-  const auto computed_actor2_speed_t_0 =
-      tau_actor2_speed(info.tau_0, actor1_speed_0, range_0, tau_tolerance::EPS);
+  const auto computed_actor2_speed_t_0 = tau_actor2_speed(
+      info.tau_0, actor1_speed_0, range_0, tau_constants<double>::EPS);
   EXPECT_EQ(computed_actor2_speed_t_0, actor2_speed_0);
 
-  const auto computed_actor2_speed_t_t = tau_actor2_speed(
-      info.tau_t, info.actor1_speed_t, info.range_t, tau_tolerance::EPS);
+  const auto computed_actor2_speed_t_t =
+      tau_actor2_speed(info.tau_t, info.actor1_speed_t, info.range_t,
+                       tau_constants<double>::EPS);
   EXPECT_EQ(computed_actor2_speed_t_t, info.actor2_speed_t);
 }
 
@@ -403,12 +408,13 @@ TEST(Tau, compute_actor2_speed_0_2) {
   const auto info = compute_problem_info(
       actor1_accel, actor2_accel, t, actor1_speed_0, actor2_speed_0, range_0);
 
-  const auto computed_actor2_speed_t_0 =
-      tau_actor2_speed(info.tau_0, actor1_speed_0, range_0, tau_tolerance::EPS);
+  const auto computed_actor2_speed_t_0 = tau_actor2_speed(
+      info.tau_0, actor1_speed_0, range_0, tau_constants<double>::EPS);
   EXPECT_EQ(computed_actor2_speed_t_0, actor2_speed_0);
 
-  const auto computed_actor2_speed_t_t = tau_actor2_speed(
-      info.tau_t, info.actor1_speed_t, info.range_t, tau_tolerance::EPS);
+  const auto computed_actor2_speed_t_t =
+      tau_actor2_speed(info.tau_t, info.actor1_speed_t, info.range_t,
+                       tau_constants<double>::EPS);
   EXPECT_EQ(computed_actor2_speed_t_t, info.actor2_speed_t);
 }
 
@@ -425,8 +431,8 @@ TEST(Tau, compute_actor2_speed_0_3) {
   const auto info = compute_problem_info(
       actor1_accel, actor2_accel, t, actor1_speed_0, actor2_speed_0, range_0);
 
-  const auto computed_actor2_speed_t_0 =
-      tau_actor2_speed(info.tau_0, actor1_speed_0, range_0, tau_tolerance::EPS);
+  const auto computed_actor2_speed_t_0 = tau_actor2_speed(
+      info.tau_0, actor1_speed_0, range_0, tau_constants<double>::EPS);
 
   EXPECT_TRUE(std::isnan(computed_actor2_speed_t_0));
 }
@@ -444,12 +450,13 @@ TEST(Tau, compute_actor2_speed_0_4) {
   const auto info = compute_problem_info(
       actor1_accel, actor2_accel, t, actor1_speed_0, actor2_speed_0, range_0);
 
-  const auto computed_actor2_speed_t_0 =
-      tau_actor2_speed(info.tau_0, actor1_speed_0, range_0, tau_tolerance::EPS);
+  const auto computed_actor2_speed_t_0 = tau_actor2_speed(
+      info.tau_0, actor1_speed_0, range_0, tau_constants<double>::EPS);
   EXPECT_EQ(computed_actor2_speed_t_0, actor2_speed_0);
 
-  const auto computed_actor2_speed_t_t = tau_actor2_speed(
-      info.tau_t, info.actor1_speed_t, info.range_t, tau_tolerance::EPS);
+  const auto computed_actor2_speed_t_t =
+      tau_actor2_speed(info.tau_t, info.actor1_speed_t, info.range_t,
+                       tau_constants<double>::EPS);
   EXPECT_EQ(computed_actor2_speed_t_t, info.actor2_speed_t);
 }
 
@@ -468,7 +475,7 @@ TEST(Tau, tau_at_t_0) {
 
   const double computed_tau_t =
       tau_at_t(range_0, t, actor1_speed_0, actor2_speed_0, actor1_accel,
-               actor2_accel, tau_tolerance::EPS);
+               actor2_accel, tau_constants<double>::EPS);
 
   EXPECT_EQ(computed_tau_t, info.tau_t);
 }
@@ -488,7 +495,7 @@ TEST(Tau, tau_at_t_1) {
 
   const double computed_tau_t =
       tau_at_t(range_0, t, actor1_speed_0, actor2_speed_0, actor1_accel,
-               actor2_accel, tau_tolerance::EPS);
+               actor2_accel, tau_constants<double>::EPS);
 
   EXPECT_EQ(computed_tau_t, info.tau_t);
 }
@@ -508,7 +515,7 @@ TEST(Tau, tau_at_t_2) {
 
   const double computed_tau_t =
       tau_at_t(range_0, t, actor1_speed_0, actor2_speed_0, actor1_accel,
-               actor2_accel, tau_tolerance::EPS);
+               actor2_accel, tau_constants<double>::EPS);
 
   EXPECT_EQ(computed_tau_t, info.tau_t);
 }
@@ -528,11 +535,12 @@ TEST(Tau, compute_actor1_accel_to_tau_desired) {
 
   const auto desired_control = compute_actor1_accel_to_tau_desired(
       t, range_0, actor1_speed_0, actor2_speed_0, a_min, tau_min,
-      tau_tolerance::EPS);
+      tau_constants<double>::EPS);
 
-  const auto tau_t = tau_at_t(range_0, t, actor1_speed_0, actor2_speed_0,
-                              desired_control, a_min, tau_tolerance::EPS);
-  EXPECT_NEAR(tau_t, tau_min, tau_tolerance::EPS);
+  const auto tau_t =
+      tau_at_t(range_0, t, actor1_speed_0, actor2_speed_0, desired_control,
+               a_min, tau_constants<double>::EPS);
+  EXPECT_NEAR(tau_t, tau_min, tau_constants<double>::EPS);
 }
 
 //------------------------------------------------------------------------------
@@ -548,9 +556,9 @@ TEST(Tau, compute_actor1_accel_to_tau_desired_singularity) {
   constexpr auto a_min = -4.0;
   constexpr auto tau_min = (-0.5 * t);
 
-  EXPECT_THROW(compute_actor1_accel_to_tau_desired(t, range_0, actor1_speed_0,
-                                                   actor2_speed_0, a_min,
-                                                   tau_min, tau_tolerance::EPS),
+  EXPECT_THROW(compute_actor1_accel_to_tau_desired(
+                   t, range_0, actor1_speed_0, actor2_speed_0, a_min, tau_min,
+                   tau_constants<double>::EPS),
                std::runtime_error);
 }
 
