@@ -53,16 +53,16 @@ bool Interval::zeroLength(const Interval& interval) {
 bool Interval::empty(const Interval& interval) { return interval.empty_; }
 
 Interval Interval::affinelyExtendedReals() {
-  return Interval(-Interval::Inf, Interval::Inf);
+  return Interval(-Interval::INF, Interval::INF);
 }
 
 Interval Interval::maxRepresentableReals() {
-  return Interval(Interval::Min, Interval::Max);
+  return Interval(Interval::MIN, Interval::MAX);
 }
 
-Interval Interval::nonNegativeReals() { return Interval(0.0, Max); }
+Interval Interval::nonNegativeReals() { return Interval(0.0, MAX); }
 
-Interval Interval::nonPositiveReals() { return Interval(Min, 0.0); }
+Interval Interval::nonPositiveReals() { return Interval(MIN, 0.0); }
 
 Interval::Interval() : bounds_(std::make_tuple(NaN, NaN)), empty_(true) {}
 
