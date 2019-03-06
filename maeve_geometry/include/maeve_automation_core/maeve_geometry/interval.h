@@ -25,11 +25,14 @@
 #include <limits>
 #include <tuple>
 
+#include <boost/optional.hpp>
+
 namespace maeve_automation_core {
 /**
  * @brief Data structure to contain scalar interval bounds.
  *
- * TODO(me): template this on float type
+ * @note An exception is thrown on construction if the provided interval bounds
+ * are invalid (i.e., if min > max).
  */
 class Interval {
  public:
@@ -39,7 +42,8 @@ class Interval {
    */
   static constexpr auto MIN = std::numeric_limits<double>::lowest();
   static constexpr auto MAX = std::numeric_limits<double>::max();
-  static constexpr auto INF = std::numeric_limits<double>::infinity();
+  static constexpr auto SUPREMUM = std::numeric_limits<double>::infinity();
+  static constexpr auto INFIMUM = -SUPREMUM;
   /** @} */
 
   /** @name Comparison operations
@@ -217,17 +221,6 @@ class Interval {
   static bool empty(const Interval& interval);
 
   /**
-   * @brief Whether the interval is valid.
-   *
-   * @note An interval with NaN in the bounds is only valid if it is empty.
-   *
-   * @param interval The interval to test for validity.
-   *
-   * @return True if empty or min <= max; otherwise false.
-   */
-  static bool valid(const Interval& interval);
-
-  /**
    * @brief Test for whether a given interval contains a given value.
    *
    * @param interval The interval.
@@ -248,16 +241,6 @@ class Interval {
   static bool isSubsetEq(const Interval& interval1, const Interval& interval2);
 
   /**
-   * @brief Add intervals by adding their bounds
-   *
-   * @param interval1 The first interval.
-   * @param interval2 The second interval.
-   *
-   * @return The result of interval1 + interval2.
-   */
-  static Interval add(const Interval& interval1, const Interval& interval2);
-
-  /**
    * @brief Compute the intersection of two intervals as a new interval.
    *
    * @param interval1 The first interval.
@@ -267,6 +250,13 @@ class Interval {
    */
   static Interval intersect(const Interval& interval1,
                             const Interval& interval2);
+
+  /**
+   * @brief Test whether two intervals overlap.
+   *
+   * @note If either interval is empty, this returns true.
+   */
+  static bool overlap(const Interval& interval1, const Interval& interval2);
 
   /**
    * @brief Project a scalar 'val' onto 'interval'.
@@ -305,7 +295,8 @@ class Interval {
    *
    * @return The merged interval.
    */
-  static Interval merge(const Interval& interval1, const Interval& interval2);
+  static boost::optional<Interval> merge(const Interval& interval1,
+                                         const Interval& interval2);
 
   /**
    * @brief Factory method to build the set of affinely extended reals.
@@ -356,15 +347,16 @@ class Interval {
  private:
   /** @brief Scalar interval minimum bounds: min, max. */
   std::tuple<double, double> bounds_;
-  /** @brief Whether the interval is empty or not. */
-  bool empty_;
 
-  /**
-   * @brief Construct and return an invalid interval.
-   *
-   * @return The invalid interval.
-   */
-  static Interval buildInvalid();
+  /** @brief Interval constructor overload. */
+  Interval(const std::tuple<double, double>& bounds);
+
+  /** @brief What the bounds would be if the intervals were intersected. */
+  static std::tuple<double, double> get_intersection_bounds(
+      const Interval& interval1, const Interval& interval2);
+
+  /** @brief Verify that the bounds are valid for an interval. */
+  static bool bounds_valid(const std::tuple<double, double>& bounds);
 
   /**
    * @brief Test for whether a given interval can be ordered.
@@ -375,7 +367,9 @@ class Interval {
    *
    * @return True if the interval can be ordered; otherwise false.
    */
-
   static bool exhibitsOrdering(const Interval& interval);
 };  // class Interval
+
+/** @brief Define interval addition as the addition of interval bounds. */
+Interval operator+(const Interval& interval1, const Interval& interval2);
 }  // namespace maeve_automation_core

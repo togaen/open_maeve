@@ -500,12 +500,12 @@ bool PST_Connector::dynamicallyFeasible(
 
   const auto times_valid =
       PST_Connector::boundedInteriorTimes(connector, time_bounds);
-  const auto positions_valid = PST_Connector::boundedInteriorPositions(
-      connector, Interval::add(s_bounds, padding));
-  const auto speeds_valid = PST_Connector::boundedInteriorSpeeds(
-      connector, Interval::add(s_dot_bounds, padding));
+  const auto positions_valid =
+      PST_Connector::boundedInteriorPositions(connector, (s_bounds + padding));
+  const auto speeds_valid =
+      PST_Connector::boundedInteriorSpeeds(connector, (s_dot_bounds + padding));
   const auto accelerations_valid = PST_Connector::boundedInteriorAccelerations(
-      connector, Interval::add(s_ddot_bounds, padding));
+      connector, (s_ddot_bounds + padding));
 
   return (times_valid && positions_valid && speeds_valid &&
           accelerations_valid);

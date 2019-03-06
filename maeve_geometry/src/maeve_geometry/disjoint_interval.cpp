@@ -95,8 +95,8 @@ bool DisjointInterval::contains(const DisjointInterval& disjoint_interval,
 
 std::set<Interval>::const_iterator DisjointInterval::insert(
     DisjointInterval& disjoint_interval, Interval interval) {
-  // Don't insert invalid or empty intervals.
-  if (!Interval::valid(interval) || Interval::empty(interval)) {
+  // Don't insert empty intervals.
+  if (Interval::empty(interval)) {
     return std::end(disjoint_interval.set_);
   }
 
@@ -124,15 +124,13 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
       --it_reverse;
 
       // Attempt a merge.
-      const auto i = Interval::merge(*it_reverse, interval);
-
-      // If the merge was not successful, no other intervals are disjoint. Done.
-      if (!Interval::valid(i)) {
+      if (const auto i = Interval::merge(*it_reverse, interval)) {
+        interval = *i;
+      } else {
+        // If the merge was not successful, no other intervals are disjoint.
+        // Done.
         break;
       }
-
-      // Update the insertion interval.
-      interval = i;
 
       // Remove the merged element.
       it_reverse = disjoint_interval.set_.erase(it_reverse);
@@ -144,15 +142,13 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
     auto it_forward = it_hint;
     while (it_forward != std::end(disjoint_interval.set_)) {
       // Attempt a merge
-      const auto i = Interval::merge(*it_forward, interval);
-
-      // If the merge was not successful, no other intervals are disjoint. Done.
-      if (!Interval::valid(i)) {
+      if (const auto i = Interval::merge(*it_forward, interval)) {
+        interval = *i;
+      } else {
+        // If the merge was not successful, no other intervals are disjoint.
+        // Done.
         break;
       }
-
-      // Update the insertion interval.
-      interval = i;
 
       // Remove the merged element and update the iterator.
       it_forward = disjoint_interval.set_.erase(it_forward);

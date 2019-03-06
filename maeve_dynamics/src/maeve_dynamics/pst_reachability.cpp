@@ -44,28 +44,30 @@ PST_Reachability::PST_Reachability(const PST_Connector& min_terminal,
                                    const PST_Connector& max_terminal,
                                    const IntervalConstraints<2>& constraints)
     : min_terminal_(min_terminal), max_terminal_(max_terminal) {
-  const auto I_reachable = PST_Reachability::reachableInterval(*this);
-  if (!Interval::valid(I_reachable)) {
+  try {
+    const auto I_reachable = PST_Reachability::reachableInterval(*this);
+
+    if (!PST_Connector::dynamicallyFeasible(min_terminal, constraints)) {
+      std::stringstream ss;
+      ss << min_terminal;
+      throw std::runtime_error(
+          "Attempted to construct reachability object with infeasible "
+          "min_terminal connector: " +
+          ss.str());
+    }
+
+    if (!PST_Connector::dynamicallyFeasible(max_terminal, constraints)) {
+      std::stringstream ss;
+      ss << max_terminal;
+      throw std::runtime_error(
+          "Attempted to construct reachibility object with infeasible "
+          "max_terminal connector: " +
+          ss.str());
+    }
+  } catch (...) {
     throw std::domain_error(
-        "Attempted to construct reachability object with invalid information.");
-  }
-
-  if (!PST_Connector::dynamicallyFeasible(min_terminal, constraints)) {
-    std::stringstream ss;
-    ss << min_terminal;
-    throw std::runtime_error(
-        "Attempted to construct reachability object with infeasible "
-        "min_terminal connector: " +
-        ss.str());
-  }
-
-  if (!PST_Connector::dynamicallyFeasible(max_terminal, constraints)) {
-    std::stringstream ss;
-    ss << max_terminal;
-    throw std::runtime_error(
-        "Attempted to construct reachibility object with infeasible "
-        "max_terminal connector: " +
-        ss.str());
+        "Attempted to construct reachability object with invalid "
+        "information.");
   }
 }
 

@@ -110,20 +110,7 @@ class IntervalConstraints {
                       const std::array<Interval, Order + 1>& s_bounds);
 
   /**
-   * @brief A constraint set is valid iff all intervals are valid.
-   *
-   * @note Empty interval bounds are considered valid. That means it is possible
-   * that a valid constraint set cannot be satisfied.
-   *
-   * @param constraints The constraint set to check for validity.
-   *
-   * @return True if the constraint set is valid; otherwise false.
-   */
-  static bool valid(const IntervalConstraints& constraints);
-
-  /**
-   * @brief A constraint set is satisfiable iff it is valid and all intervals
-   * are non-emtpy.
+   * @brief A constraint set is satisfiable iff all intervals are non-emtpy.
    *
    * @param constraints The constraint set to check for satisfiability.
    *
@@ -207,23 +194,13 @@ IntervalConstraints<Order>::IntervalConstraints(
       s_bounds_(s_bounds) {}
 
 template <unsigned int Order>
-bool IntervalConstraints<Order>::valid(const IntervalConstraints& constraints) {
-  const auto t_valid = Interval::valid(constraints.t_bounds_);
-  const auto s_valid = std::all_of(
-      std::begin(constraints.s_bounds_), std::end(constraints.s_bounds_),
-      [&](const Interval& interval) { return Interval::valid(interval); });
-  return t_valid && s_valid;
-}
-
-template <unsigned int Order>
 bool IntervalConstraints<Order>::satisfiable(
     const IntervalConstraints& constraints) {
-  const auto is_valid = IntervalConstraints<Order>::valid(constraints);
   const auto t_non_empty = !Interval::empty(constraints.t_bounds_);
   const auto s_non_empty = std::all_of(
       std::begin(constraints.s_bounds_), std::end(constraints.s_bounds_),
       [&](const Interval& interval) { return !Interval::empty(interval); });
-  return is_valid && t_non_empty && s_non_empty;
+  return (t_non_empty && s_non_empty);
 }
 
 template <unsigned int Order>

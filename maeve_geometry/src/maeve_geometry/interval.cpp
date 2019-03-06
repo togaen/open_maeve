@@ -22,8 +22,12 @@
 #include "maeve_automation_core/maeve_geometry/interval.h"
 
 #include <algorithm>
+#include <cmath>
+#include <sstream>
+#include <stdexcept>
 
-#include "boost/io/ios_state.hpp"
+#include <boost/io/ios_state.hpp>
+#include <boost/optional.hpp>
 
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -43,37 +47,50 @@ const std::tuple<double, double>& Interval::bounds(const Interval& interval) {
 }
 
 bool Interval::zeroLength(const Interval& interval) {
-  if (Interval::empty(interval)) {
-    return false;
-  }
-
-  return (Interval::min(interval) == Interval::max(interval));
+  const auto is_not_empty = !Interval::empty(interval);
+  const auto length_is_zero =
+      (Interval::min(interval) == Interval::max(interval));
+  return (is_not_empty && length_is_zero);
 }
 
-bool Interval::empty(const Interval& interval) { return interval.empty_; }
+bool Interval::empty(const Interval& interval) {
+  return (std::isnan(Interval::min(interval)) &&
+          std::isnan(Interval::max(interval)));
+}
 
 Interval Interval::affinelyExtendedReals() {
-  return Interval(-Interval::INF, Interval::INF);
+  return Interval(INFIMUM, SUPREMUM);
 }
 
-Interval Interval::maxRepresentableReals() {
-  return Interval(Interval::MIN, Interval::MAX);
-}
+Interval Interval::maxRepresentableReals() { return Interval(MIN, MAX); }
 
 Interval Interval::nonNegativeReals() { return Interval(0.0, MAX); }
 
 Interval Interval::nonPositiveReals() { return Interval(MIN, 0.0); }
 
-Interval::Interval() : bounds_(std::make_tuple(NaN, NaN)), empty_(true) {}
+Interval::Interval() : bounds_(std::make_tuple(NaN, NaN)) {}
 
 Interval::Interval(const double minimum, const double maximum)
-    : bounds_(std::make_tuple(minimum, maximum)), empty_(false) {
-  if (!Interval::valid(*this)) {
-    bounds_ = std::make_tuple(NaN, NaN);
+    : bounds_(std::make_tuple(minimum, maximum)) {
+  if (!Interval::bounds_valid(bounds_)) {
+    std::stringstream ss;
+    ss << "Attempted to construct an invalid interval: " << *this;
+    throw std::runtime_error(ss.str());
   }
 }
 
-Interval Interval::add(const Interval& interval1, const Interval& interval2) {
+Interval::Interval(const std::tuple<double, double>& bounds)
+    : Interval(std::get<0>(bounds), std::get<1>(bounds)) {}
+
+bool Interval::bounds_valid(const std::tuple<double, double>& bounds) {
+  const auto min = std::get<0>(bounds);
+  const auto max = std::get<1>(bounds);
+  const auto is_empty = (std::isnan(min) && std::isnan(max));
+  const auto is_ordered = (min <= max);
+  return (is_empty || is_ordered);
+}
+
+Interval operator+(const Interval& interval1, const Interval& interval2) {
   const auto min = (Interval::min(interval1) + Interval::min(interval2));
   const auto max = (Interval::max(interval1) + Interval::max(interval2));
   return Interval(min, max);
@@ -89,40 +106,17 @@ bool Interval::isSubsetEq(const Interval& interval1,
 }
 
 bool Interval::contains(const Interval& interval, const double value) {
-  return (Interval::valid(interval) && !Interval::empty(interval) &&
-          (value >= Interval::min(interval)) &&
+  return ((value >= Interval::min(interval)) &&
           (value <= Interval::max(interval)));
 }
 
 double Interval::length(const Interval& interval) {
-  return Interval::empty(interval)
-             ? NaN
-             : (Interval::max(interval) - Interval::min(interval));
-}
-
-bool Interval::valid(const Interval& interval) {
-  return (Interval::empty(interval) ||
-          (Interval::min(interval) <= Interval::max(interval)));
+  return (Interval::max(interval) - Interval::min(interval));
 }
 
 Interval Interval::convexHull(const Interval& interval1,
                               const Interval& interval2) {
-  auto i =
-      Interval(std::min(Interval::min(interval1), Interval::min(interval2)),
-               std::max(Interval::max(interval1), Interval::max(interval2)));
-  i.empty_ = Interval::empty(interval1) && Interval::empty(interval2);
-  return i;
-}
-
-Interval Interval::buildInvalid() { return Interval(1.0, 0.0); }
-
-Interval Interval::merge(const Interval& interval1, const Interval& interval2) {
-  // If either interval is invalid, the result is invalid.
-  if (!Interval::valid(interval1) || !Interval::valid(interval2)) {
-    return Interval::buildInvalid();
-  }
-
-  // If either interval is empty, the merge is trivially the other interval.
+  // If either interval is empty, the hull is trivially the other interval.
   if (Interval::empty(interval1)) {
     return interval2;
   }
@@ -130,21 +124,17 @@ Interval Interval::merge(const Interval& interval1, const Interval& interval2) {
     return interval1;
   }
 
-  //
-  // From here, both intervals are valid and non-empty.
-  //
+  // Otherwise, the hull contains both.
+  return Interval(std::min(Interval::min(interval1), Interval::min(interval2)),
+                  std::max(Interval::max(interval1), Interval::max(interval2)));
+}
 
-  // If the intersection is empty, the intervals do not overlap and cannot be
-  // merged.
-  const auto i = Interval::intersect(interval1, interval2);
-  if (Interval::empty(i)) {
-    return Interval::buildInvalid();
+boost::optional<Interval> Interval::merge(const Interval& interval1,
+                                          const Interval& interval2) {
+  // If the intervals do not overlap, they cannot be merged.
+  if (!Interval::overlap(interval1, interval2)) {
+    return boost::none;
   }
-
-  //
-  // From here, bother intervals are valid, non-empty, and they overlap. The
-  // merge is now the convex hull.
-  //
 
   // Done.
   return Interval::convexHull(interval1, interval2);
@@ -152,28 +142,30 @@ Interval Interval::merge(const Interval& interval1, const Interval& interval2) {
 
 Interval Interval::intersect(const Interval& interval1,
                              const Interval& interval2) {
-  // Cannot intersect with an invalid interval.
-  if (!Interval::valid(interval1) || !Interval::valid(interval2)) {
-    return Interval::buildInvalid();
-  }
-
-  // Handle empty intervals.
-  if (Interval::empty(interval1) || Interval::empty(interval2)) {
-    return Interval();
-  }
-
-  // Handle non-empty intervals.
-  auto i =
-      Interval(std::max(Interval::min(interval1), Interval::min(interval2)),
-               std::min(Interval::max(interval1), Interval::max(interval2)));
-
-  // If the result of the above is valid, return it.
-  if (Interval::valid(i)) {
-    return i;
+  // Construct intersection assuming an intersection exists.
+  try {
+    return Interval(Interval::get_intersection_bounds(interval1, interval2));
+  } catch (...) {
   }
 
   // Otherwise, the intersection is empty.
   return Interval();
+}
+
+std::tuple<double, double> Interval::get_intersection_bounds(
+    const Interval& interval1, const Interval& interval2) {
+  const auto either_empty =
+      (Interval::empty(interval1) || Interval::empty(interval2));
+
+  const auto min = std::max(Interval::min(interval1), Interval::min(interval2));
+  const auto max = std::min(Interval::max(interval1), Interval::max(interval2));
+
+  return (either_empty ? std::make_tuple(NaN, NaN) : std::make_tuple(min, max));
+}
+
+bool Interval::overlap(const Interval& interval1, const Interval& interval2) {
+  const auto bounds = Interval::get_intersection_bounds(interval1, interval2);
+  return Interval::bounds_valid(bounds);
 }
 
 double Interval::projectToInterval(const Interval& interval, const double val) {
@@ -185,7 +177,7 @@ double Interval::projectToInterval(const Interval& interval, const double val) {
 }
 
 bool Interval::exhibitsOrdering(const Interval& interval) {
-  return !Interval::empty(interval) && Interval::valid(interval);
+  return !Interval::empty(interval);
 }
 
 bool operator==(const Interval& interval1, const Interval& interval2) {
@@ -195,15 +187,13 @@ bool operator==(const Interval& interval1, const Interval& interval2) {
   const auto both_empty =
       (Interval::empty(interval1) && Interval::empty(interval2));
 
-  // Compute equality: for invalid intervals min_eq and max_eq are both 'false'
+  // Compute equality: for empty intervals min_eq and max_eq are both 'false'
   // because the bounds are all NaN.
   return (both_empty || (min_eq && max_eq));
 }
 
 bool operator!=(const Interval& interval1, const Interval& interval2) {
-  const auto both_valid =
-      (Interval::valid(interval1) && Interval::valid(interval2));
-  return both_valid && !(interval1 == interval2);
+  return !(interval1 == interval2);
 }
 
 bool operator<(const Interval& interval1, const Interval& interval2) {
@@ -327,10 +317,6 @@ std::ostream& operator<<(std::ostream& os, const Interval& interval) {
   os.precision(PRECISION);
 
   // Do stream output.
-  if (!Interval::valid(interval)) {
-    return os << "null";
-  }
-
   if (Interval::empty(interval)) {
     return os << "{}";
   }
