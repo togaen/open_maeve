@@ -21,6 +21,8 @@
  */
 #include <gtest/gtest.h>
 
+#include <cmath>
+
 #include "maeve_automation_core/isp_field/shape_parameters.h"
 
 namespace maeve_automation_core {
