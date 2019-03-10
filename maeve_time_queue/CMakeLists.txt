@@ -9,8 +9,9 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 ## Useful for YCM vim extension
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-## Add support for C++11, supported in ROS Kinetic and newer
-add_definitions(-std=c++11)
+## Compile as C++14, supported in ROS Kinetic and newer
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON) 
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)

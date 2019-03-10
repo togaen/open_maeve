@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(encroachment_detection)
 
-## Add support for C++11, supported in ROS Kinetic and newer
-add_definitions(-std=c++11)
+## Set build type
+set(CMAKE_BUILD_TYPE RelWithDebInfo)
+#set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Release)
+
+## Compile as C++14, supported in ROS Kinetic and newer
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
