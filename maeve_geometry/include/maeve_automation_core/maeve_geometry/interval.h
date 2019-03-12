@@ -380,4 +380,12 @@ class Interval {
 
 /** @brief Define interval addition as the addition of interval bounds. */
 Interval operator+(const Interval& interval1, const Interval& interval2);
+
+/**
+ * @brief Define scalar addition as the addition of a scalar to the bounds.
+ * @{
+ */
+Interval operator+(const Interval& interval, const double scalar);
+Interval operator-(const Interval& interval, const double scalar);
+/** @} */
 }  // namespace maeve_automation_core

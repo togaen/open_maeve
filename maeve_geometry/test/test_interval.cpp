@@ -341,4 +341,14 @@ TEST(Maeve_Geometry_Interval, testConstruction) {
   }
 }
 
+TEST(Maeve_Geometry_Interval, addition) {
+  const auto i = Interval(-1.0, 1.0);
+  const auto j = Interval(-2.0, 2.0);
+
+  EXPECT_EQ((i + j), Interval(-3.0, 3.0));
+  EXPECT_EQ((i + j), (j + i));
+  EXPECT_EQ((i - 1.0), Interval(-2.0, 0.0));
+  EXPECT_EQ((i + 1.0), Interval(0.0, 2.0));
+}
+
 }  // namespace maeve_automation_core

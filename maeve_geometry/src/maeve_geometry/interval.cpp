@@ -96,6 +96,16 @@ Interval operator+(const Interval& interval1, const Interval& interval2) {
   return Interval(min, max);
 }
 
+Interval operator+(const Interval& interval, const double scalar) {
+  const auto min = (Interval::min(interval) + scalar);
+  const auto max = (Interval::max(interval) + scalar);
+  return Interval(min, max);
+}
+
+Interval operator-(const Interval& interval, const double scalar) {
+  return (interval + -scalar);
+}
+
 bool Interval::isSubsetEq(const Interval& interval1,
                           const Interval& interval2) {
   const auto lower_contained =
