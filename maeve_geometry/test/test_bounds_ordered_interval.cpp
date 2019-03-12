@@ -21,19 +21,9 @@
  */
 #include <gtest/gtest.h>
 
-#include <cmath>
-#include <limits>
-
 #include "maeve_automation_core/maeve_geometry/bounds_ordered_interval.h"
 
 namespace maeve_automation_core {
-namespace {
-const auto Inf = std::numeric_limits<double>::infinity();
-const auto Min = std::numeric_limits<double>::lowest();
-const auto Max = std::numeric_limits<double>::max();
-const auto NaN = std::numeric_limits<double>::quiet_NaN();
-const auto epsilon = 0.00001;
-}  // namespace
 
 //------------------------------------------------------------------------------
 
