@@ -307,7 +307,15 @@ class Interval {
   static bool bounds_valid(const std::tuple<double, double>& bounds);
 };  // class Interval
 
-/** @brief Define interval addition as the addition of interval bounds. */
+/**
+ * @brief Define interval addition as the addition of interval bounds.
+ *
+ * @note For the purpose of addition, the following special behaviors hold:
+ *
+ *     1) When both intervals are empty:         [] + [] = []
+ *
+ *     2) When exactly one interval is empty:    [] == [0, 0]
+ */
 Interval operator+(const Interval& interval1, const Interval& interval2);
 
 /**
