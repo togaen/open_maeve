@@ -132,9 +132,6 @@ include_directories(
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
-  src/${PROJECT_NAME}/bounds_ordered_interval.cpp
-  src/${PROJECT_NAME}/interval.cpp
-  src/${PROJECT_NAME}/disjoint_interval.cpp
   src/${PROJECT_NAME}/polynomial.cpp
 )
 

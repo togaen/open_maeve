@@ -37,7 +37,7 @@ namespace maeve_automation_core {
  * given interval are considered feasible, and all values outside the interval
  * infeasible.
  */
-template <unsigned int Order>
+template <unsigned int Order, typename T>
 class IntervalConstraints {
  public:
   /**
@@ -106,8 +106,9 @@ class IntervalConstraints {
    * @param t_bounds Feasible time interval.
    * @param s_bounds Array of feasible s intervals indexed by order.
    */
-  IntervalConstraints(const Interval& epsilon_bounds, const Interval& t_bounds,
-                      const std::array<Interval, Order + 1>& s_bounds);
+  IntervalConstraints(const Interval<T>& epsilon_bounds,
+                      const Interval<T>& t_bounds,
+                      const std::array<Interval<T>, Order + 1>& s_bounds);
 
   /**
    * @brief A constraint set is satisfiable iff all intervals are non-emtpy.
@@ -141,7 +142,7 @@ class IntervalConstraints {
    *
    * @return A reference to the epsilon padding values.
    */
-  static const Interval& epsilon(const IntervalConstraints& constraints);
+  static const Interval<T>& epsilon(const IntervalConstraints& constraints);
 
   /**
    * @brief Get a reference to the temporal bounds of this constraint set.
@@ -150,7 +151,7 @@ class IntervalConstraints {
    *
    * @return A reference to the temporal bounds.
    */
-  static const Interval& boundsT(const IntervalConstraints& constraints);
+  static const Interval<T>& boundsT(const IntervalConstraints& constraints);
 
   /**
    * @brief Get a reference to dynamic bounds of a given order.
@@ -162,7 +163,7 @@ class IntervalConstraints {
    * @return A reference to the dynamic bounds of the given order.
    */
   template <unsigned int QueryOrder>
-  static const Interval& boundsS(const IntervalConstraints& constraints);
+  static const Interval<T>& boundsS(const IntervalConstraints& constraints);
 
  private:
   /**
@@ -171,10 +172,10 @@ class IntervalConstraints {
   IntervalConstraints() = default;
 
   /** @brief Zero-centered padding range for floating point error. */
-  Interval epsilon_bounds_;
+  Interval<T> epsilon_bounds_;
 
   /** @brief Interval of feasible time values. */
-  Interval t_bounds_;
+  Interval<T> t_bounds_;
 
   /** @brief
    * Intervals for feasible arc length (s) values indexed by order.
@@ -182,57 +183,59 @@ class IntervalConstraints {
    * In this scheme, 0th order is arch length, 1st order is first time
    * derivative, 2nd order is second time derivative, etc.
    * */
-  std::array<Interval, Order + 1> s_bounds_;
+  std::array<Interval<T>, Order + 1> s_bounds_;
 };  // class DynamicConstraints
 
-template <unsigned int Order>
-IntervalConstraints<Order>::IntervalConstraints(
-    const Interval& epsilon_bounds, const Interval& t_bounds,
-    const std::array<Interval, Order + 1>& s_bounds)
+template <unsigned int Order, typename T>
+IntervalConstraints<Order, T>::IntervalConstraints(
+    const Interval<T>& epsilon_bounds, const Interval<T>& t_bounds,
+    const std::array<Interval<T>, Order + 1>& s_bounds)
     : epsilon_bounds_(epsilon_bounds),
       t_bounds_(t_bounds),
       s_bounds_(s_bounds) {}
 
-template <unsigned int Order>
-bool IntervalConstraints<Order>::satisfiable(
+template <unsigned int Order, typename T>
+bool IntervalConstraints<Order, T>::satisfiable(
     const IntervalConstraints& constraints) {
-  const auto t_non_empty = !Interval::empty(constraints.t_bounds_);
-  const auto s_non_empty = std::all_of(
-      std::begin(constraints.s_bounds_), std::end(constraints.s_bounds_),
-      [&](const Interval& interval) { return !Interval::empty(interval); });
+  const auto t_non_empty = !Interval<T>::empty(constraints.t_bounds_);
+  const auto s_non_empty = std::all_of(std::begin(constraints.s_bounds_),
+                                       std::end(constraints.s_bounds_),
+                                       [&](const Interval<T>& interval) {
+                                         return !Interval<T>::empty(interval);
+                                       });
   return (t_non_empty && s_non_empty);
 }
 
-template <unsigned int Order>
-IntervalConstraints<Order> IntervalConstraints<Order>::intersect(
+template <unsigned int Order, typename T>
+IntervalConstraints<Order, T> IntervalConstraints<Order, T>::intersect(
     const IntervalConstraints& constraints1,
     const IntervalConstraints& constraints2) {
   auto c = IntervalConstraints();
   c.t_bounds_ =
-      Interval::intersect(constraints1.t_bounds_, constraints2.t_bounds_);
+      Interval<T>::intersect(constraints1.t_bounds_, constraints2.t_bounds_);
   for (auto i = 0; i <= Order; ++i) {
-    c.s_bounds_[i] = Interval::intersect(constraints1.s_bounds_[i],
-                                         constraints2.s_bounds_[i]);
+    c.s_bounds_[i] = Interval<T>::intersect(constraints1.s_bounds_[i],
+                                            constraints2.s_bounds_[i]);
   }
   return c;
 }
 
-template <unsigned int Order>
-const Interval& IntervalConstraints<Order>::epsilon(
+template <unsigned int Order, typename T>
+const Interval<T>& IntervalConstraints<Order, T>::epsilon(
     const IntervalConstraints& constraints) {
   return constraints.epsilon_bounds_;
 }
 
-template <unsigned int Order>
-const Interval& IntervalConstraints<Order>::boundsT(
-    const IntervalConstraints<Order>& constraints) {
+template <unsigned int Order, typename T>
+const Interval<T>& IntervalConstraints<Order, T>::boundsT(
+    const IntervalConstraints<Order, T>& constraints) {
   return constraints.t_bounds_;
 }
 
-template <unsigned int Order>
+template <unsigned int Order, typename T>
 template <unsigned int QueryOrder>
-const Interval& IntervalConstraints<Order>::boundsS(
-    const IntervalConstraints<Order>& constraints) {
+const Interval<T>& IntervalConstraints<Order, T>::boundsS(
+    const IntervalConstraints<Order, T>& constraints) {
   static_assert(
       (QueryOrder <= Order),
       "This constraint set does not define bounds of the specified order.");

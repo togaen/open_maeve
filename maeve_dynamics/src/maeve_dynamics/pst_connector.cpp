@@ -181,21 +181,24 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
 }
 
 template <>
-Interval PST_Connector::domain<PST_Connector::Idx::FIRST>(
+Interval<double> PST_Connector::domain<PST_Connector::Idx::FIRST>(
     const PST_Connector& connector) {
-  return Interval(connector.switching_times_[0], connector.switching_times_[1]);
+  return Interval<double>(connector.switching_times_[0],
+                          connector.switching_times_[1]);
 }
 
 template <>
-Interval PST_Connector::domain<PST_Connector::Idx::SECOND>(
+Interval<double> PST_Connector::domain<PST_Connector::Idx::SECOND>(
     const PST_Connector& connector) {
-  return Interval(connector.switching_times_[1], connector.switching_times_[2]);
+  return Interval<double>(connector.switching_times_[1],
+                          connector.switching_times_[2]);
 }
 
 template <>
-Interval PST_Connector::domain<PST_Connector::Idx::THIRD>(
+Interval<double> PST_Connector::domain<PST_Connector::Idx::THIRD>(
     const PST_Connector& connector) {
-  return Interval(connector.switching_times_[2], connector.switching_times_[3]);
+  return Interval<double>(connector.switching_times_[2],
+                          connector.switching_times_[3]);
 }
 
 boost::optional<PST_Connector> PST_Connector::computePL_0P(
@@ -363,9 +366,9 @@ std::tuple<Eigen::Vector2d, Eigen::Vector2d> PST_Connector::boundaryPoints(
 }
 
 bool PST_Connector::timeDomainNonZeroMeasure(const PST_Connector& connector) {
-  const auto D =
-      Interval(connector.switching_times_[0], connector.switching_times_[3]);
-  return !Interval::zeroLength(D);
+  const auto D = Interval<double>(connector.switching_times_[0],
+                                  connector.switching_times_[3]);
+  return !Interval<double>::zeroLength(D);
 }
 
 template <>
@@ -446,8 +449,8 @@ bool PST_Connector::validSegments(const PST_Connector& connector) {
                      });
 }
 
-bool PST_Connector::boundedInteriorAccelerations(const PST_Connector& connector,
-                                                 const Interval& bounds) {
+bool PST_Connector::boundedInteriorAccelerations(
+    const PST_Connector& connector, const Interval<double>& bounds) {
   const auto seg1_valid_ddx =
       PST_Connector::boundedSecondDerivatives<Idx::FIRST>(connector, bounds);
   const auto seg2_valid_ddx =
@@ -459,7 +462,7 @@ bool PST_Connector::boundedInteriorAccelerations(const PST_Connector& connector,
 }
 
 bool PST_Connector::boundedInteriorSpeeds(const PST_Connector& connector,
-                                          const Interval& bounds) {
+                                          const Interval<double>& bounds) {
   const auto seg1_valid_dx =
       PST_Connector::boundedFirstDerivatives<Idx::FIRST>(connector, bounds);
   const auto seg2_valid_dx =
@@ -471,7 +474,7 @@ bool PST_Connector::boundedInteriorSpeeds(const PST_Connector& connector,
 }
 
 bool PST_Connector::boundedInteriorPositions(const PST_Connector& connector,
-                                             const Interval& bounds) {
+                                             const Interval<double>& bounds) {
   const auto seg1_valid =
       PST_Connector::boundedZerothDerivatives<Idx::FIRST>(connector, bounds);
   const auto seg2_valid =
@@ -483,20 +486,25 @@ bool PST_Connector::boundedInteriorPositions(const PST_Connector& connector,
 }
 
 bool PST_Connector::boundedInteriorTimes(const PST_Connector& connector,
-                                         const Interval& bounds) {
+                                         const Interval<double>& bounds) {
   return std::all_of(std::begin(connector.switching_times_),
                      std::end(connector.switching_times_), [&](const double t) {
-                       return Interval::contains(bounds, t);
+                       return Interval<double>::contains(bounds, t);
                      });
 }
 
 bool PST_Connector::dynamicallyFeasible(
-    const PST_Connector& connector, const IntervalConstraints<2>& constraints) {
-  const auto& padding = IntervalConstraints<2>::epsilon(constraints);
-  const auto& time_bounds = IntervalConstraints<2>::boundsT(constraints);
-  const auto& s_bounds = IntervalConstraints<2>::boundsS<0>(constraints);
-  const auto& s_dot_bounds = IntervalConstraints<2>::boundsS<1>(constraints);
-  const auto& s_ddot_bounds = IntervalConstraints<2>::boundsS<2>(constraints);
+    const PST_Connector& connector,
+    const IntervalConstraints<2, double>& constraints) {
+  const auto& padding = IntervalConstraints<2, double>::epsilon(constraints);
+  const auto& time_bounds =
+      IntervalConstraints<2, double>::boundsT(constraints);
+  const auto& s_bounds =
+      IntervalConstraints<2, double>::boundsS<0>(constraints);
+  const auto& s_dot_bounds =
+      IntervalConstraints<2, double>::boundsS<1>(constraints);
+  const auto& s_ddot_bounds =
+      IntervalConstraints<2, double>::boundsS<2>(constraints);
 
   const auto times_valid =
       PST_Connector::boundedInteriorTimes(connector, time_bounds);
@@ -526,7 +534,8 @@ bool PST_Connector::valid(const PST_Connector& connector) {
   const auto segments_valid = PST_Connector::validSegments(connector);
 
   // Check first derivatives.
-  const auto non_negative = Interval(0.0, Inf);
+  const auto non_negative =
+      Interval<double>::nonnegative_affinely_extended_reals();
   const auto valid_speeds =
       PST_Connector::boundedInteriorSpeeds(connector, non_negative);
 

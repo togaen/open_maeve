@@ -55,7 +55,8 @@ class PST_Reachability {
    *
    * @return An interval object of reachable speeds.
    */
-  static Interval reachableInterval(const PST_Reachability& reachability);
+  static Interval<double> reachableInterval(
+      const PST_Reachability& reachability);
 
   /**
    * @brief Get a reference to the connector of min terminal speed.
@@ -91,8 +92,9 @@ class PST_Reachability {
    * @return A nullable object of either the connector object or boost::none.
    */
   static boost::optional<PST_Connector> targetTerminalSpeed(
-      const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
-      const double target_speed, const IntervalConstraints<2>& constraints);
+      const Interval<double>& I_i, const Eigen::Vector2d& p1,
+      const Eigen::Vector2d& p2, const double target_speed,
+      const IntervalConstraints<2, double>& constraints);
 
   /**
    * @brief Compute the reachability from 'p1' to 'p2' under the given
@@ -106,8 +108,9 @@ class PST_Reachability {
    * @return The reachability objects, or a disengaged optional.
    */
   static boost::optional<PST_Reachability> compute(
-      const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
-      const IntervalConstraints<2>& constraints);
+      const Interval<double>& I_i, const Eigen::Vector2d& p1,
+      const Eigen::Vector2d& p2,
+      const IntervalConstraints<2, double>& constraints);
 
  private:
   /**
@@ -119,7 +122,7 @@ class PST_Reachability {
    */
   PST_Reachability(const PST_Connector& min_terminal,
                    const PST_Connector& max_terminal,
-                   const IntervalConstraints<2>& constraints);
+                   const IntervalConstraints<2, double>& constraints);
 
   /**
    * @brief Factory method for constructing PST_Reachability objects that
@@ -134,7 +137,7 @@ class PST_Reachability {
    */
   static boost::optional<PST_Reachability> noExceptionConstructor(
       const PST_Connector& min_terminal, const PST_Connector& max_terminal,
-      const IntervalConstraints<2>& constraints) noexcept;
+      const IntervalConstraints<2, double>& constraints) noexcept;
 
   /**
    * @brief Check whether the speeds of the interior along the connector satisfy
@@ -147,8 +150,9 @@ class PST_Reachability {
    * @return True if the speeds bounds are nowhere violated on the interior of
    * the connector; otherwise false.
    */
-  static bool validInteriorSpeeds(const PST_Connector& connector,
-                                  const IntervalConstraints<2>& constraints);
+  static bool validInteriorSpeeds(
+      const PST_Connector& connector,
+      const IntervalConstraints<2, double>& constraints);
 
   /**
    * @brief Given an LP connector, verify that it satisfies constraints, or
@@ -161,8 +165,8 @@ class PST_Reachability {
    * @return A nullable object of either the connector or boost::none.
    */
   static boost::optional<PST_Connector> LPorPLP(const PST_Connector& LP,
-                                                const Interval& I_dt,
-                                                const Interval& I_ddt);
+                                                const Interval<double>& I_dt,
+                                                const Interval<double>& I_ddt);
 
   /** @brief The PST connector that achieves minimum terminal speed. */
   PST_Connector min_terminal_;

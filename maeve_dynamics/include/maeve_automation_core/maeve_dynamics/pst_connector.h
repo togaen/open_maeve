@@ -222,8 +222,9 @@ class PST_Connector {
    * @return True if the connectory is dynamically feasible (satisfies
    * constraints); otherwise false.
    */
-  static bool dynamicallyFeasible(const PST_Connector& connector,
-                                  const IntervalConstraints<2>& constraints);
+  static bool dynamicallyFeasible(
+      const PST_Connector& connector,
+      const IntervalConstraints<2, double>& constraints);
 
   /**
    * @brief Test whether times along the connector are bounded.
@@ -235,7 +236,7 @@ class PST_Connector {
    * 'bounds'; otherwise false.
    */
   static bool boundedInteriorTimes(const PST_Connector& connector,
-                                   const Interval& bounds);
+                                   const Interval<double>& bounds);
 
   /**
    * @brief Test whether positions along the connector are bounded.
@@ -247,7 +248,7 @@ class PST_Connector {
    * 'bounds'; otherwise false.
    */
   static bool boundedInteriorPositions(const PST_Connector& connector,
-                                       const Interval& bounds);
+                                       const Interval<double>& bounds);
 
   /**
    * @brief Test whether speeds along the connector are bounded.
@@ -259,7 +260,7 @@ class PST_Connector {
    * 'bounds'; otherwise false.
    */
   static bool boundedInteriorSpeeds(const PST_Connector& connector,
-                                    const Interval& bounds);
+                                    const Interval<double>& bounds);
 
   /**
    * @brief Test whether accelerations along the connector are bounded.
@@ -271,7 +272,7 @@ class PST_Connector {
    * 'bounds'; otherwise false.
    */
   static bool boundedInteriorAccelerations(const PST_Connector& connector,
-                                           const Interval& bounds);
+                                           const Interval<double>& bounds);
 
   /**
    * @brief Utility enum for indexing connector segments.
@@ -288,7 +289,7 @@ class PST_Connector {
    * @return An interval representing the segment's domain.
    */
   template <Idx I>
-  static Interval domain(const PST_Connector& connector);
+  static Interval<double> domain(const PST_Connector& connector);
 
   /**
    * @brief Get an interval representation of a segment's range.
@@ -300,7 +301,7 @@ class PST_Connector {
    * @return An interval representing the segment's range.
    */
   template <Idx I>
-  static Interval range(const PST_Connector& connector);
+  static Interval<double> range(const PST_Connector& connector);
 
  private:
   /**
@@ -367,7 +368,7 @@ class PST_Connector {
    */
   template <Idx I>
   static bool boundedZerothDerivatives(const PST_Connector& connector,
-                                       const Interval& bounds);
+                                       const Interval<double>& bounds);
 
   /**
    * @brief Whether the first derivative is within given bounds along entire
@@ -382,7 +383,7 @@ class PST_Connector {
    */
   template <Idx I>
   static bool boundedFirstDerivatives(const PST_Connector& connector,
-                                      const Interval& bounds);
+                                      const Interval<double>& bounds);
 
   /**
    * @brief Whether the second derivative is within given bounds along entire
@@ -397,7 +398,7 @@ class PST_Connector {
    */
   template <Idx I>
   static bool boundedSecondDerivatives(const PST_Connector& connector,
-                                       const Interval& bounds);
+                                       const Interval<double>& bounds);
 
   /**
    * @brief Get a reference to the function for a given segment.
@@ -484,17 +485,17 @@ class PST_Connector {
 
 template <PST_Connector::Idx I>
 bool PST_Connector::boundedZerothDerivatives(const PST_Connector& connector,
-                                             const Interval& bounds) {
+                                             const Interval<double>& bounds) {
   // Construct position range.
   const auto range = PST_Connector::range<I>(connector);
 
   // Check range.
-  return Interval::isSubsetEq(range, bounds);
+  return Interval<double>::isSubsetEq(range, bounds);
 }
 
 template <PST_Connector::Idx I>
 bool PST_Connector::boundedFirstDerivatives(const PST_Connector& connector,
-                                            const Interval& bounds) {
+                                            const Interval<double>& bounds) {
   // Capture the function.
   const auto& function = PST_Connector::function<I>(connector);
 
@@ -502,20 +503,20 @@ bool PST_Connector::boundedFirstDerivatives(const PST_Connector& connector,
   const auto domain = PST_Connector::domain<I>(connector);
 
   // Compute dx at domain bounds.
-  const auto s_dot1 = Polynomial::dx(function, Interval::min(domain));
-  const auto s_dot2 = Polynomial::dx(function, Interval::max(domain));
+  const auto s_dot1 = Polynomial::dx(function, Interval<double>::min(domain));
+  const auto s_dot2 = Polynomial::dx(function, Interval<double>::max(domain));
 
   // Construct speed range.
   const auto range =
-      Interval(std::min(s_dot1, s_dot2), std::max(s_dot1, s_dot2));
+      Interval<double>(std::min(s_dot1, s_dot2), std::max(s_dot1, s_dot2));
 
   // Check range.
-  return Interval::isSubsetEq(range, bounds);
+  return Interval<double>::isSubsetEq(range, bounds);
 }
 
 template <PST_Connector::Idx I>
 bool PST_Connector::boundedSecondDerivatives(const PST_Connector& connector,
-                                             const Interval& bounds) {
+                                             const Interval<double>& bounds) {
   // Capture the function.
   const auto& function = PST_Connector::function<I>(connector);
 
@@ -525,25 +526,25 @@ bool PST_Connector::boundedSecondDerivatives(const PST_Connector& connector,
 
   // Construct acceleration range.
   const auto range =
-      Interval(std::min(s_ddot1, s_ddot2), std::max(s_ddot1, s_ddot2));
+      Interval<double>(std::min(s_ddot1, s_ddot2), std::max(s_ddot1, s_ddot2));
 
   // Check range.
-  return Interval::isSubsetEq(range, bounds);
+  return Interval<double>::isSubsetEq(range, bounds);
 }
 
 template <PST_Connector::Idx I>
 bool PST_Connector::segmentActive(const PST_Connector& connector) {
   const auto D = PST_Connector::domain<I>(connector);
-  return !Interval::zeroLength(D);
+  return !Interval<double>::zeroLength(D);
 }
 
 template <PST_Connector::Idx I>
-Interval PST_Connector::range(const PST_Connector& connector) {
+Interval<double> PST_Connector::range(const PST_Connector& connector) {
   const auto& f = PST_Connector::function<I>(connector);
   const auto d = PST_Connector::domain<I>(connector);
-  const auto r1 = f(Interval::min(d));
-  const auto r2 = f(Interval::max(d));
-  return Interval(std::min(r1, r2), std::max(r1, r2));
+  const auto r1 = f(Interval<double>::min(d));
+  const auto r2 = f(Interval<double>::max(d));
+  return Interval<double>(std::min(r1, r2), std::max(r1, r2));
 }
 
 /**
@@ -551,15 +552,15 @@ Interval PST_Connector::range(const PST_Connector& connector) {
  * @{
  */
 template <>
-Interval PST_Connector::domain<PST_Connector::Idx::FIRST>(
+Interval<double> PST_Connector::domain<PST_Connector::Idx::FIRST>(
     const PST_Connector& connector);
 
 template <>
-Interval PST_Connector::domain<PST_Connector::Idx::SECOND>(
+Interval<double> PST_Connector::domain<PST_Connector::Idx::SECOND>(
     const PST_Connector& connector);
 
 template <>
-Interval PST_Connector::domain<PST_Connector::Idx::THIRD>(
+Interval<double> PST_Connector::domain<PST_Connector::Idx::THIRD>(
     const PST_Connector& connector);
 /** @} */
 

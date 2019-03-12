@@ -40,9 +40,9 @@ std::ostream& operator<<(std::ostream& os,
   return os;
 }
 
-PST_Reachability::PST_Reachability(const PST_Connector& min_terminal,
-                                   const PST_Connector& max_terminal,
-                                   const IntervalConstraints<2>& constraints)
+PST_Reachability::PST_Reachability(
+    const PST_Connector& min_terminal, const PST_Connector& max_terminal,
+    const IntervalConstraints<2, double>& constraints)
     : min_terminal_(min_terminal), max_terminal_(max_terminal) {
   try {
     const auto I_reachable = PST_Reachability::reachableInterval(*this);
@@ -73,7 +73,7 @@ PST_Reachability::PST_Reachability(const PST_Connector& min_terminal,
 
 boost::optional<PST_Reachability> PST_Reachability::noExceptionConstructor(
     const PST_Connector& min_terminal, const PST_Connector& max_terminal,
-    const IntervalConstraints<2>& constraints) noexcept {
+    const IntervalConstraints<2, double>& constraints) noexcept {
   try {
     return PST_Reachability(min_terminal, max_terminal, constraints);
   } catch (...) {
@@ -81,14 +81,14 @@ boost::optional<PST_Reachability> PST_Reachability::noExceptionConstructor(
   }
 }
 
-Interval PST_Reachability::reachableInterval(
+Interval<double> PST_Reachability::reachableInterval(
     const PST_Reachability& reachability) {
   const auto& min_connector = PST_Reachability::minConnector(reachability);
   const auto& max_connector = PST_Reachability::maxConnector(reachability);
   const auto min_speed = PST_Connector::terminalSpeed(min_connector);
   const auto max_speed = PST_Connector::terminalSpeed(max_connector);
 
-  return Interval(min_speed, max_speed);
+  return Interval<double>(min_speed, max_speed);
 }
 
 const PST_Connector& PST_Reachability::minConnector(
@@ -102,22 +102,24 @@ const PST_Connector& PST_Reachability::maxConnector(
 }
 
 bool PST_Reachability::validInteriorSpeeds(
-    const PST_Connector& connector, const IntervalConstraints<2>& constraints) {
+    const PST_Connector& connector,
+    const IntervalConstraints<2, double>& constraints) {
   // Intervals for dynamic bounds.
-  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
+  const auto& I_dt = IntervalConstraints<2, double>::boundsS<1>(constraints);
 
   return PST_Connector::boundedInteriorSpeeds(connector, I_dt);
 }
 
 boost::optional<PST_Connector> PST_Reachability::LPorPLP(
-    const PST_Connector& LP, const Interval& I_dt, const Interval& I_ddt) {
-  const auto ddt_min = Interval::min(I_ddt);
-  const auto ddt_max = Interval::max(I_ddt);
+    const PST_Connector& LP, const Interval<double>& I_dt,
+    const Interval<double>& I_ddt) {
+  const auto ddt_min = Interval<double>::min(I_ddt);
+  const auto ddt_max = Interval<double>::max(I_ddt);
   const auto terminal_ddt = PST_Connector::terminalAcceleration(LP);
 
   // If LP is valid, just return it.
   const auto initial_speed = PST_Connector::initialSpeed(LP);
-  if (Interval::contains(I_dt, initial_speed)) {
+  if (Interval<double>::contains(I_dt, initial_speed)) {
     return LP;
   }
 
@@ -130,7 +132,8 @@ boost::optional<PST_Connector> PST_Reachability::LPorPLP(
   //
 
   // Get valid starting speed.
-  const auto dt_valid = Interval::projectToInterval(I_dt, initial_speed);
+  const auto dt_valid =
+      Interval<double>::projectToInterval(I_dt, initial_speed);
 
   // Initial acceleration should move toward dt_valid.
   const auto ddt = ((dt_valid < initial_speed) ? ddt_max : ddt_min);
@@ -155,14 +158,15 @@ boost::optional<PST_Connector> PST_Reachability::LPorPLP(
 }
 
 boost::optional<PST_Reachability> PST_Reachability::compute(
-    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
-    const IntervalConstraints<2>& constraints) {
+    const Interval<double>& I_i, const Eigen::Vector2d& p1,
+    const Eigen::Vector2d& p2,
+    const IntervalConstraints<2, double>& constraints) {
   // Intervals for dynamic bounds.
-  const auto& I_dt = IntervalConstraints<2>::boundsS<1>(constraints);
+  const auto& I_dt = IntervalConstraints<2, double>::boundsS<1>(constraints);
 
   // Extremal speeds.
-  const auto dt_max = Interval::max(I_dt);
-  const auto dt_min = Interval::min(I_dt);
+  const auto dt_max = Interval<double>::max(I_dt);
+  const auto dt_min = Interval<double>::min(I_dt);
 
   // Compute connectors.
   auto min_connector =
@@ -191,18 +195,19 @@ boost::optional<PST_Reachability> PST_Reachability::compute(
 }
 
 boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
-    const Interval& I_i, const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
-    const double target_speed, const IntervalConstraints<2>& constraints) {
+    const Interval<double>& I_i, const Eigen::Vector2d& p1,
+    const Eigen::Vector2d& p2, const double target_speed,
+    const IntervalConstraints<2, double>& constraints) {
   // Intervals for dynamic bounds.
-  const auto& I_ddt = IntervalConstraints<2>::boundsS<2>(constraints);
+  const auto& I_ddt = IntervalConstraints<2, double>::boundsS<2>(constraints);
 
   // Initial extremal speeds.
-  const auto initial_dt_max = Interval::max(I_i);
-  const auto initial_dt_min = Interval::min(I_i);
+  const auto initial_dt_max = Interval<double>::max(I_i);
+  const auto initial_dt_min = Interval<double>::min(I_i);
 
   // Extremal accelerations.
-  const auto ddt_max = Interval::max(I_ddt);
-  const auto ddt_min = Interval::min(I_ddt);
+  const auto ddt_max = Interval<double>::max(I_ddt);
+  const auto ddt_min = Interval<double>::min(I_ddt);
 
   // Check for LP or PLP connectivity: these will hit target speed exactly,
   // so return if connector found.

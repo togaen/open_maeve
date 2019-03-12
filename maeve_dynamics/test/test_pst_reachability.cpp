@@ -27,13 +27,13 @@ namespace maeve_automation_core {
 TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
   const Eigen::Vector2d p1(0.0, 0.0);
   const auto speed = 1.0;
-  auto eps_bounds = Interval(-1e-6, 1e-6);
-  auto t_bounds = Interval(0.0, 10.0);
-  auto s_bounds = Interval(0.0, 10.0);
-  auto s_dot_bounds = Interval(0.0, 50.0);
-  auto s_ddot_bounds = Interval(-2.0, 2.0);
+  auto eps_bounds = Interval<double>(-1e-6, 1e-6);
+  auto t_bounds = Interval<double>(0.0, 10.0);
+  auto s_bounds = Interval<double>(0.0, 10.0);
+  auto s_dot_bounds = Interval<double>(0.0, 50.0);
+  auto s_ddot_bounds = Interval<double>(-2.0, 2.0);
   constexpr auto ORDER = 2;
-  const auto constraints = IntervalConstraints<ORDER>(
+  const auto constraints = IntervalConstraints<ORDER, double>(
       eps_bounds, t_bounds, {s_bounds, s_dot_bounds, s_ddot_bounds});
 
   {
@@ -41,7 +41,8 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
 
     EXPECT_NO_THROW({
       const auto connector = PST_Reachability::targetTerminalSpeed(
-          Interval(speed, speed), p1, p2, Interval::max(s_bounds), constraints);
+          Interval<double>(speed, speed), p1, p2,
+          Interval<double>::max(s_bounds), constraints);
       ASSERT_FALSE(!connector);
       std::stringstream ss;
       ss << *connector;
@@ -59,9 +60,10 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
 
     EXPECT_NO_THROW({
       const auto connector = PST_Reachability::targetTerminalSpeed(
-          Interval(speed, speed), p1, p2, Interval::max(s_bounds), constraints);
+          Interval<double>(speed, speed), p1, p2,
+          Interval<double>::max(s_bounds), constraints);
       const auto reachability = PST_Reachability::compute(
-          Interval(speed, speed), p1, p2, constraints);
+          Interval<double>(speed, speed), p1, p2, constraints);
       ASSERT_FALSE(!reachability);
       ASSERT_FALSE(!connector);
       std::stringstream ss;
@@ -84,19 +86,19 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
     const Eigen::Vector2d p2(1.0, 0.0);
     auto p = 3.0;  // p1.y();
     const auto path_inc = 0.005;
-    while (p < Interval::max(s_bounds)) {
+    while (p < Interval<double>::max(s_bounds)) {
       auto entered_feasible_region = false;
       auto exited_feasible_region = false;
       ASSERT_NO_THROW({
-        const auto reachability =
-            PST_Reachability::compute(Interval(plot_speed, plot_speed), p1,
-                                      Eigen::Vector2d(p2.x(), p), constraints);
+        const auto reachability = PST_Reachability::compute(
+            Interval<double>(plot_speed, plot_speed), p1,
+            Eigen::Vector2d(p2.x(), p), constraints);
         if (reachability) {
           ASSERT_FALSE(exited_feasible_region);
           entered_feasible_region = true;
 #if 0
           std::cout << "{\"p\": " << p << ", \"interval\": "
-                    << PST_Reachability::reachableInterval(*reachability)
+                    << PST_Reachability::reachableInterval<double>(*reachability)
                     << "}," << std::endl;
 #endif
         } else {

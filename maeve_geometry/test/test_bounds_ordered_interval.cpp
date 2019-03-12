@@ -29,8 +29,8 @@ namespace maeve_automation_core {
 
 TEST(BoundsOrderedInterval, ordering) {
   {
-    const auto i1 = BoundsOrderedInterval(Interval(0.25, 1));
-    const auto i2 = BoundsOrderedInterval(Interval(0, 1));
+    const auto i1 = BoundsOrderedInterval<double>(Interval<double>(0.25, 1));
+    const auto i2 = BoundsOrderedInterval<double>(Interval<double>(0, 1));
     EXPECT_TRUE((i1 > i2));
     EXPECT_TRUE((i1 >= i2));
     EXPECT_FALSE((i1 < i2));
@@ -38,8 +38,8 @@ TEST(BoundsOrderedInterval, ordering) {
   }
 
   {
-    const auto i1 = BoundsOrderedInterval(Interval(-0.25, 0.5));
-    const auto i2 = BoundsOrderedInterval(Interval(0, 1));
+    const auto i1 = BoundsOrderedInterval<double>(Interval<double>(-0.25, 0.5));
+    const auto i2 = BoundsOrderedInterval<double>(Interval<double>(0, 1));
     EXPECT_FALSE((i1 > i2));
     EXPECT_FALSE((i1 >= i2));
     EXPECT_TRUE((i1 < i2));
@@ -47,8 +47,8 @@ TEST(BoundsOrderedInterval, ordering) {
   }
 
   {
-    const auto i1 = BoundsOrderedInterval(Interval(0, 0.5));
-    const auto i2 = BoundsOrderedInterval(Interval(0, 1));
+    const auto i1 = BoundsOrderedInterval<double>(Interval<double>(0, 0.5));
+    const auto i2 = BoundsOrderedInterval<double>(Interval<double>(0, 1));
     EXPECT_FALSE((i1 > i2));
     EXPECT_FALSE((i1 >= i2));
     EXPECT_TRUE((i1 < i2));
@@ -56,8 +56,8 @@ TEST(BoundsOrderedInterval, ordering) {
   }
 
   {
-    const auto i1 = BoundsOrderedInterval(Interval(0, 1));
-    const auto i2 = BoundsOrderedInterval(Interval(0, 1));
+    const auto i1 = BoundsOrderedInterval<double>(Interval<double>(0, 1));
+    const auto i2 = BoundsOrderedInterval<double>(Interval<double>(0, 1));
     EXPECT_FALSE((i1 > i2));
     EXPECT_TRUE((i1 >= i2));
     EXPECT_FALSE((i1 < i2));
@@ -65,8 +65,8 @@ TEST(BoundsOrderedInterval, ordering) {
   }
 
   {
-    const auto i1 = BoundsOrderedInterval(Interval(0, 1));
-    const auto i2 = BoundsOrderedInterval(Interval());
+    const auto i1 = BoundsOrderedInterval<double>(Interval<double>(0, 1));
+    const auto i2 = BoundsOrderedInterval<double>(Interval<double>());
     EXPECT_FALSE((i1 > i2));
     EXPECT_FALSE((i1 >= i2));
     EXPECT_FALSE((i1 < i2));
@@ -74,8 +74,8 @@ TEST(BoundsOrderedInterval, ordering) {
   }
 
   {
-    const auto i1 = BoundsOrderedInterval(Interval());
-    const auto i2 = BoundsOrderedInterval(Interval());
+    const auto i1 = BoundsOrderedInterval<double>(Interval<double>());
+    const auto i2 = BoundsOrderedInterval<double>(Interval<double>());
     EXPECT_FALSE((i1 > i2));
     EXPECT_FALSE((i1 >= i2));
     EXPECT_FALSE((i1 < i2));
