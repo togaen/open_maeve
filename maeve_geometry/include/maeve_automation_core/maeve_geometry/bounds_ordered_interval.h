@@ -108,6 +108,11 @@ class BoundsOrderedInterval final : public Interval {
                          const BoundsOrderedInterval& interval2);
 
   /** }@ */
+
+ private:
+  /** @brief Two intervals can be ordered iff they are both non-emtpy. */
+  static bool can_be_ordered(const BoundsOrderedInterval& interval1,
+                             const BoundsOrderedInterval& interval2);
 };  // class BoundsOrderedInterval
 
 }  // namespace maeve_automation_core
