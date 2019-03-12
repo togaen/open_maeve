@@ -91,6 +91,14 @@ bool Interval::bounds_valid(const std::tuple<double, double>& bounds) {
 }
 
 Interval operator+(const Interval& interval1, const Interval& interval2) {
+  // TODO(me): This check comes up a lot in interval operations. Need to give it
+  // its own definition.
+  if (Interval::empty(interval1)) {
+    return interval2;
+  }
+  if (Interval::empty(interval2)) {
+    return interval1;
+  }
   const auto min = (Interval::min(interval1) + Interval::min(interval2));
   const auto max = (Interval::max(interval1) + Interval::max(interval2));
   return Interval(min, max);
