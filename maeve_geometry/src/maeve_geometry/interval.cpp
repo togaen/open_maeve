@@ -176,6 +176,17 @@ double Interval::projectToInterval(const Interval& interval, const double val) {
                                           : Interval::max(interval));
 }
 
+double Interval::scale_to_interval(const Interval& interval, const double val) {
+  if (std::isnan(val) || Interval::empty(interval)) {
+    return NaN;
+  }
+
+  const auto l = Interval::length(interval);
+  const auto offset = (val - Interval::min(interval));
+
+  return (offset / l);
+}
+
 bool Interval::exhibitsOrdering(const Interval& interval) {
   return !Interval::empty(interval);
 }

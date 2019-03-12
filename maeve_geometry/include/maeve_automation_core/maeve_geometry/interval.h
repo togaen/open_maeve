@@ -198,8 +198,8 @@ class Interval {
    * @brief Utility for checking whether an interval has zero length.
    *
    * @note For empty or invalid intervals, false is returned. See
-   * Interval::empty
-   * for note on distinction between length zero and the emptiness property.
+   * Interval::empty for note on distinction between length zero and the
+   * emptiness property.
    *
    * @param interval The interval to check.
    *
@@ -268,6 +268,14 @@ class Interval {
    * interval bound.
    */
   static double projectToInterval(const Interval& interval, const double val);
+
+  /**
+   * @brief Compute the scaling along the interval that corresponds to 'val'
+   *
+   * @returns s \in [0, 1] for val \in interval, or s < 0 or s > 1 for val < min
+   * or val > max
+   */
+  static double scale_to_interval(const Interval& interval, const double val);
 
   /**
    * @brief Compute the convex hull of two intervals as a new interval.

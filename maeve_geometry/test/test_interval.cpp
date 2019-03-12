@@ -64,6 +64,29 @@ TEST(Maeve_Geometry_Interval, testProjectToInterval) {
   }
 }
 
+TEST(Maeve_Geometry_Interval, scale_to_interval) {
+  {
+    const auto i = Interval();
+    EXPECT_TRUE(std::isnan(Interval::scale_to_interval(i, 0.0)));
+    EXPECT_TRUE(std::isnan(Interval::scale_to_interval(i, NaN)));
+  }
+
+  {
+    const auto i = Interval(0.0, 1.0);
+    EXPECT_FALSE(std::isnan(Interval::scale_to_interval(i, 0.0)));
+    EXPECT_TRUE(std::isnan(Interval::scale_to_interval(i, NaN)));
+  }
+
+  {
+    const auto i = Interval(0.0, 3.0);
+    EXPECT_EQ(Interval::scale_to_interval(i, 0.0), 0.0);
+    EXPECT_EQ(Interval::scale_to_interval(i, 1.0), (1.0 / 3.0));
+    EXPECT_EQ(Interval::scale_to_interval(i, 1.5), 0.5);
+    EXPECT_EQ(Interval::scale_to_interval(i, -1.0), (-1.0 / 3.0));
+    EXPECT_EQ(Interval::scale_to_interval(i, 4.0), (4.0 / 3.0));
+  }
+}
+
 TEST(Maeve_Geometry_Interval, testFactories) {
   EXPECT_EQ(Interval::affinelyExtendedReals(), Interval(-Inf, Inf));
   EXPECT_EQ(Interval::maxRepresentableReals(), Interval(Min, Max));
