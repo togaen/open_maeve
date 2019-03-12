@@ -329,7 +329,7 @@ class Interval {
   static Interval nonPositiveReals();
 
   /**
-   * @brief Constructor: initialize and empty interval with members set to NaN.
+   * @brief Constructor: initialize an empty interval with members set to NaN.
    */
   Interval();
 
