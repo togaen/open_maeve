@@ -93,7 +93,7 @@ bool DisjointInterval::contains(const DisjointInterval& disjoint_interval,
                      });
 }
 
-std::set<Interval>::const_iterator DisjointInterval::insert(
+std::set<BoundsOrderedInterval>::const_iterator DisjointInterval::insert(
     DisjointInterval& disjoint_interval, Interval interval) {
   // Don't insert empty intervals.
   if (Interval::empty(interval)) {
@@ -167,17 +167,17 @@ std::set<Interval>::const_iterator DisjointInterval::insert(
   return disjoint_interval.set_.insert(it_hint, interval);
 }
 
-std::set<Interval>::const_iterator DisjointInterval::begin(
+std::set<BoundsOrderedInterval>::const_iterator DisjointInterval::begin(
     const DisjointInterval& disjoint_interval) {
   return std::begin(disjoint_interval.set_);
 }
 
-std::set<Interval>::const_iterator DisjointInterval::end(
+std::set<BoundsOrderedInterval>::const_iterator DisjointInterval::end(
     const DisjointInterval& disjoint_interval) {
   return std::end(disjoint_interval.set_);
 }
 
-std::set<Interval>::size_type DisjointInterval::size(
+std::set<BoundsOrderedInterval>::size_type DisjointInterval::size(
     const DisjointInterval& disjoint_interval) {
   return disjoint_interval.set_.size();
 }

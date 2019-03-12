@@ -132,6 +132,7 @@ include_directories(
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
+  src/${PROJECT_NAME}/bounds_ordered_interval.cpp
   src/${PROJECT_NAME}/interval.cpp
   src/${PROJECT_NAME}/disjoint_interval.cpp
   src/${PROJECT_NAME}/polynomial.cpp
@@ -204,6 +205,7 @@ target_link_libraries(${PROJECT_NAME}
 ## Add gtest based cpp test target and link libraries
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_main.cpp
+  test/test_bounds_ordered_interval.cpp
   test/test_comparisons.cpp
   test/test_interval.cpp
   test/test_disjoint_interval.cpp

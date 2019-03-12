@@ -147,10 +147,6 @@ TEST(Maeve_Geometry_Interval, testComparisons) {
     const auto i2 = Interval(0, 1);
     EXPECT_FALSE((i1 == i2));
     EXPECT_TRUE((i1 != i2));
-    EXPECT_TRUE((i1 > i2));
-    EXPECT_TRUE((i1 >= i2));
-    EXPECT_FALSE((i1 < i2));
-    EXPECT_FALSE((i1 <= i2));
   }
 
   {
@@ -158,10 +154,6 @@ TEST(Maeve_Geometry_Interval, testComparisons) {
     const auto i2 = Interval(0, 1);
     EXPECT_FALSE((i1 == i2));
     EXPECT_TRUE((i1 != i2));
-    EXPECT_FALSE((i1 > i2));
-    EXPECT_FALSE((i1 >= i2));
-    EXPECT_TRUE((i1 < i2));
-    EXPECT_TRUE((i1 <= i2));
   }
 
   {
@@ -169,10 +161,6 @@ TEST(Maeve_Geometry_Interval, testComparisons) {
     const auto i2 = Interval(0, 1);
     EXPECT_FALSE((i1 == i2));
     EXPECT_TRUE((i1 != i2));
-    EXPECT_FALSE((i1 > i2));
-    EXPECT_FALSE((i1 >= i2));
-    EXPECT_TRUE((i1 < i2));
-    EXPECT_TRUE((i1 <= i2));
   }
 
   {
@@ -180,10 +168,6 @@ TEST(Maeve_Geometry_Interval, testComparisons) {
     const auto i2 = Interval(0, 1);
     EXPECT_TRUE((i1 == i2));
     EXPECT_FALSE((i1 != i2));
-    EXPECT_FALSE((i1 > i2));
-    EXPECT_TRUE((i1 >= i2));
-    EXPECT_FALSE((i1 < i2));
-    EXPECT_TRUE((i1 <= i2));
   }
 
   {
@@ -191,10 +175,6 @@ TEST(Maeve_Geometry_Interval, testComparisons) {
     const auto i2 = Interval();
     EXPECT_FALSE((i1 == i2));
     EXPECT_TRUE((i1 != i2));
-    EXPECT_FALSE((i1 > i2));
-    EXPECT_FALSE((i1 >= i2));
-    EXPECT_FALSE((i1 < i2));
-    EXPECT_FALSE((i1 <= i2));
   }
 
   {
@@ -202,10 +182,6 @@ TEST(Maeve_Geometry_Interval, testComparisons) {
     const auto i2 = Interval();
     EXPECT_TRUE((i1 == i2));
     EXPECT_FALSE((i1 != i2));
-    EXPECT_FALSE((i1 > i2));
-    EXPECT_FALSE((i1 >= i2));
-    EXPECT_FALSE((i1 < i2));
-    EXPECT_FALSE((i1 <= i2));
   }
 }
 

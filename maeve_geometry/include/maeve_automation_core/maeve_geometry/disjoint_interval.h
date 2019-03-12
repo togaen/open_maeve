@@ -21,12 +21,12 @@
  */
 #pragma once
 
+#include "bounds_ordered_interval.h"
+
 #include <iostream>
 #include <set>
 #include <utility>
 #include <vector>
-
-#include "maeve_automation_core/maeve_geometry/interval.h"
 
 namespace maeve_automation_core {
 /**
@@ -125,7 +125,7 @@ class DisjointInterval {
    * to the insertion interval. If insertion fails, std::set<T>::end() is
    * returned.
    */
-  static std::set<Interval>::const_iterator insert(
+  static std::set<BoundsOrderedInterval>::const_iterator insert(
       DisjointInterval& disjoint_interval, Interval interval);
 
   /**
@@ -159,7 +159,7 @@ class DisjointInterval {
    *
    * @return The begin iterator for the disjoint interval.
    */
-  static std::set<Interval>::const_iterator begin(
+  static std::set<BoundsOrderedInterval>::const_iterator begin(
       const DisjointInterval& disjoint_interval);
 
   /**
@@ -169,7 +169,7 @@ class DisjointInterval {
    *
    * @return The end iterator for the disjoint interval set.
    */
-  static std::set<Interval>::const_iterator end(
+  static std::set<BoundsOrderedInterval>::const_iterator end(
       const DisjointInterval& disjoint_interval);
 
   /**
@@ -180,11 +180,11 @@ class DisjointInterval {
    *
    * @return The count of disjoint intervals in the set.
    */
-  static std::set<Interval>::size_type size(
+  static std::set<BoundsOrderedInterval>::size_type size(
       const DisjointInterval& disjoint_interval);
 
  private:
   /** @brief The container for all disjoint intervals. */
-  std::set<Interval> set_;
+  std::set<BoundsOrderedInterval> set_;
 };  // class DisjointInterval
 }  // namespace maeve_automation_core
