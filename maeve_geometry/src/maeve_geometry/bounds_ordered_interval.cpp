@@ -41,9 +41,8 @@ bool operator<(const BoundsOrderedInterval& interval1,
                        BoundsOrderedInterval::max(interval2));
   const auto max_lt = (BoundsOrderedInterval::max(interval1) <
                        BoundsOrderedInterval::max(interval2));
-  const auto can_be_ordered =
-      (BoundsOrderedInterval::exhibitsOrdering(interval1) &&
-       BoundsOrderedInterval::exhibitsOrdering(interval2));
+  const auto can_be_ordered = (!BoundsOrderedInterval::empty(interval1) &&
+                               !BoundsOrderedInterval::empty(interval2));
 
   //
   // The following test all cases for ordering.
@@ -89,9 +88,8 @@ bool operator<(const BoundsOrderedInterval& interval1,
 
 bool operator>=(const BoundsOrderedInterval& interval1,
                 const BoundsOrderedInterval& interval2) {
-  const auto can_be_ordered =
-      (BoundsOrderedInterval::exhibitsOrdering(interval1) &&
-       BoundsOrderedInterval::exhibitsOrdering(interval2));
+  const auto can_be_ordered = (!BoundsOrderedInterval::empty(interval1) &&
+                               !BoundsOrderedInterval::empty(interval2));
   return can_be_ordered && !(interval1 < interval2);
 }
 
@@ -108,9 +106,8 @@ bool operator>(const BoundsOrderedInterval& interval1,
                        BoundsOrderedInterval::max(interval2));
   const auto max_gt = (BoundsOrderedInterval::max(interval1) >
                        BoundsOrderedInterval::max(interval2));
-  const auto can_be_ordered =
-      (BoundsOrderedInterval::exhibitsOrdering(interval1) &&
-       BoundsOrderedInterval::exhibitsOrdering(interval2));
+  const auto can_be_ordered = (!BoundsOrderedInterval::empty(interval1) &&
+                               !BoundsOrderedInterval::empty(interval2));
 
   //
   // The following test all cases for ordering.
@@ -156,9 +153,8 @@ bool operator>(const BoundsOrderedInterval& interval1,
 
 bool operator<=(const BoundsOrderedInterval& interval1,
                 const BoundsOrderedInterval& interval2) {
-  const auto can_be_ordered =
-      (BoundsOrderedInterval::exhibitsOrdering(interval1) &&
-       BoundsOrderedInterval::exhibitsOrdering(interval2));
+  const auto can_be_ordered = (!BoundsOrderedInterval::empty(interval1) &&
+                               !BoundsOrderedInterval::empty(interval2));
   return can_be_ordered && !(interval1 > interval2);
 }
 

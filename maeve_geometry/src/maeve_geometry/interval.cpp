@@ -197,10 +197,6 @@ double Interval::scale_to_interval(const Interval& interval, const double val) {
   return (offset / l);
 }
 
-bool Interval::exhibitsOrdering(const Interval& interval) {
-  return !Interval::empty(interval);
-}
-
 bool operator==(const Interval& interval1, const Interval& interval2) {
   // Capture properties.
   const auto min_eq = (Interval::min(interval1) == Interval::min(interval2));

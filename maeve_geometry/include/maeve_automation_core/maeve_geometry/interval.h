@@ -305,17 +305,6 @@ class Interval {
 
   /** @brief Verify that the bounds are valid for an interval. */
   static bool bounds_valid(const std::tuple<double, double>& bounds);
-
-  /**
-   * @brief Test for whether a given interval can be ordered.
-   *
-   * Intervals exhibit ordering iff they are neither empty nor invalid.
-   *
-   * @param interval The interval to test for ordering property.
-   *
-   * @return True if the interval can be ordered; otherwise false.
-   */
-  static bool exhibitsOrdering(const Interval& interval);
 };  // class Interval
 
 /** @brief Define interval addition as the addition of interval bounds. */
