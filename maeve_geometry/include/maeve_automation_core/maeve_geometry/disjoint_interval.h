@@ -77,18 +77,6 @@ class DisjointInterval {
                          const DisjointInterval& disjoint_interval2);
 
   /**
-   * @brief Compute inequality.
-   *
-   * This always returns the negation of the == operator.
-   *
-   * @param interval1 The first interval to compare.
-   * @param interval2 the second interval to compare.
-   *
-   * @return True if the intervals do not compare equal; otherwise false.
-   */
-  friend bool operator!=(const Interval& interval1, const Interval& interval2);
-
-  /**
    * @brief Constructor: build empty disjoint interval set.
    */
   DisjointInterval() = default;
