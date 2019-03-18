@@ -178,8 +178,6 @@ class AR_ISPFieldNodeHandler {
   ros::NodeHandle nh_;
   /** @brief The ROS image transport object. */
   image_transport::ImageTransport it_;
-  /** @brief Desired control command subscriber. */
-  ros::Subscriber control_command_input_sub_;
   /** @brief Control command publisher. */
   ros::Publisher control_command_output_pub_;
   /** @brief Buffer for listening to tf2 transforms. */
