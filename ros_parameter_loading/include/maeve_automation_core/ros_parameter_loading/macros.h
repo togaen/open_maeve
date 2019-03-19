@@ -23,6 +23,18 @@
 
 #include <ros/ros.h>
 
+/** @brief Output a name: value pair to a stream for a variable. */
+#ifdef PRINT_VAR
+static_assert(false, "PRINT_VAR macro already defined! Cannot continue.");
+#endif
+#define PRINT_VAR(var) #var << ": " << var
+
+/** @brief Output a name: value pair to a stream for a member variable. */
+#ifdef PRINT_MEMBER
+static_assert(false, "PRINT_MEMBER macro already defined! Cannot continue.");
+#endif
+#define PRINT_MEMBER(obj, member) #member << ": " << obj.member
+
 /**
  * @brief Convenience macro for loading params into a ParamsBase object.
  *
@@ -33,6 +45,9 @@
  *
  * @param var The name of the parameter and of the variable that holds it.
  */
+#ifdef LOAD_PARAM
+static_assert(false, "LOAD_PARAM macro already defined! Cannot continue.");
+#endif
 #define LOAD_PARAM(var)                                            \
   if (!nh.getParam(#var, var)) {                                   \
     ROS_ERROR_STREAM("Failed to load parameter '" << #var << "'"); \
@@ -45,6 +60,10 @@
  * @param param The address of the parameter on the parameter server.
  * @param var The name of the parameter and of the variable that holds it.
  */
+#ifdef LOAD_NAMED_PARAM
+static_assert(false,
+              "LOAD_NAMED_PARAM macro already defined! Cannot continue.");
+#endif
 #define LOAD_NAMED_PARAM(param, var)                                \
   if (!nh.getParam(param, var)) {                                   \
     ROS_ERROR_STREAM("Failed to load parameter '" << param << "'"); \
@@ -63,6 +82,10 @@
  * @param struct_name The name of the struct that 'var' belongs to.
  * @param var The name of the parameter and of the variable that holds it.
  */
+#ifdef LOAD_STRUCT_PARAM
+static_assert(false,
+              "LOAD_STRUCT_PARAM macro already defined! Cannot continue.");
+#endif
 #define LOAD_STRUCT_PARAM(struct_name, var)                              \
   if (!nh.getParam(#var, struct_name.var)) {                             \
     ROS_ERROR_STREAM("Failed to load parameter '" << #struct_name << "." \
@@ -82,6 +105,9 @@
  * @param ns The namespace (or scope) of var in the parameter server.
  * @param var The name of the parameter and of the variable that holds it.
  */
+#ifdef LOAD_NS_PARAM
+static_assert(false, "LOAD_NS_PARAM macro already defined! Cannot continue.");
+#endif
 #define LOAD_NS_PARAM(ns, var)                                                \
   {                                                                           \
     auto ns_name = std::string(#ns);                                          \
