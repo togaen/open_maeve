@@ -36,7 +36,7 @@ represented as RGB values in [0, 255]. The schema has the following rules:
 An example label map is given below: 
 
 ```yaml
-# label_map.yaml
+# segmentation_taxonomy.yaml
 
 # This key should match the name specified in meta.yaml
 data-set:

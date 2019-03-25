@@ -25,7 +25,7 @@ The node defined by this package does the following:
 
 In order to use the node:
 
-1. Define a segmentation taxonomy according to the specification in the segmentation\_taxonomy package
+1. Define a segmentation taxonomy according to the specification in the segmentation\_taxonomy package and point to it in `params/node\_params.yaml`.
 1. Publish segmentation images to a known topic along with a [CameraInfo](http://docs.ros.org/api/sensor_msgs/html/msg/CameraInfo.html) message
 1. Use the launch.launch file to start this node and launch the [ar\_track\_alvar](http://wiki.ros.org/ar_track_alvar) node, which provides AR tag tracking information.
 1. Use the provided rviz.launch launch file to start rviz with a window camera and ISP field visualization output (you may need to modify the camera topic to whatever you are using).

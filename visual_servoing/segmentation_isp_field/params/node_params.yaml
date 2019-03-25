@@ -32,5 +32,5 @@ control_command_output_topic: 'command'
 # Name of the data set to load taxonomy for.
 data_set_name: 's02'
 
-# Path to the label map yaml file.
-label_map_path: '/mnt/hgfs/VM Shared/Data Sets/s02/label_map.yaml'
+# Path to the segmentation taxonomy yaml file.
+segmentation_taxonomy: '/mnt/hgfs/VM Shared/Data Sets/s02/segmentation_taxonomy.yaml'

@@ -41,11 +41,11 @@ struct SegmentationTaxonomy {
   /**
    * @brief Load a label map from a YAML file.
    *
-   * @param label_map_path The path to the label map file.
+   * @param segmentation_taxonomy The path to the label map file.
    * @param data_set_name The name of the data set being loaded.
    */
   __attribute__((warn_unused_result)) bool load(
-      const std::string& label_map_path, const std::string& data_set_name);
+      const std::string& segmentation_taxonomy, const std::string& data_set_name);
 
   /**
    * @brief Whether the loaded parameters pass basic sanity checks.

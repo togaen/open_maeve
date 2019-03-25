@@ -34,7 +34,7 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(visualize_horizons);
   LOAD_PARAM(control_command_input_topic);
   LOAD_PARAM(control_command_output_topic);
-  LOAD_PARAM(label_map_path);
+  LOAD_PARAM(segmentation_taxonomy);
   LOAD_PARAM(data_set_name);
   LOAD_PARAM(viz_potential_bounds);
   LOAD_PARAM(horizon_viz_height);
@@ -86,10 +86,10 @@ bool SegmentationFieldParams::valid() const {
   CHECK_NONEMPTY(segmentation_sequence_topic);
   CHECK_NONEMPTY(control_command_output_topic);
   CHECK_NONEMPTY(control_command_input_topic);
-  CHECK_NONEMPTY(label_map_path);
+  CHECK_NONEMPTY(segmentation_taxonomy);
 
-  if (!boost::filesystem::exists(label_map_path)) {
-    ROS_ERROR_STREAM("File '" << label_map_path << "' does not exist.");
+  if (!boost::filesystem::exists(segmentation_taxonomy)) {
+    ROS_ERROR_STREAM("File '" << segmentation_taxonomy << "' does not exist.");
     return false;
   }
 

@@ -59,7 +59,7 @@ The data set consists of a sequence of image frames and corresponding sequence o
     data-set
      |
      |- meta.yaml
-     |- label_map.yaml
+     |- segmentation_taxonomy.yaml
      |- camera-frames
         |- frame-01.png
         |- frame-02.png

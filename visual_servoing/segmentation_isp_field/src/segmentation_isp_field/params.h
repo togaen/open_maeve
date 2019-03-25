@@ -52,7 +52,7 @@ struct SegmentationFieldParams : public ParamsBase {
   std::string control_command_input_topic;
 
   /** @brief Path to the label map file. */
-  std::string label_map_path;
+  std::string segmentation_taxonomy;
 
   /** @brief Name of the data set to load a taxonomy for. */
   std::string data_set_name;

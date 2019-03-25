@@ -69,7 +69,7 @@ boost::optional<LabelRange> load_label_range(const YAML::Node& node) {
 }  // namespace
 
 std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
-    const std::string& label_map_path, const std::string& data_set_name) {
+    const std::string& segmentation_taxonomy, const std::string& data_set_name) {
   LabelClasses classes;
   LabelInstances instances;
   LabelInstanceClasses instance_classes;
@@ -77,7 +77,7 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
   // Load YAML file.
   YAML::Node config;
   try {
-    config = YAML::LoadFile(label_map_path);
+    config = YAML::LoadFile(segmentation_taxonomy);
   } catch (...) {
     return std::make_tuple(classes, instances, instance_classes);
   }

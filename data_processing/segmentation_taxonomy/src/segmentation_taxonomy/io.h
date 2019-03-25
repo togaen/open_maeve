@@ -30,11 +30,11 @@ namespace maeve_automation_core {
 /**
  * @brief Load a taxonomy from a yaml file.
  *
- * @param label_map_path The path to the yaml file.
+ * @param segmentation_taxonomy The path to the yaml file.
  * @param data_set_name The name of the data set.
  *
  * @return The label class, label instance, and label instance classes sets.
  */
 std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
-    const std::string& label_map_path, const std::string& data_set_name);
+    const std::string& segmentation_taxonomy, const std::string& data_set_name);
 }  // namespace maeve_automation_core

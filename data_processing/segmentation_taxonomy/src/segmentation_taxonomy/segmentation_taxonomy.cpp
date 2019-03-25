@@ -36,11 +36,11 @@ std::ostream& operator<<(std::ostream& os, const SegmentationTaxonomy& t) {
   return os;
 }
 
-bool SegmentationTaxonomy::load(const std::string& label_map_path,
+bool SegmentationTaxonomy::load(const std::string& segmentation_taxonomy,
                                 const std::string& data_set_name) {
   // Retrieve information from yaml file.
   std::tie(classes, instances, instance_classes) =
-      loadLabels(label_map_path, data_set_name);
+      loadLabels(segmentation_taxonomy, data_set_name);
 
   // All good.
   return valid();
