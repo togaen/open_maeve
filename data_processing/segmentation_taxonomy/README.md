@@ -40,8 +40,7 @@ An example label map is given below:
 
 # This key should match the name specified in meta.yaml
 data-set:
-  # In the segmentations, the semantic classes are indicated by per-pixel RGB
-  # values.
+  # Semantic classes are indicated by per-pixel RGB values.
   label_classes:
     car:            [255, 0,   0]
     road:           [123, 123, 123]
