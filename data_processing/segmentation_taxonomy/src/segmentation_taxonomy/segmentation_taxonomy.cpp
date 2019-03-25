@@ -23,6 +23,8 @@
 
 #include <string>
 
+#include <ros/ros.h>
+
 #include "segmentation_taxonomy/io.h"
 
 namespace maeve_automation_core {
@@ -49,23 +51,27 @@ bool SegmentationTaxonomy::load(const std::string& segmentation_taxonomy,
 bool SegmentationTaxonomy::valid() const {
   // There must be at least one class.
   if (classes.empty()) {
+    ROS_ERROR_STREAM("No taxonomy classes.");
     return false;
   }
 
   // Instances and instance classes must be lists of the same size.
   if (instances.size() != instance_classes.size()) {
+    ROS_ERROR_STREAM("Mismatch in number of instance and instance classes.");
     return false;
   }
 
   // Each instance must have at least one class.
   for (const auto& s : instance_classes) {
     if (s.empty()) {
+      ROS_ERROR_STREAM("An instance has no instance class. Each instance must have at least one class.");
       return false;
     }
 
     // Each instance class must exist in the class set.
     for (const auto& cs : s) {
       if (classes.find(cs) == classes.end()) {
+        ROS_ERROR_STREAM("Instance class " << cs << " does not exist in set of classes.");
         return false;
       }
     }
