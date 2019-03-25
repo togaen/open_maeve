@@ -54,8 +54,8 @@ Command2D_Manager::mostRecentMsg() {
     found = true;
   }
 
-  // If not found, and lazy publishing is not enabled, return invalid command.
-  if (!found && !most_recent_msg_.lazy_publishing) {
+  // If not found, and sticky_control is not enabled, return invalid command.
+  if (!found && !most_recent_msg_.sticky_control) {
     return boost::none;
   }
 

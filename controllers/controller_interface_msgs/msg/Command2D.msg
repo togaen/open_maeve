@@ -5,10 +5,9 @@
 # Message header.
 Header header
 
-# If true, the listener should only expect message updates when the control
-# command changes (e.g. when generated from joystick input).
-# If false, the listener should messages to be published at a regular interval.
-bool lazy_publishing
+# If true, the control should be applied until the next message is received.
+# If false, the control should only be applied for a single cycle.
+bool sticky_control
 
 # X axis command. 
 float64 x

@@ -9,4 +9,4 @@ control commands and nodes that send actuation commands to robot hardware.
 
 ## Libraries ##
 
-* Command2D\_Manager: This is a small client library that nodes can use to retrieve Command2D messages from the ROS graph. The advantage is that it correctly and transparently handles the 'lazy\_publishing' flag of the message.
+* Command2D\_Manager: This is a small client library that nodes can use to retrieve Command2D messages from the ROS graph. The advantage is that it correctly and transparently handles the 'sticky\_control' flag of the message.

@@ -58,7 +58,7 @@ class Command2D_Manager {
   /**
    * @brief Return the most recently recieved Command2D message.
    *
-   * If lazy_publishing is enabled and no message has been received since the
+   * If stick_control is enabled and no message has been received since the
    * last call, the previously returned message will be returned again.
    * Otherwise a nullable object is returned.
    *

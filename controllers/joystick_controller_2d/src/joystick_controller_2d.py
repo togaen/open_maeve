@@ -30,7 +30,7 @@ JOYSTICK_Y_GAIN = 1.0
 def JoyMsgToCommand2DMsg(m, x_axis=3, y_axis=1):
     cmd_msg = Command2D()
     cmd_msg.header = m.header
-    cmd_msg.lazy_publishing = True
+    cmd_msg.sticky_control = True
     cmd_msg.x = JOYSTICK_X_GAIN * m.axes[JOYSTICK_X_AXIS]
     cmd_msg.y = JOYSTICK_Y_GAIN * m.axes[JOYSTICK_Y_AXIS]
     return cmd_msg
