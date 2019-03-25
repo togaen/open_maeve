@@ -49,6 +49,7 @@ data-set:
     lane_boundary:  [143, 142, 89]
     building:       [123, 123, 123]
     infrastructure: [100, 100, 100]
+    tree:           [0, 255, 0]
   # Each of these labels uniquely identifies an entity, or class instance, in
   # the segmentation. Each instance belongs to at least one class from the
   # 'label_classes' set above, and class membership is defined in the
