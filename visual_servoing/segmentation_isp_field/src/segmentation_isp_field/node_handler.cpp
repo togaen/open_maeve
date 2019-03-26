@@ -170,7 +170,7 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
     return;
   }
   const auto u_star = isp_controller_.SD_Control(guidance_field, u_d);
-  // ROS_INFO_STREAM("u_d: " << u_d << ", u_star: " << u_star);
+  //ROS_INFO_STREAM("u_d: " << u_d << ", u_star: " << u_star);
 
   // Publish control.
   control_command_output_pub_.publish(
