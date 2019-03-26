@@ -11,7 +11,7 @@ from controller_interface_msgs.msg import Command2D
 ##
 # @brief Parameters used by the script to transform from joystick to Command2D.
 JOYSTICK_X_AXIS = 1
-JOYSTICK_Y_AXIS = 3
+JOYSTICK_Y_AXIS = 0
 JOYSTICK_X_GAIN = 1.0
 JOYSTICK_Y_GAIN = 1.0
 
