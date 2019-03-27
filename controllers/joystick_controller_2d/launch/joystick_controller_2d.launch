@@ -10,11 +10,22 @@
   <!-- Name of output topic. -->
   <arg name="output_topic" value="/joystick_controller_2d/command"/>
 
+  <!--
+       Configuration params:
+       joy_(x|y)_axis is the index of the joystick control that corresponds to
+       the (x|y)-axis in command space, and the gains are multipliers applied
+       to the raw joystick values
+  -->
+  <arg name="joy_x_axis" default="1"/>
+  <arg name="joy_x_axis_gain" default="1.0"/>
+  <arg name="joy_y_axis" default="0"/>
+  <arg name="joy_y_axis_gain" default="1.0"/>
+
   <!-- Topic transform that maps raw joystick data to 2D control command message. -->
   <node
     name="joystick_msg_transform"
     pkg="topic_tools"
     type="transform"
-    args="/joy $(arg output_topic) controller_interface_msgs/Command2D 'joystick_controller_2d.JoyMsgToCommand2DMsg(m)' --import joystick_controller_2d"
+    args="/joy $(arg output_topic) controller_interface_msgs/Command2D 'joystick_controller_2d.JoyMsgToCommand2DMsg(m, $(arg joy_x_axis), $(arg joy_x_axis_gain), $(arg joy_y_axis), $(arg joy_y_axis_gain))' --import joystick_controller_2d"
     output="screen"/>
 </launch>
