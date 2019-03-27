@@ -4,7 +4,7 @@
 import rospy
 from controller_interface_msgs.msg import Command2D
 
-## @package joystick_controller_2d
+# @package joystick_controller_2d
 # Mapping functionality from joystick message to Command2D message
 
 
@@ -27,10 +27,15 @@ JOYSTICK_Y_GAIN = 1.0
 # @return The equivalent Command2D message.
 
 
-def JoyMsgToCommand2DMsg(m, x_axis=3, y_axis=1):
+def JoyMsgToCommand2DMsg(
+        m,
+        x_axis=JOYSTICK_X_AXIS,
+        x_gain=JOYSTICK_Y_GAIN,
+        y_axis=JOYSTICK_Y_AXIS,
+        y_gain=JOYSTICK_Y_GAIN):
     cmd_msg = Command2D()
     cmd_msg.header = m.header
     cmd_msg.sticky_control = True
-    cmd_msg.x = JOYSTICK_X_GAIN * m.axes[JOYSTICK_X_AXIS]
-    cmd_msg.y = JOYSTICK_Y_GAIN * m.axes[JOYSTICK_Y_AXIS]
+    cmd_msg.x = x_gain * m.axes[x_axis]
+    cmd_msg.y = y_gain * m.axes[y_axis]
     return cmd_msg
