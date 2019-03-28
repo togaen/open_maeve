@@ -71,6 +71,7 @@ cv::Mat computeHorizonVisualization(const cv::Mat& horizon, const int channel,
  *
  * @return An image that visualizes repulsive potentials as red and attractive
  * potentials as blue, with color intensity proportional to potential magnitude.
+ * The image type is CV_8UC3.
  */
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
                                      const double lower_bound,
