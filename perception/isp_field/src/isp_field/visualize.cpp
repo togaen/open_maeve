@@ -29,6 +29,8 @@ namespace {
 const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 cv::Mat computeHorizonVisualization(const cv::Mat& horizon, const int channel,
                                     const int horizon_viz_height,
                                     const int window_viz_height,
@@ -68,6 +70,8 @@ cv::Mat computeHorizonVisualization(const cv::Mat& horizon, const int channel,
   // Done.
   return viz;
 }
+
+//------------------------------------------------------------------------------
 
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
                                      const double lower_bound,
@@ -113,4 +117,7 @@ cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
   // Done.
   return visualization;
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
