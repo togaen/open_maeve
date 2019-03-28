@@ -35,6 +35,8 @@ namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
     const ControlCommand& cmd, const std_msgs::Header& header) {
   controller_interface_msgs::Command2D msg;
@@ -44,10 +46,14 @@ controller_interface_msgs::Command2D controlCommand2Command2D_Msg(
   return msg;
 }
 
+//------------------------------------------------------------------------------
+
 ControlCommand command2D_Msg2ControlCommand(
     const controller_interface_msgs::Command2D& msg) {
   return ControlCommand(msg.x, msg.y);
 }
+
+//------------------------------------------------------------------------------
 
 bool loadISP_ControllerROS_Params(const ros::NodeHandle& nh,
                                   const std::string& ns,
@@ -97,10 +103,14 @@ bool loadISP_ControllerROS_Params(const ros::NodeHandle& nh,
   return true;
 }
 
+//------------------------------------------------------------------------------
+
 HorizonVisualizer::Params::Params()
     : horizon_viz_height(-1),
       constraint_range_min(NaN),
       constraint_range_max(NaN) {}
+
+//------------------------------------------------------------------------------
 
 HorizonVisualizer::Params::Params(const int viz_height, const double r_min,
                                   const double r_max)
@@ -108,10 +118,14 @@ HorizonVisualizer::Params::Params(const int viz_height, const double r_min,
       constraint_range_min(r_min),
       constraint_range_max(r_max) {}
 
+//------------------------------------------------------------------------------
+
 bool HorizonVisualizer::Params::valid() const {
   return (horizon_viz_height > 0) && std::isfinite(constraint_range_min) &&
          std::isfinite(constraint_range_max);
 }
+
+//------------------------------------------------------------------------------
 
 void HorizonVisualizer::visualize(const std_msgs::Header& header,
                                   const ISP_Controller2D& controller) const {
@@ -120,6 +134,8 @@ void HorizonVisualizer::visualize(const std_msgs::Header& header,
     visualizeHorizon(header, controller.inspectHorizon(ht), ht, p.second);
   }
 }
+
+//------------------------------------------------------------------------------
 
 void HorizonVisualizer::initialize(const Params& params,
                                    const std::vector<std::string>& horizons,
@@ -130,6 +146,8 @@ void HorizonVisualizer::initialize(const Params& params,
         viz_horizon_pubs_[str] = it.advertise("viz_" + str + "_horizon", 1);
       });
 }
+
+//------------------------------------------------------------------------------
 
 void HorizonVisualizer::visualizeHorizon(
     const std_msgs::Header& header, const cv::Mat& horizon,
@@ -163,4 +181,7 @@ void HorizonVisualizer::visualizeHorizon(
       cv_bridge::CvImage(header, "mono8", viz_horizon).toImageMsg();
   publisher.publish(viz_horizon_msg);
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
