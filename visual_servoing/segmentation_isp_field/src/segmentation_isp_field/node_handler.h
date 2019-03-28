@@ -100,8 +100,10 @@ class SegmentationFieldNodeHandler {
   image_geometry::PinholeCameraModel camera_model_;
   /** @brief Camera image subscriber. */
   image_transport::CameraSubscriber segmentation_sub_;
-  /** @brief ISP field visualization publisher. */
+  /** @brief ISP field visualization publishers. */
+  image_transport::Publisher viz_isp_field_full_pub_;
   image_transport::Publisher viz_isp_field_pub_;
+  image_transport::Publisher viz_isp_mask_pub_;
   /** @brief The ROS node handle. */
   ros::NodeHandle nh_;
   /** @brief The ROS image transport object. */

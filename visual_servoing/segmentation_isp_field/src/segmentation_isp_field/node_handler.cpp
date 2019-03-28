@@ -87,6 +87,8 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
 
   // Visualize?
   viz_isp_field_pub_ = it_.advertise(params_.viz_isp_field_topic, 1);
+  viz_isp_field_full_pub_ = it_.advertise("viz_isp_full", 1);
+  viz_isp_mask_pub_ = it_.advertise("viz_isp_mask", 1);
   horizon_visualizer_.initialize(
       HorizonVisualizer::Params(params_.horizon_viz_height,
                                 sc_.shapeParameters().range_min,
@@ -183,9 +185,22 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
       controlCommand2Command2D_Msg(u_star, msg->header));
 
   // Visualize ISP field.
-  const auto viz_field = computeISPFieldVisualization(
+  cv::Mat viz_field = computeISPFieldVisualization(
       guidance_field, params_.viz_potential_bounds[0],
       params_.viz_potential_bounds[1]);
+
+  sensor_msgs::ImagePtr viz_field_full_msg =
+      cv_bridge::CvImage(msg->header, "bgr8", viz_field).toImageMsg();
+  viz_isp_field_full_pub_.publish(viz_field_full_msg);
+
+  cv::Mat viz_field_mask(viz_field.size(), CV_8U, cv::Scalar::all(255));
+  viz_field_mask(ROI).setTo(cv::Scalar::all(0));
+  viz_field.setTo(cv::Scalar::all(0), viz_field_mask);
+
+  sensor_msgs::ImagePtr viz_field_mask_msg =
+      cv_bridge::CvImage(msg->header, "mono8", viz_field_mask).toImageMsg();
+  viz_isp_mask_pub_.publish(viz_field_mask_msg);
+
   sensor_msgs::ImagePtr viz_field_msg =
       cv_bridge::CvImage(msg->header, "bgr8", viz_field).toImageMsg();
   viz_isp_field_pub_.publish(viz_field_msg);
