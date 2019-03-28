@@ -86,11 +86,8 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
   return biasing_horizon;
 }
 
-cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
-                       const double kernel_horizon) {
-  // Allocate horizon.
-  cv::Mat reduced_ISP;
-
+cv::Rect control_horizon_ROI(const cv::Mat& ISP, const double kernel_height,
+                             const double kernel_horizon) {
   // Compute horizon row: prevent the kernel from exceeding image bounds.
   const auto kernel_pixel_height = static_cast<int>(kernel_height * ISP.rows);
   const auto half_height = kernel_pixel_height / 2;
@@ -103,10 +100,14 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
   const auto top_left_col = 0;
   cv::Rect ROI =
       cv::Rect(top_left_col, top_left_row, ISP.cols, kernel_pixel_height);
-  cv::Mat masked_ISP = ISP(ROI);
 
+  return ROI;
+}
+
+cv::Mat controlHorizon(const cv::Mat& ISP, const cv::Rect& ROI) {
   // Reduce to single row.
-  cv::reduce(masked_ISP, reduced_ISP, 0 /* 0: row, 1: column */, CV_REDUCE_AVG);
+  cv::Mat reduced_ISP;
+  cv::reduce(ISP(ROI), reduced_ISP, 0 /* 0: row, 1: column */, CV_REDUCE_AVG);
 
   // Done.
   return reduced_ISP;

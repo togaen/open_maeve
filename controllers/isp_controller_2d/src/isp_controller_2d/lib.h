@@ -141,7 +141,7 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
                     const double right_decay);
 
 /**
- * @brief Min reduce the ISP to a single row vector.
+ * @brief Compute the ROI in the ISP field that is used in the control law
  *
  * @pre kernel_height shall correspond to at least one whole pixel.
  *
@@ -152,12 +152,20 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
  * @param ISP The input image space potential field.
  * @param kernel_height Min filter kernel height from 0 - top, to 1 - bottom.
  * @param kernel_horizon Location of horizon line from 0 - top, to 1 - bottom.
+ */
+cv::Rect control_horizon_ROI(const cv::Mat& ISP, const double kernel_height,
+                             const double kernel_horizon);
+
+/**
+ * @brief Min reduce the ISP to a single row vector.
+ *
+ * @param ROI The region of interest in the ISP field. All values outside the
+ * ROI are ignored.
  *
  * @return A single row vector of width ISP.cols that contains the min of each
  * column in ISP.
  */
-cv::Mat controlHorizon(const cv::Mat& ISP, const double kernel_height,
-                       const double kernel_horizon);
+cv::Mat controlHorizon(const cv::Mat& ISP, const cv::Rect& ROI);
 
 /**
  * @brief Apply a min filter to a control horizon.

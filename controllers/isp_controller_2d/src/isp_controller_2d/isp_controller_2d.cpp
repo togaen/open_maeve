@@ -23,6 +23,8 @@
 
 #include <array>
 #include <limits>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 
 #include "isp_controller_2d/lib.h"
@@ -33,19 +35,29 @@ namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 std::ostream& operator<<(std::ostream& o,
                          const ISP_Controller2D::Params::ErosionKernel& ek) {
   return o << "[width: " << ek.width << ", height: " << ek.height
            << ", horizon: " << ek.horizon << "]";
 }
+
+//------------------------------------------------------------------------------
+
 std::ostream& operator<<(std::ostream& o,
                          const ISP_Controller2D::Params::HorizonDecay& hd) {
   return o << "[left: " << hd.left << ", right: " << hd.right << "]";
 }
+
+//------------------------------------------------------------------------------
+
 std::ostream& operator<<(std::ostream& o,
                          const ISP_Controller2D::Params::GuidanceGains& gg) {
   return o << "[yaw: " << gg.yaw << ", control_set: " << gg.control_set << "]";
 }
+
+//------------------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& o, const ISP_Controller2D::Params& p) {
   o << "focal_length_x: " << p.focal_length_x << "\n";
@@ -60,12 +72,18 @@ std::ostream& operator<<(std::ostream& o, const ISP_Controller2D::Params& p) {
   return o;
 }
 
+//------------------------------------------------------------------------------
+
 ISP_Controller2D::Params::GuidanceGains::GuidanceGains()
     : GuidanceGains(NaN, NaN) {}
+
+//------------------------------------------------------------------------------
 
 ISP_Controller2D::Params::GuidanceGains::GuidanceGains(const double y,
                                                        const double c)
     : yaw(y), control_set(c) {}
+
+//------------------------------------------------------------------------------
 
 bool ISP_Controller2D::Params::GuidanceGains::valid() const {
   // Perform checks.
@@ -78,12 +96,18 @@ bool ISP_Controller2D::Params::GuidanceGains::valid() const {
   return true;
 }
 
+//------------------------------------------------------------------------------
+
 ISP_Controller2D::Params::HorizonDecay::HorizonDecay()
     : HorizonDecay(NaN, NaN) {}
+
+//------------------------------------------------------------------------------
 
 ISP_Controller2D::Params::HorizonDecay::HorizonDecay(const double l,
                                                      const double r)
     : left(l), right(r) {}
+
+//------------------------------------------------------------------------------
 
 bool ISP_Controller2D::Params::HorizonDecay::valid() const {
   // Perform checks.
@@ -94,13 +118,19 @@ bool ISP_Controller2D::Params::HorizonDecay::valid() const {
   return true;
 }
 
+//------------------------------------------------------------------------------
+
 ISP_Controller2D::Params::ErosionKernel::ErosionKernel()
     : ErosionKernel(NaN, NaN, NaN) {}
+
+//------------------------------------------------------------------------------
 
 ISP_Controller2D::Params::ErosionKernel::ErosionKernel(const double w,
                                                        const double ht,
                                                        const double hr)
     : width(w), height(ht), horizon(hr) {}
+
+//------------------------------------------------------------------------------
 
 bool ISP_Controller2D::Params::ErosionKernel::valid() const {
   // Perform checks.
@@ -112,9 +142,13 @@ bool ISP_Controller2D::Params::ErosionKernel::valid() const {
   return true;
 }
 
+//------------------------------------------------------------------------------
+
 ISP_Controller2D::Params::Params()
     : Params(ShapeParameters(), ErosionKernel(), HorizonDecay(),
              GuidanceGains(), NaN, NaN, NaN, NaN, NaN) {}
+
+//------------------------------------------------------------------------------
 
 ISP_Controller2D::Params::Params(const ShapeParameters& sp,
                                  const ErosionKernel& ek,
@@ -132,6 +166,8 @@ ISP_Controller2D::Params::Params(const ShapeParameters& sp,
       guidance_gains(gg),
       shape_parameters(sp) {}
 
+//------------------------------------------------------------------------------
+
 bool ISP_Controller2D::Params::valid() const {
   // Perform checks.
   CHECK_STRICTLY_POSITIVE(focal_length_x);
@@ -144,12 +180,20 @@ bool ISP_Controller2D::Params::valid() const {
          guidance_gains.valid() && shape_parameters.valid();
 }
 
+//------------------------------------------------------------------------------
+
 ISP_Controller2D::ISP_Controller2D() : init_(false) {}
+
+//------------------------------------------------------------------------------
 
 ISP_Controller2D::ISP_Controller2D(const Params& params)
     : init_(true), p_(params), C_u_(p_.shape_parameters) {}
 
+//------------------------------------------------------------------------------
+
 bool ISP_Controller2D::isInitialized() const { return init_ && p_.valid(); }
+
+//------------------------------------------------------------------------------
 
 const cv::Mat& ISP_Controller2D::inspectHorizon(const HorizonType cs) const {
   static const cv::Mat empty;
@@ -159,13 +203,17 @@ const cv::Mat& ISP_Controller2D::inspectHorizon(const HorizonType cs) const {
 
   // The find should never fail. If it does, implementation is inconsistent.
   if (it == std::end(horizons_)) {
-    assert(false);
-    return empty;
+    std::stringstream ss;
+    ss << "Unable to find requested horizon structure: "
+       << horizonTypeToString(cs) << ". This should not happen.";
+    throw std::runtime_error(ss.str());
   }
 
   // Done.
   return it->second;
 }
+
+//------------------------------------------------------------------------------
 
 std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
   switch (cs) {
@@ -187,6 +235,8 @@ std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
       return "invalid";
   }
 }
+
+//------------------------------------------------------------------------------
 
 ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
     const std::string& str) {
@@ -213,6 +263,8 @@ ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
   }
   return HorizonType::INVALID;
 }
+
+//------------------------------------------------------------------------------
 
 ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP) {
   // Reserve return value.
@@ -250,10 +302,15 @@ ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP) {
   return u_d;
 }
 
+//------------------------------------------------------------------------------
+
 void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP) {
+  // Get control horizon ROI.
+  const cv::Rect ROI = control_horizon_ROI(ISP, p_.erosion_kernel.height,
+                                           p_.erosion_kernel.horizon);
+
   // Get control horizon.
-  horizons_[HorizonType::CONTROL] =
-      controlHorizon(ISP, p_.erosion_kernel.height, p_.erosion_kernel.horizon);
+  horizons_[HorizonType::CONTROL] = controlHorizon(ISP, ROI);
   const auto& ch = horizons_[HorizonType::CONTROL];
 
   // Apply filter.
@@ -269,10 +326,14 @@ void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP) {
       projectThrottlesToControlSpace(ech, C_u_, p_.K_P, p_.K_D);
 }
 
+//------------------------------------------------------------------------------
+
 ControlCommand ISP_Controller2D::rememberCommand(const ControlCommand& cmd) {
   last_computed_cmd_ = cmd;
   return last_computed_cmd_;
 }
+
+//------------------------------------------------------------------------------
 
 ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
                                             const ControlCommand& u_d) {
@@ -337,4 +398,7 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
   // Done.
   return rememberCommand(cmd);
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
