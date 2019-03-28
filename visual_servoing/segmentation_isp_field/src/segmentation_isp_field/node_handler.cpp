@@ -166,7 +166,10 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
     ROS_ERROR_STREAM("ISP controller not initialized.");
     return;
   }
-  const auto u_star = isp_controller_.SD_Control(guidance_field, u_d);
+  const auto& p = ISP_Controller2D::get_params(isp_controller_);
+  const cv::Rect ROI = ISP_ROI(guidance_field, p.erosion_kernel.height,
+                               p.erosion_kernel.horizon);
+  const auto u_star = isp_controller_.SD_Control(guidance_field, ROI, u_d);
   // ROS_INFO_STREAM("u_d: " << u_d << ", u_star: " << u_star);
 
   // Publish control.

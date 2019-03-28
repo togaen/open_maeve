@@ -34,6 +34,8 @@ namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 void printISP(const cv::Mat& ISP) {
   std::cout << "\n>>>\n";
   for (auto i = 0; i < ISP.rows; ++i) {
@@ -45,12 +47,16 @@ void printISP(const cv::Mat& ISP) {
   std::cout << "<<<\n";
 }
 
+//------------------------------------------------------------------------------
+
 double column2Yaw(const cv::Mat& image_plane, const double col,
                   const double f_x, const double p_x) {
   const auto bounded_col =
       projectToInterval(0.0, static_cast<double>(image_plane.cols - 1), col);
   return std::atan2(p_x - static_cast<double>(bounded_col) - 0.5, f_x);
 }
+
+//------------------------------------------------------------------------------
 
 double yaw2Column(const cv::Mat& image_plane, const double yaw,
                   const double f_x, const double p_x) {
@@ -59,6 +65,8 @@ double yaw2Column(const cv::Mat& image_plane, const double yaw,
   return projectToInterval(0.0, static_cast<double>(image_plane.cols - 1), col);
 }
 
+//------------------------------------------------------------------------------
+
 cv::Mat controlSetGuidance(const cv::Mat& controls) {
   cv::Mat biasing_horizon = zeroISP_Field(controls.size());
   // \TODO(me) Formulate this to behave like a balloon being pushed: suppression
@@ -66,6 +74,8 @@ cv::Mat controlSetGuidance(const cv::Mat& controls) {
   // potential values elsewhere.
   return biasing_horizon;
 }
+
+//------------------------------------------------------------------------------
 
 cv::Mat yawGuidance(const int center, const int width, const double left_decay,
                     const double right_decay) {
@@ -86,23 +96,7 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
   return biasing_horizon;
 }
 
-cv::Rect control_horizon_ROI(const cv::Mat& ISP, const double kernel_height,
-                             const double kernel_horizon) {
-  // Compute horizon row: prevent the kernel from exceeding image bounds.
-  const auto kernel_pixel_height = static_cast<int>(kernel_height * ISP.rows);
-  const auto half_height = kernel_pixel_height / 2;
-  const auto horizon_row_raw = static_cast<int>(kernel_horizon * ISP.rows);
-  const auto horizon_row =
-      std::max(half_height, std::min(horizon_row_raw, ISP.rows - half_height));
-
-  // Set ROI.
-  const auto top_left_row = horizon_row - half_height;
-  const auto top_left_col = 0;
-  cv::Rect ROI =
-      cv::Rect(top_left_col, top_left_row, ISP.cols, kernel_pixel_height);
-
-  return ROI;
-}
+//------------------------------------------------------------------------------
 
 cv::Mat controlHorizon(const cv::Mat& ISP, const cv::Rect& ROI) {
   // Reduce to single row.
@@ -112,6 +106,8 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const cv::Rect& ROI) {
   // Done.
   return reduced_ISP;
 }
+
+//------------------------------------------------------------------------------
 
 cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width) {
   // Reserve return value.
@@ -129,6 +125,8 @@ cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width) {
   // Done.
   return eroded_h;
 }
+
+//------------------------------------------------------------------------------
 
 cv::Mat projectThrottlesToControlSpace(
     const cv::Mat& h, const PotentialTransform<ConstraintType::SOFT>& C_u,
@@ -149,6 +147,8 @@ cv::Mat projectThrottlesToControlSpace(
   // Done.
   return controls;
 }
+
+//------------------------------------------------------------------------------
 
 cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h) {
   // Convert throttle values to unit intervals.
@@ -179,6 +179,8 @@ cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h) {
   return guided_throttle_h;
 }
 
+//------------------------------------------------------------------------------
+
 int dampedMaxThrottleIndex(const cv::Mat& guided_throttle_h,
                            const double inertia, const int damp_idx) {
   std::vector<cv::Mat> guided_throttle_channels(2);
@@ -202,4 +204,7 @@ int dampedMaxThrottleIndex(const cv::Mat& guided_throttle_h,
   // Done.
   return max_idx[1];
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core

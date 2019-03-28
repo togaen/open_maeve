@@ -266,12 +266,22 @@ ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
 
 //------------------------------------------------------------------------------
 
-ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP) {
+const ISP_Controller2D::Params& ISP_Controller2D::get_params(
+    const ISP_Controller2D& c) {
+  return c.p_;
+}
+
+//------------------------------------------------------------------------------
+
+ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP,
+                                                  const cv::Rect& ROI) {
   // Reserve return value.
   ControlCommand u_d;
 
   // Compute generic horizons.
-  computeControlSelectionHorizon(ISP);
+  //  const cv::Rect ROI = control_horizon_ROI(ISP, p_.erosion_kernel.height,
+  //                                           p_.erosion_kernel.horizon);
+  computeControlSelectionHorizon(ISP, ROI);
 
   // Map desired yaw image plane column.
   const auto col_d =
@@ -304,11 +314,8 @@ ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP) {
 
 //------------------------------------------------------------------------------
 
-void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP) {
-  // Get control horizon ROI.
-  const cv::Rect ROI = control_horizon_ROI(ISP, p_.erosion_kernel.height,
-                                           p_.erosion_kernel.horizon);
-
+void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP,
+                                                      const cv::Rect& ROI) {
   // Get control horizon.
   horizons_[HorizonType::CONTROL] = controlHorizon(ISP, ROI);
   const auto& ch = horizons_[HorizonType::CONTROL];
@@ -336,12 +343,15 @@ ControlCommand ISP_Controller2D::rememberCommand(const ControlCommand& cmd) {
 //------------------------------------------------------------------------------
 
 ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
+                                            const cv::Rect& ROI,
                                             const ControlCommand& u_d) {
   // Reserve return value.
   ControlCommand cmd;
 
   // Compute generic horizons.
-  computeControlSelectionHorizon(ISP);
+  //  const cv::Rect ROI = control_horizon_ROI(ISP, p_.erosion_kernel.height,
+  //                                         p_.erosion_kernel.horizon);
+  computeControlSelectionHorizon(ISP, ROI);
 
   // Map desired yaw image plane column.
   const auto col_d =

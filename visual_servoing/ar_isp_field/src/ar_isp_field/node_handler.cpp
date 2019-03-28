@@ -280,9 +280,12 @@ void AR_ISPFieldNodeHandler::cameraCallback(
   }
 
   // Compute control with desired method.
+  const auto& p = ISP_Controller2D::get_params(isp_controller_);
+  const cv::Rect ROI =
+      ISP_ROI(ISP, p.erosion_kernel.height, p.erosion_kernel.horizon);
   const auto u_star = params_.potential_only_guidance
-                          ? isp_controller_.potentialControl(ISP)
-                          : isp_controller_.SD_Control(ISP, u_d);
+                          ? isp_controller_.potentialControl(ISP, ROI)
+                          : isp_controller_.SD_Control(ISP, ROI, u_d);
 
   // Visualize controller horizons; do this after computing control.
   horizon_visualizer_.visualize(msg->header, isp_controller_);

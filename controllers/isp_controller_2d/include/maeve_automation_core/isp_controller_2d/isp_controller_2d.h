@@ -198,21 +198,24 @@ class ISP_Controller2D {
    * respectively.
    *
    * @param ISP The input ISP field.
+   * @param ROI The region of the ISP field to use for computing controls.
    * @param u_d The desired control command.
    *
    * @return The computed control command with each member in the range [-1, 1]
    * indicating minimum and maximum actuation, respectively.
    */
-  ControlCommand SD_Control(const cv::Mat& ISP, const ControlCommand& u_d);
+  ControlCommand SD_Control(const cv::Mat& ISP, const cv::Rect& ROI,
+                            const ControlCommand& u_d);
 
   /**
    * @brief For a given ISP field, compute the control with highest potential.
    *
    * @param ISP The input ISP field.
+   * @param ROI The region of the ISP field to use for computing controls.
    *
    * @return The control that is "most desirable" according to the ISP field.
    */
-  ControlCommand potentialControl(const cv::Mat& ISP);
+  ControlCommand potentialControl(const cv::Mat& ISP, const cv::Rect& ROI);
 
   /**
    * @brief Whether the controller has been initialized with its parameters.
@@ -246,16 +249,17 @@ class ISP_Controller2D {
    */
   static HorizonType stringToHorizonType(const std::string& str);
 
+  /** @brief Accessor for the controller parameters. */
+  static const Params& get_params(const ISP_Controller2D& c);
+
  private:
   /** @brief Map of horizon type to horizon data structure. */
   typedef std::unordered_map<HorizonType, cv::Mat, EnumClassHash> HorizonMap;
 
   /**
    * @brief Compute horizon representing available control sets.
-   *
-   * @param ISP The input ISP field.
    */
-  void computeControlSelectionHorizon(const cv::Mat& ISP);
+  void computeControlSelectionHorizon(const cv::Mat& ISP, const cv::Rect& ROI);
 
   /**
    * @brief Utility for remembering a computed control command.

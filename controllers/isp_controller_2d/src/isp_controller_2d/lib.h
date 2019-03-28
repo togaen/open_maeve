@@ -141,22 +141,6 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
                     const double right_decay);
 
 /**
- * @brief Compute the ROI in the ISP field that is used in the control law
- *
- * @pre kernel_height shall correspond to at least one whole pixel.
- *
- * @note The kernel_horizon is a suggestion, not a guaranteed position: it is
- * altered, if necessary, to ensure that the kernel remains within the bounds of
- * the image.
- *
- * @param ISP The input image space potential field.
- * @param kernel_height Min filter kernel height from 0 - top, to 1 - bottom.
- * @param kernel_horizon Location of horizon line from 0 - top, to 1 - bottom.
- */
-cv::Rect control_horizon_ROI(const cv::Mat& ISP, const double kernel_height,
-                             const double kernel_horizon);
-
-/**
  * @brief Min reduce the ISP to a single row vector.
  *
  * @param ROI The region of interest in the ISP field. All values outside the

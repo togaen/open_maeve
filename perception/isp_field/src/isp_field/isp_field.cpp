@@ -49,4 +49,24 @@ cv::Mat oneISP_Field(const cv::Size& size) {
 
 //------------------------------------------------------------------------------
 
+cv::Rect ISP_ROI(const cv::Mat& ISP, const double kernel_height,
+                 const double kernel_horizon) {
+  // Compute horizon row: prevent the kernel from exceeding image bounds.
+  const auto kernel_pixel_height = static_cast<int>(kernel_height * ISP.rows);
+  const auto half_height = kernel_pixel_height / 2;
+  const auto horizon_row_raw = static_cast<int>(kernel_horizon * ISP.rows);
+  const auto horizon_row =
+      std::max(half_height, std::min(horizon_row_raw, ISP.rows - half_height));
+
+  // Set ROI.
+  const auto top_left_row = horizon_row - half_height;
+  const auto top_left_col = 0;
+  cv::Rect ROI =
+      cv::Rect(top_left_col, top_left_row, ISP.cols, kernel_pixel_height);
+
+  return ROI;
+}
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core

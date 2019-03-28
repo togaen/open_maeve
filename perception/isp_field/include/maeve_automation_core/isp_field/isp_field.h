@@ -62,4 +62,19 @@ cv::Mat oneISP_Field(const int width, const int height);
  */
 cv::Mat oneISP_Field(const cv::Size& size);
 
+/**
+ * @brief Compute the ROI in the ISP field that is used in the control law
+ *
+ * @pre kernel_height shall correspond to at least one whole pixel.
+ *
+ * @note The kernel_horizon is a suggestion, not a guaranteed position: it is
+ * altered, if necessary, to ensure that the kernel remains within the bounds of
+ * the image.
+ *
+ * @param ISP The input image space potential field.
+ * @param kernel_height Min filter kernel height from 0 - top, to 1 - bottom.
+ * @param kernel_horizon Location of horizon line from 0 - top, to 1 - bottom.
+ */
+cv::Rect ISP_ROI(const cv::Mat& ISP, const double kernel_height,
+                 const double kernel_horizon);
 }  // namespace maeve_automation_core
