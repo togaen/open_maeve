@@ -40,6 +40,8 @@ namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
     const std::string& node_name)
     : nh_(node_name), it_(nh_) {
@@ -92,6 +94,8 @@ SegmentationFieldNodeHandler::SegmentationFieldNodeHandler(
       params_.visualize_horizons, it_);
 }
 
+//------------------------------------------------------------------------------
+
 void SegmentationFieldNodeHandler::loadGuidancePotentials(
     const ros::NodeHandle& nh, const SegmentationTaxonomy& taxonomy,
     const PotentialTransform<ConstraintType::SOFT>& sc,
@@ -109,6 +113,8 @@ void SegmentationFieldNodeHandler::loadGuidancePotentials(
                   }
                 });
 }
+
+//------------------------------------------------------------------------------
 
 void SegmentationFieldNodeHandler::segmentationSequenceCallback(
     const sensor_msgs::ImageConstPtr& msg,
@@ -187,5 +193,7 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
   // Horizon visualizations.
   horizon_visualizer_.visualize(msg->header, isp_controller_);
 }
+
+//------------------------------------------------------------------------------
 
 }  // namespace maeve_automation_core

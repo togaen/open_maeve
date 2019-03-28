@@ -42,6 +42,8 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 std::vector<std::string> AR_ISPFieldNodeHandler::initializeTimeQueues(
     const std::vector<int>& id_list) {
   std::vector<std::string> frame_names;
@@ -56,6 +58,8 @@ std::vector<std::string> AR_ISPFieldNodeHandler::initializeTimeQueues(
 
   return frame_names;
 }
+
+//------------------------------------------------------------------------------
 
 AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
     : nh_(node_name), it_(nh_), tf2_listener_(tf2_buffer_) {
@@ -102,6 +106,8 @@ AR_ISPFieldNodeHandler::AR_ISPFieldNodeHandler(const std::string& node_name)
       params_.visualize_horizons, it_);
 }
 
+//------------------------------------------------------------------------------
+
 std::vector<cv::Point2d> AR_ISPFieldNodeHandler::projectPoints(
     const Eigen::Affine3d& camera_T_artag) const {
   // Compute the corner points under the given transform.
@@ -123,6 +129,8 @@ std::vector<cv::Point2d> AR_ISPFieldNodeHandler::projectPoints(
   // Done.
   return image_points;
 }
+
+//------------------------------------------------------------------------------
 
 boost::optional<std::tuple<Eigen::Affine3d, double>>
 AR_ISPFieldNodeHandler::getTransformAndStamp(const std::string& ar_tag_frame,
@@ -146,6 +154,8 @@ AR_ISPFieldNodeHandler::getTransformAndStamp(const std::string& ar_tag_frame,
 
   return std::make_tuple(T, T_timestamp.toSec());
 }
+
+//------------------------------------------------------------------------------
 
 bool AR_ISPFieldNodeHandler::computePotentialFields(
     const ros::Time& timestamp, const ConstraintType& constraint_type,
@@ -217,6 +227,8 @@ bool AR_ISPFieldNodeHandler::computePotentialFields(
   return updated;
 }
 
+//------------------------------------------------------------------------------
+
 void AR_ISPFieldNodeHandler::initFieldStorage(
     const cv::Size& size, const std::vector<std::string>& frame_list,
     FieldMap& field_map) {
@@ -225,6 +237,8 @@ void AR_ISPFieldNodeHandler::initFieldStorage(
                   field_map[frame_name] = zeroISP_Field(size);
                 });
 }
+
+//------------------------------------------------------------------------------
 
 void AR_ISPFieldNodeHandler::cameraCallback(
     const sensor_msgs::Image::ConstPtr& msg,
@@ -295,6 +309,8 @@ void AR_ISPFieldNodeHandler::cameraCallback(
       controlCommand2Command2D_Msg(u_star, msg->header));
 }
 
+//------------------------------------------------------------------------------
+
 cv::Mat AR_ISPFieldNodeHandler::computeISP() const {
   // Initialize to zeroed field.
   cv::Mat ISP = zeroISP_Field(camera_model_.fullResolution());
@@ -313,6 +329,8 @@ cv::Mat AR_ISPFieldNodeHandler::computeISP() const {
   return ISP;
 }
 
+//------------------------------------------------------------------------------
+
 void AR_ISPFieldNodeHandler::visualize(const cv::Mat& ISP,
                                        const std_msgs::Header& header) const {
   // If no topic, nothing to do.
@@ -330,4 +348,7 @@ void AR_ISPFieldNodeHandler::visualize(const cv::Mat& ISP,
   // Publish.
   viz_isp_field_pub_.publish(viz_msg);
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
