@@ -81,9 +81,9 @@ class HorizonVisualizer {
   struct Params {
     /** @brief Pixel height of the horizon visualization. */
     int horizon_viz_height;
-    /** @brief Range min for soft constraint values. */
+    /** @brief Range min for constraint values. */
     double constraint_range_min;
-    /** @brief Range max for soft constraint values. */
+    /** @brief Range max for constraint values. */
     double constraint_range_max;
 
     /**
@@ -102,8 +102,8 @@ class HorizonVisualizer {
      * @brief Explicit constructor.
      *
      * @param viz_height Height of visualization to generate.
-     * @param r_min Soft constraint range min.
-     * @param r_max Soft constraint range max.
+     * @param r_min Constraint range min.
+     * @param r_max Constraint range max.
      */
     Params(const int viz_height, const double r_min, const double r_max);
   };  // struct Params
