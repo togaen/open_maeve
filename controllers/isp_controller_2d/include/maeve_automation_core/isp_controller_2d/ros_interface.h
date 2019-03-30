@@ -132,6 +132,13 @@ class HorizonVisualizer {
   /** @brief Parameter object for visualizer. */
   Params params_;
 
+  /** @brief Horizon visualization publishers. */
+  std::unordered_map<std::string, image_transport::Publisher> viz_horizon_pubs_;
+
+  /** @brief Whether to use [0, 1] as the horizon bounds given the type. */
+  static bool unit_visualization_bounds(
+      const ISP_Controller2D::HorizonType& ht);
+
   /**
    * @brief Helper function for visualizing horizon structures.
    *
@@ -143,8 +150,5 @@ class HorizonVisualizer {
   void visualizeHorizon(const std_msgs::Header& header, const cv::Mat& horizon,
                         const ISP_Controller2D::HorizonType ht,
                         const image_transport::Publisher& publisher) const;
-
-  /** @brief Horizon visualization publishers. */
-  std::unordered_map<std::string, image_transport::Publisher> viz_horizon_pubs_;
 };  // class HorizonVisualizer
 }  // namespace maeve_automation_core

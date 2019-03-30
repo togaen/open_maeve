@@ -25,6 +25,7 @@
 
 #include <cmath>
 #include <limits>
+#include <stdexcept>
 
 #include "maeve_automation_core/isp_field/ros_interface.h"
 #include "maeve_automation_core/isp_field/visualize.h"
@@ -149,25 +150,32 @@ void HorizonVisualizer::initialize(const Params& params,
 
 //------------------------------------------------------------------------------
 
+bool HorizonVisualizer::unit_visualization_bounds(
+    const ISP_Controller2D::HorizonType& ht) {
+  const auto is_unit_range_type =
+      ((ht == ISP_Controller2D::HorizonType::YAW_GUIDANCE) ||
+       (ht == ISP_Controller2D::HorizonType::GUIDANCE) ||
+       (ht == ISP_Controller2D::HorizonType::GUIDED_THROTTLE) ||
+       (ht == ISP_Controller2D::HorizonType::CONTROL_SET_GUIDANCE));
+  return is_unit_range_type;
+}
+
+//------------------------------------------------------------------------------
+
 void HorizonVisualizer::visualizeHorizon(
     const std_msgs::Header& header, const cv::Mat& horizon,
     const ISP_Controller2D::HorizonType ht,
     const image_transport::Publisher& publisher) const {
   // Only proceed if parameters are valid.
   if (!params_.valid()) {
-    return;
+    throw std::runtime_error(
+        "Cannot visualize horizons: parameters are invalid.");
   }
 
   // Set visualization bounds according to horizon type.
-  auto lower_bound = params_.constraint_range_min;
-  auto upper_bound = params_.constraint_range_max;
-  if ((ht == ISP_Controller2D::HorizonType::YAW_GUIDANCE) ||
-      (ht == ISP_Controller2D::HorizonType::GUIDANCE) ||
-      (ht == ISP_Controller2D::HorizonType::GUIDED_THROTTLE) ||
-      (ht == ISP_Controller2D::HorizonType::CONTROL_SET_GUIDANCE)) {
-    lower_bound = 0.0;
-    upper_bound = 1.0;
-  }
+  const auto unit_range = HorizonVisualizer::unit_visualization_bounds(ht);
+  const auto lower_bound = (unit_range ? 0.0 : params_.constraint_range_min);
+  const auto upper_bound = (unit_range ? 1.0 : params_.constraint_range_max);
 
   // Set visualization channel according to horizon type.
   const auto channel =
