@@ -2,7 +2,7 @@
 
 This library provides time queue functionality. At its core this is implemented with [boost::circular\_buffer](http://www.boost.org/doc/libs/1_64_0/doc/html/circular_buffer.html), but has the following additional functionality:
 
-* Interpolation: Accessing a time between two elements will linearly interpolate between them. For this to work, elements must have arithmetic operations defined. This is enforced at comile time.
+* Interpolation: Accessing a time between two elements will linearly interpolate between them. For this to work, elements must have arithmetic operations defined. This is enforced at compile time.
 * Auto-clearing: The user can enforce a minimum time gap between elements; pushing an element into the queue that would violate this time gap triggers the queue to be emptied before the push happens.
 
 ## Example Usage ##
