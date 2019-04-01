@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Maeve Automation
+ * Copyright 2019 Maeve Automation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,44 +22,20 @@
 #include "maeve_automation_core/controller_interface_msgs/command2d_manager.h"
 
 namespace maeve_automation_core {
-Command2D_Manager::Command2D_Manager() : is_initialized_(false) {}
 
-Command2D_Manager::Command2D_Manager(ros::NodeHandle& nh,
-                                     const std::string& topic) {
-  initialize(nh, topic);
-}
-
-void Command2D_Manager::initialize(ros::NodeHandle& nh,
-                                   const std::string& topic) {
-  command2D_sub_ =
-      nh.subscribe(topic, 1, &Command2D_Manager::command2D_Callback, this);
-  is_initialized_ = true;
-}
-
-bool Command2D_Manager::isInitialized() const { return is_initialized_; }
-
-void Command2D_Manager::command2D_Callback(
-    const controller_interface_msgs::Command2D::ConstPtr& msg) {
-  // ROS_INFO_STREAM("Received " << msg->x << ", " << msg->y);
-  if (command_queue_.push(*msg)) {
-    // ROS_INFO_STREAM("Pushed: " << msg->x << ", " << msg->y);
-  }
-}
+//------------------------------------------------------------------------------
 
 boost::optional<controller_interface_msgs::Command2D>
-Command2D_Manager::mostRecentMsg() {
-  // Get most recent message and flag if any found.
-  auto found = false;
-  while (command_queue_.pop(most_recent_msg_)) {
-    found = true;
+Command2D_Manager::most_recent_msg() {
+  const auto msg =
+      MessageManager<controller_interface_msgs::Command2D>::most_recent_msg();
+  if (!msg) {
+    const auto use_last_message = (last_msg_ && last_msg_->sticky_control);
+    return (use_last_message ? last_msg_ : msg);
   }
-
-  // If not found, and sticky_control is not enabled, return invalid command.
-  if (!found && !most_recent_msg_.sticky_control) {
-    return boost::none;
-  }
-
-  // Otherwise, return most recent command.
-  return most_recent_msg_;
+  return msg;
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
