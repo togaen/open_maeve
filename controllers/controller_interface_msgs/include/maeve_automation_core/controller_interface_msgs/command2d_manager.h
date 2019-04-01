@@ -21,62 +21,10 @@
  */
 #pragma once
 
-#include <stdexcept>
-
-#include <ros/ros.h>
-#include <boost/optional.hpp>
-#include <boost/thread/mutex.hpp>
-
 #include "controller_interface_msgs/Command2D.h"
+#include "maeve_automation_core/maeve_message_queue/maeve_message_queue.h"
 
 namespace maeve_automation_core {
-/**
- * @brief This class subscribes to, converts, and returns Command2D messages.
- */
-template <typename T>
-class MessageManager {
- public:
-  /** @brief Allow delayed initialization. */
-  MessageManager() = default;
-
-  /**
-   * @brief Constructor: This is intended to piggy-back on another node's node
-   * handle.
-   *
-   * @param nh The node handle of an already constructed node.
-   * @param topic The topic name to retrieve messages from.
-   */
-  MessageManager(ros::NodeHandle& nh, const std::string& topic);
-
-  /**
-   * @brief Return the most recently recieved message.
-   *
-   * @note This will return boost::none if no message has been recieved since
-   * the last call.
-   */
-  virtual boost::optional<T> most_recent_msg();
-
-  /** @brief Initialize and subscribe to topic. */
-  void initialize(ros::NodeHandle& nh, const std::string& topic);
-
- protected:
-  /**
-   * @brief Callback for receiving messages.
-   *
-   * @param msg The received message.
-   */
-  void callback(const typename T::ConstPtr& msg);
-
-  /** @brief Protect access to most recent message. */
-  boost::mutex msg_mutex_;
-  /** @brief This is the last received message. */
-  boost::optional<T> most_recent_msg_opt_;
-  /** @brief Subscribe to the message topic. */
-  ros::Subscriber sub_;
-};  // class MessageManager
-
-//------------------------------------------------------------------------------
-
 /** @brief A message manager for Command2D messages. */
 class Command2D_Manager
     : public MessageManager<controller_interface_msgs::Command2D> {
@@ -91,49 +39,4 @@ class Command2D_Manager
  private:
   boost::optional<controller_interface_msgs::Command2D> last_msg_;
 };  // class Command2D_Manager
-
-//------------------------------------------------------------------------------
-
-template <typename T>
-MessageManager<T>::MessageManager(ros::NodeHandle& nh, const std::string& topic)
-    : most_recent_msg_opt_(boost::none) {
-  initialize(nh, topic);
-}
-
-//------------------------------------------------------------------------------
-
-template <typename T>
-void MessageManager<T>::initialize(ros::NodeHandle& nh,
-                                   const std::string& topic) {
-  sub_ = nh.subscribe(topic, 1, &MessageManager<T>::callback, this);
-}
-
-//------------------------------------------------------------------------------
-
-template <typename T>
-void MessageManager<T>::callback(const typename T::ConstPtr& msg) {
-  boost::mutex::scoped_lock lock(msg_mutex_);
-  most_recent_msg_opt_ = *msg;
-}
-
-//------------------------------------------------------------------------------
-
-template <typename T>
-boost::optional<T> MessageManager<T>::most_recent_msg() {
-  if (sub_.getTopic().empty()) {
-    throw std::runtime_error(
-        "Attempted to retrieve message without intializing.");
-  }
-
-  boost::mutex::scoped_lock lock(msg_mutex_);
-  if (most_recent_msg_opt_) {
-    const auto msg = *most_recent_msg_opt_;
-    most_recent_msg_opt_ = boost::none;
-    return msg;
-  }
-  return boost::none;
-}
-
-//------------------------------------------------------------------------------
-
 }  // namespace maeve_automation_core
