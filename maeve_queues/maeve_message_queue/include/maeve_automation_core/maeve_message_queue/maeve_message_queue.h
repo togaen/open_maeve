@@ -46,13 +46,16 @@ class MessageManager {
    */
   MessageManager(ros::NodeHandle& nh, const std::string& topic);
 
+  /** @brief Return the most recently recieved message. */
+  virtual boost::optional<T> most_recent_msg();
+
   /**
    * @brief Return the most recently recieved message.
    *
-   * @note This will return boost::none if no message has been recieved since
-   * the last call.
+   * @note This destroys the local message copy upon returning.
+   *
    */
-  virtual boost::optional<T> most_recent_msg();
+  boost::optional<T> consume_most_recent_msg();
 
   /** @brief Initialize and subscribe to topic. */
   void initialize(ros::NodeHandle& nh, const std::string& topic);
@@ -64,6 +67,9 @@ class MessageManager {
    * @param msg The received message.
    */
   void callback(const typename T::ConstPtr& msg);
+
+  /** @brief Throw an exception if the subscriber is not subscribed. */
+  void throw_if_uninitialized();
 
   /** @brief Protect access to most recent message. */
   boost::mutex msg_mutex_;
@@ -100,19 +106,33 @@ void MessageManager<T>::callback(const typename T::ConstPtr& msg) {
 //------------------------------------------------------------------------------
 
 template <typename T>
-boost::optional<T> MessageManager<T>::most_recent_msg() {
+void MessageManager<T>::throw_if_uninitialized() {
   if (sub_.getTopic().empty()) {
     throw std::runtime_error(
         "Attempted to retrieve message without intializing.");
   }
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+boost::optional<T> MessageManager<T>::most_recent_msg() {
+  throw_if_uninitialized();
 
   boost::mutex::scoped_lock lock(msg_mutex_);
-  if (most_recent_msg_opt_) {
-    const auto msg = *most_recent_msg_opt_;
-    most_recent_msg_opt_ = boost::none;
-    return msg;
-  }
-  return boost::none;
+  return most_recent_msg_opt_;
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+boost::optional<T> MessageManager<T>::consume_most_recent_msg() {
+  throw_if_uninitialized();
+
+  boost::mutex::scoped_lock lock(msg_mutex_);
+  const auto msg = most_recent_msg_opt_;
+  most_recent_msg_opt_ = boost::none;
+  return msg;
 }
 
 //------------------------------------------------------------------------------

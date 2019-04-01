@@ -27,13 +27,16 @@ namespace maeve_automation_core {
 
 boost::optional<controller_interface_msgs::Command2D>
 Command2D_Manager::most_recent_msg() {
-  const auto msg =
-      MessageManager<controller_interface_msgs::Command2D>::most_recent_msg();
-  if (!msg) {
-    const auto use_last_message = (last_msg_ && last_msg_->sticky_control);
-    return (use_last_message ? last_msg_ : msg);
+  const auto msg = consume_most_recent_msg();
+  if (msg) {
+    if (msg->sticky_control) {
+      last_msg_ = msg;
+    } else {
+      last_msg_ = boost::none;
+    }
+    return msg;
   }
-  return msg;
+  return last_msg_;
 }
 
 //------------------------------------------------------------------------------
