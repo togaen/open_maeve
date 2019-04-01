@@ -32,10 +32,10 @@ namespace maeve_automation_core {
  * @brief This class subscribes to, converts, and returns Command2D messages.
  */
 template <typename T>
-class MessageManager {
+class MessageQueue {
  public:
   /** @brief Allow delayed initialization. */
-  MessageManager() = default;
+  MessageQueue() = default;
 
   /**
    * @brief Constructor: This is intended to piggy-back on another node's node
@@ -44,7 +44,7 @@ class MessageManager {
    * @param nh The node handle of an already constructed node.
    * @param topic The topic name to retrieve messages from.
    */
-  MessageManager(ros::NodeHandle& nh, const std::string& topic);
+  MessageQueue(ros::NodeHandle& nh, const std::string& topic);
 
   /** @brief Return the most recently recieved message. */
   virtual boost::optional<T> most_recent_msg();
@@ -77,12 +77,12 @@ class MessageManager {
   boost::optional<T> most_recent_msg_opt_;
   /** @brief Subscribe to the message topic. */
   ros::Subscriber sub_;
-};  // class MessageManager
+};  // class MessageQueue
 
 //------------------------------------------------------------------------------
 
 template <typename T>
-MessageManager<T>::MessageManager(ros::NodeHandle& nh, const std::string& topic)
+MessageQueue<T>::MessageQueue(ros::NodeHandle& nh, const std::string& topic)
     : most_recent_msg_opt_(boost::none) {
   initialize(nh, topic);
 }
@@ -90,15 +90,15 @@ MessageManager<T>::MessageManager(ros::NodeHandle& nh, const std::string& topic)
 //------------------------------------------------------------------------------
 
 template <typename T>
-void MessageManager<T>::initialize(ros::NodeHandle& nh,
-                                   const std::string& topic) {
-  sub_ = nh.subscribe(topic, 1, &MessageManager<T>::callback, this);
+void MessageQueue<T>::initialize(ros::NodeHandle& nh,
+                                 const std::string& topic) {
+  sub_ = nh.subscribe(topic, 1, &MessageQueue<T>::callback, this);
 }
 
 //------------------------------------------------------------------------------
 
 template <typename T>
-void MessageManager<T>::callback(const typename T::ConstPtr& msg) {
+void MessageQueue<T>::callback(const typename T::ConstPtr& msg) {
   boost::mutex::scoped_lock lock(msg_mutex_);
   most_recent_msg_opt_ = *msg;
 }
@@ -106,7 +106,7 @@ void MessageManager<T>::callback(const typename T::ConstPtr& msg) {
 //------------------------------------------------------------------------------
 
 template <typename T>
-void MessageManager<T>::throw_if_uninitialized() {
+void MessageQueue<T>::throw_if_uninitialized() {
   if (sub_.getTopic().empty()) {
     throw std::runtime_error(
         "Attempted to retrieve message without intializing.");
@@ -116,7 +116,7 @@ void MessageManager<T>::throw_if_uninitialized() {
 //------------------------------------------------------------------------------
 
 template <typename T>
-boost::optional<T> MessageManager<T>::most_recent_msg() {
+boost::optional<T> MessageQueue<T>::most_recent_msg() {
   throw_if_uninitialized();
 
   boost::mutex::scoped_lock lock(msg_mutex_);
@@ -126,7 +126,7 @@ boost::optional<T> MessageManager<T>::most_recent_msg() {
 //------------------------------------------------------------------------------
 
 template <typename T>
-boost::optional<T> MessageManager<T>::consume_most_recent_msg() {
+boost::optional<T> MessageQueue<T>::consume_most_recent_msg() {
   throw_if_uninitialized();
 
   boost::mutex::scoped_lock lock(msg_mutex_);

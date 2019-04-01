@@ -27,7 +27,7 @@
 namespace maeve_automation_core {
 /** @brief A message manager for Command2D messages. */
 class Command2D_Manager
-    : public MessageManager<controller_interface_msgs::Command2D> {
+    : public MessageQueue<controller_interface_msgs::Command2D> {
  public:
   /**
    * @brief This override will return the last recieved message if
