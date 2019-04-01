@@ -51,7 +51,7 @@ class Command2D_Manager {
    * @brief Explicitly initialize the manager.
    *
    * @param nh The node handle of an already constructed node.
-   * @param topic The topic anme to retrieve Command2D messages from.
+   * @param topic The topic name to retrieve Command2D messages from.
    */
   void initialize(ros::NodeHandle& nh, const std::string& topic);
 
