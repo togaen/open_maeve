@@ -21,6 +21,9 @@
  */
 #include "maeve_automation_core/isp_field/isp_field.h"
 
+// TODO(me): Need to also abstract out point type. There are lots of instances
+// where matrices are accessed with .at<Point2d> that cause segfaults if this
+// default type is changed.
 static constexpr auto ISP_CV_TYPE = CV_64FC2;
 
 namespace maeve_automation_core {
