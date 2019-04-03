@@ -79,7 +79,7 @@ cv::Mat controlSetGuidance(const cv::Mat& controls) {
 
 cv::Mat yawGuidance(const int center, const int width, const double left_decay,
                     const double right_decay) {
-  cv::Mat biasing_horizon(1, width, CV_64FC2);
+  cv::Mat biasing_horizon = zeroISP_Field(width, 1);
 
   auto decay = 1.0;
   for (auto i = center; i >= 0; --i) {

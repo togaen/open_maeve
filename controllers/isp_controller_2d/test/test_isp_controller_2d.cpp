@@ -27,12 +27,13 @@
 #include "isp_controller_2d/lib.h"
 #include "maeve_automation_core/isp_controller_2d/control_command.h"
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
+#include "maeve_automation_core/isp_field/isp_field.h"
 
 namespace maeve_automation_core {
 namespace {
 static const auto epsilon = 0.0001;
 cv::Mat dummyMatrix(const int rows, const int cols) {
-  cv::Mat m = cv::Mat(rows, cols, CV_64FC2);
+  cv::Mat m = zeroISP_Field(cols, rows);
   const auto offset = rows * cols;
   for (auto i = 0; i < rows; ++i) {
     for (auto j = 0; j < cols; ++j) {
