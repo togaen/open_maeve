@@ -21,6 +21,8 @@
  */
 #include "maeve_automation_core/isp_field/isp_field.h"
 
+static constexpr auto ISP_CV_TYPE = CV_64FC2;
+
 namespace maeve_automation_core {
 
 //------------------------------------------------------------------------------
@@ -32,7 +34,7 @@ cv::Mat zeroISP_Field(const int width, const int height) {
 //------------------------------------------------------------------------------
 
 cv::Mat zeroISP_Field(const cv::Size& size) {
-  return cv::Mat::zeros(size, CV_64FC2);
+  return cv::Mat::zeros(size, ISP_CV_TYPE);
 }
 
 //------------------------------------------------------------------------------
@@ -44,7 +46,7 @@ cv::Mat oneISP_Field(const int width, const int height) {
 //------------------------------------------------------------------------------
 
 cv::Mat oneISP_Field(const cv::Size& size) {
-  return cv::Mat::ones(size, CV_64FC2);
+  return cv::Mat::ones(size, ISP_CV_TYPE);
 }
 
 //------------------------------------------------------------------------------
