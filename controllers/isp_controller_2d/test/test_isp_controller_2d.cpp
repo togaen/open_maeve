@@ -96,13 +96,13 @@ TEST(ISP_Controller, test) {
 
   // Build controller.
   ISP_Controller2D controller(p);
+  const cv::Rect ROI = ISP_ROI(m, ek.height, ek.horizon);
 
   {
     // Desired control.
     ControlCommand u_d(1.0, 0.5);
-
     // Compute SD control.
-    const auto u_star = controller.SD_Control(m, u_d);
+    const auto u_star = controller.SD_Control(m, ROI, u_d);
     // \TODO(me) Wait until controller design stabilizes to enable these tests.
     // EXPECT_NEAR(u_star.throttle, 0.99918, epsilon);
     // EXPECT_NEAR(u_star.yaw, -1.0, epsilon);
@@ -116,7 +116,7 @@ TEST(ISP_Controller, test) {
     auto val = min_val;
     while (val <= max_val) {
       ControlCommand u_d(val, max_val - val);
-      const auto u_star = controller.SD_Control(m, u_d);
+      const auto u_star = controller.SD_Control(m, ROI, u_d);
       ASSERT_GE(u_star.throttle, -1.0);
       ASSERT_LE(u_star.throttle, 1.0);
       ASSERT_GE(u_star.yaw, -1.0);
@@ -269,9 +269,11 @@ TEST(ISP_Controller, testSafeControls) {
   (28, 63) (29, 64) (30, 65) (31, 66) (32, 67) (33, 68) (34, 69)
   */
 
+  const cv::Rect ROI = ISP_ROI(ISP, kernel_height, kernel_horizon);
+
   // Compute control horizon.
   std::vector<double> reduction{14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0};
-  cv::Mat h = controlHorizon(ISP, kernel_height, kernel_horizon);
+  cv::Mat h = controlHorizon(ISP, ROI);
   ASSERT_EQ(reduction.size(), h.cols);
   ASSERT_EQ(h.rows, 1);
   for (auto i = 0; i < h.cols; ++i) {

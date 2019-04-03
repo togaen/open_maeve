@@ -111,7 +111,7 @@ cv::Mat controlHorizon(const cv::Mat& ISP, const cv::Rect& ROI) {
 
 cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width) {
   // Reserve return value.
-  cv::Mat eroded_h;
+  cv::Mat eroded_h = zeroISP_Field(h.size());
 
   const auto kernel_pixel_width = static_cast<int>(kernel_width * h.cols);
 
@@ -152,22 +152,22 @@ cv::Mat projectThrottlesToControlSpace(
 
 cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h) {
   // Convert throttle values to unit intervals.
-  cv::Mat unit_throttle_h = 0.5 * (cv::Scalar(1.0, 1.0) + throttle_h);
+  cv::Mat unit_throttle_h = 0.5 * (cv::Scalar(1.0f, 1.0f) + throttle_h);
 
   // Get channel of guidance horizon: it's a potential horizon, so channel 1.
-  std::vector<cv::Mat> guidance_channels(2);
+  std::vector<cv::Mat> guidance_channels(guidance_h.channels());
   cv::split(guidance_h, guidance_channels);
   const auto& guidance_channel = guidance_channels[0];
 
   // Get channel with throttle max values: it's a control horizon, so channel 2.
-  std::vector<cv::Mat> throttle_channels(2);
+  std::vector<cv::Mat> throttle_channels(unit_throttle_h.channels());
   cv::split(unit_throttle_h, throttle_channels);
   const auto& throttle_channel = throttle_channels[1];
 
   // Set up throttle guidance storage.
   cv::Mat guided_throttle_h =
-      cv::Scalar(-1.0, 0.0) + zeroISP_Field(throttle_h.cols, 1);
-  std::vector<cv::Mat> guided_throttle_channels(2);
+      cv::Scalar(-1.0f, 0.0f) + zeroISP_Field(throttle_h.size());
+  std::vector<cv::Mat> guided_throttle_channels(guided_throttle_h.channels());
   cv::split(guided_throttle_h, guided_throttle_channels);
   const auto& guided_throttle_max_channel = guided_throttle_channels[1];
 
@@ -175,8 +175,9 @@ cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h) {
   cv::multiply(throttle_channel, guidance_channel, guided_throttle_max_channel);
 
   // Done.
-  cv::merge(guided_throttle_channels, guided_throttle_h);
-  return guided_throttle_h;
+  cv::Mat final_guided_throttle_h;
+  cv::merge(guided_throttle_channels, final_guided_throttle_h);
+  return final_guided_throttle_h;
 }
 
 //------------------------------------------------------------------------------

@@ -288,7 +288,7 @@ ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP,
       yaw2Column(ISP, 0.0, p_.focal_length_x, p_.principal_point_x);
 
   // Find the index of the desired control command.
-  const auto& throttle_h = horizons_[HorizonType::THROTTLE];
+  const auto throttle_h = horizons_[HorizonType::THROTTLE];
   const auto control_idx =
       dampedMaxThrottleIndex(throttle_h, p_.potential_inertia, col_d);
 
@@ -318,12 +318,12 @@ void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP,
                                                       const cv::Rect& ROI) {
   // Get control horizon.
   horizons_[HorizonType::CONTROL] = controlHorizon(ISP, ROI);
-  const auto& ch = horizons_[HorizonType::CONTROL];
+  const auto ch = horizons_[HorizonType::CONTROL];
 
   // Apply filter.
   horizons_[HorizonType::ERODED_CONTROL] =
       erodeHorizon(ch, p_.erosion_kernel.width);
-  const auto& ech = horizons_[HorizonType::ERODED_CONTROL];
+  const auto ech = horizons_[HorizonType::ERODED_CONTROL];
 
   // Compute guidance field.
   horizons_[HorizonType::CONTROL_SET_GUIDANCE] = controlSetGuidance(ech);
@@ -349,8 +349,6 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
   ControlCommand cmd;
 
   // Compute generic horizons.
-  //  const cv::Rect ROI = control_horizon_ROI(ISP, p_.erosion_kernel.height,
-  //                                         p_.erosion_kernel.horizon);
   computeControlSelectionHorizon(ISP, ROI);
 
   // Map desired yaw image plane column.
@@ -358,31 +356,31 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       yaw2Column(ISP, u_d.yaw, p_.focal_length_x, p_.principal_point_x);
 
   // Get control horizon.
-  const auto& ch = horizons_[HorizonType::CONTROL];
+  const auto ch = horizons_[HorizonType::CONTROL];
 
   // Apply filter.
-  const auto& ech = horizons_[HorizonType::ERODED_CONTROL];
+  const auto ech = horizons_[HorizonType::ERODED_CONTROL];
 
   // Compute guidance field.
-  const auto& control_set_guidance =
+  const auto control_set_guidance =
       horizons_[HorizonType::CONTROL_SET_GUIDANCE];
 
   horizons_[HorizonType::YAW_GUIDANCE] = yawGuidance(
       static_cast<int>(col_d), ch.cols, p_.yaw_decay.left, p_.yaw_decay.right);
-  const auto& yaw_guidance = horizons_[HorizonType::YAW_GUIDANCE];
+  const auto yaw_guidance = horizons_[HorizonType::YAW_GUIDANCE];
 
   // horizons_[HorizonType::GUIDANCE] =
   //  0.5 * (yaw_guidance + control_set_guidance);
   horizons_[HorizonType::GUIDANCE] = yaw_guidance;
-  const auto& guidance_h = horizons_[HorizonType::GUIDANCE];
+  const auto guidance_h = horizons_[HorizonType::GUIDANCE];
 
   // Project throttles onto [r_min, r_max].
-  const auto& throttle_h = horizons_[HorizonType::THROTTLE];
+  const auto throttle_h = horizons_[HorizonType::THROTTLE];
 
   // Compute guided throttle horizon.
   horizons_[HorizonType::GUIDED_THROTTLE] =
       throttleGuidance(throttle_h, guidance_h);
-  const auto& guided_throttle_h = horizons_[HorizonType::GUIDED_THROTTLE];
+  const auto guided_throttle_h = horizons_[HorizonType::GUIDED_THROTTLE];
 
   // Find the index of the desired control command.
   const auto control_idx = dampedMaxThrottleIndex(
