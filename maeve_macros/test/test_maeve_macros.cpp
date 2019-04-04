@@ -25,78 +25,78 @@
 
 namespace maeve_automation_core {
 TEST(MaeveMacros, testNotNaN) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testFinite) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testInfinite) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testNE) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testEQ) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testEven) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testOdd) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testLT) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testLE) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testGT) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testGE) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testContainsClosed) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testContainsOpen) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testStrictlyPositive) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(MaeveMacros, testNonempty) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 }  // namespace maeve_automation_core
 

@@ -42,7 +42,7 @@ TEST(MTQ, testDifferentiation1) {
     EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
     EXPECT_NEAR(std::get<1>(*dt), -1.0, epsilon);
   } else {
-    EXPECT_TRUE(false);
+    EXPECT_TRUE(false) << "Call to mtq.bfd_dt() failed.";
   }
 
   // Shouldn't work for first element, or outside elements.
@@ -55,7 +55,7 @@ TEST(MTQ, testDifferentiation1) {
     EXPECT_NEAR(std::get<0>(*dt), 1.0, epsilon);
     EXPECT_NEAR(std::get<1>(*dt), -1.0, epsilon);
   } else {
-    EXPECT_TRUE(false);
+    EXPECT_TRUE(false) << "Call to mtq.bfd_dt() failed.";
   }
 }
 

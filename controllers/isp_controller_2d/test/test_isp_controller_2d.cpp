@@ -47,18 +47,18 @@ cv::Mat dummyMatrix(const int rows, const int cols) {
 }  // namespace
 
 TEST(ISP_Controller, testParamValidityChecks) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(ISP_Controller, testDampedMaxThrottleIndex) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(ISP_Controller, testProjectYawToControlSpace) {
-  // \TODO(me)
-  EXPECT_TRUE(false);
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "replace with a real test.";
 }
 
 TEST(ISP_Controller, test) {
