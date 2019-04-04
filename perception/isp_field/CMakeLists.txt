@@ -211,7 +211,11 @@ target_link_libraries(${PROJECT_NAME}_ros_interface
 #############
 
 ## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_isp_field.cpp)
+catkin_add_gtest(${PROJECT_NAME}-test
+  test/test_main.cpp
+  test/test_isp_field.cpp
+  test/test_potential_transforms.cpp
+)
 if(TARGET ${PROJECT_NAME}-test)
    target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 endif()

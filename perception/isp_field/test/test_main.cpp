@@ -21,23 +21,7 @@
  */
 #include <gtest/gtest.h>
 
-#include <cmath>
-
-#include "maeve_automation_core/isp_field/shape_parameters.h"
-
-namespace maeve_automation_core {
-namespace {
-constexpr auto epsilon = 0.00001;
-}  // namespace
-
-TEST(ShapeParams, testMidPoint) {
-  const auto t = 0.0;
-  const auto r_min = 3.5;
-  const auto r_max = 5.0;
-  const auto a = 1.0;
-  const auto b = 1.0;
-  ShapeParameters sp(t, r_min, r_max, a, b);
-  EXPECT_NEAR(sp.rangeMidPoint(), (r_min + r_max) / 2.0, epsilon);
-  EXPECT_TRUE(std::isnan(ShapeParameters().rangeMidPoint()));
+int main(int argc, char** argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
-}  // namespace maeve_automation_core

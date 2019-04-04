@@ -22,22 +22,42 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <limits>
 
-#include "maeve_automation_core/isp_field/shape_parameters.h"
+#include "maeve_automation_core/isp_field/potential_transforms.h"
 
 namespace maeve_automation_core {
 namespace {
-constexpr auto epsilon = 0.00001;
+constexpr auto INF = std::numeric_limits<double>::infinity();
+constexpr auto EPS = 1e-4;
+constexpr auto t = 0.0;
+constexpr auto r_min = 3.5;
+constexpr auto r_max = 5.0;
+constexpr auto a = 1.0;
+constexpr auto b = 1.0;
+const ShapeParameters sp(t, r_min, r_max, a, b);
 }  // namespace
 
-TEST(ShapeParams, testMidPoint) {
-  const auto t = 0.0;
-  const auto r_min = 3.5;
-  const auto r_max = 5.0;
-  const auto a = 1.0;
-  const auto b = 1.0;
-  ShapeParameters sp(t, r_min, r_max, a, b);
-  EXPECT_NEAR(sp.rangeMidPoint(), (r_min + r_max) / 2.0, epsilon);
-  EXPECT_TRUE(std::isnan(ShapeParameters().rangeMidPoint()));
+//------------------------------------------------------------------------------
+
+TEST(PotentialTransform, testHard) {
+  PotentialTransform<ConstraintType::HARD> h(sp);
+  std::cout << "inf: " << h(cv::Point2d(INF, 0.0)) << std::endl;
+
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "put a real test here.";
 }
+
+//------------------------------------------------------------------------------
+
+TEST(PotentialTransform, testSoft) {
+  PotentialTransform<ConstraintType::SOFT> h(sp);
+  std::cout << "inf: " << h(cv::Point2d(INF, 0.0)) << std::endl;
+
+  EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
+                        "put a real test here.";
+}
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
