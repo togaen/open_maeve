@@ -32,6 +32,7 @@ namespace maeve_automation_core {
  * @brief This class describes interval bounds for time and arc length s.
  *
  * @tparam Order The desired order up to which to specify arc length bounds.
+ * @tparam T     The scalar type (float or double)
  *
  * The bounds for arc length are specified to a given order. All values within a
  * given interval are considered feasible, and all values outside the interval
