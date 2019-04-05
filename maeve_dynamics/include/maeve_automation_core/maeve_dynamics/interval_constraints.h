@@ -113,6 +113,13 @@ class IntervalConstraints {
                       const std::array<Interval<T>, Order + 1>& s_bounds);
 
   /**
+   * @brief Create an object where all intervals are [0, 0]
+   *
+   * @note This is useful when delayed initialization is needed.
+   */
+  static IntervalConstraints create_zeroed_set();
+
+  /**
    * @brief Compute and return the intersection of two constraint objects.
    *
    * The intersection of two constraint objects is a constraint
@@ -196,6 +203,18 @@ IntervalConstraints<Order, T>::IntervalConstraints(
        << *this;
     throw std::runtime_error(ss.str());
   }
+}
+
+template <unsigned int Order, typename T>
+IntervalConstraints<Order, T>
+IntervalConstraints<Order, T>::create_zeroed_set() {
+  const Interval<T> zero_interval(T(0), T(0));
+  constexpr auto N = (Order + 1);
+  std::array<Interval<T>, N> bounds_set;
+  for (auto i = 0; i < N; ++i) {
+    bounds_set[i] = zero_interval;
+  }
+  return IntervalConstraints(zero_interval, zero_interval, bounds_set);
 }
 
 template <unsigned int Order, typename T>

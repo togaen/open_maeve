@@ -137,6 +137,12 @@ TEST(Maeve_Dynamics_Interval_Constraints, testValid) {
   });
 }
 
+TEST(Maeve_Dynamics_Interval_Constraints, testFactory) {
+  EXPECT_NO_THROW({
+    const auto c = (IntervalConstraints<3, double>::create_zeroed_set());
+  });
+}
+
 TEST(Maeve_Dynamics_Interval_Constraints, testComparisons) {
   {
     const auto c1 = IntervalConstraints<1, double>(
