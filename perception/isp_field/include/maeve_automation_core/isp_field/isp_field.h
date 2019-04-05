@@ -24,6 +24,9 @@
 #include <opencv2/opencv.hpp>
 
 namespace maeve_automation_core {
+/** @brief Construct a zero-filled single channel ISP field. */
+cv::Mat zero_ISP_single_channel(const cv::Size& size);
+
 /**
  * @brief Construct and return a zero-filled ISP field.
  *

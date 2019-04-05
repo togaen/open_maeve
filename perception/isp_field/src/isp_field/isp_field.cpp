@@ -30,6 +30,12 @@ namespace maeve_automation_core {
 
 //------------------------------------------------------------------------------
 
+cv::Mat zero_ISP_single_channel(const cv::Size& size) {
+  return cv::Mat::zeros(size, CV_64FC1);
+}
+
+//------------------------------------------------------------------------------
+
 cv::Mat zeroISP_Field(const int width, const int height) {
   return zeroISP_Field(cv::Size(width, height));
 }
