@@ -25,17 +25,19 @@
 
 namespace maeve_automation_core {
 namespace {
-const auto eps_bounds = Interval<double>(0.0, 0.0);
+const auto singleton_bounds = Interval<double>(0.0, 0.0);
+const auto unit_bounds = Interval<double>(0.0, 1.0);
 }  // namespace
 
 TEST(Maeve_Dynamics_Interval_Constraints, testAccessors) {
   {
     const auto c = IntervalConstraints<2, double>(
-        eps_bounds, Interval<double>(0, 1),
-        {Interval<double>(2, 3), Interval<double>(4, 5)});
+        singleton_bounds, unit_bounds,
+        {Interval<double>(2, 3), Interval<double>(4, 5),
+         Interval<double>(6, 7)});
 
     const auto& t = IntervalConstraints<2, double>::boundsT(c);
-    EXPECT_EQ(t, Interval<double>(0, 1));
+    EXPECT_EQ(t, unit_bounds);
 
     const auto& s0 = IntervalConstraints<2, double>::boundsS<0>(c);
     EXPECT_EQ(s0, Interval<double>(2, 3));
@@ -46,8 +48,9 @@ TEST(Maeve_Dynamics_Interval_Constraints, testAccessors) {
 
   {
     const auto c = IntervalConstraints<2, double>(
-        eps_bounds, Interval<double>(0, 1),
-        {Interval<double>(2, 3), Interval<double>(4, 5)});
+        singleton_bounds, unit_bounds,
+        {Interval<double>(2, 3), Interval<double>(4, 5),
+         Interval<double>(6, 7)});
 
     // This should not compile.
     // const auto& s = IntervalConstraints<2, double>::boundsS<3>(c);
@@ -58,8 +61,7 @@ TEST(Maeve_Dynamics_Interval_Constraints, testAccessors) {
 TEST(Maeve_Dynamics_Interval_Constraints, testIntersect) {
   {
     const auto c1 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(0, 1),
-        {Interval<double>(0, 1), Interval<double>(2, 3)});
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 3)});
     const auto c2 = c1;
     const auto c = IntervalConstraints<1, double>::intersect(c1, c2);
     EXPECT_EQ(c, c1);
@@ -67,86 +69,78 @@ TEST(Maeve_Dynamics_Interval_Constraints, testIntersect) {
 
   {
     const auto c1 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(0, 1),
-        {Interval<double>(0, 1), Interval<double>(2, 3)});
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 3)});
     const auto c2 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(),
-        {Interval<double>(0, 1), Interval<double>(2, 3)});
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 2.5)});
     const auto c = IntervalConstraints<1, double>::intersect(c1, c2);
     EXPECT_NE(c, c1);
 
     const auto c3 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(),
-        {Interval<double>(0, 1), Interval<double>(2, 3)});
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 2.5)});
     EXPECT_EQ(c, c3);
   }
 
   {
     const auto c1 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(0, 1),
-        {Interval<double>(), Interval<double>(2, 3)});
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 3)});
     const auto c2 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(),
-        {Interval<double>(0, 1), Interval<double>(2, 3)});
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 3)});
     const auto c = IntervalConstraints<1, double>::intersect(c1, c2);
-    EXPECT_NE(c, c1);
+    EXPECT_EQ(c, c1);
 
     const auto c3 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(),
-        {Interval<double>(), Interval<double>(2, 3)});
-    EXPECT_EQ(c, c3);
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 2.5)});
+    EXPECT_NE(c, c3);
   }
 
   {
     const auto c1 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(0, 1),
-        {Interval<double>(0, 1), Interval<double>(2, 3)});
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 3)});
     const auto c2 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(-2, 5),
+        singleton_bounds, Interval<double>(-2, 5),
         {Interval<double>(0.5, 0.75), Interval<double>(2.3, 3.7)});
     const auto c = IntervalConstraints<1, double>::intersect(c1, c2);
     EXPECT_NE(c, c1);
 
     const auto c3 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(0, 1),
+        singleton_bounds, unit_bounds,
         {Interval<double>(0.5, 0.75), Interval<double>(2.3, 3)});
     EXPECT_EQ(c, c3);
   }
 }
 
 TEST(Maeve_Dynamics_Interval_Constraints, testSatisfiable) {
-  {
-    const auto c = IntervalConstraints<0, double>(
-        eps_bounds, Interval<double>(0, 1), {Interval<double>()});
-    EXPECT_FALSE((IntervalConstraints<0, double>::satisfiable(c)));
-  }
+  EXPECT_THROW(
+      {
+        const auto c = (IntervalConstraints<0, double>(
+            singleton_bounds, unit_bounds, {Interval<double>()}));
+      },
+      std::runtime_error);
 
-  {
-    const auto c = IntervalConstraints<0, double>(
-        eps_bounds, Interval<double>(), {Interval<double>(0, 1)});
-    EXPECT_FALSE((IntervalConstraints<0, double>::satisfiable(c)));
-  }
+  EXPECT_THROW(
+      {
+        const auto c = (IntervalConstraints<0, double>(
+            singleton_bounds, Interval<double>(), {unit_bounds}));
+      },
+      std::runtime_error);
 
-  {
-    const auto c = IntervalConstraints<0, double>(
-        eps_bounds, Interval<double>(0, 1), {Interval<double>(0, 1)});
-    EXPECT_TRUE((IntervalConstraints<0, double>::satisfiable(c)));
-  }
+  EXPECT_NO_THROW({
+    const auto c = (IntervalConstraints<0, double>(singleton_bounds,
+                                                   unit_bounds, {unit_bounds}));
+  });
 }
 
 TEST(Maeve_Dynamics_Interval_Constraints, testValid) {
-  {
-    const auto c = IntervalConstraints<0, double>(
-        eps_bounds, Interval<double>(0, 1), {Interval<double>(0, 1)});
-    EXPECT_TRUE((IntervalConstraints<0, double>::satisfiable(c)));
-  }
+  EXPECT_NO_THROW({
+    const auto c = (IntervalConstraints<0, double>(singleton_bounds,
+                                                   unit_bounds, {unit_bounds}));
+  });
 }
 
 TEST(Maeve_Dynamics_Interval_Constraints, testComparisons) {
   {
     const auto c1 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(0, 1),
-        {Interval<double>(0, 1), Interval<double>(2, 3)});
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 3)});
     const auto c2 = c1;
     EXPECT_EQ(c1, c2);
     EXPECT_FALSE((c1 != c2));
@@ -154,11 +148,10 @@ TEST(Maeve_Dynamics_Interval_Constraints, testComparisons) {
 
   {
     const auto c1 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(0, 1),
-        {Interval<double>(0, 1), Interval<double>(2, 3)});
-    const auto c2 = IntervalConstraints<1, double>(
-        eps_bounds, Interval<double>(1, 2),
-        {Interval<double>(0, 1), Interval<double>(2, 3)});
+        singleton_bounds, unit_bounds, {unit_bounds, Interval<double>(2, 3)});
+    const auto c2 =
+        IntervalConstraints<1, double>(singleton_bounds, Interval<double>(1, 2),
+                                       {unit_bounds, Interval<double>(2, 3)});
     EXPECT_NE(c1, c2);
     EXPECT_FALSE((c1 == c2));
   }
@@ -166,16 +159,16 @@ TEST(Maeve_Dynamics_Interval_Constraints, testComparisons) {
 
 TEST(Maeve_Dynamics_Interval_Constraints, testConstruction) {
   {
-    const auto c = IntervalConstraints<0, double>(
-        eps_bounds, Interval<double>(0, 1), {Interval<double>(0, 1)});
+    const auto c = IntervalConstraints<0, double>(singleton_bounds, unit_bounds,
+                                                  {unit_bounds});
     EXPECT_TRUE(true);
   }
 
   {
     // This should not compile.
-    // const auto c = IntervalConstraints<0, double>(eps_bounds,
-    // Interval<double>(0, 1),
-    //                                      {Interval<double>(0, 1),
+    // const auto c = IntervalConstraints<0, double>(singleton_bounds,
+    // unit_bounds,
+    //                                      {unit_bounds,
     //                                      Interval<double>(2, 3)});
     // EXPECT_TRUE(false);
   }

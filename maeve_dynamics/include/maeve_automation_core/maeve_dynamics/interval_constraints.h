@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <array>
 #include <iostream>
+#include <stdexcept>
 
 #include "maeve_automation_core/maeve_geometry/interval.h"
 
@@ -112,15 +113,6 @@ class IntervalConstraints {
                       const std::array<Interval<T>, Order + 1>& s_bounds);
 
   /**
-   * @brief A constraint set is satisfiable iff all intervals are non-emtpy.
-   *
-   * @param constraints The constraint set to check for satisfiability.
-   *
-   * @return True if the constraint set is satisfiable; otherwise false.
-   */
-  static bool satisfiable(const IntervalConstraints& constraints);
-
-  /**
    * @brief Compute and return the intersection of two constraint objects.
    *
    * The intersection of two constraint objects is a constraint
@@ -168,9 +160,13 @@ class IntervalConstraints {
 
  private:
   /**
-   * @brief Constructor: default.
+   * @brief A constraint set is satisfiable iff all intervals are non-emtpy.
+   *
+   * @param constraints The constraint set to check for satisfiability.
+   *
+   * @return True if the constraint set is satisfiable; otherwise false.
    */
-  IntervalConstraints() = default;
+  static bool satisfiable(const IntervalConstraints& constraints);
 
   /** @brief Zero-centered padding range for floating point error. */
   Interval<T> epsilon_bounds_;
@@ -193,32 +189,42 @@ IntervalConstraints<Order, T>::IntervalConstraints(
     const std::array<Interval<T>, Order + 1>& s_bounds)
     : epsilon_bounds_(epsilon_bounds),
       t_bounds_(t_bounds),
-      s_bounds_(s_bounds) {}
+      s_bounds_(s_bounds) {
+  if (!IntervalConstraints::satisfiable(*this)) {
+    std::stringstream ss;
+    ss << "Attempted to construct a constraint object that is not satisfiable: "
+       << *this;
+    throw std::runtime_error(ss.str());
+  }
+}
 
 template <unsigned int Order, typename T>
 bool IntervalConstraints<Order, T>::satisfiable(
     const IntervalConstraints& constraints) {
+  const auto eps_non_empty = !Interval<T>::empty(constraints.epsilon_bounds_);
   const auto t_non_empty = !Interval<T>::empty(constraints.t_bounds_);
   const auto s_non_empty = std::all_of(std::begin(constraints.s_bounds_),
                                        std::end(constraints.s_bounds_),
                                        [&](const Interval<T>& interval) {
                                          return !Interval<T>::empty(interval);
                                        });
-  return (t_non_empty && s_non_empty);
+  return (eps_non_empty && t_non_empty && s_non_empty);
 }
 
 template <unsigned int Order, typename T>
 IntervalConstraints<Order, T> IntervalConstraints<Order, T>::intersect(
     const IntervalConstraints& constraints1,
     const IntervalConstraints& constraints2) {
-  auto c = IntervalConstraints();
-  c.t_bounds_ =
+  const auto eps_bounds = Interval<T>::intersect(constraints1.epsilon_bounds_,
+                                                 constraints2.epsilon_bounds_);
+  const auto t_bounds =
       Interval<T>::intersect(constraints1.t_bounds_, constraints2.t_bounds_);
+  auto s_bounds = constraints1.s_bounds_;
   for (auto i = 0; i <= Order; ++i) {
-    c.s_bounds_[i] = Interval<T>::intersect(constraints1.s_bounds_[i],
-                                            constraints2.s_bounds_[i]);
+    s_bounds[i] =
+        Interval<T>::intersect(s_bounds[i], constraints2.s_bounds_[i]);
   }
-  return c;
+  return IntervalConstraints(eps_bounds, t_bounds, s_bounds);
 }
 
 template <unsigned int Order, typename T>
