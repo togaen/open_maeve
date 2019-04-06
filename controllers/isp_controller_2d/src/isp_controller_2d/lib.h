@@ -129,7 +129,9 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
                     const double right_decay);
 
 /**
- * @brief Min reduce the ISP to a single row vector.
+ * @brief Reduce the ISP to a single row vector.
+ *
+ * @note The reduction type is CV_REDUCE_AVG
  *
  * @param ROI The region of interest in the ISP field. All values outside the
  * ROI are ignored.
@@ -137,7 +139,7 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
  * @return A single row vector of width ISP that contains the reduction of each
  * column in ISP.
  */
-cv::Mat reduce_to_horizon(const cv::Mat& ISP, const cv::Rect& ROI);
+cv::Mat avg_reduce_to_horizon(const cv::Mat& ISP, const cv::Rect& ROI);
 
 /**
  * @brief Apply a min filter to a control horizon.

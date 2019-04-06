@@ -88,7 +88,7 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
 
 //------------------------------------------------------------------------------
 
-cv::Mat reduce_to_horizon(const cv::Mat& ISP, const cv::Rect& ROI) {
+cv::Mat avg_reduce_to_horizon(const cv::Mat& ISP, const cv::Rect& ROI) {
   cv::Mat reduced_ISP;
   cv::reduce(ISP(ROI), reduced_ISP, 0 /* 0: row, 1: column */, CV_REDUCE_AVG);
   return reduced_ISP;
