@@ -146,10 +146,10 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
  * @param ROI The region of interest in the ISP field. All values outside the
  * ROI are ignored.
  *
- * @return A single row vector of width ISP.cols that contains the min of each
+ * @return A single row vector of width ISP that contains the reduction of each
  * column in ISP.
  */
-cv::Mat controlHorizon(const cv::Mat& ISP, const cv::Rect& ROI);
+cv::Mat reduce_to_horizon(const cv::Mat& ISP, const cv::Rect& ROI);
 
 /**
  * @brief Apply a min filter to a control horizon.

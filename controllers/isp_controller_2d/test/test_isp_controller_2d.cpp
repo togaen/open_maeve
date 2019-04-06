@@ -273,7 +273,7 @@ TEST(ISP_Controller, testSafeControls) {
 
   // Compute control horizon.
   std::vector<double> reduction{14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0};
-  cv::Mat h = controlHorizon(ISP, ROI);
+  cv::Mat h = reduce_to_horizon(ISP, ROI);
   ASSERT_EQ(reduction.size(), h.cols);
   ASSERT_EQ(h.rows, 1);
   for (auto i = 0; i < h.cols; ++i) {

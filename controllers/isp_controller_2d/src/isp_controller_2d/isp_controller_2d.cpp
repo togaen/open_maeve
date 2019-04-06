@@ -317,7 +317,7 @@ ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP,
 void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP,
                                                       const cv::Rect& ROI) {
   // Get control horizon.
-  horizons_[HorizonType::CONTROL] = controlHorizon(ISP, ROI);
+  horizons_[HorizonType::CONTROL] = reduce_to_horizon(ISP, ROI);
   const auto ch = horizons_[HorizonType::CONTROL];
 
   // Apply filter.
