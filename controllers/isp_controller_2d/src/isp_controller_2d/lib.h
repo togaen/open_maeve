@@ -112,18 +112,6 @@ double yaw2Column(const cv::Mat& image_plane, const double yaw,
                   const double f_x, const double p_x);
 
 /**
- * @brief Compute a guidance horizon based on availability of controls.
- *
- * This horizon is used by the control law to bias direction towards larger sets
- * of available controls.
- *
- * @param controls The available set of controls for each ISP column.
- *
- * @return A row vector containing guidance factors.
- */
-cv::Mat controlSetGuidance(const cv::Mat& controls);
-
-/**
  * @brief Compute a yaw-based guidance horizon for choosing controls.
  *
  * This horizon is used by the control law to bias direction towards `center'.
