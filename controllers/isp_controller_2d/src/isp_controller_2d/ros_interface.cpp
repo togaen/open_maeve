@@ -155,8 +155,7 @@ bool HorizonVisualizer::unit_visualization_bounds(
   const auto is_unit_range_type =
       ((ht == ISP_Controller2D::HorizonType::YAW_GUIDANCE) ||
        (ht == ISP_Controller2D::HorizonType::GUIDANCE) ||
-       (ht == ISP_Controller2D::HorizonType::GUIDED_THROTTLE) ||
-       (ht == ISP_Controller2D::HorizonType::CONTROL_SET_GUIDANCE));
+       (ht == ISP_Controller2D::HorizonType::GUIDED_THROTTLE));
   return is_unit_range_type;
 }
 

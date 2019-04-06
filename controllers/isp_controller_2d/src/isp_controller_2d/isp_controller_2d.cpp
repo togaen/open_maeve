@@ -221,8 +221,6 @@ std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
       return "control";
     case HorizonType::ERODED_CONTROL:
       return "eroded_control";
-    case HorizonType::CONTROL_SET_GUIDANCE:
-      return "control_set_guidance";
     case HorizonType::THROTTLE:
       return "throttle";
     case HorizonType::GUIDED_THROTTLE:
@@ -245,9 +243,6 @@ ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
   }
   if (str == "eroded_control") {
     return HorizonType::ERODED_CONTROL;
-  }
-  if (str == "control_set_guidance") {
-    return HorizonType::CONTROL_SET_GUIDANCE;
   }
   if (str == "throttle") {
     return HorizonType::THROTTLE;
@@ -325,9 +320,6 @@ void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP,
       erodeHorizon(ch, p_.erosion_kernel.width);
   const auto ech = horizons_[HorizonType::ERODED_CONTROL];
 
-  // Compute guidance field.
-  horizons_[HorizonType::CONTROL_SET_GUIDANCE] = controlSetGuidance(ech);
-
   // Project throttles onto [r_min, r_max].
   horizons_[HorizonType::THROTTLE] =
       projectThrottlesToControlSpace(ech, C_u_, p_.K_P, p_.K_D);
@@ -361,16 +353,11 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
   // Apply filter.
   const auto& ech = horizons_[HorizonType::ERODED_CONTROL];
 
-  // Compute guidance field.
-  const auto& control_set_guidance =
-      horizons_[HorizonType::CONTROL_SET_GUIDANCE];
-
   horizons_[HorizonType::YAW_GUIDANCE] = yawGuidance(
       static_cast<int>(col_d), ch.cols, p_.yaw_decay.left, p_.yaw_decay.right);
   const auto& yaw_guidance = horizons_[HorizonType::YAW_GUIDANCE];
 
   // horizons_[HorizonType::GUIDANCE] =
-  //  0.5 * (yaw_guidance + control_set_guidance);
   horizons_[HorizonType::GUIDANCE] = yaw_guidance;
   const auto& guidance_h = horizons_[HorizonType::GUIDANCE];
 

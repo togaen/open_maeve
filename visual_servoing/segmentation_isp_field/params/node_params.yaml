@@ -9,7 +9,6 @@ visualize_horizons: [
   'eroded_control',
   'guided_throttle',
   'yaw_guidance',
-  'control_set_guidance',
   'guidance'
 ]
 
