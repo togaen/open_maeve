@@ -117,7 +117,7 @@ double yaw2Column(const cv::Mat& image_plane, const double yaw,
  * This horizon is used by the control law to bias direction towards larger sets
  * of available controls.
  *
- * @param controls The availabe set of controls for each ISP column.
+ * @param controls The available set of controls for each ISP column.
  *
  * @return A row vector containing guidance factors.
  */
