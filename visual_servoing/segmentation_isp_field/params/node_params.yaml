@@ -8,8 +8,7 @@ visualize_horizons: [
   'control',
   'eroded_control',
   'guided_throttle',
-  'yaw_guidance',
-  'guidance'
+  'yaw_guidance'
 ]
 
 # horizon structures are 1xN row vectors; to make visualization more useful, artificially stretch the visualization vertically
