@@ -227,8 +227,6 @@ std::string ISP_Controller2D::horizonTypeToString(const HorizonType cs) {
       return "guided_throttle";
     case HorizonType::YAW_GUIDANCE:
       return "yaw_guidance";
-    case HorizonType::GUIDANCE:
-      return "guidance";
     default:
       return "invalid";
   }
@@ -252,9 +250,6 @@ ISP_Controller2D::HorizonType ISP_Controller2D::stringToHorizonType(
   }
   if (str == "yaw_guidance") {
     return HorizonType::YAW_GUIDANCE;
-  }
-  if (str == "guidance") {
-    return HorizonType::GUIDANCE;
   }
   return HorizonType::INVALID;
 }
@@ -357,23 +352,23 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       static_cast<int>(col_d), ch.cols, p_.yaw_decay.left, p_.yaw_decay.right);
   const auto& yaw_guidance = horizons_[HorizonType::YAW_GUIDANCE];
 
-  horizons_[HorizonType::GUIDANCE] = yaw_guidance;
-  const auto& guidance_h = horizons_[HorizonType::GUIDANCE];
-
   // Project throttles onto [r_min, r_max].
   const auto& throttle_h = horizons_[HorizonType::THROTTLE];
 
   // Compute guided throttle horizon.
   horizons_[HorizonType::GUIDED_THROTTLE] =
-      throttleGuidance(throttle_h, guidance_h);
+      throttleGuidance(throttle_h, yaw_guidance);
   const auto& guided_throttle_h = horizons_[HorizonType::GUIDED_THROTTLE];
+
   // Find the index of the desired control command.
   const auto control_idx = dampedMaxThrottleIndex(
       guided_throttle_h, p_.potential_inertia, static_cast<int>(col_d));
+
   // Compute yaw control command.
   const auto yaw =
       column2Yaw(throttle_h, static_cast<double>(control_idx) + 0.5,
                  p_.focal_length_x, p_.principal_point_x);
+
   // \TODO(CD-47) make separate constraint projection for yaw; for now, undo
   // translation.
   cmd.yaw = C_u_(cv::Point2d(p_.guidance_gains.yaw * yaw +
