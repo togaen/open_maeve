@@ -283,7 +283,7 @@ ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP,
       yaw2Column(ISP, 0.0, p_.focal_length_x, p_.principal_point_x);
 
   // Find the index of the desired control command.
-  const auto throttle_h = horizons_[HorizonType::THROTTLE];
+  const auto& throttle_h = horizons_[HorizonType::THROTTLE];
   const auto control_idx =
       dampedMaxThrottleIndex(throttle_h, p_.potential_inertia, col_d);
 
@@ -312,13 +312,13 @@ ControlCommand ISP_Controller2D::potentialControl(const cv::Mat& ISP,
 void ISP_Controller2D::computeControlSelectionHorizon(const cv::Mat& ISP,
                                                       const cv::Rect& ROI) {
   // Get control horizon.
-  horizons_[HorizonType::CONTROL] = avg_reduce_to_horizon(ISP, ROI);
-  const auto ch = horizons_[HorizonType::CONTROL];
+  horizons_[HorizonType::CONTROL] = intersection_reduce_to_horizon(ISP, ROI);
+  const auto& ch = horizons_[HorizonType::CONTROL];
 
   // Apply filter.
   horizons_[HorizonType::ERODED_CONTROL] =
-      erodeHorizon(ch, p_.erosion_kernel.width);
-  const auto ech = horizons_[HorizonType::ERODED_CONTROL];
+      intersection_control_horizon(ch, p_.erosion_kernel.width);
+  const auto& ech = horizons_[HorizonType::ERODED_CONTROL];
 
   // Project throttles onto [r_min, r_max].
   horizons_[HorizonType::THROTTLE] =
@@ -357,7 +357,6 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
       static_cast<int>(col_d), ch.cols, p_.yaw_decay.left, p_.yaw_decay.right);
   const auto& yaw_guidance = horizons_[HorizonType::YAW_GUIDANCE];
 
-  // horizons_[HorizonType::GUIDANCE] =
   horizons_[HorizonType::GUIDANCE] = yaw_guidance;
   const auto& guidance_h = horizons_[HorizonType::GUIDANCE];
 
@@ -368,16 +367,13 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
   horizons_[HorizonType::GUIDED_THROTTLE] =
       throttleGuidance(throttle_h, guidance_h);
   const auto& guided_throttle_h = horizons_[HorizonType::GUIDED_THROTTLE];
-
   // Find the index of the desired control command.
   const auto control_idx = dampedMaxThrottleIndex(
       guided_throttle_h, p_.potential_inertia, static_cast<int>(col_d));
-
   // Compute yaw control command.
   const auto yaw =
       column2Yaw(throttle_h, static_cast<double>(control_idx) + 0.5,
                  p_.focal_length_x, p_.principal_point_x);
-
   // \TODO(CD-47) make separate constraint projection for yaw; for now, undo
   // translation.
   cmd.yaw = C_u_(cv::Point2d(p_.guidance_gains.yaw * yaw +

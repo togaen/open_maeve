@@ -31,7 +31,7 @@
 
 namespace maeve_automation_core {
 namespace {
-static const auto epsilon = 0.0001;
+static const auto epsilon = 1e-4;
 cv::Mat dummyMatrix(const int rows, const int cols) {
   cv::Mat m = zeroISP_Field(cols, rows);
   const auto offset = rows * cols;
@@ -125,6 +125,7 @@ TEST(ISP_Controller, test) {
       val += step;
     }
   }
+
   // \TODO(me): Should do more testing.
 }
 
@@ -282,13 +283,16 @@ TEST(ISP_Controller, testSafeControls) {
   }
 
   // Erode control horizon.
-  std::vector<double> min_filter{14.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0};
-  cv::Mat eroded_h = erodeHorizon(h, kernel_width);
+  std::vector<double> control_max{49.0, 49.0, 50.0, 51.0, 52.0, 53.0, 54.0};
+  std::vector<double> control_min{15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 20.0};
+  cv::Mat eroded_h = intersection_control_horizon(h, kernel_width);
   ASSERT_EQ(eroded_h.rows, 1);
-  ASSERT_EQ(eroded_h.cols, min_filter.size());
+  ASSERT_EQ(eroded_h.cols, control_min.size());
+  ASSERT_EQ(eroded_h.cols, control_max.size());
   for (auto i = 0; i < h.cols; ++i) {
     const auto p = eroded_h.at<cv::Point2d>(i);
-    EXPECT_EQ(p.x, min_filter[i]);
+    EXPECT_EQ(p.x, control_min[i]) << "index: " << i;
+    EXPECT_EQ(p.y, control_max[i]) << "index: " << i;
   }
 
   // Compute controls.

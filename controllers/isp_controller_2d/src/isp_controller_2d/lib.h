@@ -131,7 +131,7 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
 /**
  * @brief Reduce the ISP to a single row vector.
  *
- * @note The reduction type is CV_REDUCE_AVG
+ * @note The reduction type is CV_REDUCE_AVG for 'avg_'
  *
  * @param ROI The region of interest in the ISP field. All values outside the
  * ROI are ignored.
@@ -142,11 +142,20 @@ cv::Mat yawGuidance(const int center, const int width, const double left_decay,
 cv::Mat avg_reduce_to_horizon(const cv::Mat& ISP, const cv::Rect& ROI);
 
 /**
+ * @brief For per-pixel computed control sets perform a row reduction that
+ * intersects all sets in a column.
+ *
+ * @return A single row vector of width ISP that contains the reduction of each
+ * column in ISP.
+ */
+cv::Mat intersection_reduce_to_horizon(const cv::Mat& available_controls,
+                                       const cv::Rect& ROI);
+
+/**
  * @brief Apply a min filter to a control horizon.
  *
  * This function runs a min filter of the given kernel dimensions along the
- * kernel horizon to compute a min potential tuple <p, \dot{p}> at each
- * column index.
+ * horizon to compute the intersection of all control sets at each column index.
  *
  * @pre h should be a row vector and kernel_width shall correspond to at least
  * one whole pixel.
@@ -156,7 +165,8 @@ cv::Mat avg_reduce_to_horizon(const cv::Mat& ISP, const cv::Rect& ROI);
  *
  * @return A row vector that is a min filtered version of 'h'.
  */
-cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width);
+cv::Mat intersection_control_horizon(const cv::Mat& h,
+                                     const double kernel_width);
 
 /**
  * @brief For each column, project a potential tuple into control space.

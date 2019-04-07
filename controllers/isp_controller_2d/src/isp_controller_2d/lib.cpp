@@ -96,21 +96,63 @@ cv::Mat avg_reduce_to_horizon(const cv::Mat& ISP, const cv::Rect& ROI) {
 
 //------------------------------------------------------------------------------
 
-cv::Mat erodeHorizon(const cv::Mat& h, const double kernel_width) {
-  // Reserve return value.
-  cv::Mat eroded_h = zeroISP_Field(h.size());
+cv::Mat intersection_reduce_to_horizon(const cv::Mat& available_controls,
+                                       const cv::Rect& ROI) {
+  constexpr auto ROW_REDUCE = 0;
+  constexpr auto COL_REDUCE = 1;
+  constexpr auto CONTROL_MIN_CHANNEL = 0;
+  constexpr auto CONTROL_MAX_CHANNEL = 1;
 
-  const auto kernel_pixel_width = static_cast<int>(kernel_width * h.cols);
+  std::vector<cv::Mat> channels(available_controls.channels());
+  cv::split(available_controls, channels);
+
+  cv::Mat reduced_max_control;
+  cv::Mat reduced_min_control;
+  cv::reduce(channels[CONTROL_MIN_CHANNEL](ROI), reduced_min_control,
+             ROW_REDUCE, CV_REDUCE_MAX);
+  cv::reduce(channels[CONTROL_MAX_CHANNEL](ROI), reduced_max_control,
+             ROW_REDUCE, CV_REDUCE_MIN);
+
+  std::vector<cv::Mat> reduced_channels;
+  reduced_channels.push_back(reduced_min_control);
+  reduced_channels.push_back(reduced_max_control);
+
+  cv::Mat reduced_ISP;
+  cv::merge(reduced_channels, reduced_ISP);
+  return reduced_ISP;
+}
+
+//------------------------------------------------------------------------------
+
+cv::Mat intersection_control_horizon(const cv::Mat& h,
+                                     const double kernel_width) {
+  constexpr auto CONTROL_MIN_CHANNEL = 0;
+  constexpr auto CONTROL_MAX_CHANNEL = 1;
 
   // Compute structuring element.
+  const auto kernel_pixel_width = static_cast<int>(kernel_width * h.cols);
   cv::Mat structuring_element = cv::getStructuringElement(
       cv::MORPH_RECT, cv::Size(kernel_pixel_width, 1));
 
-  // Erode.
-  cv::erode(h, eroded_h, structuring_element);
+  std::vector<cv::Mat> reduced_channels(h.channels());
+  cv::split(h, reduced_channels);
 
-  // Done.
-  return eroded_h;
+  cv::Mat dilated_min_control;
+  cv::dilate(reduced_channels[CONTROL_MIN_CHANNEL], dilated_min_control,
+             structuring_element);
+
+  cv::Mat eroded_max_control;
+  cv::erode(reduced_channels[CONTROL_MAX_CHANNEL], eroded_max_control,
+            structuring_element);
+
+  std::vector<cv::Mat> eroded_channels;
+  eroded_channels.push_back(dilated_min_control);
+  eroded_channels.push_back(eroded_max_control);
+
+  // Reserve return value.
+  cv::Mat intersected_horizon;
+  cv::merge(eroded_channels, intersected_horizon);
+  return intersected_horizon;
 }
 
 //------------------------------------------------------------------------------
@@ -119,8 +161,7 @@ cv::Mat projectThrottlesToControlSpace(
     const cv::Mat& h, const PotentialTransform<ConstraintType::SOFT>& C_u,
     const double K_P, const double K_D) {
   // Reserve return value.
-  cv::Mat controls;
-  h.copyTo(controls);
+  cv::Mat controls = h.clone();
 
   // Project.
   controls.forEach<cv::Point2d>(
