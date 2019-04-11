@@ -30,10 +30,15 @@
 namespace maeve_automation_core {
 /**
  * @brief This class subscribes to, converts, and returns Command2D messages.
+ *
+ * @tparam The base message type being subscribed to. Do not use the *Ptr
+ * explicitly; the queue internally uses the pointer typedefs.
  */
 template <typename T>
 class MessageQueue {
  public:
+  typedef typename T::ConstPtr T_ptr;
+
   /** @brief Allow delayed initialization. */
   MessageQueue() = default;
 
@@ -47,7 +52,7 @@ class MessageQueue {
   MessageQueue(ros::NodeHandle& nh, const std::string& topic);
 
   /** @brief Return the most recently recieved message. */
-  virtual boost::optional<T> most_recent_msg();
+  virtual boost::optional<T_ptr> most_recent_msg_ptr();
 
   /**
    * @brief Return the most recently recieved message.
@@ -55,7 +60,7 @@ class MessageQueue {
    * @note This destroys the local message copy upon returning.
    *
    */
-  boost::optional<T> consume_most_recent_msg();
+  boost::optional<T_ptr> consume_most_recent_msg_ptr();
 
   /** @brief Initialize and subscribe to topic. */
   void initialize(ros::NodeHandle& nh, const std::string& topic);
@@ -66,7 +71,7 @@ class MessageQueue {
    *
    * @param msg The received message.
    */
-  void callback(const typename T::ConstPtr& msg);
+  void callback(const T_ptr& msg);
 
   /** @brief Throw an exception if the subscriber is not subscribed. */
   void throw_if_uninitialized();
@@ -74,7 +79,7 @@ class MessageQueue {
   /** @brief Protect access to most recent message. */
   boost::mutex msg_mutex_;
   /** @brief This is the last received message. */
-  boost::optional<T> most_recent_msg_opt_;
+  boost::optional<T_ptr> most_recent_msg_ptr_opt_;
   /** @brief Subscribe to the message topic. */
   ros::Subscriber sub_;
 };  // class MessageQueue
@@ -83,7 +88,7 @@ class MessageQueue {
 
 template <typename T>
 MessageQueue<T>::MessageQueue(ros::NodeHandle& nh, const std::string& topic)
-    : most_recent_msg_opt_(boost::none) {
+    : most_recent_msg_ptr_opt_(boost::none) {
   initialize(nh, topic);
 }
 
@@ -98,9 +103,9 @@ void MessageQueue<T>::initialize(ros::NodeHandle& nh,
 //------------------------------------------------------------------------------
 
 template <typename T>
-void MessageQueue<T>::callback(const typename T::ConstPtr& msg) {
+void MessageQueue<T>::callback(const T_ptr& msg) {
   boost::mutex::scoped_lock lock(msg_mutex_);
-  most_recent_msg_opt_ = *msg;
+  most_recent_msg_ptr_opt_ = msg;
 }
 
 //------------------------------------------------------------------------------
@@ -116,22 +121,24 @@ void MessageQueue<T>::throw_if_uninitialized() {
 //------------------------------------------------------------------------------
 
 template <typename T>
-boost::optional<T> MessageQueue<T>::most_recent_msg() {
+boost::optional<typename MessageQueue<T>::T_ptr>
+MessageQueue<T>::most_recent_msg_ptr() {
   throw_if_uninitialized();
 
   boost::mutex::scoped_lock lock(msg_mutex_);
-  return most_recent_msg_opt_;
+  return most_recent_msg_ptr_opt_;
 }
 
 //------------------------------------------------------------------------------
 
 template <typename T>
-boost::optional<T> MessageQueue<T>::consume_most_recent_msg() {
+boost::optional<typename MessageQueue<T>::T_ptr>
+MessageQueue<T>::consume_most_recent_msg_ptr() {
   throw_if_uninitialized();
 
   boost::mutex::scoped_lock lock(msg_mutex_);
-  const auto msg = most_recent_msg_opt_;
-  most_recent_msg_opt_ = boost::none;
+  const auto msg = most_recent_msg_ptr_opt_;
+  most_recent_msg_ptr_opt_ = boost::none;
   return msg;
 }
 

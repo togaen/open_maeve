@@ -276,8 +276,9 @@ void AR_ISPFieldNodeHandler::cameraCallback(
 
   // Get most recent desired control.
   ControlCommand u_d;
-  if (const auto cmd_msg = command2d_mgr_.most_recent_msg()) {
-    u_d = command2D_Msg2ControlCommand(*cmd_msg);
+  if (const auto cmd_msg_ptr_opt = command2d_mgr_.most_recent_msg_ptr()) {
+    const auto& cmd_msg = *(*cmd_msg_ptr_opt);
+    u_d = command2D_Msg2ControlCommand(cmd_msg);
     if (!u_d.valid()) {
       u_d = params_.default_guidance_control;
       ROS_ERROR_STREAM("u_d not valid: "

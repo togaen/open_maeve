@@ -33,10 +33,9 @@ class Command2D_Manager
    * @brief This override will return the last recieved message if
    * 'sticky_control' is set and no new message has been received.
    */
-  boost::optional<controller_interface_msgs::Command2D> most_recent_msg()
-      override;
+  boost::optional<T_ptr> most_recent_msg_ptr() override;
 
  private:
-  boost::optional<controller_interface_msgs::Command2D> last_msg_;
+  boost::optional<T_ptr> last_msg_;
 };  // class Command2D_Manager
 }  // namespace maeve_automation_core
