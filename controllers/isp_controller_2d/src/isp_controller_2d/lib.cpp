@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "maeve_automation_core/isp_field/isp_field.h"
+#include "maeve_automation_core/maeve_geometry/interval.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -51,8 +52,8 @@ void printISP(const cv::Mat& ISP) {
 
 double column2Yaw(const cv::Mat& image_plane, const double col,
                   const double f_x, const double p_x) {
-  const auto bounded_col =
-      projectToInterval(0.0, static_cast<double>(image_plane.cols - 1), col);
+  const Interval_d col_interval(0.0, static_cast<double>(image_plane.cols - 1));
+  const auto bounded_col = Interval_d::projectToInterval(col_interval, col);
   return std::atan2(p_x - static_cast<double>(bounded_col) - 0.5, f_x);
 }
 
@@ -62,7 +63,8 @@ double yaw2Column(const cv::Mat& image_plane, const double yaw,
                   const double f_x, const double p_x) {
   const auto offset = f_x * std::tan(yaw);
   const auto col = p_x - offset;
-  return projectToInterval(0.0, static_cast<double>(image_plane.cols - 1), col);
+  const Interval_d col_interval(0.0, static_cast<double>(image_plane.cols - 1));
+  return Interval_d::projectToInterval(col_interval, col);
 }
 
 //------------------------------------------------------------------------------

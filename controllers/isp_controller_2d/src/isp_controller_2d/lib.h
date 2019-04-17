@@ -36,25 +36,6 @@ namespace maeve_automation_core {
 void printISP(const cv::Mat& ISP);
 
 /**
- * @brief Given a number line interval, find the nearrest point in the interval
- * to `point'.
- *
- * @pre interval_min shall be <= interval_max.
- *
- * @tparam T The type of number being compared.
- * @param interval_min The minimum of the interval.
- * @param interval_max The maximum of the interval
- * @param point The point.
- *
- * @return The nearest point in the interval to `point'.
- */
-template <typename T>
-T projectToInterval(const T& interval_min, const T& interval_max,
-                    const T& point) {
-  return std::min(interval_max, std::max(point, interval_min));
-}
-
-/**
  * @brief Project a value 'val' from one range onto another.
  *
  * @tparam T The type of numbers being projected.

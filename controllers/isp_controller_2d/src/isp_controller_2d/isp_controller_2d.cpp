@@ -28,6 +28,7 @@
 #include <string>
 
 #include "isp_controller_2d/lib.h"
+#include "maeve_automation_core/maeve_geometry/interval.h"
 #include "maeve_automation_core/maeve_macros/checks.h"
 
 namespace maeve_automation_core {
@@ -378,8 +379,8 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
 
   // Compute throttle control command (it is already projected by C_u_).
   const cv::Point2d throttle_set = throttle_h.at<cv::Point2d>(control_idx);
-  cmd.throttle =
-      projectToInterval(throttle_set.x, throttle_set.y, u_d.throttle);
+  const Interval_d interval(throttle_set.x, throttle_set.y);
+  cmd.throttle = Interval_d::projectToInterval(interval, u_d.throttle);
 
   // Done.
   return rememberCommand(cmd);

@@ -23,6 +23,7 @@ find_package(catkin REQUIRED COMPONENTS
   controller_interface_msgs
   ros_parameter_loading
   image_transport
+  maeve_geometry
 )
 
 ## System dependencies are found with CMake's conventions

@@ -19,15 +19,16 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include <gtest/gtest.h>
+#include "isp_controller_2d/lib.h"
 
+#include <gtest/gtest.h>
 #include <cmath>
 #include <vector>
 
-#include "isp_controller_2d/lib.h"
 #include "maeve_automation_core/isp_controller_2d/control_command.h"
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
 #include "maeve_automation_core/isp_field/isp_field.h"
+#include "maeve_automation_core/maeve_geometry/interval.h"
 
 namespace maeve_automation_core {
 namespace {
@@ -144,15 +145,6 @@ TEST(ISP_Controller, testProjetToRange) {
   }
 }
 
-TEST(ISP_Controller, testProjectToInterval) {
-  const cv::Point2d interval(-3.0, 1.0);
-  EXPECT_EQ(projectToInterval(interval.x, interval.y, -3.0), -3.0);
-  EXPECT_EQ(projectToInterval(interval.x, interval.y, 1.0), 1.0);
-  EXPECT_EQ(projectToInterval(interval.x, interval.y, -5.2), -3.0);
-  EXPECT_EQ(projectToInterval(interval.x, interval.y, 3.1), 1.0);
-  EXPECT_EQ(projectToInterval(interval.x, interval.y, 0.73), 0.73);
-}
-
 TEST(ISP_Controller, testYawColumnConversions) {
   const auto rows = 1;
   const auto cols = 13;
@@ -163,10 +155,11 @@ TEST(ISP_Controller, testYawColumnConversions) {
   const auto bound_extension = 10;
   for (auto i = -bound_extension; i < (cols + bound_extension); ++i) {
     const auto center_x = static_cast<double>(i) + 0.5;
-    const auto yaw = std::atan2(
-        principal_point_x -
-            projectToInterval(0.0, static_cast<double>(cols), center_x),
-        focal_length_x);
+    const Interval_d col_interval(0.0, static_cast<double>(cols));
+    const auto yaw =
+        std::atan2(principal_point_x -
+                       Interval_d::projectToInterval(col_interval, center_x),
+                   focal_length_x);
     const auto computed_yaw =
         column2Yaw(m, i, focal_length_x, principal_point_x);
     const auto computed_column =
