@@ -405,6 +405,11 @@ class Interval {
 
 //------------------------------------------------------------------------------
 
+typedef Interval<double> Interval_d;
+typedef Interval<double> Interval_f;
+
+//------------------------------------------------------------------------------
+
 template <typename T>
 constexpr T Interval<T>::MIN;
 
