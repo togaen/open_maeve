@@ -633,11 +633,8 @@ bool Interval<T>::overlap(const Interval& interval1,
 
 template <typename T>
 T Interval<T>::projectToInterval(const Interval& interval, const T& val) {
-  if (Interval::contains(interval, val)) {
-    return val;
-  }
-  return ((val < Interval::min(interval)) ? Interval::min(interval)
-                                          : Interval::max(interval));
+  return std::min(Interval::max(interval),
+                  std::max(val, Interval::min(interval)));
 }
 
 //------------------------------------------------------------------------------
