@@ -406,7 +406,7 @@ class Interval {
 //------------------------------------------------------------------------------
 
 typedef Interval<double> Interval_d;
-typedef Interval<double> Interval_f;
+typedef Interval<float> Interval_f;
 
 //------------------------------------------------------------------------------
 
