@@ -61,6 +61,12 @@ T compute_relative_dynamics_for_tau(const T& actor1_component,
   return (actor1_component - actor2_component);
 }
 
+template <typename T>
+T get_actor2_speed_from_relative_dynamics(const T& relative_speed,
+                                          const T& actor1_speed) {
+  return (actor1_speed - relative_speed);
+}
+
 /**
  * @brief Compute time to contact (tau) between two objects separated by
  * straight line distance 'range' and approaching each other at
@@ -97,6 +103,16 @@ T tau(const T& range, const T& actor1_speed, const T& actor2_speed,
   const auto relative_speed =
       compute_relative_dynamics_for_tau(actor1_speed, actor2_speed);
   return tau(range, relative_speed, epsilon);
+}
+
+/**
+ * @brief Solve the tau function for relative speed.
+ *
+ * @note Relative speed is undefined (i.e., NaN) when tau is zero.
+ */
+template <typename T>
+T tau_speed(const T& tau_0, const T& range, const T& eps) {
+  return (approxZero(tau_0, eps) ? tau_constants<T>::NaN : (range / tau_0));
 }
 
 /**
