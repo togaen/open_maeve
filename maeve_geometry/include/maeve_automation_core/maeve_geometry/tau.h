@@ -258,7 +258,7 @@ T tau_at_t(const T& range_0, const T& t, const T& actor1_speed_0,
   const auto relative_speed =
       compute_relative_dynamics_for_tau(actor1_speed_0, actor2_speed_0);
 
-  const auto numerator = (range_0 + 0.5 * t * t_relative_accel);
+  const auto numerator = (range_0 + T(0.5) * t * t_relative_accel);
   const auto denominator = (relative_speed + t_relative_accel);
 
   if (approxZero(denominator, epsilon)) {
@@ -279,7 +279,7 @@ T compute_actor1_accel_to_tau_desired(const T& t, const T& range_0,
                                       const T& actor2_speed_0,
                                       const T& actor2_accel,
                                       const T& tau_desired, const T& epsilon) {
-  const auto singular_point = (-0.5 * t);
+  const auto singular_point = (T(-0.5) * t);
   if (approxEq(tau_desired, singular_point, epsilon)) {
     throw std::runtime_error("TODO(me): figure out what to do in this case.");
   }
@@ -289,7 +289,7 @@ T compute_actor1_accel_to_tau_desired(const T& t, const T& range_0,
       compute_relative_dynamics_for_tau(actor1_speed_0, actor2_speed_0);
 
   const auto numerator = (delta_tau * relative_speed - range_0);
-  const auto denominator = (0.5 * square(t) - (t * delta_tau));
+  const auto denominator = (T(0.5) * square(t) - (t * delta_tau));
   return ((numerator / denominator) + actor2_accel);
 }
 
@@ -305,7 +305,7 @@ T partial_of_tau_wrt_actor1_accel(const T& t, const T& actor1_speed_0,
   const auto relative_speed =
       compute_relative_dynamics_for_tau(actor1_speed_0, actor2_speed_0);
 
-  const auto numerator = (t * (0.5 * t * relative_speed - range_0));
+  const auto numerator = (t * (T(0.5) * t * relative_speed - range_0));
   const auto denominator = square(relative_speed + t * relative_accel);
   if (approxZero(denominator, epsilon)) {
     return tau_constants<T>::NaN;
