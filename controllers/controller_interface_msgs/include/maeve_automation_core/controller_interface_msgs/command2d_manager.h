@@ -30,8 +30,11 @@ class Command2D_Manager
     : public MessageQueue<controller_interface_msgs::Command2D> {
  public:
   /**
-   * @brief This override will return the last recieved message if
+   * @brief This override will return the last recieved message if and only if
    * 'sticky_control' is set and no new message has been received.
+   *
+   * TODO(me): This should not extend MessageQueue. It should define its own
+   * interface and use a MessageQueue internally.
    */
   boost::optional<T_ptr> most_recent_msg_ptr() override;
 
