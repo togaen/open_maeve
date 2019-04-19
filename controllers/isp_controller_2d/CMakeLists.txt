@@ -118,7 +118,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME} ${PROJECT_NAME}_ros_interface
-  CATKIN_DEPENDS isp_field cv_bridge controller_interface_msgs maeve_macros ros_parameter_loading
+  CATKIN_DEPENDS isp_field cv_bridge controller_interface_msgs maeve_macros ros_parameter_loading maeve_geometry
 #  DEPENDS system_lib
 )
 

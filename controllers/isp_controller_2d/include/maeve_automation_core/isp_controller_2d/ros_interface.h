@@ -31,6 +31,7 @@
 #include "controller_interface_msgs/Command2D.h"
 #include "maeve_automation_core/isp_controller_2d/control_command.h"
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
+#include "maeve_automation_core/maeve_geometry/interval.h"
 #include "maeve_automation_core/ros_parameter_loading/params_base.h"
 
 namespace maeve_automation_core {
@@ -81,10 +82,8 @@ class HorizonVisualizer {
   struct Params {
     /** @brief Pixel height of the horizon visualization. */
     int horizon_viz_height;
-    /** @brief Range min for constraint values. */
-    double constraint_range_min;
-    /** @brief Range max for constraint values. */
-    double constraint_range_max;
+    /** @brief Range for constraint values. */
+    Interval_d constraint_range;
 
     /**
      * @brief Whether the parameter object has reasonable values.

@@ -23,6 +23,8 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "maeve_automation_core/maeve_geometry/interval.h"
+
 namespace maeve_automation_core {
 /**
  * @brief Compute a visualization of a horizon.
@@ -50,8 +52,7 @@ namespace maeve_automation_core {
 cv::Mat computeHorizonVisualization(const cv::Mat& horizon, const int channel,
                                     const int horizon_viz_height,
                                     const int window_viz_height,
-                                    const double lower_bound,
-                                    const double upper_bound);
+                                    const Interval_d& bounds);
 
 /**
  * @brief Compute a visualization of an Image Space Potential field.
@@ -74,6 +75,5 @@ cv::Mat computeHorizonVisualization(const cv::Mat& horizon, const int channel,
  * The image type is CV_8UC3.
  */
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
-                                     const double lower_bound,
-                                     const double upper_bound);
+                                     const Interval_d& bounds);
 }  // namespace maeve_automation_core

@@ -340,8 +340,8 @@ void AR_ISPFieldNodeHandler::visualize(const cv::Mat& ISP,
   }
 
   // Compute visualization of ISP.
-  const auto visual = computeISPFieldVisualization(
-      ISP, params_.viz_potential_bounds[0], params_.viz_potential_bounds[1]);
+  const auto visual =
+      computeISPFieldVisualization(ISP, params_.viz_potential_bounds);
 
   // Convert visualization to ROS message.
   const auto viz_msg = cv_bridge::CvImage(header, "bgr8", visual).toImageMsg();

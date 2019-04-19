@@ -36,7 +36,7 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(control_command_output_topic);
   LOAD_PARAM(segmentation_taxonomy);
   LOAD_PARAM(data_set_name);
-  LOAD_PARAM(viz_potential_bounds);
+  LOAD_PARAM(viz_potential_bounds_);
   LOAD_PARAM(horizon_viz_height);
   LOAD_NS_PARAM(default_guidance_control, throttle);
   LOAD_NS_PARAM(default_guidance_control, yaw);
@@ -77,6 +77,10 @@ bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   isp_controller_params.focal_length_x = org_focal_length_x;
   isp_controller_params.principal_point_x = org_principal_point_x;
 
+  CHECK_EQ(viz_potential_bounds_.size(), 2);
+  viz_potential_bounds =
+      Interval_d(viz_potential_bounds_[0], viz_potential_bounds_[1]);
+
   // Done.
   return all_valid;
 }
@@ -95,9 +99,8 @@ bool SegmentationFieldParams::valid() const {
 
   CHECK_NONEMPTY(data_set_name);
   CHECK_STRICTLY_POSITIVE(horizon_viz_height);
-  CHECK_EQ(viz_potential_bounds.size(), 2);
-  CHECK_FINITE(viz_potential_bounds[0]);
-  CHECK_FINITE(viz_potential_bounds[1]);
+  CHECK_FINITE(Interval_d::min(viz_potential_bounds));
+  CHECK_FINITE(Interval_d::max(viz_potential_bounds));
 
   // All good.
   return true;

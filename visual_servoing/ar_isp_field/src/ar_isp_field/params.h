@@ -26,6 +26,7 @@
 
 #include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
 #include "maeve_automation_core/isp_field/shape_parameters.h"
+#include "maeve_automation_core/maeve_geometry/interval.h"
 #include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
 
 namespace maeve_automation_core {
@@ -103,7 +104,7 @@ struct AR_ISPFieldParams : public ParamsBase {
   std::string control_command_input_topic;
 
   /** @brief The scaling bounds for visualizing potential values. */
-  std::vector<double> viz_potential_bounds;
+  Interval_d viz_potential_bounds;
 
   /**
    * @brief Check validity of loaded parameter values.
@@ -122,6 +123,10 @@ struct AR_ISPFieldParams : public ParamsBase {
    */
   __attribute__((warn_unused_result)) bool load(
       const ros::NodeHandle& nh) override;
+
+ private:
+  /** @brief The scaling bounds for visualizing potential values. */
+  std::vector<double> viz_potential_bounds_;
 };  // struct AR_ISPFieldParams
 
 }  // namespace maeve_automation_core

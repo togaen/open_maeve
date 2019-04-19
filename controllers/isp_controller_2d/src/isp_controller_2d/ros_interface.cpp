@@ -106,24 +106,20 @@ bool loadISP_ControllerROS_Params(const ros::NodeHandle& nh,
 
 //------------------------------------------------------------------------------
 
-HorizonVisualizer::Params::Params()
-    : horizon_viz_height(-1),
-      constraint_range_min(NaN),
-      constraint_range_max(NaN) {}
+HorizonVisualizer::Params::Params() : horizon_viz_height(-1) {}
 
 //------------------------------------------------------------------------------
 
 HorizonVisualizer::Params::Params(const int viz_height, const double r_min,
                                   const double r_max)
-    : horizon_viz_height(viz_height),
-      constraint_range_min(r_min),
-      constraint_range_max(r_max) {}
+    : horizon_viz_height(viz_height), constraint_range(r_min, r_max) {}
 
 //------------------------------------------------------------------------------
 
 bool HorizonVisualizer::Params::valid() const {
-  return (horizon_viz_height > 0) && std::isfinite(constraint_range_min) &&
-         std::isfinite(constraint_range_max);
+  return (horizon_viz_height > 0) &&
+         std::isfinite(Interval_d::min(constraint_range)) &&
+         std::isfinite(Interval_d::max(constraint_range));
 }
 
 //------------------------------------------------------------------------------
@@ -172,18 +168,19 @@ void HorizonVisualizer::visualizeHorizon(
   }
 
   // Set visualization bounds according to horizon type.
-  const auto unit_range = HorizonVisualizer::unit_visualization_bounds(ht);
-  const auto lower_bound = (unit_range ? 0.0 : params_.constraint_range_min);
-  const auto upper_bound = (unit_range ? 1.0 : params_.constraint_range_max);
+  const auto use_unit_range = HorizonVisualizer::unit_visualization_bounds(ht);
+  const Interval_d unit_range(0.0, 1.0);
+  const Interval_d range =
+      (use_unit_range ? unit_range : params_.constraint_range);
 
   // Set visualization channel according to horizon type.
   const auto channel =
       static_cast<int>(ht == ISP_Controller2D::HorizonType::GUIDED_THROTTLE);
 
   // Compute visualization message.
-  const auto viz_horizon = computeHorizonVisualization(
-      horizon, channel, params_.horizon_viz_height, params_.horizon_viz_height,
-      lower_bound, upper_bound);
+  const auto viz_horizon =
+      computeHorizonVisualization(horizon, channel, params_.horizon_viz_height,
+                                  params_.horizon_viz_height, range);
   sensor_msgs::ImagePtr viz_horizon_msg =
       cv_bridge::CvImage(header, "mono8", viz_horizon).toImageMsg();
   publisher.publish(viz_horizon_msg);

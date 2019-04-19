@@ -186,8 +186,7 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
 
   // Visualize ISP field.
   cv::Mat viz_field = computeISPFieldVisualization(
-      guidance_field, params_.viz_potential_bounds[0],
-      params_.viz_potential_bounds[1]);
+      guidance_field, params_.viz_potential_bounds);
 
   sensor_msgs::ImagePtr viz_field_full_msg =
       cv_bridge::CvImage(msg->header, "bgr8", viz_field).toImageMsg();

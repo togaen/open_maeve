@@ -53,7 +53,7 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(marker_size_param_name);
   LOAD_PARAM(ar_time_queue_size);
   LOAD_PARAM(ar_time_queue_max_gap);
-  LOAD_PARAM(viz_potential_bounds);
+  LOAD_PARAM(viz_potential_bounds_);
   LOAD_PARAM(verbose);
   LOAD_PARAM(potential_only_guidance);
   LOAD_PARAM(ar_tag_max_age);
@@ -105,6 +105,10 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
   isp_controller_params.focal_length_x = org_focal_length_x;
   isp_controller_params.principal_point_x = org_principal_point_x;
 
+  CHECK_EQ(viz_potential_bounds_.size(), 2);
+  viz_potential_bounds =
+      Interval_d(viz_potential_bounds_[0], viz_potential_bounds_[1]);
+
   // Done.
   return all_valid;
 }
@@ -122,10 +126,8 @@ bool AR_ISPFieldParams::valid() const {
   CHECK_NONEMPTY(viz_isp_field_topic);
   CHECK_NONEMPTY(control_command_output_topic);
   CHECK_NONEMPTY(control_command_input_topic);
-  CHECK_EQ(viz_potential_bounds.size(), 2);
-  for (const auto b : viz_potential_bounds) {
-    CHECK_FINITE(b);
-  }
+  CHECK_FINITE(Interval_d::min(viz_potential_bounds));
+  CHECK_FINITE(Interval_d::max(viz_potential_bounds));
 
   // Return okay if all members are ok.
   return default_guidance_control.valid() &&

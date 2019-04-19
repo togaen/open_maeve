@@ -34,8 +34,10 @@ const auto INF = std::numeric_limits<double>::infinity();
 cv::Mat computeHorizonVisualization(const cv::Mat& horizon, const int channel,
                                     const int horizon_viz_height,
                                     const int window_viz_height,
-                                    const double lower_bound,
-                                    const double upper_bound) {
+                                    const Interval_d& bounds) {
+  const auto lower_bound = Interval_d::min(bounds);
+  const auto upper_bound = Interval_d::max(bounds);
+
   // Convert control horizon to single channel, 8-bit unsigned.
   std::vector<cv::Mat> channels(2);
   cv::split(horizon, channels);
@@ -74,8 +76,10 @@ cv::Mat computeHorizonVisualization(const cv::Mat& horizon, const int channel,
 //------------------------------------------------------------------------------
 
 cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
-                                     const double lower_bound,
-                                     const double upper_bound) {
+                                     const Interval_d& bounds) {
+  const auto lower_bound = Interval_d::min(bounds);
+  const auto upper_bound = Interval_d::max(bounds);
+
   // Split out 0th and 1st order channels.
   cv::Mat channel[2];
   cv::split(isp, channel);
