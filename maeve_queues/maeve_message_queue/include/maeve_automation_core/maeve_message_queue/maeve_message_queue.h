@@ -65,6 +65,13 @@ class MessageQueue {
   /** @brief Initialize and subscribe to topic. */
   void initialize(ros::NodeHandle& nh, const std::string& topic);
 
+  /**
+   * @brief Check whether the queue is empty.
+   *
+   * @note This is a blocking call.
+   */
+  bool empty();
+
  protected:
   /**
    * @brief Callback for receiving messages.
@@ -140,6 +147,14 @@ MessageQueue<T>::consume_most_recent_msg_ptr() {
   const auto msg = most_recent_msg_ptr_opt_;
   most_recent_msg_ptr_opt_ = boost::none;
   return msg;
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+bool MessageQueue<T>::empty() {
+  boost::mutex::scoped_lock lock(msg_mutex_);
+  return static_cast<bool>(most_recent_msg_ptr_opt_);
 }
 
 //------------------------------------------------------------------------------
