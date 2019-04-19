@@ -55,6 +55,13 @@ class MessageQueue {
   virtual boost::optional<T_ptr> most_recent_msg_ptr();
 
   /**
+   * @brief Return a copy of the most recently recieved message.
+   *
+   * @note This throws if the queue is empty.
+   */
+  T most_recent_msg();
+
+  /**
    * @brief Return the most recently recieved message.
    *
    * @note This destroys the local message copy upon returning.
@@ -134,6 +141,23 @@ MessageQueue<T>::most_recent_msg_ptr() {
 
   boost::mutex::scoped_lock lock(msg_mutex_);
   return most_recent_msg_ptr_opt_;
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+T MessageQueue<T>::most_recent_msg() {
+  throw_if_uninitialized();
+
+  {
+    boost::mutex::scoped_lock lock(msg_mutex_);
+    if (most_recent_msg_ptr_opt_) {
+      return *(*most_recent_msg_ptr_opt_);
+    }
+  }
+
+  throw std::runtime_error(
+      "Attempted to retrieve a message from an empty queue.");
 }
 
 //------------------------------------------------------------------------------
