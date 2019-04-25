@@ -39,6 +39,14 @@ namespace maeve_automation_core {
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Comparisons, inverse) {
+  constexpr auto VAL = 3.0;
+  EXPECT_EQ(inverse(VAL), (1.0 / 3.0));
+  EXPECT_EQ(inverse(inverse(VAL)), VAL);
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Comparisons, signed_value) {
   constexpr auto NEG = true;
   constexpr auto POS = false;

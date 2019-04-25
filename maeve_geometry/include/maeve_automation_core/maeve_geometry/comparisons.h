@@ -25,6 +25,16 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief Utility function useful for readability
+ *
+ * @return The inverse of 'val'
+ */
+template <typename T>
+T inverse(const T& val) {
+  return (static_cast<T>(1) / val);
+}
+
+/**
  * @brief Get a number with magnitude of 'value' and sign determined by 'sign'
  *
  * @return -|value| if sign is true; |value| otherwise
