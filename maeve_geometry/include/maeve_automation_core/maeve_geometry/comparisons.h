@@ -25,6 +25,17 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief Get a number with magnitude of 'value' and sign determined by 'sign'
+ *
+ * @return -|value| if sign is true; |value| otherwise
+ */
+template <typename T>
+T signed_value(const T& value, const bool sign) {
+  const auto num_sign = (sign ? T(-1) : T(1));
+  return std::copysign(value, num_sign);
+}
+
+/**
  * @brief Convenience method for performing logical exclusive or ops.
  *
  * @tparam T The input type; this must be convertible to bool.

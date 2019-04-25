@@ -36,6 +36,17 @@ const auto epsilon = 0.0001;
 }  // namespace
 
 namespace maeve_automation_core {
+TEST(Maeve_Geometry_Comparisons, signed_value) {
+  constexpr auto NEG = true;
+  constexpr auto POS = false;
+  constexpr auto VAL = 1.0;
+
+  EXPECT_EQ(signed_value(VAL, false), VAL);
+  EXPECT_EQ(signed_value(-VAL, false), VAL);
+  EXPECT_EQ(signed_value(VAL, true), -VAL);
+  EXPECT_EQ(signed_value(-VAL, true), -VAL);
+}
+
 TEST(Maeve_Geometry_Comparisons, testExclusiveOr) {
   EXPECT_TRUE(exclusiveOr(0, 1));
   EXPECT_TRUE(exclusiveOr(1, 0));
