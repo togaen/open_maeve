@@ -178,7 +178,7 @@ MessageQueue<T>::consume_most_recent_msg_ptr() {
 template <typename T>
 bool MessageQueue<T>::empty() {
   boost::mutex::scoped_lock lock(msg_mutex_);
-  return static_cast<bool>(most_recent_msg_ptr_opt_);
+  return !static_cast<bool>(most_recent_msg_ptr_opt_);
 }
 
 //------------------------------------------------------------------------------
