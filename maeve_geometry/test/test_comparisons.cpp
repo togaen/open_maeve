@@ -36,6 +36,9 @@ const auto epsilon = 0.0001;
 }  // namespace
 
 namespace maeve_automation_core {
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Comparisons, signed_value) {
   constexpr auto NEG = true;
   constexpr auto POS = false;
@@ -46,6 +49,8 @@ TEST(Maeve_Geometry_Comparisons, signed_value) {
   EXPECT_EQ(signed_value(VAL, true), -VAL);
   EXPECT_EQ(signed_value(-VAL, true), -VAL);
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Comparisons, testExclusiveOr) {
   EXPECT_TRUE(exclusiveOr(0, 1));
@@ -67,11 +72,15 @@ TEST(Maeve_Geometry_Comparisons, testExclusiveOr) {
   EXPECT_FALSE(exclusiveOr(a_true, a_true));
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Comparisons, testClampToZero) {
   EXPECT_EQ(clampToZero(0.05, 0.1), 0.0);
   EXPECT_EQ(clampToZero(-0.05, 0.1), 0.0);
   EXPECT_EQ(clampToZero(1.0, 0.04), 1.0);
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Comparisons, testZero) {
   EXPECT_TRUE(approxZero(d, epsilon));
@@ -79,6 +88,8 @@ TEST(Maeve_Geometry_Comparisons, testZero) {
   EXPECT_FALSE(approxZero(d + 2.0 * epsilon, epsilon));
   EXPECT_FALSE(approxZero(1.0, epsilon));
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Comparisons, testEquality) {
   EXPECT_TRUE(approxEq(c, e, epsilon));
@@ -91,6 +102,8 @@ TEST(Maeve_Geometry_Comparisons, testEquality) {
   EXPECT_TRUE(approxEq(a, a, 0.0));
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Comparisons, testInequality) {
   EXPECT_FALSE(approxNe(c, e, epsilon));
   EXPECT_FALSE(approxNe(e, c, epsilon));
@@ -100,6 +113,8 @@ TEST(Maeve_Geometry_Comparisons, testInequality) {
   EXPECT_TRUE(approxNe(b, a, epsilon));
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Comparisons, testLessThan) {
   EXPECT_TRUE(approxLt(f, c, 0.0));
   EXPECT_TRUE(approxLt(f, c, epsilon));
@@ -107,6 +122,8 @@ TEST(Maeve_Geometry_Comparisons, testLessThan) {
   EXPECT_FALSE(approxLt(d, d, epsilon));
   EXPECT_FALSE(approxLt(d, d, 0.0));
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Comparisons, testLessThanEqual) {
   EXPECT_TRUE(approxLe(c, e, epsilon));
@@ -121,6 +138,8 @@ TEST(Maeve_Geometry_Comparisons, testLessThanEqual) {
   EXPECT_TRUE(approxLe(d, d, 0.0));
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Comparisons, testGreaterThan) {
   EXPECT_TRUE(approxGt(c, e, 0.0));
   EXPECT_FALSE(approxGt(c, e, epsilon));
@@ -129,6 +148,8 @@ TEST(Maeve_Geometry_Comparisons, testGreaterThan) {
   EXPECT_FALSE(approxGt(d, d, epsilon));
   EXPECT_FALSE(approxGt(d, d, 0.0));
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Comparisons, testGreaterThanEqual) {
   EXPECT_TRUE(approxGe(c, e, 0.0));
@@ -140,5 +161,7 @@ TEST(Maeve_Geometry_Comparisons, testGreaterThanEqual) {
   EXPECT_TRUE(approxGe(d, d, epsilon));
   EXPECT_TRUE(approxGe(d, d, 0.0));
 }
+
+//------------------------------------------------------------------------------
 
 }  // namespace maeve_automation_core
