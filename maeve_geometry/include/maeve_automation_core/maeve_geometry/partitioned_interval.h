@@ -103,7 +103,12 @@ class PartitionedInterval {
  private:
   Interval<T> interval;
   T partition_point;
-};
+};  // class PartitionedInterval
+
+//------------------------------------------------------------------------------
+
+typedef PartitionedInterval<double> PartitionedInterval_d;
+typedef PartitionedInterval<float> PartitionedInterval_f;
 
 //------------------------------------------------------------------------------
 
