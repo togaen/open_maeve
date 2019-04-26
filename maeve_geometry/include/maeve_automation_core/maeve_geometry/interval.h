@@ -285,7 +285,7 @@ class Interval {
    * @return If 'val' \in 'interval', return 'val'; otherwise return the nearer
    * interval bound.
    */
-  static T projectToInterval(const Interval& interval, const T& val);
+  static T project_to_interval(const Interval& interval, const T& val);
 
   /**
    * @brief Project a value 'val' from one range onto another.
@@ -651,7 +651,7 @@ bool Interval<T>::overlap(const Interval& interval1,
 //------------------------------------------------------------------------------
 
 template <typename T>
-T Interval<T>::projectToInterval(const Interval& interval, const T& val) {
+T Interval<T>::project_to_interval(const Interval& interval, const T& val) {
   return std::min(Interval::max(interval),
                   std::max(val, Interval::min(interval)));
 }

@@ -380,7 +380,7 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
   // Compute throttle control command (it is already projected by C_u_).
   const cv::Point2d throttle_set = throttle_h.at<cv::Point2d>(control_idx);
   const Interval_d interval(throttle_set.x, throttle_set.y);
-  cmd.throttle = Interval_d::projectToInterval(interval, u_d.throttle);
+  cmd.throttle = Interval_d::project_to_interval(interval, u_d.throttle);
 
   // Done.
   return rememberCommand(cmd);

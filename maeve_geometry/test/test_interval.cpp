@@ -35,6 +35,8 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto epsilon = 0.00001;
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testIsSubsetEq) {
   EXPECT_TRUE(Interval<double>::isSubsetEq(Interval<double>(-0.5, 0.5),
                                            Interval<double>(-1.0, 1.0)));
@@ -48,6 +50,8 @@ TEST(Maeve_Geometry_Interval, testIsSubsetEq) {
       Interval<double>::isSubsetEq(Interval<double>(), Interval<double>()));
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, project_to_range) {
   const auto i1 = Interval_d(-3.0, 1.0);
   const auto i2 = Interval_d(5.0, 6.0);
@@ -55,26 +59,30 @@ TEST(Maeve_Geometry_Interval, project_to_range) {
   EXPECT_EQ(Interval_d::project_to_range(-1.0, i1, i2), 5.5);
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testProjectToInterval) {
   const auto i = Interval<double>(-1.0, 1.0);
   {
     const auto val = 0.0;
-    const auto p = Interval<double>::projectToInterval(i, val);
+    const auto p = Interval<double>::project_to_interval(i, val);
     EXPECT_EQ(p, val);
   }
 
   {
     const auto val = -3.4;
-    const auto p = Interval<double>::projectToInterval(i, val);
+    const auto p = Interval<double>::project_to_interval(i, val);
     EXPECT_EQ(p, Interval<double>::min(i));
   }
 
   {
     const auto val = 2.7;
-    const auto p = Interval<double>::projectToInterval(i, val);
+    const auto p = Interval<double>::project_to_interval(i, val);
     EXPECT_EQ(p, Interval<double>::max(i));
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Interval, scale_to_interval) {
   {
@@ -99,12 +107,16 @@ TEST(Maeve_Geometry_Interval, scale_to_interval) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testFactories) {
   EXPECT_EQ(Interval<double>::affinelyExtendedReals(),
             Interval<double>(-Inf, Inf));
   EXPECT_EQ(Interval<double>::maxRepresentableReals(),
             Interval<double>(Min, Max));
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Interval, testMerge) {
   {
@@ -156,6 +168,8 @@ TEST(Maeve_Geometry_Interval, testMerge) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testComparisons) {
   {
     const auto i1 = Interval<double>(0.25, 1);
@@ -200,6 +214,8 @@ TEST(Maeve_Geometry_Interval, testComparisons) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testContains) {
   {
     const auto i = Interval<double>();
@@ -212,6 +228,8 @@ TEST(Maeve_Geometry_Interval, testContains) {
     EXPECT_FALSE(Interval<double>::contains(i, 2.0));
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Interval, testEmpty) {
   {
@@ -234,6 +252,8 @@ TEST(Maeve_Geometry_Interval, testEmpty) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testZeroLength) {
   {
     const auto i = Interval<double>(0, 1);
@@ -250,6 +270,8 @@ TEST(Maeve_Geometry_Interval, testZeroLength) {
     EXPECT_TRUE(Interval<double>::zeroLength(i));
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Interval, testConvexHull) {
   {
@@ -283,6 +305,8 @@ TEST(Maeve_Geometry_Interval, testConvexHull) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testIntersection) {
   {
     const auto i1 = Interval<double>(-1.0, 1.0);
@@ -303,6 +327,8 @@ TEST(Maeve_Geometry_Interval, testIntersection) {
     EXPECT_TRUE(std::isnan(Interval<double>::length(i)));
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Interval, testConstruction) {
   {
@@ -332,6 +358,8 @@ TEST(Maeve_Geometry_Interval, testConstruction) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, addition) {
   const auto i = Interval<double>(-1.0, 1.0);
   const auto j = Interval<double>(-2.0, 2.0);
@@ -344,5 +372,7 @@ TEST(Maeve_Geometry_Interval, addition) {
   EXPECT_EQ((i + k), i);
   EXPECT_EQ((k + i), i);
 }
+
+//------------------------------------------------------------------------------
 
 }  // namespace maeve_automation_core

@@ -133,7 +133,7 @@ boost::optional<PST_Connector> PST_Reachability::LPorPLP(
 
   // Get valid starting speed.
   const auto dt_valid =
-      Interval<double>::projectToInterval(I_dt, initial_speed);
+      Interval<double>::project_to_interval(I_dt, initial_speed);
 
   // Initial acceleration should move toward dt_valid.
   const auto ddt = ((dt_valid < initial_speed) ? ddt_max : ddt_min);
