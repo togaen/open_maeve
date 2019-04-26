@@ -37,6 +37,14 @@ const auto epsilon = 0.00001;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Interval, center) {
+  EXPECT_EQ(Interval_d::center(Interval_d(-1.0, 1.0)), 0.0);
+  EXPECT_EQ(Interval_d::center(Interval_d(-3.0, -2.0)), -2.5);
+  EXPECT_TRUE(std::isnan(Interval_d::center(Interval_d())));
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testIsSubsetEq) {
   EXPECT_TRUE(Interval<double>::isSubsetEq(Interval<double>(-0.5, 0.5),
                                            Interval<double>(-1.0, 1.0)));

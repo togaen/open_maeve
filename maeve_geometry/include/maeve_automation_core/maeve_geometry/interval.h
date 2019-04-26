@@ -239,6 +239,13 @@ class Interval {
   static bool empty(const Interval& interval);
 
   /**
+   * @brief Compute and return the center of the given interval.
+   *
+   * @note If the interval is empty, NaN is returned.
+   */
+  static T center(const Interval& interval);
+
+  /**
    * @brief Test for whether a given interval contains a given value.
    *
    * @param interval The interval.
@@ -474,6 +481,14 @@ template <typename T>
 bool Interval<T>::empty(const Interval& interval) {
   return (std::isnan(Interval::min(interval)) &&
           std::isnan(Interval::max(interval)));
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+T Interval<T>::center(const Interval& interval) {
+  const auto mid_offset = (T(0.5) * Interval::length(interval));
+  return (Interval::min(interval) + mid_offset);
 }
 
 //------------------------------------------------------------------------------
