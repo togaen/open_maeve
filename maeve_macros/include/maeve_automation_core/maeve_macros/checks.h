@@ -21,17 +21,12 @@
  */
 #pragma once
 
+#include "utilities.h"
+
 #include <cmath>
 #include <limits>
 
 #include <ros/console.h>
-
-/** @brief Define a silencer for use when logging is not desired. */
-#ifdef LOG_SILENT
-static_assert(false, "Macro LOG_SILENT already defined. Cannot continue.");
-#else
-#define LOG_SILENT(str)
-#endif
 
 /**
  * @brief Check whether a varaible is NaN; return false immediately if so.
