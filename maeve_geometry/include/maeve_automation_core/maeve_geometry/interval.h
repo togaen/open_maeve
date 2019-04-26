@@ -392,8 +392,9 @@ class Interval {
   /**
    * @brief Constructor: specify exact interval bounds.
    *
-   * If the interval is initialized with invalid bounds, then the bounds are set
-   * to NaN.
+   * @note An exception is thrown if the specified bounds are invalid.
+   *
+   * @post Construction is successful iff the interval is valid.
    *
    * @param minimum The minimum bound.
    * @param maximum The maximum bound.
