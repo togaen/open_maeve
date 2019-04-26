@@ -288,6 +288,20 @@ class Interval {
   static T projectToInterval(const Interval& interval, const T& val);
 
   /**
+   * @brief Project a value 'val' from one range onto another.
+   *
+   * @tparam T The type of numbers being projected.
+   * @param val The value being projected.
+   * @param from_range Interval representing the originating range.
+   * @param to_range Interval representing the target range.
+   *
+   * @return The value in the target range with the same proportional offset as
+   * 'val' in the originating range.
+   */
+  static T project_to_range(const T& val, const Interval& from_range,
+                            const Interval& to_range);
+
+  /**
    * @brief Compute the scaling along the interval that corresponds to 'val'
    *
    * @returns s \in [0, 1] for val \in interval, or s < 0 or s > 1 for val < min
@@ -640,6 +654,16 @@ template <typename T>
 T Interval<T>::projectToInterval(const Interval& interval, const T& val) {
   return std::min(Interval::max(interval),
                   std::max(val, Interval::min(interval)));
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+T Interval<T>::project_to_range(const T& val, const Interval<T>& from_range,
+                                const Interval<T>& to_range) {
+  const auto val_offset = (val - Interval<T>::min(from_range));
+  const auto s = (val_offset / Interval<T>::length(from_range));
+  return (Interval<T>::min(to_range) + s * Interval<T>::length(to_range));
 }
 
 //------------------------------------------------------------------------------

@@ -48,6 +48,13 @@ TEST(Maeve_Geometry_Interval, testIsSubsetEq) {
       Interval<double>::isSubsetEq(Interval<double>(), Interval<double>()));
 }
 
+TEST(Maeve_Geometry_Interval, project_to_range) {
+  const auto i1 = Interval_d(-3.0, 1.0);
+  const auto i2 = Interval_d(5.0, 6.0);
+
+  EXPECT_EQ(Interval_d::project_to_range(-1.0, i1, i2), 5.5);
+}
+
 TEST(Maeve_Geometry_Interval, testProjectToInterval) {
   const auto i = Interval<double>(-1.0, 1.0);
   {
