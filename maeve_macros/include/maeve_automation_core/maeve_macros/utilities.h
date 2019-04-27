@@ -44,3 +44,6 @@ static_assert(false, "Macro LOG_SILENT already defined. Cannot continue.");
  * https://stackoverflow.com/questions/5256313/c-c-macro-string-concatenation
  */
 #define PPCAT(A, B) PP(A, B)
+
+/** @brief Convenience for printing name/value pairs. */
+#define STREAMIZE(var, member) "" << #member << ": " << var.member
