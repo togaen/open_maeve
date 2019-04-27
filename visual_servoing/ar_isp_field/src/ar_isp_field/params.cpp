@@ -115,10 +115,10 @@ bool AR_ISPFieldParams::load(const ros::NodeHandle& nh) {
 
 bool AR_ISPFieldParams::valid() const {
   // Check this object's parameters.
-  CHECK_STRICTLY_POSITIVE(ar_time_queue_size);
-  CHECK_STRICTLY_POSITIVE(ar_time_queue_max_gap);
-  CHECK_STRICTLY_POSITIVE(ar_tag_max_age);
-  CHECK_STRICTLY_POSITIVE(ar_tag_size);
+  CHECK_GT(ar_time_queue_size, 0);
+  CHECK_GT(ar_time_queue_max_gap, 0);
+  CHECK_GT(ar_tag_max_age, 0);
+  CHECK_GT(ar_tag_size, 0);
   CHECK_NOT_NAN(target_reward);
   CHECK_NONEMPTY(ar_frame_prefix);
   CHECK_NONEMPTY(camera_frame_name);

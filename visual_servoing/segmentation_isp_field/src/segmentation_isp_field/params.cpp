@@ -98,7 +98,7 @@ bool SegmentationFieldParams::valid() const {
   }
 
   CHECK_NONEMPTY(data_set_name);
-  CHECK_STRICTLY_POSITIVE(horizon_viz_height);
+  CHECK_GT(horizon_viz_height, 0);
   CHECK_FINITE(Interval_d::min(viz_potential_bounds));
   CHECK_FINITE(Interval_d::max(viz_potential_bounds));
 

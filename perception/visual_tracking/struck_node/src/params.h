@@ -133,11 +133,11 @@ struct StruckVisualTrackingParams : public ParamsBase {
    */
   template <typename T>
   static bool SanityCheckConfig(const T& c) {
-    CHECK_STRICTLY_POSITIVE(c.frameWidth);
-    CHECK_STRICTLY_POSITIVE(c.frameHeight);
-    CHECK_STRICTLY_POSITIVE(c.searchRadius);
-    CHECK_STRICTLY_POSITIVE(c.svmC);
-    CHECK_STRICTLY_POSITIVE(c.svmBudgetSize);
+    CHECK_GT(c.frameWidth, 0);
+    CHECK_GT(c.frameHeight, 0);
+    CHECK_GT(c.searchRadius, 0);
+    CHECK_GT(c.svmC, 0);
+    CHECK_GT(c.svmBudgetSize, 0);
     return true;
   }
 };  // struct StruckVisualTrackingParams

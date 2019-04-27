@@ -203,31 +203,6 @@
   LOG_CHECK_CONTAINS_OPEN(var, r1, r2, ROS_ERROR_STREAM)
 
 /**
- * @brief Check that var > 0; return false immediately if check fails.
- *
- * @param var The value to check.
- */
-#define LOG_CHECK_STRICTLY_POSITIVE(var, logger)                       \
-  if (var <= 0) {                                                      \
-    logger(#var << " > 0: check failed for " << #var << " = " << var); \
-    return false;                                                      \
-  }
-#define CHECK_STRICTLY_POSITIVE(var) \
-  LOG_CHECK_STRICTLY_POSITIVE(var, ROS_ERROR_STREAM)
-
-/**
- * @brief Check that var >= 0; return false immediately if check fails.
- *
- * @param var The value to check.
- */
-#define LOG_CHECK_NON_NEGATIVE(var, logger)                             \
-  if (var < 0) {                                                        \
-    logger(#var << " >= 0: check failed for " << #var << " = " << var); \
-    return false;                                                       \
-  }
-#define CHECK_NON_NEGATIVE(var) LOG_CHECK_NON_NEGATIVE(var, ROS_ERROR_STREAM)
-
-/**
  * @brief Check that container var is non-empty; return false immediately if
  * check fails.
  *

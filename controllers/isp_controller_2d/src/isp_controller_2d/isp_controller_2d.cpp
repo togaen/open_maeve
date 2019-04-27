@@ -171,7 +171,7 @@ ISP_Controller2D::Params::Params(const ShapeParameters& sp,
 
 bool ISP_Controller2D::Params::valid() const {
   // Perform checks.
-  CHECK_STRICTLY_POSITIVE(focal_length_x);
+  CHECK_GT(focal_length_x, 0.0);
   CHECK_NOT_NAN(principal_point_x);
   CHECK_NOT_NAN(K_P);
   CHECK_NOT_NAN(K_D);
