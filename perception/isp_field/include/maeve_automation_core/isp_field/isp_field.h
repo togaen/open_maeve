@@ -25,7 +25,8 @@
 
 namespace maeve_automation_core {
 /** @brief Construct a zero-filled single channel ISP field. */
-cv::Mat zero_ISP_single_channel(const cv::Size& size);
+cv::Mat zero_ISP_single_channel(const cv::Size& size,
+                                const int type = CV_64FC1);
 
 /**
  * @brief Construct and return a zero-filled ISP field.
@@ -35,7 +36,8 @@ cv::Mat zero_ISP_single_channel(const cv::Size& size);
  *
  * @return The zeroed ISP field.
  */
-cv::Mat zeroISP_Field(const int width, const int height);
+cv::Mat zeroISP_Field(const int width, const int height,
+                      const int type = CV_64FC2);
 
 /**
  * @brief Construct and return a zero-filled ISP field.
@@ -44,7 +46,7 @@ cv::Mat zeroISP_Field(const int width, const int height);
  *
  * @return The zeroed ISP field.
  */
-cv::Mat zeroISP_Field(const cv::Size& size);
+cv::Mat zeroISP_Field(const cv::Size& size, const int type = CV_64FC2);
 
 /**
  * @brief Construct and return a one-filled ISP field.
@@ -54,7 +56,8 @@ cv::Mat zeroISP_Field(const cv::Size& size);
  *
  * @return The one-filled ISP field.
  */
-cv::Mat oneISP_Field(const int width, const int height);
+cv::Mat oneISP_Field(const int width, const int height,
+                     const int type = CV_64FC2);
 
 /**
  * @brief Construct and return a one-filled ISP field.
@@ -63,7 +66,7 @@ cv::Mat oneISP_Field(const int width, const int height);
  *
  * @return The one-filled ISP field.
  */
-cv::Mat oneISP_Field(const cv::Size& size);
+cv::Mat oneISP_Field(const cv::Size& size, const int type = CV_64FC2);
 
 /**
  * @brief Compute the ROI in the ISP field that is used in the control law

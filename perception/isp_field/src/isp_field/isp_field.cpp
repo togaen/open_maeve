@@ -21,41 +21,36 @@
  */
 #include "maeve_automation_core/isp_field/isp_field.h"
 
-// TODO(me): Need to also abstract out point type. There are lots of instances
-// where matrices are accessed with .at<Point2d> that cause segfaults if this
-// default type is changed.
-static constexpr auto ISP_CV_TYPE = CV_64FC2;
-
 namespace maeve_automation_core {
 
 //------------------------------------------------------------------------------
 
-cv::Mat zero_ISP_single_channel(const cv::Size& size) {
-  return cv::Mat::zeros(size, CV_64FC1);
+cv::Mat zero_ISP_single_channel(const cv::Size& size, const int type) {
+  return cv::Mat::zeros(size, type);
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat zeroISP_Field(const int width, const int height) {
-  return zeroISP_Field(cv::Size(width, height));
+cv::Mat zeroISP_Field(const int width, const int height, const int type) {
+  return zeroISP_Field(cv::Size(width, height), type);
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat zeroISP_Field(const cv::Size& size) {
-  return cv::Mat::zeros(size, ISP_CV_TYPE);
+cv::Mat zeroISP_Field(const cv::Size& size, const int type) {
+  return cv::Mat::zeros(size, type);
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat oneISP_Field(const int width, const int height) {
-  return oneISP_Field(cv::Size(width, height));
+cv::Mat oneISP_Field(const int width, const int height, const int type) {
+  return oneISP_Field(cv::Size(width, height), type);
 }
 
 //------------------------------------------------------------------------------
 
-cv::Mat oneISP_Field(const cv::Size& size) {
-  return cv::Mat::ones(size, ISP_CV_TYPE);
+cv::Mat oneISP_Field(const cv::Size& size, const int type) {
+  return cv::Mat::ones(size, type);
 }
 
 //------------------------------------------------------------------------------
