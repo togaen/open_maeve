@@ -61,6 +61,10 @@ T compute_relative_dynamics_for_tau(const T& actor1_component,
   return (actor1_component - actor2_component);
 }
 
+/**
+ * @brief Given actor1 component, recover actor2 component from
+ * compute_relative_dynamics_for_tau.
+ */
 template <typename T>
 T get_actor2_speed_from_relative_dynamics(const T& relative_speed,
                                           const T& actor1_speed) {
@@ -107,6 +111,8 @@ T tau(const T& range, const T& actor1_speed, const T& actor2_speed,
 
 /**
  * @brief Solve the tau function for relative speed.
+ *
+ * @note Relative speed is positive when actor1 is approaching actor2
  *
  * @note Relative speed is undefined (i.e., NaN) when tau is zero.
  */
