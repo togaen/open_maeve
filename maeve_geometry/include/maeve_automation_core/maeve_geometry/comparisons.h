@@ -21,9 +21,24 @@
  */
 #pragma once
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 namespace maeve_automation_core {
+/**
+ * @brief Utilities for degrees <> radians
+ * @{
+ */
+template <typename T>
+constexpr T deg_2_rad(const T& deg) {
+  return (deg * T(M_PI / 180.0));
+}
+template <typename T>
+constexpr T rad_2_deg(const T& rad) {
+  return (rad * T(180.0 / M_PI));
+}
+/** @} */
+
 /**
  * @brief Utility function useful for readability
  *
