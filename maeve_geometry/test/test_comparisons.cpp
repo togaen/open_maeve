@@ -39,6 +39,16 @@ namespace maeve_automation_core {
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Comparisons, degree_rad) {
+  EXPECT_EQ(a, deg_2_rad(rad_2_deg(a)));
+  EXPECT_EQ(M_PI, deg_2_rad(180.0));
+  EXPECT_EQ(180.0, rad_2_deg(M_PI));
+  EXPECT_EQ((0.5 * M_PI), deg_2_rad(90.0));
+  EXPECT_EQ(90.0, rad_2_deg((0.5 * M_PI)));
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Comparisons, inverse) {
   constexpr auto VAL = 3.0;
   EXPECT_EQ(inverse(VAL), (1.0 / 3.0));
