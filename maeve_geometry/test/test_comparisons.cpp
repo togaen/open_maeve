@@ -39,6 +39,15 @@ namespace maeve_automation_core {
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Comparisons, sqrt_magnitude) {
+  EXPECT_EQ(std::sqrt(a), sqrt_magnitude(a));
+  EXPECT_EQ(std::sqrt(b), sqrt_magnitude(b));
+  EXPECT_EQ(-std::sqrt(std::abs(c)), sqrt_magnitude(c));
+  EXPECT_EQ(-std::sqrt(std::abs(f)), sqrt_magnitude(f));
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Comparisons, degree_rad) {
   EXPECT_EQ(a, deg_2_rad(rad_2_deg(a)));
   EXPECT_EQ(M_PI, deg_2_rad(180.0));

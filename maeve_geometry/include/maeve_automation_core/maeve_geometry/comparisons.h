@@ -26,6 +26,18 @@
 
 namespace maeve_automation_core {
 /**
+ * @brief Compute the value:
+ *
+ *     sgn(val) * sqrt(|val|)
+ *
+ * @note This is useful as a shaping function in heuristics.
+ */
+template <typename T>
+T sqrt_magnitude(const T& val) {
+  return std::copysign(std::sqrt(std::abs(val)), val);
+}
+
+/**
  * @brief Utilities for degrees <> radians
  * @{
  */
