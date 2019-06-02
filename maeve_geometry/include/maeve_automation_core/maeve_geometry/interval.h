@@ -225,6 +225,9 @@ class Interval {
    */
   static bool zeroLength(const Interval& interval);
 
+  /** @brief Get the interval value nearest to the given value. */
+  static T nearest_value(const Interval& interval, const T& value);
+
   /**
    * @brief Whether the interval is empty or not.
    *
@@ -473,6 +476,29 @@ bool Interval<T>::zeroLength(const Interval& interval) {
   const auto length_is_zero =
       (Interval::min(interval) == Interval::max(interval));
   return (is_not_empty && length_is_zero);
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+T Interval<T>::nearest_value(const Interval& interval, const T& value) {
+  if (std::isnan(value)) {
+    return value;
+  }
+  if (std::isinf(value)) {
+    return (std::signbit(value) ? Interval::min(interval)
+                                : Interval::max(interval));
+  }
+  if (Interval::contains(interval, value)) {
+    return value;
+  }
+
+  const auto distance_from_min = std::abs(Interval::min(interval) - value);
+  const auto distance_from_max = std::abs(value - Interval::max(interval));
+
+  const auto min_is_nearer = (distance_from_min < distance_from_max);
+
+  return (min_is_nearer ? Interval::min(interval) : Interval::max(interval));
 }
 
 //------------------------------------------------------------------------------

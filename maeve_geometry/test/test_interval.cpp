@@ -37,6 +37,20 @@ const auto epsilon = 0.00001;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Interval, nearest_value) {
+  const auto i = Interval_d(-1.0, 1.0);
+  EXPECT_EQ(Interval_d::nearest_value(i, 0.0), 0.0);
+  EXPECT_EQ(Interval_d::nearest_value(i, 0.25), 0.25);
+  EXPECT_EQ(Interval_d::nearest_value(i, -0.33), -0.33);
+  EXPECT_EQ(Interval_d::nearest_value(i, -10.0), -1.0);
+  EXPECT_EQ(Interval_d::nearest_value(i, 10.0), 1.0);
+  EXPECT_TRUE(std::isnan(Interval_d::nearest_value(i, NaN)));
+  EXPECT_EQ(Interval_d::nearest_value(i, Inf), 1.0);
+  EXPECT_EQ(Interval_d::nearest_value(i, -Inf), -1.0);
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, center) {
   EXPECT_EQ(Interval_d::center(Interval_d(-1.0, 1.0)), 0.0);
   EXPECT_EQ(Interval_d::center(Interval_d(-3.0, -2.0)), -2.5);
