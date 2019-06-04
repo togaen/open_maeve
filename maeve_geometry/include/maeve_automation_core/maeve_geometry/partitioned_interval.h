@@ -91,6 +91,8 @@ class PartitionedInterval {
    * @pre The specified interval must not be empty
    * @pre The specified partition point must be contained on the interval
    *
+   * TODO(me): Generlize to allow partition points outside the interval?
+   *
    * @post The interval is non-empty.
    *
    * @{
