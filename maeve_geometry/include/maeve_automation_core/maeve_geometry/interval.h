@@ -402,6 +402,8 @@ class Interval {
   /**
    * @brief Constructor: specify exact interval bounds.
    *
+   * @note An empty interval is specified by setting both bounds to NaN.
+   *
    * @note An exception is thrown if the specified bounds are invalid.
    *
    * @post Construction is successful iff the interval is valid.
