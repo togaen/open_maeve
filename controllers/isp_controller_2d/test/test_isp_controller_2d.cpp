@@ -158,7 +158,7 @@ TEST(ISP_Controller, testYawColumnConversions) {
     const Interval_d col_interval(0.0, static_cast<double>(cols));
     const auto yaw =
         std::atan2(principal_point_x -
-                       Interval_d::projectToInterval(col_interval, center_x),
+                       Interval_d::project_to_interval(col_interval, center_x),
                    focal_length_x);
     const auto computed_yaw =
         column2Yaw(m, i, focal_length_x, principal_point_x);
