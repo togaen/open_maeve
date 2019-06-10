@@ -349,6 +349,14 @@ class Interval {
                                          const Interval& interval2);
 
   /**
+   * @brief Compute and return [min - margin, max + margin].
+   *
+   * @pre The margin will not result in an invalid interval, i.e., one in which
+   * min > max
+   */
+  static Interval grow(const Interval& interval, const T& margin);
+
+  /**
    * @brief Factory method to build the set of affinely extended reals.
    *
    * @return [-\infty, +\infty]
@@ -652,6 +660,15 @@ boost::optional<Interval<T>> Interval<T>::merge(const Interval& interval1,
 
   // Done.
   return Interval::convexHull(interval1, interval2);
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+Interval<T> Interval<T>::grow(const Interval& interval, const T& margin) {
+  const T min = (Interval::min(interval) - margin);
+  const T max = (Interval::max(interval) + margin);
+  return Interval(min, max);
 }
 
 //------------------------------------------------------------------------------

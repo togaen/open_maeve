@@ -192,6 +192,17 @@ TEST(Maeve_Geometry_Interval, testMerge) {
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Interval, grow) {
+  const auto i = Interval_d(-1.0, 1.0);
+  EXPECT_THROW({ const auto i2 = Interval_d::grow(i, -2.0); },
+               std::runtime_error);
+
+  EXPECT_EQ(Interval_d(-2.0, 2.0), Interval_d::grow(i, 1.0));
+  EXPECT_EQ(Interval_d(0.0, 0.0), Interval_d::grow(i, -1.0));
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testComparisons) {
   {
     const auto i1 = Interval<double>(0.25, 1);
