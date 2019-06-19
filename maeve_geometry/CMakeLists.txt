@@ -205,6 +205,7 @@ catkin_add_gtest(${PROJECT_NAME}-test
   test/test_bounds_ordered_interval.cpp
   test/test_comparisons.cpp
   test/test_interval.cpp
+  test/test_flow.cpp
   test/test_partitioned_interval.cpp
   test/test_disjoint_interval.cpp
   test/test_polynomial.cpp
