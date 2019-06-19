@@ -114,6 +114,7 @@ TEST(Maeve_Geometry_Comparisons, testZero) {
   EXPECT_TRUE(approxZero(d + epsilon * epsilon, epsilon));
   EXPECT_FALSE(approxZero(d + 2.0 * epsilon, epsilon));
   EXPECT_FALSE(approxZero(1.0, epsilon));
+  EXPECT_TRUE(approxZero(0.0, 0.0));
 }
 
 //------------------------------------------------------------------------------

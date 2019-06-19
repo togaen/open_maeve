@@ -133,7 +133,7 @@ inline bool approxNe(const T& a, const T& b, const T& eps) {
  */
 template <typename T>
 inline bool approxZero(const T& a, const T& eps) {
-  return (std::abs(a) < eps);
+  return approxEq(a, static_cast<T>(0), eps);
 }
 
 /**
@@ -148,7 +148,7 @@ inline bool approxZero(const T& a, const T& eps) {
  */
 template <typename T>
 inline T clampToZero(const T& val, const T& eps) {
-  return (approxZero(val, eps) ? T(0) : val);
+  return (approxZero(val, eps) ? static_cast<T>(0) : val);
 }
 
 /**
