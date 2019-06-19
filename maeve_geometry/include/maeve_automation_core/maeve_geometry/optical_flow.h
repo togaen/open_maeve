@@ -41,8 +41,10 @@ T flow_component(const T& focal_length, const T& center, const T& depth,
     return std::numeric_limits<T>::quiet_NaN();
   }
 
+  const auto center_relative_pixel = (pixel_coordinate - center);
+
   return ((focal_length / depth) *
           (translation_speed_parallel -
-           (pixel_coordinate * translation_speed_perpendicular)));
+           (center_relative_pixel * translation_speed_perpendicular)));
 }
 }  // namespace maeve_automation_core

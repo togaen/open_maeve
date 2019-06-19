@@ -29,21 +29,66 @@ namespace maeve_automation_core {
 
 //------------------------------------------------------------------------------
 
-TEST(OpticalFlow, flow_component) {
+TEST(OpticalFlow, flow_component_degenerate) {
   constexpr auto focal_length = 1.0;
   constexpr auto center = 10.0;
   constexpr auto pixel_coordinate = 5.0;
   constexpr auto translation_speed_parallel = 1.0;
   constexpr auto translation_speed_perpendicular = 1.0;
+  constexpr auto depth = 0.0;
 
-  {
-    constexpr auto depth = 0.0;
-    const auto component = flow_component(
-        focal_length, center, depth, pixel_coordinate,
-        translation_speed_parallel, translation_speed_perpendicular);
-    EXPECT_TRUE(std::isnan(component))
-        << "Computed component: " << component << ", but expected NaN";
-  }
+  const auto component = flow_component(
+      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
+      translation_speed_perpendicular);
+  EXPECT_TRUE(std::isnan(component));
+}
+
+//------------------------------------------------------------------------------
+
+TEST(OpticalFlow, flow_component_centered_singular_flow) {
+  constexpr auto focal_length = 1.0;
+  constexpr auto center = 10.0;
+  constexpr auto pixel_coordinate = 10.0;
+  constexpr auto translation_speed_parallel = 0.0;
+  constexpr auto translation_speed_perpendicular = 1.0;
+  constexpr auto depth = 10.0;
+
+  const auto component = flow_component(
+      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
+      translation_speed_perpendicular);
+  EXPECT_EQ(component, 0.0);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(OpticalFlow, flow_component_centered_outward_flow) {
+  constexpr auto focal_length = 1.0;
+  constexpr auto center = 10.0;
+  constexpr auto pixel_coordinate = 10.0;
+  constexpr auto translation_speed_parallel = 1.0;
+  constexpr auto translation_speed_perpendicular = 1.0;
+  constexpr auto depth = 10.0;
+
+  const auto component = flow_component(
+      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
+      translation_speed_perpendicular);
+  EXPECT_EQ(component, 0.1);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(OpticalFlow, flow_component_not_centered_no_flow) {
+  constexpr auto focal_length = 1.0;
+  constexpr auto center = 10.0;
+  constexpr auto pixel_coordinate = 10.0;
+  constexpr auto translation_speed_parallel = 0.0;
+  constexpr auto translation_speed_perpendicular = 0.0;
+  constexpr auto depth = 10.0;
+
+  const auto component = flow_component(
+      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
+      translation_speed_perpendicular);
+  EXPECT_EQ(component, 0.0);
 }
 
 //------------------------------------------------------------------------------
