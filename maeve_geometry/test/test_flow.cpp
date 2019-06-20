@@ -66,7 +66,7 @@ TEST(OpticalFlow, flow_component_centered_outward_flow) {
   constexpr auto center = 10.0;
   constexpr auto pixel_coordinate = 10.0;
   constexpr auto translation_speed_parallel = 1.0;
-  constexpr auto translation_speed_perpendicular = 1.0;
+  constexpr auto translation_speed_perpendicular = 0.0;
   constexpr auto depth = 10.0;
 
   const auto component = flow_component(
@@ -89,6 +89,22 @@ TEST(OpticalFlow, flow_component_not_centered_no_flow) {
       focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
       translation_speed_perpendicular);
   EXPECT_EQ(component, 0.0);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(OpticalFlow, flow_component_not_centered_outward_flow) {
+  constexpr auto focal_length = 1.0;
+  constexpr auto center = 10.0;
+  constexpr auto pixel_coordinate = 11.0;
+  constexpr auto translation_speed_parallel = 1.0;
+  constexpr auto translation_speed_perpendicular = 1.0;
+  constexpr auto depth = 10.0;
+
+  const auto component = flow_component(
+      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
+      translation_speed_perpendicular);
+  EXPECT_EQ(component, 0.2);
 }
 
 //------------------------------------------------------------------------------

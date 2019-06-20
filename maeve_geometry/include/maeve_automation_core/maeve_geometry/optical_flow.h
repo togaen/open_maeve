@@ -29,7 +29,8 @@ namespace maeve_automation_core {
 /**
  * @brief Compute x or y component of optical flow.
  *
- * @note Translation speeds are w.r.t. the image plane.
+ * @note Translation speeds are w.r.t. the image plane and follow the sign
+ *       convention defined by `tau_speed`.
  * @note Flow is undefined if the depth is zero. NaN is returned in this case.
  */
 template <typename T>
@@ -45,6 +46,6 @@ T flow_component(const T& focal_length, const T& center, const T& depth,
 
   return ((focal_length / depth) *
           (translation_speed_parallel -
-           (center_relative_pixel * translation_speed_perpendicular)));
+           (center_relative_pixel * -translation_speed_perpendicular)));
 }
 }  // namespace maeve_automation_core
