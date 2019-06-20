@@ -108,6 +108,15 @@ info_info compute_problem_info(const double actor1_accel,
 
 TEST(Tau, tau1) {
   {
+    const auto range = 0.0;
+    const auto relative_speed = 0.0;
+    const auto expected_tau = 0.0;
+    const auto computed_tau =
+        tau(range, relative_speed, tau_constants<double>::EPS);
+    EXPECT_EQ(computed_tau, expected_tau);
+  }
+
+  {
     const auto range = 1.0;
     const auto relative_speed = 1.0;
     const auto expected_tau = 1.0;

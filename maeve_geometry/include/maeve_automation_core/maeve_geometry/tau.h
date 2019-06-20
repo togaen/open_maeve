@@ -90,6 +90,10 @@ T get_actor2_speed_from_relative_dynamics(const T& relative_speed,
  */
 template <typename T>
 T tau(const T& range, const T& relative_speed, const T& epsilon) {
+  if (approxZero(range, epsilon)) {
+    return static_cast<T>(0);
+  }
+
   if (approxZero(relative_speed, epsilon)) {
     return tau_constants<T>::INF;
   }
