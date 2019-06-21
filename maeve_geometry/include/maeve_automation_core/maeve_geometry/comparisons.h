@@ -21,62 +21,9 @@
  */
 #pragma once
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 
-// TODO(me): This has become a dumping ground for more than just comparison
-// functions. Break up the file.
-
 namespace maeve_automation_core {
-/**
- * @brief Compute the value:
- *
- *     sgn(val) * sqrt(|val|)
- *
- * @note This is useful as a shaping function in heuristics.
- */
-template <typename T>
-T sqrt_magnitude(const T& val) {
-  return std::copysign(std::sqrt(std::abs(val)), val);
-}
-
-/**
- * @brief Utilities for degrees <> radians
- * @{
- */
-template <typename T>
-constexpr T deg_2_rad(const T& deg) {
-  return (deg * T(M_PI / 180.0));
-}
-template <typename T>
-constexpr T rad_2_deg(const T& rad) {
-  return (rad * T(180.0 / M_PI));
-}
-/** @} */
-
-/** @brief Utility function useful for readability. */
-template <typename T>
-T inverse(const T& val) {
-  return (static_cast<T>(1) / val);
-}
-
-/** @brief Make axis conventions readable in the code. */
-template <typename T>
-T invert_axis(const T& axis) {
-  return -axis;
-}
-
-/**
- * @brief Get a number with magnitude of 'value' and sign determined by 'sign'
- *
- * @return -|value| if sign is true; |value| otherwise
- */
-template <typename T>
-T signed_value(const T& value, const bool sign) {
-  const auto num_sign = (sign ? T(-1) : T(1));
-  return std::copysign(value, num_sign);
-}
-
 /**
  * @brief Convenience method for performing logical exclusive or ops.
  *

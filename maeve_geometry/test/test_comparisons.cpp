@@ -39,46 +39,6 @@ namespace maeve_automation_core {
 
 //------------------------------------------------------------------------------
 
-TEST(Maeve_Geometry_Comparisons, sqrt_magnitude) {
-  EXPECT_EQ(std::sqrt(a), sqrt_magnitude(a));
-  EXPECT_EQ(std::sqrt(b), sqrt_magnitude(b));
-  EXPECT_EQ(-std::sqrt(std::abs(c)), sqrt_magnitude(c));
-  EXPECT_EQ(-std::sqrt(std::abs(f)), sqrt_magnitude(f));
-}
-
-//------------------------------------------------------------------------------
-
-TEST(Maeve_Geometry_Comparisons, degree_rad) {
-  EXPECT_EQ(a, deg_2_rad(rad_2_deg(a)));
-  EXPECT_EQ(M_PI, deg_2_rad(180.0));
-  EXPECT_EQ(180.0, rad_2_deg(M_PI));
-  EXPECT_EQ((0.5 * M_PI), deg_2_rad(90.0));
-  EXPECT_EQ(90.0, rad_2_deg((0.5 * M_PI)));
-}
-
-//------------------------------------------------------------------------------
-
-TEST(Maeve_Geometry_Comparisons, inverse) {
-  constexpr auto VAL = 3.0;
-  EXPECT_EQ(inverse(VAL), (1.0 / 3.0));
-  EXPECT_EQ(inverse(inverse(VAL)), VAL);
-}
-
-//------------------------------------------------------------------------------
-
-TEST(Maeve_Geometry_Comparisons, signed_value) {
-  constexpr auto NEG = true;
-  constexpr auto POS = false;
-  constexpr auto VAL = 1.0;
-
-  EXPECT_EQ(signed_value(VAL, false), VAL);
-  EXPECT_EQ(signed_value(-VAL, false), VAL);
-  EXPECT_EQ(signed_value(VAL, true), -VAL);
-  EXPECT_EQ(signed_value(-VAL, true), -VAL);
-}
-
-//------------------------------------------------------------------------------
-
 TEST(Maeve_Geometry_Comparisons, testExclusiveOr) {
   EXPECT_TRUE(exclusiveOr(0, 1));
   EXPECT_TRUE(exclusiveOr(1, 0));
