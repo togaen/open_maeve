@@ -24,6 +24,9 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
+// TODO(me): This has become a dumping ground for more than just comparison
+// functions. Break up the file.
+
 namespace maeve_automation_core {
 /**
  * @brief Compute the value:
