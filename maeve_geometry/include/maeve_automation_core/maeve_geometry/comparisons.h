@@ -51,14 +51,16 @@ constexpr T rad_2_deg(const T& rad) {
 }
 /** @} */
 
-/**
- * @brief Utility function useful for readability
- *
- * @return The inverse of 'val'
- */
+/** @brief Utility function useful for readability. */
 template <typename T>
 T inverse(const T& val) {
   return (static_cast<T>(1) / val);
+}
+
+/** @brief Make axis conventions readable in the code. */
+template <typename T>
+T invert_axis(const T& axis) {
+  return -axis;
 }
 
 /**
