@@ -26,6 +26,9 @@
 #include "maeve_automation_core/maeve_geometry/optical_flow.h"
 
 namespace maeve_automation_core {
+namespace {
+constexpr auto EPS = 1e-4;
+}  // namespace
 
 //------------------------------------------------------------------------------
 
@@ -39,7 +42,7 @@ TEST(OpticalFlow, flow_component_degenerate) {
 
   const auto component = flow_component(
       focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular);
+      translation_speed_perpendicular, EPS);
   EXPECT_TRUE(std::isnan(component));
 }
 
@@ -55,7 +58,7 @@ TEST(OpticalFlow, flow_component_centered_singular_flow) {
 
   const auto component = flow_component(
       focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular);
+      translation_speed_perpendicular, EPS);
   EXPECT_EQ(component, 0.0);
 }
 
@@ -71,7 +74,7 @@ TEST(OpticalFlow, flow_component_centered_outward_flow) {
 
   const auto component = flow_component(
       focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular);
+      translation_speed_perpendicular, EPS);
   EXPECT_EQ(component, 0.1);
 }
 
@@ -87,7 +90,7 @@ TEST(OpticalFlow, flow_component_not_centered_no_flow) {
 
   const auto component = flow_component(
       focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular);
+      translation_speed_perpendicular, EPS);
   EXPECT_EQ(component, 0.0);
 }
 
@@ -103,7 +106,7 @@ TEST(OpticalFlow, flow_component_not_centered_outward_flow) {
 
   const auto component = flow_component(
       focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular);
+      translation_speed_perpendicular, EPS);
   EXPECT_EQ(component, 0.2);
 }
 

@@ -36,8 +36,7 @@ namespace maeve_automation_core {
 template <typename T>
 T flow_component(const T& focal_length, const T& center, const T& depth,
                  const T& pixel_coordinate, const T& translation_speed_parallel,
-                 const T& translation_speed_perpendicular,
-                 const T& epsilon = T(0)) {
+                 const T& translation_speed_perpendicular, const T& epsilon) {
   if (approxZero(depth, epsilon)) {
     return std::numeric_limits<T>::quiet_NaN();
   }
