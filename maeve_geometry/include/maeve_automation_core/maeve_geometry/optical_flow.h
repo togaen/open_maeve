@@ -32,19 +32,19 @@ namespace maeve_automation_core {
  * @note Translation speeds are w.r.t. the image plane and follow the sign
  *       convention defined by `tau_speed`.
  * @note Flow is undefined if the depth is zero. NaN is returned in this case.
+ *
+ * @pre Image space origin assumed to be on optical axis.
  */
 template <typename T>
-T flow_component(const T& focal_length, const T& center, const T& depth,
+T flow_component(const T& focal_length, const T& depth,
                  const T& pixel_coordinate, const T& translation_speed_parallel,
                  const T& translation_speed_perpendicular, const T& epsilon) {
   if (approxZero(depth, epsilon)) {
     return std::numeric_limits<T>::quiet_NaN();
   }
 
-  const auto center_relative_pixel = (pixel_coordinate - center);
-
   return ((focal_length / depth) *
           (translation_speed_parallel -
-           (center_relative_pixel * -translation_speed_perpendicular)));
+           (pixel_coordinate * -translation_speed_perpendicular)));
 }
 }  // namespace maeve_automation_core

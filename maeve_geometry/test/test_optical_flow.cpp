@@ -41,8 +41,8 @@ TEST(OpticalFlow, flow_component_degenerate) {
   constexpr auto depth = 0.0;
 
   const auto component = flow_component(
-      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular, EPS);
+      focal_length, depth, (pixel_coordinate - center),
+      translation_speed_parallel, translation_speed_perpendicular, EPS);
   EXPECT_TRUE(std::isnan(component));
 }
 
@@ -57,8 +57,8 @@ TEST(OpticalFlow, flow_component_centered_singular_flow) {
   constexpr auto depth = 10.0;
 
   const auto component = flow_component(
-      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular, EPS);
+      focal_length, depth, (pixel_coordinate - center),
+      translation_speed_parallel, translation_speed_perpendicular, EPS);
   EXPECT_EQ(component, 0.0);
 }
 
@@ -73,8 +73,8 @@ TEST(OpticalFlow, flow_component_centered_outward_flow) {
   constexpr auto depth = 10.0;
 
   const auto component = flow_component(
-      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular, EPS);
+      focal_length, depth, (pixel_coordinate - center),
+      translation_speed_parallel, translation_speed_perpendicular, EPS);
   EXPECT_EQ(component, 0.1);
 }
 
@@ -89,8 +89,8 @@ TEST(OpticalFlow, flow_component_not_centered_no_flow) {
   constexpr auto depth = 10.0;
 
   const auto component = flow_component(
-      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular, EPS);
+      focal_length, depth, (pixel_coordinate - center),
+      translation_speed_parallel, translation_speed_perpendicular, EPS);
   EXPECT_EQ(component, 0.0);
 }
 
@@ -105,8 +105,8 @@ TEST(OpticalFlow, flow_component_not_centered_outward_flow) {
   constexpr auto depth = 10.0;
 
   const auto component = flow_component(
-      focal_length, center, depth, pixel_coordinate, translation_speed_parallel,
-      translation_speed_perpendicular, EPS);
+      focal_length, depth, (pixel_coordinate - center),
+      translation_speed_parallel, translation_speed_perpendicular, EPS);
   EXPECT_EQ(component, 0.2);
 }
 
