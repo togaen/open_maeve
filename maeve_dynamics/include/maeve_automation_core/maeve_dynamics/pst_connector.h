@@ -490,7 +490,7 @@ bool PST_Connector::boundedZerothDerivatives(const PST_Connector& connector,
   const auto range = PST_Connector::range<I>(connector);
 
   // Check range.
-  return Interval<double>::isSubsetEq(range, bounds);
+  return Interval<double>::is_subset_eq(range, bounds);
 }
 
 template <PST_Connector::Idx I>
@@ -511,7 +511,7 @@ bool PST_Connector::boundedFirstDerivatives(const PST_Connector& connector,
       Interval<double>(std::min(s_dot1, s_dot2), std::max(s_dot1, s_dot2));
 
   // Check range.
-  return Interval<double>::isSubsetEq(range, bounds);
+  return Interval<double>::is_subset_eq(range, bounds);
 }
 
 template <PST_Connector::Idx I>
@@ -529,13 +529,13 @@ bool PST_Connector::boundedSecondDerivatives(const PST_Connector& connector,
       Interval<double>(std::min(s_ddot1, s_ddot2), std::max(s_ddot1, s_ddot2));
 
   // Check range.
-  return Interval<double>::isSubsetEq(range, bounds);
+  return Interval<double>::is_subset_eq(range, bounds);
 }
 
 template <PST_Connector::Idx I>
 bool PST_Connector::segmentActive(const PST_Connector& connector) {
   const auto D = PST_Connector::domain<I>(connector);
-  return !Interval<double>::zeroLength(D);
+  return !Interval<double>::zero_length(D);
 }
 
 template <PST_Connector::Idx I>

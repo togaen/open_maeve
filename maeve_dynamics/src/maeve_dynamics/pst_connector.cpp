@@ -368,7 +368,7 @@ std::tuple<Eigen::Vector2d, Eigen::Vector2d> PST_Connector::boundaryPoints(
 bool PST_Connector::timeDomainNonZeroMeasure(const PST_Connector& connector) {
   const auto D = Interval<double>(connector.switching_times_[0],
                                   connector.switching_times_[3]);
-  return !Interval<double>::zeroLength(D);
+  return !Interval<double>::zero_length(D);
 }
 
 template <>

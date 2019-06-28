@@ -223,7 +223,7 @@ class Interval {
    *
    * @return True if the interval has zero length; otherwise false.
    */
-  static bool zeroLength(const Interval& interval);
+  static bool zero_length(const Interval& interval);
 
   /** @brief Get the interval value nearest to the given value. */
   static T nearest_value(const Interval& interval, const T& value);
@@ -266,7 +266,8 @@ class Interval {
    *
    * @return True if interval1 \subseteq interval2; otherwise false.
    */
-  static bool isSubsetEq(const Interval& interval1, const Interval& interval2);
+  static bool is_subset_eq(const Interval& interval1,
+                           const Interval& interval2);
 
   /**
    * @brief Compute the intersection of two intervals as a new interval.
@@ -329,8 +330,8 @@ class Interval {
    *
    * @return The newly constructed interval hull.
    */
-  static Interval convexHull(const Interval& interval1,
-                             const Interval& interval2);
+  static Interval convex_hull(const Interval& interval1,
+                              const Interval& interval2);
 
   /**
    * @brief Compute the interval that exactly contains the input intervals.
@@ -361,7 +362,7 @@ class Interval {
    *
    * @return [-\infty, +\infty]
    */
-  static Interval affinelyExtendedReals();
+  static Interval affinely_extended_reals();
 
   /**
    * @brief Factory method to build the set of non-negative affinely extended
@@ -384,7 +385,7 @@ class Interval {
    *
    * @return [-DBL_MAX, DBL_MAX]
    */
-  static Interval maxRepresentableReals();
+  static Interval max_representable_reals();
 
   /**
    * @brief Factory method to build the set of machine representatble
@@ -392,7 +393,7 @@ class Interval {
    *
    * @return [0, DBL_MAX]
    */
-  static Interval nonNegativeReals();
+  static Interval non_negative_reals();
 
   /**
    * @brief Factory method to build the set of machine representatble
@@ -400,7 +401,7 @@ class Interval {
    *
    * @return [-DBL_MAX, 0]
    */
-  static Interval nonPositiveReals();
+  static Interval non_positive_reals();
 
   /**
    * @brief Constructor: initialize an empty interval with members set to NaN.
@@ -481,7 +482,7 @@ const std::tuple<T, T>& Interval<T>::bounds(const Interval& interval) {
 //------------------------------------------------------------------------------
 
 template <typename T>
-bool Interval<T>::zeroLength(const Interval& interval) {
+bool Interval<T>::zero_length(const Interval& interval) {
   const auto is_not_empty = !Interval::empty(interval);
   const auto length_is_zero =
       (Interval::min(interval) == Interval::max(interval));
@@ -530,7 +531,7 @@ T Interval<T>::center(const Interval& interval) {
 //------------------------------------------------------------------------------
 
 template <typename T>
-Interval<T> Interval<T>::affinelyExtendedReals() {
+Interval<T> Interval<T>::affinely_extended_reals() {
   return Interval(INFIMUM, SUPREMUM);
 }
 
@@ -551,21 +552,21 @@ Interval<T> Interval<T>::nonpositive_affinely_extended_reals() {
 //------------------------------------------------------------------------------
 
 template <typename T>
-Interval<T> Interval<T>::maxRepresentableReals() {
+Interval<T> Interval<T>::max_representable_reals() {
   return Interval(MIN, MAX);
 }
 
 //------------------------------------------------------------------------------
 
 template <typename T>
-Interval<T> Interval<T>::nonNegativeReals() {
+Interval<T> Interval<T>::non_negative_reals() {
   return Interval(T(0), MAX);
 }
 
 //------------------------------------------------------------------------------
 
 template <typename T>
-Interval<T> Interval<T>::nonPositiveReals() {
+Interval<T> Interval<T>::non_positive_reals() {
   return Interval(MIN, T(0));
 }
 
@@ -606,8 +607,8 @@ bool Interval<T>::bounds_valid(const std::tuple<T, T>& bounds) {
 //------------------------------------------------------------------------------
 
 template <typename T>
-bool Interval<T>::isSubsetEq(const Interval& interval1,
-                             const Interval& interval2) {
+bool Interval<T>::is_subset_eq(const Interval& interval1,
+                               const Interval& interval2) {
   const auto lower_contained =
       (Interval::min(interval1) >= Interval::min(interval2));
   const auto upper_contained =
@@ -633,8 +634,8 @@ T Interval<T>::length(const Interval& interval) {
 //------------------------------------------------------------------------------
 
 template <typename T>
-Interval<T> Interval<T>::convexHull(const Interval& interval1,
-                                    const Interval& interval2) {
+Interval<T> Interval<T>::convex_hull(const Interval& interval1,
+                                     const Interval& interval2) {
   // If either interval is empty, the hull is trivially the other interval.
   if (Interval::empty(interval1)) {
     return interval2;
@@ -659,7 +660,7 @@ boost::optional<Interval<T>> Interval<T>::merge(const Interval& interval1,
   }
 
   // Done.
-  return Interval::convexHull(interval1, interval2);
+  return Interval::convex_hull(interval1, interval2);
 }
 
 //------------------------------------------------------------------------------

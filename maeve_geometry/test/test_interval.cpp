@@ -60,16 +60,16 @@ TEST(Maeve_Geometry_Interval, center) {
 //------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Interval, testIsSubsetEq) {
-  EXPECT_TRUE(Interval<double>::isSubsetEq(Interval<double>(-0.5, 0.5),
-                                           Interval<double>(-1.0, 1.0)));
-  EXPECT_TRUE(Interval<double>::isSubsetEq(Interval<double>(3.2, 4.2),
-                                           Interval<double>(3.2, 4.2)));
-  EXPECT_FALSE(Interval<double>::isSubsetEq(Interval<double>(-3.0, -1.0),
-                                            Interval<double>(1.0, 3.0)));
-  EXPECT_FALSE(Interval<double>::isSubsetEq(Interval<double>(1.0, 3.0),
-                                            Interval<double>(2.0, 4.0)));
+  EXPECT_TRUE(Interval<double>::is_subset_eq(Interval<double>(-0.5, 0.5),
+                                             Interval<double>(-1.0, 1.0)));
+  EXPECT_TRUE(Interval<double>::is_subset_eq(Interval<double>(3.2, 4.2),
+                                             Interval<double>(3.2, 4.2)));
+  EXPECT_FALSE(Interval<double>::is_subset_eq(Interval<double>(-3.0, -1.0),
+                                              Interval<double>(1.0, 3.0)));
+  EXPECT_FALSE(Interval<double>::is_subset_eq(Interval<double>(1.0, 3.0),
+                                              Interval<double>(2.0, 4.0)));
   EXPECT_FALSE(
-      Interval<double>::isSubsetEq(Interval<double>(), Interval<double>()));
+      Interval<double>::is_subset_eq(Interval<double>(), Interval<double>()));
 }
 
 //------------------------------------------------------------------------------
@@ -132,9 +132,9 @@ TEST(Maeve_Geometry_Interval, scale_to_interval) {
 //------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Interval, testFactories) {
-  EXPECT_EQ(Interval<double>::affinelyExtendedReals(),
+  EXPECT_EQ(Interval<double>::affinely_extended_reals(),
             Interval<double>(-Inf, Inf));
-  EXPECT_EQ(Interval<double>::maxRepresentableReals(),
+  EXPECT_EQ(Interval<double>::max_representable_reals(),
             Interval<double>(Min, Max));
 }
 
@@ -270,7 +270,7 @@ TEST(Maeve_Geometry_Interval, testEmpty) {
     const auto i2 = Interval<double>();
     const auto i3 = Interval<double>::intersect(i1, i2);
     EXPECT_TRUE(Interval<double>::empty(i3));
-    const auto i4 = Interval<double>::convexHull(i1, i2);
+    const auto i4 = Interval<double>::convex_hull(i1, i2);
     EXPECT_TRUE(Interval<double>::empty(i4));
   }
 
@@ -279,7 +279,7 @@ TEST(Maeve_Geometry_Interval, testEmpty) {
     const auto i2 = Interval<double>(0.0, 1.0);
     const auto i3 = Interval<double>::intersect(i1, i2);
     EXPECT_TRUE(Interval<double>::empty(i3));
-    const auto i4 = Interval<double>::convexHull(i1, i2);
+    const auto i4 = Interval<double>::convex_hull(i1, i2);
     EXPECT_FALSE(Interval<double>::empty(i4));
     EXPECT_EQ(i4, i2);
   }
@@ -290,17 +290,17 @@ TEST(Maeve_Geometry_Interval, testEmpty) {
 TEST(Maeve_Geometry_Interval, testZeroLength) {
   {
     const auto i = Interval<double>(0, 1);
-    EXPECT_FALSE(Interval<double>::zeroLength(i));
+    EXPECT_FALSE(Interval<double>::zero_length(i));
   }
 
   {
     const auto i = Interval<double>();
-    EXPECT_FALSE(Interval<double>::zeroLength(i));
+    EXPECT_FALSE(Interval<double>::zero_length(i));
   }
 
   {
     const auto i = Interval<double>(2, 2);
-    EXPECT_TRUE(Interval<double>::zeroLength(i));
+    EXPECT_TRUE(Interval<double>::zero_length(i));
   }
 }
 
@@ -310,7 +310,7 @@ TEST(Maeve_Geometry_Interval, testConvexHull) {
   {
     const auto i1 = Interval<double>(-1.0, 1.0);
     const auto i2 = Interval<double>(-2.0, 2.0);
-    const auto i = Interval<double>::convexHull(i1, i2);
+    const auto i = Interval<double>::convex_hull(i1, i2);
     EXPECT_EQ(Interval<double>::min(i), -2.0);
     EXPECT_EQ(Interval<double>::max(i), 2.0);
     EXPECT_FALSE(Interval<double>::empty(i));
@@ -320,7 +320,7 @@ TEST(Maeve_Geometry_Interval, testConvexHull) {
   {
     const auto i1 = Interval<double>(-1.0, 1.0);
     const auto i2 = Interval<double>(-2.0, 0.0);
-    const auto i = Interval<double>::convexHull(i1, i2);
+    const auto i = Interval<double>::convex_hull(i1, i2);
     EXPECT_EQ(Interval<double>::min(i), -2.0);
     EXPECT_EQ(Interval<double>::max(i), 1.0);
     EXPECT_FALSE(Interval<double>::empty(i));
@@ -330,7 +330,7 @@ TEST(Maeve_Geometry_Interval, testConvexHull) {
   {
     const auto i1 = Interval<double>(5.0, 10.0);
     const auto i2 = Interval<double>(-2.0, 0.0);
-    const auto i = Interval<double>::convexHull(i1, i2);
+    const auto i = Interval<double>::convex_hull(i1, i2);
     EXPECT_EQ(Interval<double>::min(i), -2.0);
     EXPECT_EQ(Interval<double>::max(i), 10.0);
     EXPECT_FALSE(Interval<double>::empty(i));
