@@ -37,6 +37,44 @@ const auto epsilon = 0.00001;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Interval, origin_centered_symmetric) {
+  {
+    const auto length = 2.0;
+    EXPECT_EQ(Interval_d::origin_centered_symmetric(length),
+              Interval_d(-1.0, 1.0));
+  }
+
+  {
+    const auto length = 1.0;
+    EXPECT_EQ(Interval_d::origin_centered_symmetric(length),
+              Interval_d(-0.5, 0.5));
+  }
+
+  {
+    const auto length = NaN;
+    EXPECT_TRUE(
+        Interval_d::empty(Interval_d::origin_centered_symmetric(length)));
+  }
+
+  {
+    const auto length = 0.0;
+    EXPECT_EQ(Interval_d::origin_centered_symmetric(length),
+              Interval_d(0.0, 0.0));
+  }
+
+  {
+    EXPECT_THROW(
+        {
+          const auto length = -1.0;
+          EXPECT_EQ(Interval_d::origin_centered_symmetric(length),
+                    Interval_d(-0.5, 0.5));
+        },
+        std::runtime_error);
+  }
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, nearest_value) {
   const auto i = Interval_d(-1.0, 1.0);
   EXPECT_EQ(Interval_d::nearest_value(i, 0.0), 0.0);

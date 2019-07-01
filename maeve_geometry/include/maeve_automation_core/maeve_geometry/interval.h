@@ -350,6 +350,12 @@ class Interval {
                                          const Interval& interval2);
 
   /**
+   * @brief Construct and return an origin-centered symmetric interval of the
+   * given length.
+   */
+  static Interval origin_centered_symmetric(const T& length);
+
+  /**
    * @brief Compute and return [min - margin, max + margin].
    *
    * @pre The margin will not result in an invalid interval, i.e., one in which
@@ -661,6 +667,14 @@ boost::optional<Interval<T>> Interval<T>::merge(const Interval& interval1,
 
   // Done.
   return Interval::convex_hull(interval1, interval2);
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+Interval<T> Interval<T>::origin_centered_symmetric(const T& length) {
+  const auto half_length = (static_cast<T>(0.5) * length);
+  return Interval<T>(-half_length, half_length);
 }
 
 //------------------------------------------------------------------------------
