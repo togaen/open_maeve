@@ -3,4 +3,4 @@
 # Copyright (C) 2017 Maeve Automation - All Rights Reserved
 # Permission to copy and modify is granted under the MIT license
 
-find . -iname *.h -o -iname *.hpp -o -iname *.cpp | xargs clang-format -i
+find . -iname *.h -o -iname *.hpp -o -iname *.cpp -o -iname *.c -o -iname *.cc -o -iname *.hh | xargs clang-format -i
