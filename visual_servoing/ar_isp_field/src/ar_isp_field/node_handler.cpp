@@ -38,6 +38,7 @@
 
 namespace maeve_automation_core {
 namespace {
+const auto EPS = 1e-4;
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
@@ -198,8 +199,7 @@ bool AR_ISPFieldNodeHandler::computePotentialFields(
           // recently become empty. It's expected and probably not an error.
           return;
         }
-        const auto tau = tauFromDiscreteScaleDt(s, s_dot, t_delta,
-                                                tau_constants<double>::EPS);
+        const auto tau = tauFromDiscreteScaleDt(s, s_dot, t_delta, EPS);
         const auto tau_dot = 0.0;
 
         // Compute potential values.
