@@ -49,7 +49,7 @@ struct SimpleDisplacement {
 template <typename T>
 SimpleDisplacement<T> simple_motion(const T& t, const T& v, const T& a) {
   const auto speed = (v + a * t);
-  const auto distance = (t * (v + 0.5 * a * t));
+  const auto distance = (t * (v + static_cast<T>(0.5) * a * t));
   return {distance, speed};
 }
 
