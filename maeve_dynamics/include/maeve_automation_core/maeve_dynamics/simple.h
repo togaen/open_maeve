@@ -21,14 +21,41 @@
  */
 #pragma once
 
+#include "interval_constraints.h"
+
 #include <limits>
 
 #include "maeve_automation_core/maeve_geometry/comparisons.h"
 
 namespace maeve_automation_core {
+/** @brief This is used to return data from `simple_motion`. */
+template <typename T>
+struct SimpleDisplacement {
+  const T distance;
+  const T speed;
+
+  friend bool operator==(const SimpleDisplacement& sd1,
+                         const SimpleDisplacement& sd2) {
+    return ((sd1.distance == sd2.distance) && (sd1.speed == sd2.speed));
+  }
+
+  friend bool operator!=(const SimpleDisplacement& sd1,
+                         const SimpleDisplacement& sd2) {
+    return !(sd1 == sd2);
+  }
+};
+
+/** @brief Compute motion according to a simple, constant acceleration model. */
+template <typename T>
+SimpleDisplacement<T> simple_motion(const T& t, const T& v, const T& a) {
+  const auto speed = (v + a * t);
+  const auto distance = (t * (v + 0.5 * a * t));
+  return {distance, speed};
+}
+
 /**
- * @brief Under a constant acceleration model, compute the time until v1 and v2
- * reach equilibrium.
+ * @brief Under a constant acceleration model, compute the time until v1 and
+ * v2 reach equilibrium.
  *
  * @note Time can be negative if relative speed became equal in the past but
  * will not in the future.

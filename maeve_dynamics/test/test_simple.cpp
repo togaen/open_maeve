@@ -32,6 +32,30 @@ constexpr auto EPS = 1e-4;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Dynamics_simple, simple_motion) {
+  {
+    constexpr auto t = 1.0;
+    constexpr auto v = 0.0;
+    constexpr auto a = 1.0;
+    const auto sd = simple_motion(t, v, a);
+
+    const SimpleDisplacement<double> expected_sd = {0.5, 1.0};
+    EXPECT_EQ(sd, expected_sd);
+  }
+
+  {
+    constexpr auto t = 1.0;
+    constexpr auto v = 1.0;
+    constexpr auto a = 1.0;
+    const auto sd = simple_motion(t, v, a);
+
+    const SimpleDisplacement<double> expected_sd = {1.5, 2.0};
+    EXPECT_EQ(sd, expected_sd);
+  }
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Dynamics_simple, time_to_zero_relative_speed_already_equal) {
   constexpr auto v1 = 1.0;
   constexpr auto v2 = 1.0;
