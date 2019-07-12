@@ -202,6 +202,7 @@ include_directories(
 ## Add gtest based cpp test target and link libraries
 catkin_add_gtest(${PROJECT_NAME}-test
   test/test_main.cpp
+  test/test_simple.cpp
   test/test_interval_constraints.cpp
   test/test_pst_connector.cpp
   test/test_pst_reachability.cpp
