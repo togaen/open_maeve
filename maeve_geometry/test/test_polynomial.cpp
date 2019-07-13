@@ -355,13 +355,6 @@ TEST(Maeve_Geometry_Polynomial, testConstruction) {
   }
 
   {
-    const auto p = Polynomial();
-    EXPECT_TRUE(std::isnan(Polynomial::a(p)));
-    EXPECT_TRUE(std::isnan(Polynomial::b(p)));
-    EXPECT_TRUE(std::isnan(Polynomial::c(p)));
-  }
-
-  {
     const auto p = Polynomial(Eigen::Vector2d(0, 0), Eigen::Vector2d(1, 0));
     double a, b, c;
     std::tie(a, b, c) = Polynomial::coefficients(p);

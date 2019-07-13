@@ -38,10 +38,6 @@ const auto Inf = std::numeric_limits<double>::infinity();
 
 //------------------------------------------------------------------------------
 
-Polynomial::Polynomial() : coefficients_({NaN, NaN, NaN}) {}
-
-//------------------------------------------------------------------------------
-
 Polynomial::Polynomial(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
 

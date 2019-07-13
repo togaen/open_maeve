@@ -55,10 +55,8 @@ class Polynomial {
   friend std::ostream& operator<<(std::ostream& os,
                                   const Polynomial& polynomial);
 
-  /**
-   * @brief Constructor: default initialize to invalid values.
-   */
-  Polynomial();
+  /** @brief No default initialization. */
+  Polynomial() = delete;
 
   /**
    * @brief Constructor: build from specified coefficients.
