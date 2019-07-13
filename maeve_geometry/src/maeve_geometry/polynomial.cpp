@@ -47,6 +47,28 @@ Polynomial::Polynomial(const double a, const double b, const double c)
 
 //------------------------------------------------------------------------------
 
+Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
+  // Allocate coefficients.
+  auto a = 0.0;
+  auto b = NaN;
+  auto c = NaN;
+
+  // Compute coefficient values.
+  const Eigen::Vector2d d = (p2 - p1);
+  if (d.x() == 0.0) {
+    b = std::copysign(Inf, (p2.y() - p1.y()));
+  } else {
+    b = (d.y() / d.x());
+    c = (p2.y() - b * p2.x());
+  }
+
+  // Store.
+  coefficients_ = {a, b, c};
+  dx_coefficients_ = {0.0, b};
+}
+
+//------------------------------------------------------------------------------
+
 boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
 Polynomial::findConstrainedCriticalPoints(const Eigen::Vector2d& p,
                                           const double y_critical,
@@ -100,28 +122,6 @@ boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
 
   // This function is not defined for other polynomials.
   return boost::none;
-}
-
-//------------------------------------------------------------------------------
-
-Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
-  // Allocate coefficients.
-  auto a = 0.0;
-  auto b = NaN;
-  auto c = NaN;
-
-  // Compute coefficient values.
-  const Eigen::Vector2d d = (p2 - p1);
-  if (d.x() == 0.0) {
-    b = std::copysign(Inf, (p2.y() - p1.y()));
-  } else {
-    b = (d.y() / d.x());
-    c = (p2.y() - b * p2.x());
-  }
-
-  // Store.
-  coefficients_ = {a, b, c};
-  dx_coefficients_ = {0.0, b};
 }
 
 //------------------------------------------------------------------------------
