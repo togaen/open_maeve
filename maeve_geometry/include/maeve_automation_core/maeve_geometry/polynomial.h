@@ -89,6 +89,9 @@ class Polynomial {
    */
   double operator()(const double x) const;
 
+  /** @brief Check whether the given polynomial is a constant function. */
+  static bool is_constant(const Polynomial& p);
+
   /**
    * @brief Get the unique critical point of the polynomial.
    *
@@ -200,6 +203,8 @@ class Polynomial {
    * @param epsilon Precision specifier for performing validity checking.
    *
    * @return The tangent points; if no rays exists, null is returned.
+   *
+   * TODO(me): parameter values should not have default values
    */
   static boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
   tangentRaysThroughPoint(const Polynomial& polynomial,

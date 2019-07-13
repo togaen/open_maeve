@@ -204,6 +204,18 @@ double Polynomial::operator()(const double x) const {
 
 //------------------------------------------------------------------------------
 
+bool Polynomial::is_constant(const Polynomial& p) {
+  double a, b, c;
+  std::tie(a, b, c) = Polynomial::coefficients(p);
+
+  const auto a_is_zero = (a == 0.0);
+  const auto b_is_zero = (b == 0.0);
+  const auto c_is_not_zero = (c != 0.0);
+  return (a_is_zero && b_is_zero && c_is_not_zero);
+}
+
+//------------------------------------------------------------------------------
+
 std::tuple<double, double, double> Polynomial::coefficients(
     const Polynomial& polynomial) {
   return std::make_tuple(Polynomial::a(polynomial), Polynomial::b(polynomial),

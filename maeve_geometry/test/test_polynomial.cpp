@@ -35,6 +35,14 @@ const auto epsilon = 5e-4;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Polynomial, is_constant) {
+  EXPECT_TRUE(Polynomial::is_constant(Polynomial(0.0, 0.0, 1.0)));
+  EXPECT_FALSE(Polynomial::is_constant(Polynomial(0.0, 1.0, 1.0)));
+  EXPECT_FALSE(Polynomial::is_constant(Polynomial(1.0, 1.0, 1.0)));
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Polynomial, testQuadraticPointAtDerivative) {
   {
     const auto x = 0.0;
