@@ -281,15 +281,16 @@ boost::optional<PST_Connector> PST_Connector::computePP(
   }
 
   // Compute L candidates (for completeness; not actually necessary).
-  static const auto L_c = [](const Eigen::Vector2d& p, const double dx) {
+  constexpr auto L_a = 0.0;
+  const auto L1_b = Polynomial::dx(P1, p_t1.x());
+  const auto L2_b = Polynomial::dx(P1, p_t2.x());
+  const auto L_c = [](const Eigen::Vector2d& p, const double dx) {
     constexpr auto ddx = 0.0;
     const auto poly = Polynomial::fromPointWithDerivatives(p, dx, ddx);
     return Polynomial::c(poly);
   };
-  const auto L1_b = Polynomial::dx(P1, p_t1.x());
-  const auto L2_b = Polynomial::dx(P1, p_t2.x());
-  const auto L1 = Polynomial(0.0, L1_b, L_c(p_t1, L1_b));
-  const auto L2 = Polynomial(0.0, L2_b, L_c(p_t2, L2_b));
+  const auto L1 = Polynomial(L_a, L1_b, L_c(p_t1, L1_b));
+  const auto L2 = Polynomial(L_a, L2_b, L_c(p_t2, L2_b));
 
   // Compute P2 candidate segment coefficients.
   const auto P2_1 = Polynomial::fromPointWithDerivatives(p_t1, L1_b, a2);
