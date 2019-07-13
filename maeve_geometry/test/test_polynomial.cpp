@@ -350,6 +350,11 @@ TEST(Maeve_Geometry_Polynomial, testEval) {
 
 TEST(Maeve_Geometry_Polynomial, testConstruction) {
   {
+    EXPECT_THROW({ const auto p = Polynomial(Inf, Inf, Inf); },
+                 std::runtime_error);
+  }
+
+  {
     const auto p = Polynomial(1, 1, 1);
     EXPECT_TRUE(true);
   }

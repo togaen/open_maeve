@@ -61,6 +61,10 @@ class Polynomial {
   /**
    * @brief Constructor: build from specified coefficients.
    *
+   * @post The resulting polynomial is guaranteed to be valid or the y axis.
+   *
+   * TODO(me): It feels a bit sloppy to allow the y axis in there.
+   *
    * @param a The quadratic coefficient.
    * @param b The linear coefficient.
    * @param c The constant coefficient.
@@ -72,6 +76,8 @@ class Polynomial {
    *
    * @note By convention, positive slope points from p1 to p2. The quadratic
    * coefficient will always be exactly zero.
+   *
+   * @note Internally this uses the Polynomial(a, b, c) constructor.
    *
    * @param p1 The first point.
    * @param p2 The second point.
@@ -210,15 +216,22 @@ class Polynomial {
                           const double epsilon = 1e-8);
 
   /**
-   * @brief Whether the polynomial has real-valued coefficients and is
-   * well formed.
+   * @brief Whether the polynomial has real-valued coefficients.
    *
    * @param polynomial The polynomial.
    *
-   * @return True if all coefficients are real-valued and the polynomial is well
-   * formed; otherwise false.
+   * @return True if all coefficients are real-valued and the polynomial;
+   * otherwise false.
    */
   static bool valid(const Polynomial& polynomial);
+
+  /**
+   * @brief Test whether the given Polynomial represents the y axis.
+   *
+   * @note A y-axis polynomial will fail the valid() check because the y axis is
+   * not representable by a valid function.
+   */
+  static bool is_y_axis(const Polynomial& polynomial);
 
   /**
    * @brief A factory method to compute the polynomial equation from a point it

@@ -42,10 +42,12 @@ const auto Inf = std::numeric_limits<double>::infinity();
 
 Polynomial::Polynomial(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {
-  if (!Polynomial::valid(*this)) {
-    std::stringstream ss;
-    ss << "Attempted to consruct an invalid polynomial: " << *this;
-    throw std::runtime_error(ss.str());
+  if (!Polynomial::is_y_axis(*this)) {
+    if (!Polynomial::valid(*this)) {
+      std::stringstream ss;
+      ss << "Attempted to consruct an invalid polynomial: " << *this;
+      throw std::runtime_error(ss.str());
+    }
   }
 }
 
@@ -103,6 +105,14 @@ bool Polynomial::valid(const Polynomial& polynomial) {
   const auto all_finite =
       (std::isfinite(a) && std::isfinite(b) && std::isfinite(c));
   return all_finite;
+}
+
+//------------------------------------------------------------------------------
+
+bool Polynomial::is_y_axis(const Polynomial& polynomial) {
+  double a, b, c;
+  std::tie(a, b, c) = Polynomial::coefficients(polynomial);
+  return ((a == 0.0) && std::isinf(b) && std::isnan(c));
 }
 
 //------------------------------------------------------------------------------
