@@ -195,7 +195,7 @@ class PST_Connector {
    * @brief Compute a PP connector between 'p1' and 'p2'.
    *
    * The PP connector is a special case of the PLP connector who linear portion
-   * is inactive, and whoe parabolic segments touch at a point of shared
+   * is inactive, and whose parabolic segments touch at a point of shared
    * tangency. This curve differs from the PL_0P connector in that the points of
    * tangency are not necessarily critical points of the parabolic segments.
    *
