@@ -102,13 +102,7 @@ bool Polynomial::valid(const Polynomial& polynomial) {
   std::tie(a, b, c) = Polynomial::coefficients(polynomial);
   const auto all_finite =
       (std::isfinite(a) && std::isfinite(b) && std::isfinite(c));
-
-  const auto a_is_zero = (a == 0.0);
-  const auto b_is_zero = (b == 0.0);
-  const auto c_is_zero = (c == 0.0);
-  const auto well_formed = !(a_is_zero && b_is_zero && c_is_zero);
-
-  return (all_finite && well_formed);
+  return all_finite;
 }
 
 //------------------------------------------------------------------------------
