@@ -62,9 +62,8 @@ Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
     c = (p2.y() - b * p2.x());
   }
 
-  // Store.
-  coefficients_ = {a, b, c};
-  dx_coefficients_ = {0.0, b};
+  // Poor man's delegated constructor
+  *this = Polynomial(a, b, c);
 }
 
 //------------------------------------------------------------------------------
