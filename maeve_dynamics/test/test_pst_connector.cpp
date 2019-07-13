@@ -28,8 +28,10 @@
 
 namespace maeve_automation_core {
 namespace {
-const auto epsilon = 0.0001;
+constexpr auto EPS = 1e-4;
 }  // namespace
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
   {
@@ -198,6 +200,8 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
   {
     const Eigen::Vector2d p1(0.0, 0.0);
@@ -280,6 +284,8 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Dynamics_PST_Connector, testNoExceptConstruction) {
   const auto P = Polynomial(0, 0, 0);
 
@@ -294,6 +300,8 @@ TEST(Maeve_Dynamics_PST_Connector, testNoExceptConstruction) {
         PST_Connector::noExceptionConstructor({3, 2, 1, 0}, {P, P, P});
   });
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
   {
@@ -373,6 +381,8 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
   {
     const Eigen::Vector2d p1(0, 0);
@@ -432,18 +442,22 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Dynamics_PST_Connector, testEndPoints) {
   {
     const auto p = Polynomial(1, 1, 1);
     try {
       auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, p, p});
-      EXPECT_NEAR(PST_Connector::initialSpeed(pc), 1.0, epsilon);
-      EXPECT_NEAR(PST_Connector::terminalSpeed(pc), 7.0, epsilon);
+      EXPECT_NEAR(PST_Connector::initialSpeed(pc), 1.0, EPS);
+      EXPECT_NEAR(PST_Connector::terminalSpeed(pc), 7.0, EPS);
     } catch (const std::exception& e) {
       ASSERT_FALSE(true) << "Unexpected exception: " << e.what();
     }
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
   {
@@ -477,4 +491,7 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
     auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, p, p});
   });
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
