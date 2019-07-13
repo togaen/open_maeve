@@ -212,11 +212,13 @@ class Polynomial {
                           const double epsilon = 1e-8);
 
   /**
-   * @brief Whether the polynomial has real-valued coefficients.
+   * @brief Whether the polynomial has real-valued coefficients and is
+   * well formed.
    *
    * @param polynomial The polynomial.
    *
-   * @return True if all coefficients are real-valued; otherwise false.
+   * @return True if all coefficients are real-valued and the polynomial is well
+   * formed; otherwise false.
    */
   static bool valid(const Polynomial& polynomial);
 
