@@ -115,6 +115,8 @@ class Polynomial {
    *
    * @note This method favors accuracy and numeric stability over speed.
    *
+   * @pre Inputs are real valued.
+   *
    * @post If the polynomial has a unique root, the tuple members will be
    * exactly identical.
    *
@@ -127,6 +129,8 @@ class Polynomial {
    * @return A nullable object containing a tuple of the roots, or null if there
    * are no real roots. By convention the roots are ordered such that the first
    * root is not larger than the second.
+   *
+   * TODO(me): Should not have default parameter values.
    */
   static boost::optional<std::tuple<double, double>> roots(
       const double a, const double b, const double c,

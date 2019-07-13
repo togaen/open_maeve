@@ -250,6 +250,16 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(
 
 boost::optional<std::tuple<double, double>> Polynomial::roots(
     const double a, const double b, const double c, const double tolerance) {
+  // Enforce pre-condition.
+  try {
+    // Constructor allows y axis representations, so do an extra valid check.
+    if (!Polynomial::valid(Polynomial(a, b, c))) {
+      return boost::none;
+    }
+  } catch (...) {
+    return boost::none;
+  }
+
   // Not quadratic: either indeterminate or linear.
   if (a == 0.0) {
     // Indeterminate.
