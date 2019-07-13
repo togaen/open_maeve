@@ -443,10 +443,7 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
 
 bool PST_Connector::validSegments(const PST_Connector& connector) {
   return std::all_of(std::begin(connector.functions_),
-                     std::end(connector.functions_), [](const Polynomial& p) {
-                       return (Polynomial::valid(p) && Polynomial::valid(p) &&
-                               Polynomial::valid(p));
-                     });
+                     std::end(connector.functions_), Polynomial::valid);
 }
 
 bool PST_Connector::boundedInteriorAccelerations(
