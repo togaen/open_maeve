@@ -63,7 +63,9 @@ class Polynomial {
    *
    * @post The resulting polynomial is guaranteed to be valid or the y axis.
    *
-   * TODO(me): It feels a bit sloppy to allow the y axis in there.
+   * TODO(me): It feels a bit sloppy to allow the y axis in there; allowing it
+   * for now because I think quite a few things rely on being able to represent
+   * a y axis with this object. All those dependencies need to be updated first.
    *
    * @param a The quadratic coefficient.
    * @param b The linear coefficient.
