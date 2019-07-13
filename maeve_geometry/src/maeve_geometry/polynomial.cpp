@@ -214,7 +214,8 @@ double Polynomial::c(const Polynomial& polynomial) {
 //------------------------------------------------------------------------------
 
 double Polynomial::operator()(const double x) const {
-  return x * (coefficients_[0] * x + coefficients_[1]) + coefficients_[2];
+  return ((x * (Polynomial::a(*this) * x + Polynomial::b(*this))) +
+          Polynomial::c(*this));
 }
 
 //------------------------------------------------------------------------------
