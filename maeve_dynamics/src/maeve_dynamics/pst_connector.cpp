@@ -641,4 +641,56 @@ boost::optional<PST_Connector> PST_Connector::noExceptionConstructor(
 
 //------------------------------------------------------------------------------
 
+bool PST_Connector::is_Pminus(const PST_Connector& connector) {
+  const auto P1_domain = PST_Connector::domain<Idx::FIRST>(connector);
+  const auto L_domain = PST_Connector::domain<Idx::SECOND>(connector);
+  const auto P2_domain = PST_Connector::domain<Idx::THIRD>(connector);
+  const auto is_P =
+      (!Interval_d::zero_length(P1_domain) &&
+       Interval_d::zero_length(L_domain) && Interval_d::zero_length(P2_domain));
+  const auto P1_is_minus =
+      (PST_Connector::initialAcceleration(connector) < 0.0);
+
+  return (is_P && P1_is_minus);
+}
+
+//------------------------------------------------------------------------------
+
+bool PST_Connector::is_PminusL_0(const PST_Connector& connector) {
+  const auto P1_domain = PST_Connector::domain<Idx::FIRST>(connector);
+  const auto L_domain = PST_Connector::domain<Idx::SECOND>(connector);
+  const auto P2_domain = PST_Connector::domain<Idx::THIRD>(connector);
+  const auto is_PL = (!Interval_d::zero_length(P1_domain) &&
+                      !Interval_d::zero_length(L_domain) &&
+                      Interval_d::zero_length(P2_domain));
+  const auto P1_is_minus =
+      (PST_Connector::initialAcceleration(connector) < 0.0);
+
+  const auto L = PST_Connector::function<Idx::SECOND>(connector);
+  double a, b, c;
+  std::tie(a, b, c) = Polynomial::coefficients(L);
+
+  return (is_PL && P1_is_minus);
+}
+
+//------------------------------------------------------------------------------
+
+void PST_Connector::throw_if_not_Pminus(const PST_Connector& connector) {
+  if (!PST_Connector::is_Pminus(connector)) {
+    throw std::runtime_error(
+        "Expected connector to be of type P-, but it is not.");
+  }
+}
+
+//------------------------------------------------------------------------------
+
+void PST_Connector::throw_if_not_PminusL_0(const PST_Connector& connector) {
+  if (!PST_Connector::is_PminusL_0(connector)) {
+    throw std::runtime_error(
+        "Expected connector to be of type P-L_0, but it is not.");
+  }
+}
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core

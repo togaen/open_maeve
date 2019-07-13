@@ -88,6 +88,13 @@ class PST_Connector {
       const std::array<double, 4>& switching_times,
       const std::array<Polynomial, 3>& functions) noexcept;
 
+  /** @brief Check the connector taxonomy. @{ */
+  static bool is_Pminus(const PST_Connector& connector);
+  static bool is_PminusL_0(const PST_Connector& connector);
+  static void throw_if_not_Pminus(const PST_Connector& connector);
+  static void throw_if_not_PminusL_0(const PST_Connector& connector);
+  /** @} */
+
   /**
    * @brief Get the speed at the beginning of the connector.
    *

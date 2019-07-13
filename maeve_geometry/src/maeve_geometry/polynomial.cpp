@@ -24,6 +24,8 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <sstream>
+#include <stdexcept>
 
 #include "boost/io/ios_state.hpp"
 
@@ -39,7 +41,13 @@ const auto Inf = std::numeric_limits<double>::infinity();
 //------------------------------------------------------------------------------
 
 Polynomial::Polynomial(const double a, const double b, const double c)
-    : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
+    : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {
+  if (!Polynomial::valid(*this)) {
+    std::stringstream ss;
+    ss << "Attempted to consruct an invalid polynomial: " << *this;
+    throw std::runtime_error(ss.str());
+  }
+}
 
 //------------------------------------------------------------------------------
 
