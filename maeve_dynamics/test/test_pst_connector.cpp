@@ -476,16 +476,5 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
     const auto p = Polynomial(1, 1, 1);
     auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, p, p});
   });
-
-  {
-    const auto p = Polynomial(1, 1, 1);
-    auto exception_thrown = false;
-    try {
-      auto pc = PST_Connector({0.0, 1.0, 2.0, 3.0}, {p, Polynomial(), p});
-    } catch (...) {
-      exception_thrown = true;
-    }
-    EXPECT_TRUE(exception_thrown);
-  }
 }
 }  // namespace maeve_automation_core
