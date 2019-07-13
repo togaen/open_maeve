@@ -36,10 +36,16 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto Inf = std::numeric_limits<double>::infinity();
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 Polynomial::Polynomial() : coefficients_({NaN, NaN, NaN}) {}
+
+//------------------------------------------------------------------------------
 
 Polynomial::Polynomial(const double a, const double b, const double c)
     : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {}
+
+//------------------------------------------------------------------------------
 
 boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
 Polynomial::findConstrainedCriticalPoints(const Eigen::Vector2d& p,
@@ -64,11 +70,15 @@ Polynomial::findConstrainedCriticalPoints(const Eigen::Vector2d& p,
   return std::make_tuple(p1, p2);
 }
 
+//------------------------------------------------------------------------------
+
 bool Polynomial::valid(const Polynomial& polynomial) {
   double a, b, c;
   std::tie(a, b, c) = Polynomial::coefficients(polynomial);
   return (std::isfinite(a) && std::isfinite(b) && std::isfinite(c));
 }
+
+//------------------------------------------------------------------------------
 
 boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
     const Polynomial& polynomial) {
@@ -83,6 +93,8 @@ boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
   // This function is not defined for other polynomials.
   return boost::none;
 }
+
+//------------------------------------------------------------------------------
 
 Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
   // Allocate coefficients.
@@ -104,6 +116,8 @@ Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
   dx_coefficients_ = {0.0, b};
 }
 
+//------------------------------------------------------------------------------
+
 Polynomial Polynomial::fromPointWithDerivatives(const Eigen::Vector2d& p,
                                                 const double dx,
                                                 const double ddx) {
@@ -113,11 +127,15 @@ Polynomial Polynomial::fromPointWithDerivatives(const Eigen::Vector2d& p,
   return Polynomial(a, b, c);
 }
 
+//------------------------------------------------------------------------------
+
 Eigen::Vector2d Polynomial::quadraticPointAtDerivative(const Polynomial& P,
                                                        const double dx) {
   const auto x = ((dx - Polynomial::b(P)) / (2.0 * Polynomial::a(P)));
   return Eigen::Vector2d(x, P(x));
 }
+
+//------------------------------------------------------------------------------
 
 boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
 Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
@@ -148,29 +166,43 @@ Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
   return std::make_tuple(p1, p2);
 }
 
+//------------------------------------------------------------------------------
+
 double Polynomial::dx(const Polynomial& polynomial, const double x) {
   return polynomial.dx_coefficients_[0] * x + polynomial.dx_coefficients_[1];
 }
+
+//------------------------------------------------------------------------------
 
 double Polynomial::ddx(const Polynomial& polynomial) {
   return polynomial.coefficients_[0];
 }
 
+//------------------------------------------------------------------------------
+
 double Polynomial::a(const Polynomial& polynomial) {
   return polynomial.coefficients_[0];
 }
+
+//------------------------------------------------------------------------------
 
 double Polynomial::b(const Polynomial& polynomial) {
   return polynomial.coefficients_[1];
 }
 
+//------------------------------------------------------------------------------
+
 double Polynomial::c(const Polynomial& polynomial) {
   return polynomial.coefficients_[2];
 }
 
+//------------------------------------------------------------------------------
+
 double Polynomial::operator()(const double x) const {
   return x * (coefficients_[0] * x + coefficients_[1]) + coefficients_[2];
 }
+
+//------------------------------------------------------------------------------
 
 std::tuple<double, double, double> Polynomial::coefficients(
     const Polynomial& polynomial) {
@@ -178,12 +210,16 @@ std::tuple<double, double, double> Polynomial::coefficients(
                          Polynomial::c(polynomial));
 }
 
+//------------------------------------------------------------------------------
+
 boost::optional<std::tuple<double, double>> Polynomial::roots(
     const Polynomial& polynomial) {
   double a, b, c;
   std::tie(a, b, c) = Polynomial::coefficients(polynomial);
   return Polynomial::roots(a, b, c);
 }
+
+//------------------------------------------------------------------------------
 
 boost::optional<std::tuple<double, double>> Polynomial::roots(
     const double a, const double b, const double c, const double tolerance) {
@@ -225,6 +261,8 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(
   return roots;
 }
 
+//------------------------------------------------------------------------------
+
 std::ostream& operator<<(std::ostream& os, const Polynomial& polynomial) {
   static const auto PRECISION = 5;
 
@@ -239,4 +277,7 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& polynomial) {
             << ", \"b\": " << Polynomial::b(polynomial)
             << ", \"c\": " << Polynomial::c(polynomial) << "}";
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
