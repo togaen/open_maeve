@@ -33,6 +33,8 @@ const auto Inf = std::numeric_limits<double>::infinity();
 const auto epsilon = 5e-4;
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Polynomial, testQuadraticPointAtDerivative) {
   {
     const auto x = 0.0;
@@ -56,6 +58,8 @@ TEST(Maeve_Geometry_Polynomial, testQuadraticPointAtDerivative) {
     EXPECT_NEAR(p1.y(), p2.y(), epsilon);
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
   {
@@ -142,6 +146,8 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Polynomial, testUniqueCriticalPoint) {
   {
     const auto p = Polynomial(0, 1, 2);
@@ -164,6 +170,8 @@ TEST(Maeve_Geometry_Polynomial, testUniqueCriticalPoint) {
     EXPECT_NEAR(Polynomial::dx(p, c->x()), 0.0, epsilon);
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Polynomial, testTangentRay) {
   {
@@ -207,6 +215,8 @@ TEST(Maeve_Geometry_Polynomial, testTangentRay) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Polynomial, testPointWithDerivates) {
   {
     const auto q = Polynomial(9, 17, 7);
@@ -224,6 +234,8 @@ TEST(Maeve_Geometry_Polynomial, testPointWithDerivates) {
         << "Polynomial: " << q1;
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Polynomial, testRootFinder) {
   {
@@ -297,6 +309,8 @@ TEST(Maeve_Geometry_Polynomial, testRootFinder) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Polynomial, testDerivatives) {
   {
     const auto p = Polynomial(2, 3, 4);
@@ -304,6 +318,8 @@ TEST(Maeve_Geometry_Polynomial, testDerivatives) {
     EXPECT_EQ(Polynomial::ddx(p), 2.0);
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Polynomial, testEval) {
   {
@@ -321,6 +337,8 @@ TEST(Maeve_Geometry_Polynomial, testEval) {
     EXPECT_EQ(p(1.5), 3.37 * 1.5 * 1.5 + 2.0 * 1.5 + 3.0);
   }
 }
+
+//------------------------------------------------------------------------------
 
 TEST(Maeve_Geometry_Polynomial, testConstruction) {
   {
@@ -386,4 +404,7 @@ TEST(Maeve_Geometry_Polynomial, testConstruction) {
     EXPECT_NEAR(c, (p2.y() - (d.y() / d.x()) * p2.x()), epsilon);
   }
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
