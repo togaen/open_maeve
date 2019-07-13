@@ -282,7 +282,7 @@ boost::optional<PST_Connector> PST_Connector::computePP(
 
   // Compute L candidates (for completeness; not actually necessary).
   static const auto L_c = [](const Eigen::Vector2d& p, const double dx) {
-    const auto ddx = 0.0;
+    constexpr auto ddx = 0.0;
     const auto poly = Polynomial::fromPointWithDerivatives(p, dx, ddx);
     return Polynomial::c(poly);
   };
