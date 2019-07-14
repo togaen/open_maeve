@@ -590,12 +590,6 @@ bool PST_Connector::valid(const PST_Connector& connector) {
   // Check validity.
   const auto segments_valid = PST_Connector::validSegments(connector);
 
-  // Check first derivatives.
-  const auto non_negative =
-      Interval<double>::nonnegative_affinely_extended_reals();
-  const auto valid_speeds =
-      PST_Connector::boundedInteriorSpeeds(connector, non_negative);
-
   // Check time domain.
   const auto time_domain_valid =
       PST_Connector::timeDomainNonZeroMeasure(connector);
@@ -604,21 +598,38 @@ bool PST_Connector::valid(const PST_Connector& connector) {
             << ", segments_connected: " << segments_connected
             << ", segments_tangent: " << segments_tangent
             << ", segments_valid: " << segments_valid
-            << ", valid_speeds: " << valid_speeds
             << ", time_domain_valid: " << time_domain_valid << std::endl;
 #endif
 
   // Done.
   return (non_decreasing && segments_connected && segments_tangent &&
-          segments_valid && valid_speeds && time_domain_valid);
+          segments_valid && time_domain_valid);
 }
 
 //------------------------------------------------------------------------------
 
 PST_Connector::PST_Connector(const std::array<double, 4>& switching_times,
-                             const std::array<Polynomial, 3>& functions)
+                             const std::array<Polynomial, 3>& functions,
+                             const SpeedConstraint speed_constraint)
     : switching_times_(switching_times), functions_(functions) {
-  const auto is_valid = PST_Connector::valid(*this);
+  // TODO(me): why am I using affine extension to reals here?
+  auto speed_bounds = Interval<double>::affinely_extended_reals();
+  switch (speed_constraint) {
+    case SpeedConstraint::NONE:
+      break;
+    case SpeedConstraint::STRICTLY_NON_NEGATIVE:
+      speed_bounds = Interval<double>::nonnegative_affinely_extended_reals();
+      break;
+    default:
+      throw std::runtime_error(
+          "Attempted to build PST connector with unknown speed constraint "
+          "type.");
+  }
+
+  const auto is_valid =
+      (PST_Connector::boundedInteriorSpeeds(*this, speed_bounds) &&
+       PST_Connector::valid(*this));
+
   if (!is_valid) {
     std::stringstream ss;
     ss << *this;

@@ -71,12 +71,14 @@ TEST(Maeve_Dynamics_PST_Connector, taxonomy) {
     const auto p_plus = Polynomial(1.0, 0.0, -1.0);
     const auto p_minus = Polynomial(-1.0, 0.0, 1.0);
     const auto pst_plus =
-        PST_Connector({-1.0, 0.0, 1.0, 1.0}, {p_plus, p_x_low, p_x_low});
+        PST_Connector({-1.0, 0.0, 1.0, 1.0}, {p_plus, p_x_low, p_x_low},
+                      PST_Connector::SpeedConstraint::NONE);
     const auto pst_minus =
-        PST_Connector({-1.0, 0.0, 1.0, 1.0}, {p_minus, p_x_high, p_x_high});
+        PST_Connector({-1.0, 0.0, 1.0, 1.0}, {p_minus, p_x_high, p_x_high},
+                      PST_Connector::SpeedConstraint::NONE);
     EXPECT_FALSE(PST_Connector::is_Pminus(pst_minus));
     EXPECT_FALSE(PST_Connector::is_Pminus(pst_plus));
-    //    EXPECT_TRUE(PST_Connector::is_PminusL_0(pst_minus));
+    EXPECT_TRUE(PST_Connector::is_PminusL_0(pst_minus));
     EXPECT_TRUE(PST_Connector::is_PminusL_0(pst_plus));
   }
 }

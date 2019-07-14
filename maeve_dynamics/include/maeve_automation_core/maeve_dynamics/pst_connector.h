@@ -36,16 +36,27 @@ namespace maeve_automation_core {
 /**
  * @brief This class defines the canonical form of a PST connecting trajectory.
  *
+ * @note The speed along the connector is constrained to be strictly
+ * non-negative unless explicitly allowed during construction.
+ *
+ * TODO(me): The connector shouldn't really care whether speeds are negative or
+ * not, but dependent libraries already rely on that behavior. Need to refactor
+ * so that constraints are passed into the factory methods.
+ *
  * The canonical form of a PST connecting trajectory is
  * Parabolic-Linear-Parabolic. The trajectory begins at the first switching
  * time, changes to the linear portion at the second switching time, changes to
  * the terminal parabolic portion at the third switching time, and ends at the
  * fourth switching time. The linear portion of the trajectory is represented as
- * a parabola with a zero coefficient for the polynomial term. The speed along a
- * connector is constrained to be strictly non-negative.
+ * a parabola with a zero coefficient for the polynomial term.
  */
 class PST_Connector {
  public:
+  /**
+   * @brief For specifying how speed should be constrained along the connector.
+   */
+  enum class SpeedConstraint { NONE, STRICTLY_NON_NEGATIVE };
+
   /**
    * @brief Stream overload for PST Connectors.
    *
@@ -64,12 +75,11 @@ class PST_Connector {
    *
    * @note This constructor checks for validity of the arguments and throws an
    * exception if they do not meet basic necessary conditions.
-   *
-   * @param switching_times Trajectory switching times.
-   * @param functions Trajectory functional segments.
    */
   PST_Connector(const std::array<double, 4>& switching_times,
-                const std::array<Polynomial, 3>& functions);
+                const std::array<Polynomial, 3>& functions,
+                const SpeedConstraint speed_constraint =
+                    SpeedConstraint::STRICTLY_NON_NEGATIVE);
 
   /**
    * @brief Disallow default construction.
@@ -452,8 +462,7 @@ class PST_Connector {
    *   3) The values and tangents of parabolas at indices 1 and 2 must be equal
    *      at the switching time at index 2.
    *   4) All parabola coefficients must be real valued.
-   *   5) First derivative must be non-negative along connector.
-   *   6) The total time domain must have non-zero measure.
+   *   5) The total time domain must have non-zero measure.
    *
    * @note These are necessary, not sufficient, conditions for the connector to
    * be valid.
