@@ -33,6 +33,56 @@ constexpr auto EPS = 1e-4;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Dynamics_PST_Connector, taxonomy) {
+  {
+    const Eigen::Vector2d p1(3, 2);
+    const auto p1_dt = 3.0;
+    const auto p1_ddt = -3.0;
+    const Eigen::Vector2d p2(5, 7);
+    const auto p2_dt = 0.0;
+    const auto p2_ddt = -3.0;
+
+    const auto connector =
+        PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+    ASSERT_FALSE(!connector);
+
+    EXPECT_FALSE(PST_Connector::is_Pminus(*connector));
+    EXPECT_FALSE(PST_Connector::is_PminusL_0(*connector));
+  }
+
+  {
+    const auto p_line_up = Polynomial(0.0, 2.0, -2.0);
+    const auto p_line_down = Polynomial(0.0, 2.0, 2.0);
+    const auto p_plus = Polynomial(1.0, 0.0, -1.0);
+    const auto p_minus = Polynomial(-1.0, 0.0, 1.0);
+    const auto pst_plus =
+        PST_Connector({0.0, 1.0, 1.0, 1.0}, {p_plus, p_line_up, p_line_up});
+    const auto pst_minus = PST_Connector({-2.0, -1.0, -1.0, -1.0},
+                                         {p_minus, p_line_down, p_line_down});
+    EXPECT_TRUE(PST_Connector::is_Pminus(pst_minus));
+    EXPECT_FALSE(PST_Connector::is_Pminus(pst_plus));
+    EXPECT_FALSE(PST_Connector::is_PminusL_0(pst_minus));
+    EXPECT_FALSE(PST_Connector::is_PminusL_0(pst_plus));
+  }
+
+  {
+    const auto p_x_high = Polynomial(0.0, 0.0, -1.0);
+    const auto p_x_low = Polynomial(0.0, 0.0, 1.0);
+    const auto p_plus = Polynomial(1.0, 0.0, -1.0);
+    const auto p_minus = Polynomial(-1.0, 0.0, 1.0);
+    const auto pst_plus =
+        PST_Connector({-1.0, 0.0, 1.0, 1.0}, {p_plus, p_x_low, p_x_low});
+    const auto pst_minus =
+        PST_Connector({-1.0, 0.0, 1.0, 1.0}, {p_minus, p_x_high, p_x_high});
+    EXPECT_FALSE(PST_Connector::is_Pminus(pst_minus));
+    EXPECT_FALSE(PST_Connector::is_Pminus(pst_plus));
+    //    EXPECT_TRUE(PST_Connector::is_PminusL_0(pst_minus));
+    EXPECT_TRUE(PST_Connector::is_PminusL_0(pst_plus));
+  }
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
   {
     const Eigen::Vector2d p1(3, 2);
@@ -415,7 +465,8 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     std::stringstream ss;
     ss << *connector;
     const auto expected_str = std::string(
-        "{\"switching_times\": [3, 3, 7.47214, 8], \"parabola_coefficients\": "
+        "{\"switching_times\": [3, 3, 7.47214, 8], "
+        "\"parabola_coefficients\": "
         "[{\"a\": 0.00000, \"b\": 0.77709, \"c\": 1.66874}, {\"a\": 0.00000, "
         "\"b\": 0.77709, \"c\": 1.66874}, {\"a\": 4.00000, \"b\": -59.00000, "
         "\"c\": 225.00000}]}");
