@@ -1,4 +1,5 @@
 syntax: glob
 *.swp
+.Rhistory
 .DS_Store
 doc/**
