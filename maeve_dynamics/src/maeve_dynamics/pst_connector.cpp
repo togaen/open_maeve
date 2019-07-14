@@ -675,22 +675,4 @@ bool PST_Connector::is_PminusL_0(const PST_Connector& connector) {
 
 //------------------------------------------------------------------------------
 
-void PST_Connector::throw_if_not_Pminus(const PST_Connector& connector) {
-  if (!PST_Connector::is_Pminus(connector)) {
-    throw std::runtime_error(
-        "Expected connector to be of type P-, but it is not.");
-  }
-}
-
-//------------------------------------------------------------------------------
-
-void PST_Connector::throw_if_not_PminusL_0(const PST_Connector& connector) {
-  if (!PST_Connector::is_PminusL_0(connector)) {
-    throw std::runtime_error(
-        "Expected connector to be of type P-L_0, but it is not.");
-  }
-}
-
-//------------------------------------------------------------------------------
-
 }  // namespace maeve_automation_core
