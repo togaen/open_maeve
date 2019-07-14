@@ -319,6 +319,18 @@ class PST_Connector {
   template <Idx I>
   static Interval<double> range(const PST_Connector& connector);
 
+  /**
+   * @brief Get a reference to the function for a given segment.
+   *
+   * @tparam I The segment index.
+   *
+   * @param connector The connecting trajectory.
+   *
+   * @return A const reference to the function for the given segment.
+   */
+  template <Idx I>
+  static const Polynomial& function(const PST_Connector& connector);
+
  private:
   /**
    * @brief Check whether switching times are strictly non-decreasing.
@@ -415,18 +427,6 @@ class PST_Connector {
   template <Idx I>
   static bool boundedSecondDerivatives(const PST_Connector& connector,
                                        const Interval<double>& bounds);
-
-  /**
-   * @brief Get a reference to the function for a given segment.
-   *
-   * @tparam I The segment index.
-   *
-   * @param connector The connecting trajectory.
-   *
-   * @return A const reference to the function for the given segment.
-   */
-  template <Idx I>
-  static const Polynomial& function(const PST_Connector& connector);
 
   /**
    * @brief Whether a given segment is active.
