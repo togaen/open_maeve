@@ -24,6 +24,7 @@
 #include <array>
 #include <cassert>
 #include <iostream>
+#include <string>
 #include <tuple>
 
 #include "boost/optional.hpp"
@@ -471,7 +472,7 @@ class PST_Connector {
    *
    * @return True if the connector passes necessary checks; otherwise false.
    */
-  static bool valid(const PST_Connector& connector);
+  static std::tuple<bool, std::string> valid(const PST_Connector& connector);
 
   /**
    * @brief Switching times, in order, of the trajectory.

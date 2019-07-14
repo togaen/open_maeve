@@ -576,7 +576,8 @@ bool PST_Connector::dynamicallyFeasible(
 
 //------------------------------------------------------------------------------
 
-bool PST_Connector::valid(const PST_Connector& connector) {
+std::tuple<bool, std::string> PST_Connector::valid(
+    const PST_Connector& connector) {
   // Check monotonicity.
   const auto non_decreasing =
       PST_Connector::switchingTimesNonDecreasing(connector);
@@ -593,17 +594,20 @@ bool PST_Connector::valid(const PST_Connector& connector) {
   // Check time domain.
   const auto time_domain_valid =
       PST_Connector::timeDomainNonZeroMeasure(connector);
-#if 0  // For debugging.
-  std::cout << "non_decreasing: " << non_decreasing
-            << ", segments_connected: " << segments_connected
-            << ", segments_tangent: " << segments_tangent
-            << ", segments_valid: " << segments_valid
-            << ", time_domain_valid: " << time_domain_valid << std::endl;
-#endif
+
+  // For debugging.
+  std::stringstream ss;
+  ss << "non_decreasing: " << non_decreasing
+     << ", segments_connected: " << segments_connected
+     << ", segments_tangent: " << segments_tangent
+     << ", segments_valid: " << segments_valid
+     << ", time_domain_valid: " << time_domain_valid;
 
   // Done.
-  return (non_decreasing && segments_connected && segments_tangent &&
-          segments_valid && time_domain_valid);
+  const auto is_valid =
+      (non_decreasing && segments_connected && segments_tangent &&
+       segments_valid && time_domain_valid);
+  return std::make_tuple(is_valid, ss.str());
 }
 
 //------------------------------------------------------------------------------
@@ -626,15 +630,25 @@ PST_Connector::PST_Connector(const std::array<double, 4>& switching_times,
           "type.");
   }
 
-  const auto is_valid =
-      (PST_Connector::boundedInteriorSpeeds(*this, speed_bounds) &&
-       PST_Connector::valid(*this));
+  const auto speeds_valid =
+      PST_Connector::boundedInteriorSpeeds(*this, speed_bounds);
+
+  bool obj_valid;
+  std::string debug_string;
+  std::tie(obj_valid, debug_string) = PST_Connector::valid(*this);
+
+  const auto is_valid = (obj_valid && speeds_valid);
 
   if (!is_valid) {
     std::stringstream ss;
-    ss << *this;
-    throw std::domain_error("Invalid parameter values for PST connector: " +
-                            ss.str());
+    ss << "Cannot construct PST Connector for one of the following reasons: "
+          "speeds_valid: "
+       << speeds_valid << ", or obj_valid: " << obj_valid
+       << " (obj_valid debug string: " << debug_string
+       << "). PST_Connector constructor was given the following parameter "
+          "values: "
+       << *this;
+    throw std::domain_error(ss.str());
   }
 }
 
