@@ -249,7 +249,7 @@ class Polynomial {
    *
    * @return The polynomial that contains 'p' and has derivative 's_dot' at 'p'.
    */
-  static Polynomial fromPointWithDerivatives(const Eigen::Vector2d& p,
+  static Polynomial from_point_with_derivatives(const Eigen::Vector2d& p,
                                              const double dx, const double ddx);
 
   /**

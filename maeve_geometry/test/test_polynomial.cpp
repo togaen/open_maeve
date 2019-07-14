@@ -92,8 +92,8 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     Eigen::Vector2d pt1, pt2;
     std::tie(pt1, pt2) = *points;
 
-    const auto p1 = Polynomial::fromPointWithDerivatives(pt1, 0.0, ddx);
-    const auto p2 = Polynomial::fromPointWithDerivatives(pt2, 0.0, ddx);
+    const auto p1 = Polynomial::from_point_with_derivatives(pt1, 0.0, ddx);
+    const auto p2 = Polynomial::from_point_with_derivatives(pt2, 0.0, ddx);
 
     std::stringstream ss1, ss2;
     ss1 << p1;
@@ -117,8 +117,8 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     Eigen::Vector2d pt1, pt2;
     std::tie(pt1, pt2) = *points;
 
-    const auto p1 = Polynomial::fromPointWithDerivatives(pt1, 0.0, ddx);
-    const auto p2 = Polynomial::fromPointWithDerivatives(pt2, 0.0, ddx);
+    const auto p1 = Polynomial::from_point_with_derivatives(pt1, 0.0, ddx);
+    const auto p2 = Polynomial::from_point_with_derivatives(pt2, 0.0, ddx);
 
     std::stringstream ss1, ss2;
     ss1 << p1;
@@ -141,8 +141,8 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     Eigen::Vector2d pt1, pt2;
     std::tie(pt1, pt2) = *points;
 
-    const auto p1 = Polynomial::fromPointWithDerivatives(pt1, 0.0, ddx);
-    const auto p2 = Polynomial::fromPointWithDerivatives(pt2, 0.0, ddx);
+    const auto p1 = Polynomial::from_point_with_derivatives(pt1, 0.0, ddx);
+    const auto p2 = Polynomial::from_point_with_derivatives(pt2, 0.0, ddx);
 
     std::stringstream ss1, ss2;
     ss1 << p1;
@@ -233,7 +233,7 @@ TEST(Maeve_Geometry_Polynomial, testPointWithDerivates) {
     const auto dx = Polynomial::dx(q, p.x());
     const auto ddx = Polynomial::ddx(q);
 
-    const auto q1 = Polynomial::fromPointWithDerivatives(p, dx, ddx);
+    const auto q1 = Polynomial::from_point_with_derivatives(p, dx, ddx);
     EXPECT_NEAR(Polynomial::a(q1), Polynomial::a(q), epsilon)
         << "Polynomial: " << q1;
     EXPECT_NEAR(Polynomial::b(q1), Polynomial::b(q), epsilon)

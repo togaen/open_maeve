@@ -133,7 +133,7 @@ boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
 
 //------------------------------------------------------------------------------
 
-Polynomial Polynomial::fromPointWithDerivatives(const Eigen::Vector2d& p,
+Polynomial Polynomial::from_point_with_derivatives(const Eigen::Vector2d& p,
                                                 const double dx,
                                                 const double ddx) {
   const auto a = ddx;

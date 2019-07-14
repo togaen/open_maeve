@@ -274,8 +274,8 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
     const auto p1_dt = 0.0;
     const auto p1_ddt = 1.0;
     const auto p2_ddt = -p1_ddt;
-    const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
-    const auto P2 = Polynomial::fromPointWithDerivatives(
+    const auto P1 = Polynomial::from_point_with_derivatives(p1, p1_dt, p1_ddt);
+    const auto P2 = Polynomial::from_point_with_derivatives(
         Eigen::Vector2d(4.0, 3.0), 2.0, p2_ddt);
     const auto p2 = Polynomial::uniqueCriticalPoint(P2);
     ASSERT_FALSE(!p2);
@@ -314,8 +314,8 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
     const auto p1_dt = 0.0;
     const auto p1_ddt = 1.0;
     const auto p2_ddt = -p1_ddt;
-    const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
-    const auto P2 = Polynomial::fromPointWithDerivatives(
+    const auto P1 = Polynomial::from_point_with_derivatives(p1, p1_dt, p1_ddt);
+    const auto P2 = Polynomial::from_point_with_derivatives(
         Eigen::Vector2d(1.0, 1.0), 2.0, p2_ddt);
     const auto p2 = Polynomial::uniqueCriticalPoint(P2);
     ASSERT_FALSE(!p2);

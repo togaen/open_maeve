@@ -138,8 +138,8 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
     const Eigen::Vector2d& p2, const double p2_dt, const double p2_ddt) {
   // Compute P segments.
-  const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
-  const auto P2 = Polynomial::fromPointWithDerivatives(p2, p2_dt, p2_ddt);
+  const auto P1 = Polynomial::from_point_with_derivatives(p1, p1_dt, p1_ddt);
+  const auto P2 = Polynomial::from_point_with_derivatives(p2, p2_dt, p2_ddt);
 
   // Get segment coefficients.
   double a0, b0, c0, a3, b3, c3;
@@ -164,8 +164,8 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
   // Candidate linear portions.
   const auto dt_1 = Polynomial::dx(P2, p2_1.x());
   const auto dt_2 = Polynomial::dx(P2, p2_2.x());
-  const auto L1 = Polynomial::fromPointWithDerivatives(p2_1, dt_1, 0.0);
-  const auto L2 = Polynomial::fromPointWithDerivatives(p2_2, dt_2, 0.0);
+  const auto L1 = Polynomial::from_point_with_derivatives(p2_1, dt_1, 0.0);
+  const auto L2 = Polynomial::from_point_with_derivatives(p2_2, dt_2, 0.0);
 
   // Other tangency points.
   const auto p1_1 = Polynomial::quadraticPointAtDerivative(P1, dt_1);
@@ -227,7 +227,7 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
     const Eigen::Vector2d& p2, const double p2_ddt) {
   // Compute initial P.
-  const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
+  const auto P1 = Polynomial::from_point_with_derivatives(p1, p1_dt, p1_ddt);
 
   // Attempt to compute critical point of P1.
   const auto p_critical = Polynomial::uniqueCriticalPoint(P1);
@@ -249,9 +249,9 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
   // Build candidate terminal P curves.
   static const auto dx_critical = 0.0;
   const auto P2_candidate1 =
-      Polynomial::fromPointWithDerivatives(critical_pt1, dx_critical, p2_ddt);
+      Polynomial::from_point_with_derivatives(critical_pt1, dx_critical, p2_ddt);
   const auto P2_candidate2 =
-      Polynomial::fromPointWithDerivatives(critical_pt2, dx_critical, p2_ddt);
+      Polynomial::from_point_with_derivatives(critical_pt2, dx_critical, p2_ddt);
 
   // Build L curve by artificially constructing a line through 'p_critical'.
   const Eigen::Vector2d p_critical2 = (*p_critical + Eigen::Vector2d(1.0, 0.0));
@@ -284,7 +284,7 @@ boost::optional<PST_Connector> PST_Connector::computePP(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
     const Eigen::Vector2d& p2, const double p2_ddt) {
   // Compute P1 segment coefficients.
-  const auto P1 = Polynomial::fromPointWithDerivatives(p1, p1_dt, p1_ddt);
+  const auto P1 = Polynomial::from_point_with_derivatives(p1, p1_dt, p1_ddt);
   double a1, b1, c1;
   std::tie(a1, b1, c1) = Polynomial::coefficients(P1);
 
@@ -310,15 +310,15 @@ boost::optional<PST_Connector> PST_Connector::computePP(
   const auto L2_b = Polynomial::dx(P1, p_t2.x());
   const auto L_c = [](const Eigen::Vector2d& p, const double dx) {
     constexpr auto ddx = 0.0;
-    const auto poly = Polynomial::fromPointWithDerivatives(p, dx, ddx);
+    const auto poly = Polynomial::from_point_with_derivatives(p, dx, ddx);
     return Polynomial::c(poly);
   };
   const auto L1 = Polynomial(L_a, L1_b, L_c(p_t1, L1_b));
   const auto L2 = Polynomial(L_a, L2_b, L_c(p_t2, L2_b));
 
   // Compute P2 candidate segment coefficients.
-  const auto P2_1 = Polynomial::fromPointWithDerivatives(p_t1, L1_b, a2);
-  const auto P2_2 = Polynomial::fromPointWithDerivatives(p_t2, L2_b, a2);
+  const auto P2_1 = Polynomial::from_point_with_derivatives(p_t1, L1_b, a2);
+  const auto P2_2 = Polynomial::from_point_with_derivatives(p_t2, L2_b, a2);
   // Find valid connectors, if any.
 
   const auto C1 = PST_Connector::noExceptionConstructor(
@@ -349,7 +349,7 @@ boost::optional<PST_Connector> PST_Connector::computeLP(
     const Eigen::Vector2d& p1, const Eigen::Vector2d& p2, const double p2_dt,
     const double p2_ddt) {
   // Compute P portion.
-  const auto P = Polynomial::fromPointWithDerivatives(p2, p2_dt, p2_ddt);
+  const auto P = Polynomial::from_point_with_derivatives(p2, p2_dt, p2_ddt);
 
   // Compute tangent points of L portion.
   const auto rays = Polynomial::tangentRaysThroughPoint(P, p1);
