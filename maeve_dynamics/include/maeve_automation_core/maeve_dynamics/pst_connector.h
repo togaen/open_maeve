@@ -490,6 +490,8 @@ class PST_Connector {
   std::array<Polynomial, 3> functions_;
 };  // class PST_Connector
 
+//------------------------------------------------------------------------------
+
 template <PST_Connector::Idx I>
 bool PST_Connector::boundedZerothDerivatives(const PST_Connector& connector,
                                              const Interval<double>& bounds) {
@@ -499,6 +501,8 @@ bool PST_Connector::boundedZerothDerivatives(const PST_Connector& connector,
   // Check range.
   return Interval<double>::is_subset_eq(range, bounds);
 }
+
+//------------------------------------------------------------------------------
 
 template <PST_Connector::Idx I>
 bool PST_Connector::boundedFirstDerivatives(const PST_Connector& connector,
@@ -521,6 +525,8 @@ bool PST_Connector::boundedFirstDerivatives(const PST_Connector& connector,
   return Interval<double>::is_subset_eq(range, bounds);
 }
 
+//------------------------------------------------------------------------------
+
 template <PST_Connector::Idx I>
 bool PST_Connector::boundedSecondDerivatives(const PST_Connector& connector,
                                              const Interval<double>& bounds) {
@@ -539,11 +545,15 @@ bool PST_Connector::boundedSecondDerivatives(const PST_Connector& connector,
   return Interval<double>::is_subset_eq(range, bounds);
 }
 
+//------------------------------------------------------------------------------
+
 template <PST_Connector::Idx I>
 bool PST_Connector::segmentActive(const PST_Connector& connector) {
   const auto D = PST_Connector::domain<I>(connector);
   return !Interval<double>::zero_length(D);
 }
+
+//------------------------------------------------------------------------------
 
 template <PST_Connector::Idx I>
 Interval<double> PST_Connector::range(const PST_Connector& connector) {
