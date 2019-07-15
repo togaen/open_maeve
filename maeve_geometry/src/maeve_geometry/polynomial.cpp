@@ -215,6 +215,13 @@ double Polynomial::c(const Polynomial& polynomial) {
 //------------------------------------------------------------------------------
 
 double Polynomial::operator()(const double x) const {
+  // Enforce pre-condition
+  if (!std::isfinite(x)) {
+    std::stringstream ss;
+    ss << "Polynomial can only be evaluated with real values. Given input \""
+       << x << "\" is not real valued.";
+    throw std::domain_error(ss.str());
+  }
   return ((x * (Polynomial::a(*this) * x + Polynomial::b(*this))) +
           Polynomial::c(*this));
 }

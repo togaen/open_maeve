@@ -89,6 +89,8 @@ class Polynomial {
   /**
    * @brief Operator to evaluate the polynomial at a given value.
    *
+   * @pre 'x' is real-valued
+   *
    * @param x The domain value to evaluate the polynomial at.
    *
    * @return The value of the polynomial at 'x'.
