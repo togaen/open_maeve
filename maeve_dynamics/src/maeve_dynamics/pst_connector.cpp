@@ -39,13 +39,19 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 //------------------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
-  const auto& t = connector.switching_times_;
-  const auto& p = connector.functions_;
-
-  os << "{\"switching_times\": [" << t[0] << ", " << t[1] << ", " << t[2]
-     << ", " << t[3] << "], ";
-  os << "\"parabola_coefficients\": [" << p[0] << ", " << p[1] << ", " << p[2]
-     << "]}";
+  os << "{\"switching_times\": ["
+     << PST_Connector::switching_time<PST_Connector::Idx::FIRST>(connector)
+     << ", "
+     << PST_Connector::switching_time<PST_Connector::Idx::SECOND>(connector)
+     << ", "
+     << PST_Connector::switching_time<PST_Connector::Idx::THIRD>(connector)
+     << ", "
+     << PST_Connector::switching_time<PST_Connector::Idx::FOURTH>(connector)
+     << "], ";
+  os << "\"parabola_coefficients\": ["
+     << PST_Connector::function<PST_Connector::Idx::FIRST>(connector) << ", "
+     << PST_Connector::function<PST_Connector::Idx::SECOND>(connector) << ", "
+     << PST_Connector::function<PST_Connector::Idx::THIRD>(connector) << "]}";
   return os;
 }
 
@@ -53,9 +59,10 @@ std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
 
 std::tuple<double, double, double, double> PST_Connector::switchingTimes(
     const PST_Connector& connector) {
-  return std::make_tuple(
-      connector.switching_times_[0], connector.switching_times_[1],
-      connector.switching_times_[2], connector.switching_times_[3]);
+  return std::make_tuple(PST_Connector::switching_time<Idx::FIRST>(connector),
+                         PST_Connector::switching_time<Idx::SECOND>(connector),
+                         PST_Connector::switching_time<Idx::THIRD>(connector),
+                         PST_Connector::switching_time<Idx::FOURTH>(connector));
 }
 
 //------------------------------------------------------------------------------
@@ -63,15 +70,16 @@ std::tuple<double, double, double, double> PST_Connector::switchingTimes(
 double PST_Connector::initialSpeed(const PST_Connector& connector) {
   if (PST_Connector::segmentActive<Idx::FIRST>(connector)) {
     return Polynomial::dx(PST_Connector::function<Idx::FIRST>(connector),
-                          connector.switching_times_[0]);
+                          PST_Connector::switching_time<Idx::FIRST>(connector));
   }
   if (PST_Connector::segmentActive<Idx::SECOND>(connector)) {
-    return Polynomial::dx(PST_Connector::function<Idx::SECOND>(connector),
-                          connector.switching_times_[1]);
+    return Polynomial::dx(
+        PST_Connector::function<Idx::SECOND>(connector),
+        PST_Connector::switching_time<Idx::SECOND>(connector));
   }
   if (PST_Connector::segmentActive<Idx::THIRD>(connector)) {
     return Polynomial::dx(PST_Connector::function<Idx::THIRD>(connector),
-                          connector.switching_times_[2]);
+                          PST_Connector::switching_time<Idx::THIRD>(connector));
   }
 
   // No active segment.
@@ -82,16 +90,18 @@ double PST_Connector::initialSpeed(const PST_Connector& connector) {
 
 double PST_Connector::terminalSpeed(const PST_Connector& connector) {
   if (PST_Connector::segmentActive<Idx::THIRD>(connector)) {
-    return Polynomial::dx(PST_Connector::function<Idx::THIRD>(connector),
-                          connector.switching_times_[3]);
+    return Polynomial::dx(
+        PST_Connector::function<Idx::THIRD>(connector),
+        PST_Connector::switching_time<Idx::FOURTH>(connector));
   }
   if (PST_Connector::segmentActive<Idx::SECOND>(connector)) {
     return Polynomial::dx(PST_Connector::function<Idx::SECOND>(connector),
-                          connector.switching_times_[2]);
+                          PST_Connector::switching_time<Idx::THIRD>(connector));
   }
   if (PST_Connector::segmentActive<Idx::FIRST>(connector)) {
-    return Polynomial::dx(PST_Connector::function<Idx::FIRST>(connector),
-                          connector.switching_times_[1]);
+    return Polynomial::dx(
+        PST_Connector::function<Idx::FIRST>(connector),
+        PST_Connector::switching_time<Idx::SECOND>(connector));
   }
 
   // No active segment.
@@ -200,8 +210,9 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
 template <>
 Interval<double> PST_Connector::domain<PST_Connector::Idx::FIRST>(
     const PST_Connector& connector) {
-  return Interval<double>(connector.switching_times_[0],
-                          connector.switching_times_[1]);
+  return Interval<double>(
+      PST_Connector::switching_time<Idx::FIRST>(connector),
+      PST_Connector::switching_time<Idx::SECOND>(connector));
 }
 
 //------------------------------------------------------------------------------
@@ -209,8 +220,8 @@ Interval<double> PST_Connector::domain<PST_Connector::Idx::FIRST>(
 template <>
 Interval<double> PST_Connector::domain<PST_Connector::Idx::SECOND>(
     const PST_Connector& connector) {
-  return Interval<double>(connector.switching_times_[1],
-                          connector.switching_times_[2]);
+  return Interval<double>(PST_Connector::switching_time<Idx::SECOND>(connector),
+                          PST_Connector::switching_time<Idx::THIRD>(connector));
 }
 
 //------------------------------------------------------------------------------
@@ -218,8 +229,9 @@ Interval<double> PST_Connector::domain<PST_Connector::Idx::SECOND>(
 template <>
 Interval<double> PST_Connector::domain<PST_Connector::Idx::THIRD>(
     const PST_Connector& connector) {
-  return Interval<double>(connector.switching_times_[2],
-                          connector.switching_times_[3]);
+  return Interval<double>(
+      PST_Connector::switching_time<Idx::THIRD>(connector),
+      PST_Connector::switching_time<Idx::FOURTH>(connector));
 }
 
 //------------------------------------------------------------------------------
@@ -386,10 +398,10 @@ boost::optional<PST_Connector> PST_Connector::computeLP(
 
 std::tuple<Eigen::Vector2d, Eigen::Vector2d> PST_Connector::boundaryPoints(
     const PST_Connector& connector) {
-  const auto t0 = connector.switching_times_[0];
-  const auto t1 = connector.switching_times_[3];
-  const auto& f0 = connector.functions_[0];
-  const auto& f1 = connector.functions_[2];
+  const auto t0 = PST_Connector::switching_time<Idx::FIRST>(connector);
+  const auto t1 = PST_Connector::switching_time<Idx::FOURTH>(connector);
+  const auto& f0 = PST_Connector::function<Idx::FIRST>(connector);
+  const auto& f1 = PST_Connector::function<Idx::THIRD>(connector);
 
   const Eigen::Vector2d p0(t0, f0(t0));
   const Eigen::Vector2d p1(t1, f1(t1));
@@ -400,8 +412,9 @@ std::tuple<Eigen::Vector2d, Eigen::Vector2d> PST_Connector::boundaryPoints(
 //------------------------------------------------------------------------------
 
 bool PST_Connector::timeDomainNonZeroMeasure(const PST_Connector& connector) {
-  const auto D = Interval<double>(connector.switching_times_[0],
-                                  connector.switching_times_[3]);
+  const auto D =
+      Interval<double>(PST_Connector::switching_time<Idx::FIRST>(connector),
+                       PST_Connector::switching_time<Idx::FOURTH>(connector));
   return !Interval<double>::zero_length(D);
 }
 
@@ -431,31 +444,69 @@ const Polynomial& PST_Connector::function<PST_Connector::Idx::THIRD>(
 
 //------------------------------------------------------------------------------
 
+template <>
+const double PST_Connector::switching_time<PST_Connector::Idx::FIRST>(
+    const PST_Connector& connector) {
+  return connector.switching_times_[0];
+}
+
+//------------------------------------------------------------------------------
+
+template <>
+const double PST_Connector::switching_time<PST_Connector::Idx::SECOND>(
+    const PST_Connector& connector) {
+  return connector.switching_times_[1];
+}
+
+//------------------------------------------------------------------------------
+
+template <>
+const double PST_Connector::switching_time<PST_Connector::Idx::THIRD>(
+    const PST_Connector& connector) {
+  return connector.switching_times_[2];
+}
+
+//------------------------------------------------------------------------------
+
+template <>
+const double PST_Connector::switching_time<PST_Connector::Idx::FOURTH>(
+    const PST_Connector& connector) {
+  return connector.switching_times_[3];
+}
+
+//------------------------------------------------------------------------------
+
 bool PST_Connector::switchingTimesNonDecreasing(
     const PST_Connector& connector) {
-  // Check monotonicity.
-  auto non_decreasing = true;
-  for (auto i = 1; i < connector.switching_times_.size(); ++i) {
-    non_decreasing = (non_decreasing && (connector.switching_times_[i] >=
-                                         connector.switching_times_[i - 1]));
-  }
-  return non_decreasing;
+  const auto s1_nondecreasing =
+      (PST_Connector::switching_time<Idx::SECOND>(connector) >=
+       PST_Connector::switching_time<Idx::FIRST>(connector));
+
+  const auto s2_nondecreasing =
+      (PST_Connector::switching_time<Idx::THIRD>(connector) >=
+       PST_Connector::switching_time<Idx::SECOND>(connector));
+
+  const auto s3_nondecreasing =
+      (PST_Connector::switching_time<Idx::FOURTH>(connector) >=
+       PST_Connector::switching_time<Idx::THIRD>(connector));
+
+  return (s1_nondecreasing && s2_nondecreasing && s3_nondecreasing);
 }
 
 //------------------------------------------------------------------------------
 
 bool PST_Connector::segmentsConnected(const PST_Connector& connector) {
   // Record switching times for convenience.
-  const auto t1 = connector.switching_times_[1];
-  const auto t2 = connector.switching_times_[2];
+  const auto t1 = PST_Connector::switching_time<Idx::SECOND>(connector);
+  const auto t2 = PST_Connector::switching_time<Idx::THIRD>(connector);
 
   // Compute paths value of segments 0 and 1 at time t1.
-  const auto s01 = connector.functions_[0](t1);
-  const auto s11 = connector.functions_[1](t1);
+  const auto s01 = PST_Connector::function<Idx::FIRST>(connector)(t1);
+  const auto s11 = PST_Connector::function<Idx::SECOND>(connector)(t1);
 
   // Compute path values of segments 1 and 2 at time t2.
-  const auto s12 = connector.functions_[1](t2);
-  const auto s22 = connector.functions_[2](t2);
+  const auto s12 = PST_Connector::function<Idx::SECOND>(connector)(t2);
+  const auto s22 = PST_Connector::function<Idx::THIRD>(connector)(t2);
 
   // Absolute error for doing approximate floating point comparisons.
   // TODO(me): This should be a parameter.
@@ -473,12 +524,16 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
   std::tie(t0, t1, t2, t3) = PST_Connector::switchingTimes(connector);
 
   // Compute \dot{s} value of segments 0 and 1 at time t1.
-  const auto s_dot01 = Polynomial::dx(connector.functions_[0], t1);
-  const auto s_dot11 = Polynomial::dx(connector.functions_[1], t1);
+  const auto s_dot01 =
+      Polynomial::dx(PST_Connector::function<Idx::FIRST>(connector), t1);
+  const auto s_dot11 =
+      Polynomial::dx(PST_Connector::function<Idx::SECOND>(connector), t1);
 
   // Compute \dot{s} values of segments 1 and 2 at time t2.
-  const auto s_dot12 = Polynomial::dx(connector.functions_[1], t2);
-  const auto s_dot22 = Polynomial::dx(connector.functions_[2], t2);
+  const auto s_dot12 =
+      Polynomial::dx(PST_Connector::function<Idx::SECOND>(connector), t2);
+  const auto s_dot22 =
+      Polynomial::dx(PST_Connector::function<Idx::THIRD>(connector), t2);
 
   // Absolute error for doing approximate floating point comparisons.
   // TODO(me): This should be a parameter.

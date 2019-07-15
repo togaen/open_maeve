@@ -288,9 +288,9 @@ class PST_Connector {
                                            const Interval<double>& bounds);
 
   /**
-   * @brief Utility enum for indexing connector segments.
+   * @brief Utility enum for indexing components.
    */
-  enum class Idx { FIRST, SECOND, THIRD };
+  enum class Idx { FIRST, SECOND, THIRD, FOURTH };
 
   /**
    * @brief Get an interval representation of a segment's domain.
@@ -329,6 +329,18 @@ class PST_Connector {
   static const Polynomial& function(const PST_Connector& connector);
 
  private:
+  /**
+   * @brief Get the desired switching time.
+   *
+   * @tparam I The switching time index.
+   *
+   * @param connector The connecting trajectory.
+   *
+   * @return The switching time.
+   */
+  template <Idx I>
+  static const double switching_time(const PST_Connector& connector);
+
   /**
    * @brief Check whether switching times are strictly non-decreasing.
    *
@@ -587,7 +599,7 @@ Interval<double> PST_Connector::domain<PST_Connector::Idx::THIRD>(
 /** @} */
 
 /**
- * Specializations for testing segment domains.
+ * Specializations for getting segment functions.
  * @{
  */
 template <>
@@ -600,6 +612,27 @@ const Polynomial& PST_Connector::function<PST_Connector::Idx::SECOND>(
 
 template <>
 const Polynomial& PST_Connector::function<PST_Connector::Idx::THIRD>(
+    const PST_Connector& connector);
+/** @} */
+
+/**
+ * Specializations for getting switching times.
+ * @{
+ */
+template <>
+const double PST_Connector::switching_time<PST_Connector::Idx::FIRST>(
+    const PST_Connector& connector);
+
+template <>
+const double PST_Connector::switching_time<PST_Connector::Idx::SECOND>(
+    const PST_Connector& connector);
+
+template <>
+const double PST_Connector::switching_time<PST_Connector::Idx::THIRD>(
+    const PST_Connector& connector);
+
+template <>
+const double PST_Connector::switching_time<PST_Connector::Idx::FOURTH>(
     const PST_Connector& connector);
 /** @} */
 }  // namespace maeve_automation_core
