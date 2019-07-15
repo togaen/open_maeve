@@ -113,6 +113,19 @@ class Polynomial {
       const Polynomial& polynomial);
 
   /**
+   * @brief Convenience overload of Polynomial::roots(const Polynomial).
+   *
+   * @param polynomial The polynomial to find roots for.
+   *
+   * TODO(me): Should not have default parameter values.
+   *
+   * @return See Polynomial::roots(const Polynomial)
+   */
+  static boost::optional<std::tuple<double, double>> roots(
+      const double a, const double b, const double c,
+      const double tolerance = 0.0);
+
+  /**
    * @brief Compute the real-valued roots of a polynomial.
    *
    * @note This method favors accuracy and numeric stability over speed.
@@ -122,9 +135,6 @@ class Polynomial {
    * @post If the polynomial has a unique root, the tuple members will be
    * exactly identical.
    *
-   * @param a The quadratic coefficient.
-   * @param b The linear coefficient.
-   * @param c The constant coefficient.
    * @param tolerance An optional tolerance value to use to suppress small
    * magnitude negative discriminants.
    *
@@ -135,19 +145,7 @@ class Polynomial {
    * TODO(me): Should not have default parameter values.
    */
   static boost::optional<std::tuple<double, double>> roots(
-      const double a, const double b, const double c,
-      const double tolerance = 0.0);
-
-  /**
-   * @brief Convenience overload of Polynomial::roots(const double, const
-   * double, const double).
-   *
-   * @param polynomial The polynomial to find roots for.
-   *
-   * @return See Polynomial::roots(const double, const double, const double)
-   */
-  static boost::optional<std::tuple<double, double>> roots(
-      const Polynomial& polynomial);
+      const Polynomial& polynomial, const double tolerance = 0.0);
 
   /**
    * @brief First derivative of the polynomial at a given domain value.
@@ -250,7 +248,8 @@ class Polynomial {
    * @return The polynomial that contains 'p' and has derivative 's_dot' at 'p'.
    */
   static Polynomial from_point_with_derivatives(const Eigen::Vector2d& p,
-                                             const double dx, const double ddx);
+                                                const double dx,
+                                                const double ddx);
 
   /**
    * @brief Compute the point at which a polynomial achieves a derivative value.

@@ -134,8 +134,8 @@ boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
 //------------------------------------------------------------------------------
 
 Polynomial Polynomial::from_point_with_derivatives(const Eigen::Vector2d& p,
-                                                const double dx,
-                                                const double ddx) {
+                                                   const double dx,
+                                                   const double ddx) {
   const auto a = ddx;
   const auto b = dx - 2.0 * a * p.x();
   const auto c = p.y() + p.x() * (a * p.x() - dx);
@@ -241,25 +241,18 @@ std::tuple<double, double, double> Polynomial::coefficients(
 //------------------------------------------------------------------------------
 
 boost::optional<std::tuple<double, double>> Polynomial::roots(
-    const Polynomial& polynomial) {
-  double a, b, c;
-  std::tie(a, b, c) = Polynomial::coefficients(polynomial);
-  return Polynomial::roots(a, b, c);
-}
-
-//------------------------------------------------------------------------------
-
-boost::optional<std::tuple<double, double>> Polynomial::roots(
-    const double a, const double b, const double c, const double tolerance) {
+    const Polynomial& polynomial, const double tolerance) {
   // Enforce pre-condition.
   try {
     // Constructor allows y axis representations, so do an extra valid check.
-    if (!Polynomial::valid(Polynomial(a, b, c))) {
+    if (!Polynomial::valid(polynomial)) {
       return boost::none;
     }
   } catch (...) {
     return boost::none;
   }
+  double a, b, c;
+  std::tie(a, b, c) = Polynomial::coefficients(polynomial);
 
   // Not quadratic: either indeterminate or linear.
   if (a == 0.0) {
@@ -297,6 +290,17 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(
 
   // Done.
   return roots;
+}
+
+//------------------------------------------------------------------------------
+
+boost::optional<std::tuple<double, double>> Polynomial::roots(
+    const double a, const double b, const double c, const double tolerance) {
+  try {
+    return Polynomial::roots(Polynomial(a, b, c), tolerance);
+  } catch (...) {
+    return boost::none;
+  }
 }
 
 //------------------------------------------------------------------------------
