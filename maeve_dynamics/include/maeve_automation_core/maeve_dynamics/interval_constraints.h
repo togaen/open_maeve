@@ -190,6 +190,8 @@ class IntervalConstraints {
   std::array<Interval<T>, Order + 1> s_bounds_;
 };  // class DynamicConstraints
 
+//------------------------------------------------------------------------------
+
 template <unsigned int Order, typename T>
 IntervalConstraints<Order, T>::IntervalConstraints(
     const Interval<T>& epsilon_bounds, const Interval<T>& t_bounds,
@@ -205,6 +207,8 @@ IntervalConstraints<Order, T>::IntervalConstraints(
   }
 }
 
+//------------------------------------------------------------------------------
+
 template <unsigned int Order, typename T>
 IntervalConstraints<Order, T>
 IntervalConstraints<Order, T>::create_zeroed_set() {
@@ -216,6 +220,8 @@ IntervalConstraints<Order, T>::create_zeroed_set() {
   }
   return IntervalConstraints(zero_interval, zero_interval, bounds_set);
 }
+
+//------------------------------------------------------------------------------
 
 template <unsigned int Order, typename T>
 bool IntervalConstraints<Order, T>::satisfiable(
@@ -229,6 +235,8 @@ bool IntervalConstraints<Order, T>::satisfiable(
                                        });
   return (eps_non_empty && t_non_empty && s_non_empty);
 }
+
+//------------------------------------------------------------------------------
 
 template <unsigned int Order, typename T>
 IntervalConstraints<Order, T> IntervalConstraints<Order, T>::intersect(
@@ -246,17 +254,23 @@ IntervalConstraints<Order, T> IntervalConstraints<Order, T>::intersect(
   return IntervalConstraints(eps_bounds, t_bounds, s_bounds);
 }
 
+//------------------------------------------------------------------------------
+
 template <unsigned int Order, typename T>
 const Interval<T>& IntervalConstraints<Order, T>::epsilon(
     const IntervalConstraints& constraints) {
   return constraints.epsilon_bounds_;
 }
 
+//------------------------------------------------------------------------------
+
 template <unsigned int Order, typename T>
 const Interval<T>& IntervalConstraints<Order, T>::boundsT(
     const IntervalConstraints<Order, T>& constraints) {
   return constraints.t_bounds_;
 }
+
+//------------------------------------------------------------------------------
 
 template <unsigned int Order, typename T>
 template <unsigned int QueryOrder>
@@ -267,4 +281,7 @@ const Interval<T>& IntervalConstraints<Order, T>::boundsS(
       "This constraint set does not define bounds of the specified order.");
   return constraints.s_bounds_[QueryOrder];
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core

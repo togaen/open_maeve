@@ -33,12 +33,16 @@ const auto Inf = std::numeric_limits<double>::infinity();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
 
+//------------------------------------------------------------------------------
+
 std::ostream& operator<<(std::ostream& os,
                          const PST_Reachability& reachability) {
   os << "{\"min_speed_connector\": " << reachability.min_terminal_
      << ", \"max_speed_connector\": " << reachability.max_terminal_ << "}";
   return os;
 }
+
+//------------------------------------------------------------------------------
 
 PST_Reachability::PST_Reachability(
     const PST_Connector& min_terminal, const PST_Connector& max_terminal,
@@ -71,6 +75,8 @@ PST_Reachability::PST_Reachability(
   }
 }
 
+//------------------------------------------------------------------------------
+
 boost::optional<PST_Reachability> PST_Reachability::noExceptionConstructor(
     const PST_Connector& min_terminal, const PST_Connector& max_terminal,
     const IntervalConstraints<2, double>& constraints) noexcept {
@@ -80,6 +86,8 @@ boost::optional<PST_Reachability> PST_Reachability::noExceptionConstructor(
     return boost::none;
   }
 }
+
+//------------------------------------------------------------------------------
 
 Interval<double> PST_Reachability::reachableInterval(
     const PST_Reachability& reachability) {
@@ -91,15 +99,21 @@ Interval<double> PST_Reachability::reachableInterval(
   return Interval<double>(min_speed, max_speed);
 }
 
+//------------------------------------------------------------------------------
+
 const PST_Connector& PST_Reachability::minConnector(
     const PST_Reachability& reachability) {
   return reachability.min_terminal_;
 }
 
+//------------------------------------------------------------------------------
+
 const PST_Connector& PST_Reachability::maxConnector(
     const PST_Reachability& reachability) {
   return reachability.max_terminal_;
 }
+
+//------------------------------------------------------------------------------
 
 bool PST_Reachability::validInteriorSpeeds(
     const PST_Connector& connector,
@@ -109,6 +123,8 @@ bool PST_Reachability::validInteriorSpeeds(
 
   return PST_Connector::boundedInteriorSpeeds(connector, I_dt);
 }
+
+//------------------------------------------------------------------------------
 
 boost::optional<PST_Connector> PST_Reachability::LPorPLP(
     const PST_Connector& LP, const Interval<double>& I_dt,
@@ -157,6 +173,8 @@ boost::optional<PST_Connector> PST_Reachability::LPorPLP(
   return boost::none;
 }
 
+//------------------------------------------------------------------------------
+
 boost::optional<PST_Reachability> PST_Reachability::compute(
     const Interval<double>& I_i, const Eigen::Vector2d& p1,
     const Eigen::Vector2d& p2,
@@ -193,6 +211,8 @@ boost::optional<PST_Reachability> PST_Reachability::compute(
   return PST_Reachability::noExceptionConstructor(*min_connector,
                                                   *max_connector, constraints);
 }
+
+//------------------------------------------------------------------------------
 
 boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
     const Interval<double>& I_i, const Eigen::Vector2d& p1,
@@ -275,4 +295,7 @@ boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
   // Done.
   return *std::get<1>(best_tuple);
 }
+
+//------------------------------------------------------------------------------
+
 }  // namespace maeve_automation_core
