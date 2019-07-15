@@ -134,6 +134,9 @@ class Polynomial {
    * @post If the polynomial has a unique root, the tuple members will be
    * exactly identical.
    *
+   * @post If the returned optional is not disengaged, the roots are real
+   * valued.
+   *
    * @param tolerance An optional tolerance value to use to suppress small
    * magnitude negative discriminants.
    *

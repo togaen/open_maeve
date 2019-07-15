@@ -295,6 +295,16 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(
   // Check for zero discriminant to ensure unique roots are exactly identical.
   const auto r2 = ((discriminant == 0.0) ? r1 : (c / (a * r1)));
 
+  // Check for violation of post condition.
+  if (!std::isfinite(r1) || !std::isfinite(r2)) {
+    std::stringstream ss;
+    ss << "Post condition in quadratic root finder violated: one or both roots "
+          "exist but are not real valued: "
+       << r1 << ", " << r2
+       << ". Check the implementation; it appears to be incorrect.";
+    throw std::range_error(ss.str());
+  }
+
   // Order the roots lowest and highest.
   std::tuple<double, double> roots = std::minmax(r1, r2);
 
