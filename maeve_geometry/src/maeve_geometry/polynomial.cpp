@@ -77,13 +77,14 @@ Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
 boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
 Polynomial::findConstrainedCriticalPoints(const Eigen::Vector2d& p,
                                           const double y_critical,
-                                          const double ddx) {
+                                          const double ddx,
+                                          const double tolerance) {
   // Attempt to get roots.
   const auto A = ddx;
   const auto B = (-2.0 * ddx * p.x());
   const auto C = (ddx * square(p.x()) + y_critical - p.y());
   double x1_critical, x2_critical;
-  if (const auto roots = Polynomial::roots(A, B, C)) {
+  if (const auto roots = Polynomial::roots(A, B, C, tolerance)) {
     std::tie(x1_critical, x2_critical) = *roots;
   } else {
     return boost::none;
@@ -167,7 +168,7 @@ Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
 
   // Attempt to find the roots.
   double r1, r2;
-  if (const auto roots = Polynomial::roots(A, B, C)) {
+  if (const auto roots = Polynomial::roots(A, B, C, epsilon)) {
     std::tie(r1, r2) = *roots;
   } else {
     return boost::none;

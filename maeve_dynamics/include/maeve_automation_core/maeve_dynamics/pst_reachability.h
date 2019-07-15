@@ -166,7 +166,8 @@ class PST_Reachability {
    */
   static boost::optional<PST_Connector> LPorPLP(const PST_Connector& LP,
                                                 const Interval<double>& I_dt,
-                                                const Interval<double>& I_ddt);
+                                                const Interval<double>& I_ddt,
+                                                const double epsilon);
 
   /** @brief The PST connector that achieves minimum terminal speed. */
   PST_Connector min_terminal_;

@@ -136,7 +136,8 @@ double PST_Connector::terminalAcceleration(const PST_Connector& connector) {
 
 boost::optional<PST_Connector> PST_Connector::computePLP(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
-    const Eigen::Vector2d& p2, const double p2_dt, const double p2_ddt) {
+    const Eigen::Vector2d& p2, const double p2_dt, const double p2_ddt,
+    const double epsilon) {
   // Compute P segments.
   const auto P1 = Polynomial::from_point_with_derivatives(p1, p1_dt, p1_ddt);
   const auto P2 = Polynomial::from_point_with_derivatives(p2, p2_dt, p2_ddt);
@@ -152,7 +153,7 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
   const auto C = (square(b3 - b0) / (4.0 * a0) - c0 + c3);
   Eigen::Vector2d p2_1(NaN, NaN);
   Eigen::Vector2d p2_2(NaN, NaN);
-  if (const auto roots = Polynomial::roots(A, B, C)) {
+  if (const auto roots = Polynomial::roots(A, B, C, epsilon)) {
     double r1, r2;
     std::tie(r1, r2) = *roots;
     p2_1 = Eigen::Vector2d(r1, P2(r1));
@@ -225,7 +226,7 @@ Interval<double> PST_Connector::domain<PST_Connector::Idx::THIRD>(
 
 boost::optional<PST_Connector> PST_Connector::computePL_0P(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
-    const Eigen::Vector2d& p2, const double p2_ddt) {
+    const Eigen::Vector2d& p2, const double p2_ddt, const double epsilon) {
   // Compute initial P.
   const auto P1 = Polynomial::from_point_with_derivatives(p1, p1_dt, p1_ddt);
 
@@ -236,8 +237,8 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
   }
 
   // Attempt to find critical points for candidate terminal parabolas.
-  const auto critical_points =
-      Polynomial::findConstrainedCriticalPoints(p2, p_critical->y(), p2_ddt);
+  const auto critical_points = Polynomial::findConstrainedCriticalPoints(
+      p2, p_critical->y(), p2_ddt, epsilon);
   if (!critical_points) {
     return boost::none;
   }
@@ -248,10 +249,10 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
 
   // Build candidate terminal P curves.
   static const auto dx_critical = 0.0;
-  const auto P2_candidate1 =
-      Polynomial::from_point_with_derivatives(critical_pt1, dx_critical, p2_ddt);
-  const auto P2_candidate2 =
-      Polynomial::from_point_with_derivatives(critical_pt2, dx_critical, p2_ddt);
+  const auto P2_candidate1 = Polynomial::from_point_with_derivatives(
+      critical_pt1, dx_critical, p2_ddt);
+  const auto P2_candidate2 = Polynomial::from_point_with_derivatives(
+      critical_pt2, dx_critical, p2_ddt);
 
   // Build L curve by artificially constructing a line through 'p_critical'.
   const Eigen::Vector2d p_critical2 = (*p_critical + Eigen::Vector2d(1.0, 0.0));
@@ -282,7 +283,7 @@ boost::optional<PST_Connector> PST_Connector::computePL_0P(
 
 boost::optional<PST_Connector> PST_Connector::computePP(
     const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
-    const Eigen::Vector2d& p2, const double p2_ddt) {
+    const Eigen::Vector2d& p2, const double p2_ddt, const double epsilon) {
   // Compute P1 segment coefficients.
   const auto P1 = Polynomial::from_point_with_derivatives(p1, p1_dt, p1_ddt);
   double a1, b1, c1;
@@ -295,7 +296,7 @@ boost::optional<PST_Connector> PST_Connector::computePP(
   const auto C = (-p2.x() * (a2 * p2.x() + b1) - c1 + p2.y());
   Eigen::Vector2d p_t1(NaN, NaN);
   Eigen::Vector2d p_t2(NaN, NaN);
-  if (const auto roots = Polynomial::roots(A, B, C)) {
+  if (const auto roots = Polynomial::roots(A, B, C, epsilon)) {
     double r1, r2;
     std::tie(r1, r2) = *roots;
     p_t1 = Eigen::Vector2d(r1, P1(r1));

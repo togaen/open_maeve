@@ -76,7 +76,7 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto ddx = -2.0;
 
     const auto points =
-        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx);
+        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx, epsilon);
     EXPECT_TRUE(!points);
   }
 
@@ -86,7 +86,7 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto ddx = 2.0;
 
     const auto points =
-        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx);
+        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx, epsilon);
     ASSERT_FALSE(!points);
 
     Eigen::Vector2d pt1, pt2;
@@ -111,7 +111,7 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto ddx = 2.0;
 
     const auto points =
-        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx);
+        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx, epsilon);
     ASSERT_FALSE(!points);
 
     Eigen::Vector2d pt1, pt2;
@@ -135,7 +135,7 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto ddx = 1.0;
 
     const auto points =
-        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx);
+        Polynomial::findConstrainedCriticalPoints(p, y_critical, ddx, epsilon);
     ASSERT_FALSE(!points);
 
     Eigen::Vector2d pt1, pt2;
@@ -257,13 +257,13 @@ TEST(Maeve_Geometry_Polynomial, testRootFinder) {
 
   {
     const auto q = Polynomial(1, 1, 1);
-    const auto roots = Polynomial::roots(q);
+    const auto roots = Polynomial::roots(q, epsilon);
     EXPECT_TRUE(!roots);
   }
 
   {
     const auto q = Polynomial(1, 2, 1);
-    const auto roots = Polynomial::roots(q);
+    const auto roots = Polynomial::roots(q, epsilon);
     ASSERT_FALSE(!roots);
 
     double r1, r2;
@@ -274,7 +274,7 @@ TEST(Maeve_Geometry_Polynomial, testRootFinder) {
 
   {
     const auto q = Polynomial(0, 2, 1);
-    const auto roots = Polynomial::roots(q);
+    const auto roots = Polynomial::roots(q, epsilon);
     ASSERT_FALSE(!roots);
 
     double r1, r2;
@@ -285,7 +285,7 @@ TEST(Maeve_Geometry_Polynomial, testRootFinder) {
 
   {
     const auto q = Polynomial(1, -2, 0);
-    const auto roots = Polynomial::roots(q);
+    const auto roots = Polynomial::roots(q, epsilon);
     ASSERT_FALSE(!roots);
 
     double r1, r2;
@@ -296,7 +296,7 @@ TEST(Maeve_Geometry_Polynomial, testRootFinder) {
 
   {
     const auto q = Polynomial(1, 2, 0);
-    const auto roots = Polynomial::roots(q);
+    const auto roots = Polynomial::roots(q, epsilon);
     ASSERT_FALSE(!roots);
 
     double r1, r2;
@@ -307,7 +307,7 @@ TEST(Maeve_Geometry_Polynomial, testRootFinder) {
 
   {
     const auto q = Polynomial(3, 5, 2);
-    const auto roots = Polynomial::roots(q);
+    const auto roots = Polynomial::roots(q, epsilon);
     ASSERT_FALSE(!roots);
 
     double r1, r2;

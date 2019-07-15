@@ -185,7 +185,8 @@ class PST_Connector {
    */
   static boost::optional<PST_Connector> computePLP(
       const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
-      const Eigen::Vector2d& p2, const double p2_dt, const double p2_ddt);
+      const Eigen::Vector2d& p2, const double p2_dt, const double p2_ddt,
+      const double epsilon);
 
   /**
    * @brief Compute a PL_0P connector between 'p1' and 'p1'.
@@ -201,11 +202,9 @@ class PST_Connector {
    *
    * @return A nullable object of either the connector or boost::none.
    */
-  static boost::optional<PST_Connector> computePL_0P(const Eigen::Vector2d& p1,
-                                                     const double p1_dt,
-                                                     const double p1_ddt,
-                                                     const Eigen::Vector2d& p2,
-                                                     const double p2_ddt);
+  static boost::optional<PST_Connector> computePL_0P(
+      const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
+      const Eigen::Vector2d& p2, const double p2_ddt, const double epsilon);
 
   /**
    * @brief Compute a PP connector between 'p1' and 'p2'.
@@ -223,11 +222,9 @@ class PST_Connector {
    *
    * @return A nullable object of either the connector or boost::none.
    */
-  static boost::optional<PST_Connector> computePP(const Eigen::Vector2d& p1,
-                                                  const double p1_dt,
-                                                  const double p1_ddt,
-                                                  const Eigen::Vector2d& p2,
-                                                  const double p2_ddt);
+  static boost::optional<PST_Connector> computePP(
+      const Eigen::Vector2d& p1, const double p1_dt, const double p1_ddt,
+      const Eigen::Vector2d& p2, const double p2_ddt, const double epsilon);
 
   /**
    * @brief Check the connector against a set of dynamic constraints.

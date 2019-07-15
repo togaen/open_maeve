@@ -43,7 +43,7 @@ TEST(Maeve_Dynamics_PST_Connector, taxonomy) {
     const auto p2_ddt = -3.0;
 
     const auto connector =
-        PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+        PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt, EPS);
     ASSERT_FALSE(!connector);
 
     EXPECT_FALSE(PST_Connector::is_Pminus(*connector));
@@ -96,7 +96,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
 
     EXPECT_NO_THROW({
       const auto connector =
-          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt, EPS);
       ASSERT_TRUE(!connector);
     });
   }
@@ -111,7 +111,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
 
     EXPECT_NO_THROW({
       const auto connector =
-          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt, EPS);
       ASSERT_TRUE(!connector);
     });
   }
@@ -126,7 +126,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
 
     EXPECT_NO_THROW({
       const auto connector =
-          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt, EPS);
       ASSERT_TRUE(!connector);
     });
   }
@@ -141,7 +141,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
 
     EXPECT_NO_THROW({
       const auto connector =
-          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt, EPS);
       ASSERT_FALSE(!connector);
 
       std::stringstream ss;
@@ -165,7 +165,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
 
     EXPECT_NO_THROW({
       const auto connector =
-          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt, EPS);
       ASSERT_FALSE(!connector);
 
       std::stringstream ss;
@@ -189,7 +189,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
 
     EXPECT_NO_THROW({
       const auto connector =
-          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt, EPS);
       ASSERT_FALSE(!connector);
 
       std::stringstream ss;
@@ -213,7 +213,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
 
     EXPECT_NO_THROW({
       const auto connector =
-          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt, EPS);
       ASSERT_FALSE(!connector);
 
       std::stringstream ss;
@@ -237,7 +237,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
 
     EXPECT_NO_THROW({
       const auto connector =
-          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt);
+          PST_Connector::computePLP(p1, p1_dt, p1_ddt, p2, p2_dt, p2_ddt, EPS);
       ASSERT_FALSE(!connector);
 
       std::stringstream ss;
@@ -264,7 +264,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
 
     ASSERT_NO_THROW({
       const auto connector =
-          PST_Connector::computePP(p1, p1_dt, p1_ddt, p2, p2_ddt);
+          PST_Connector::computePP(p1, p1_dt, p1_ddt, p2, p2_ddt, EPS);
       ASSERT_TRUE(!connector);
     });
   }
@@ -282,7 +282,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
 
     ASSERT_NO_THROW({
       const auto connector =
-          PST_Connector::computePP(p1, p1_dt, p1_ddt, *p2, p2_ddt);
+          PST_Connector::computePP(p1, p1_dt, p1_ddt, *p2, p2_ddt, EPS);
       ASSERT_FALSE(!connector);
       std::stringstream ss;
       ss << *connector;
@@ -304,7 +304,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
 
     ASSERT_NO_THROW({
       const auto connector =
-          PST_Connector::computePP(p1, p1_dt, p1_ddt, p2, p2_ddt);
+          PST_Connector::computePP(p1, p1_dt, p1_ddt, p2, p2_ddt, EPS);
       EXPECT_TRUE(!connector);
     });
   }
@@ -322,7 +322,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
 
     ASSERT_NO_THROW({
       const auto connector =
-          PST_Connector::computePP(p1, p1_dt, p1_ddt, *p2, p2_ddt);
+          PST_Connector::computePP(p1, p1_dt, p1_ddt, *p2, p2_ddt, EPS);
       ASSERT_FALSE(!connector);
       std::stringstream ss;
       ss << *connector;
@@ -364,7 +364,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
                              p1.y() + Polynomial(p1_ddt, p1_dt, 0.0)(3.0));
     const auto p2_ddt = -4.0;
     const auto connector =
-        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt);
+        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt, EPS);
     ASSERT_TRUE(!connector);
   }
 
@@ -376,7 +376,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
                              p1.y() + Polynomial(p1_ddt, p1_dt, 0.0)(3.0));
     const auto p2_ddt = -4.0;
     const auto connector =
-        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt);
+        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt, EPS);
     ASSERT_TRUE(!connector);
   }
 
@@ -388,7 +388,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
                              p1.y() + Polynomial(p1_ddt, p1_dt, 0.0)(3.0));
     const auto p2_ddt = 4.0;
     const auto connector =
-        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt);
+        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt, EPS);
     ASSERT_TRUE(!connector);
   }
 
@@ -400,7 +400,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
                              p1.y() + Polynomial(p1_ddt, p1_dt, 0.0)(3.0));
     const auto p2_ddt = 4.0;
     const auto connector =
-        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt);
+        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt, EPS);
     ASSERT_FALSE(!connector);
 
     std::stringstream ss;
@@ -419,7 +419,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
     const Eigen::Vector2d p2(10, 2);
     const auto p2_ddt = 4.0;
     const auto connector =
-        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt);
+        PST_Connector::computePL_0P(p1, p1_dt, p1_ddt, p2, p2_ddt, EPS);
     ASSERT_FALSE(!connector);
 
     std::stringstream ss;

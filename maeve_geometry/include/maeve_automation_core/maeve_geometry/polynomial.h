@@ -117,13 +117,10 @@ class Polynomial {
    *
    * @param polynomial The polynomial to find roots for.
    *
-   * TODO(me): Should not have default parameter values.
-   *
    * @return See Polynomial::roots(const Polynomial)
    */
   static boost::optional<std::tuple<double, double>> roots(
-      const double a, const double b, const double c,
-      const double tolerance = 0.0);
+      const double a, const double b, const double c, const double tolerance);
 
   /**
    * @brief Compute the real-valued roots of a polynomial.
@@ -141,11 +138,9 @@ class Polynomial {
    * @return A nullable object containing a tuple of the roots, or null if there
    * are no real roots. By convention the roots are ordered such that the first
    * root is not larger than the second.
-   *
-   * TODO(me): Should not have default parameter values.
    */
   static boost::optional<std::tuple<double, double>> roots(
-      const Polynomial& polynomial, const double tolerance = 0.0);
+      const Polynomial& polynomial, const double tolerance);
 
   /**
    * @brief First derivative of the polynomial at a given domain value.
@@ -277,7 +272,8 @@ class Polynomial {
    */
   static boost::optional<std::tuple<Eigen::Vector2d, Eigen::Vector2d>>
   findConstrainedCriticalPoints(const Eigen::Vector2d& p,
-                                const double y_critical, const double ddx);
+                                const double y_critical, const double ddx,
+                                const double tolerance);
 
  private:
   /**
