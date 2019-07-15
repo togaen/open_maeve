@@ -246,6 +246,8 @@ boost::optional<std::tuple<double, double>> Polynomial::roots(
   // Enforce pre-condition.
   try {
     // Constructor allows y axis representations, so do an extra valid check.
+    // TODO(me): I really don't like that this check is needed. Need to get rid
+    // of that special y axis behavior.
     if (!Polynomial::valid(polynomial)) {
       return boost::none;
     }
