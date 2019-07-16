@@ -36,6 +36,8 @@ namespace maeve_automation_core {
  * @brief This class defines a functor that evaluates a polynomial.
  *
  * @note The class only supports polynomials up to order 2.
+ *
+ * TODO(me): It might make sense to add a domain member to this.
  */
 class Polynomial {
  public:

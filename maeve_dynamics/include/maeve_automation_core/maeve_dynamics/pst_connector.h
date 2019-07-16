@@ -44,6 +44,9 @@ namespace maeve_automation_core {
  * not, but dependent libraries already rely on that behavior. Need to refactor
  * so that constraints are passed into the factory methods.
  *
+ * TODO(me): This class is overly complicated. A Polynomial class with a domain
+ * member would simplify things (see todo in polynomial.h)
+ *
  * The canonical form of a PST connecting trajectory is
  * Parabolic-Linear-Parabolic. The trajectory begins at the first switching
  * time, changes to the linear portion at the second switching time, changes to
