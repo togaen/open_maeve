@@ -42,9 +42,7 @@ const auto Inf = std::numeric_limits<double>::infinity();
 
 Polynomial::Polynomial(const double a, const double b, const double c,
                        const Interval<double>& domain)
-    : domain_(domain),
-      coefficients_({a, b, c}),
-      dx_coefficients_({2.0 * a, b}) {
+    : domain_(domain), coefficients_({a, b, c}) {
   if (!Polynomial::is_y_axis(*this)) {
     if (!Polynomial::valid(*this)) {
       std::stringstream ss;
@@ -143,8 +141,8 @@ boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
     const Polynomial& polynomial) {
   // Find unique critical point of a quadratic equation.
   if (std::abs(Polynomial::a(polynomial)) > 0.0) {
-    const auto x_critical =
-        (-polynomial.dx_coefficients_[1] / polynomial.dx_coefficients_[0]);
+    const auto x_critical = (-Polynomial::dx_coefficient<1>(polynomial) /
+                             Polynomial::dx_coefficient<0>(polynomial));
     const auto y_critical = polynomial(x_critical);
     return Eigen::Vector2d(x_critical, y_critical);
   }
@@ -206,7 +204,8 @@ Polynomial::tangentRaysThroughPoint(const Polynomial& polynomial,
 //------------------------------------------------------------------------------
 
 double Polynomial::dx(const Polynomial& polynomial, const double x) {
-  return polynomial.dx_coefficients_[0] * x + polynomial.dx_coefficients_[1];
+  return Polynomial::dx_coefficient<0>(polynomial) * x +
+         Polynomial::dx_coefficient<1>(polynomial);
 }
 
 //------------------------------------------------------------------------------
@@ -374,15 +373,27 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& polynomial) {
 bool operator==(const Polynomial& p1, const Polynomial& p2) {
   const auto domains_equal = (p1.domain_ == p2.domain_);
   const auto coefficients_equal = (p1.coefficients_ == p2.coefficients_);
-  const auto dx_coefficients_equal =
-      (p1.dx_coefficients_ == p2.dx_coefficients_);
-  return (domains_equal && coefficients_equal && dx_coefficients_equal);
+  return (domains_equal && coefficients_equal);
 }
 
 //------------------------------------------------------------------------------
 
 bool operator!=(const Polynomial& p1, const Polynomial& p2) {
   return !(p1 == p2);
+}
+
+//------------------------------------------------------------------------------
+
+template <>
+double Polynomial::dx_coefficient<0>(const Polynomial& p) {
+  return (2.0 * p.coefficients_[0]);
+}
+
+//------------------------------------------------------------------------------
+
+template <>
+double Polynomial::dx_coefficient<1>(const Polynomial& p) {
+  return p.coefficients_[1];
 }
 
 //------------------------------------------------------------------------------

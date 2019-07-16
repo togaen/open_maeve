@@ -310,10 +310,18 @@ class Polynomial {
   std::array<double, 3> coefficients_;
 
   /**
-   * @brief Coefficients for the first derivative of the polynomial.
-   *
-   * TODO(me): these should just be computed on the fly; don't store them
+   * @brief Compute the coefficients of the first derivative of the polynomial.
    */
-  std::array<double, 2> dx_coefficients_;
+  template <int idx>
+  static double dx_coefficient(const Polynomial& p);
 };  // class Polynomial
+
+/** @brief Specializations for the first derivative computation. @{ */
+template <>
+double Polynomial::dx_coefficient<0>(const Polynomial& p);
+
+template <>
+double Polynomial::dx_coefficient<1>(const Polynomial& p);
+/** @} */
+
 }  // namespace maeve_automation_core
