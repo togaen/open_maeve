@@ -35,6 +35,17 @@ const auto epsilon = 5e-4;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Polynomial, comparators) {
+  const auto P1 = Polynomial(0.0, 0.0, 0.0);
+  const auto P2 = Polynomial(1.0, 0.0, 0.0);
+
+  EXPECT_EQ(P1, P1);
+  EXPECT_NE(P1, P2);
+  EXPECT_NE(P1, Polynomial(P1, Interval_d(-1.0, 1.0)));
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Polynomial, domain) {
   EXPECT_NO_THROW({ const auto P = Polynomial(1.0, 1.0, 1.0); });
   EXPECT_THROW(

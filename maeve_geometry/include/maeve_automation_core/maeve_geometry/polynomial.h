@@ -55,6 +55,11 @@ class Polynomial {
   friend std::ostream& operator<<(std::ostream& os,
                                   const Polynomial& polynomial);
 
+  /** @brief Comparator overloads @{ */
+  friend bool operator==(const Polynomial& p1, const Polynomial& p2);
+  friend bool operator!=(const Polynomial& p1, const Polynomial& p2);
+  /** @} */
+
   /** @brief No default initialization. */
   Polynomial() = delete;
 
@@ -306,6 +311,8 @@ class Polynomial {
 
   /**
    * @brief Coefficients for the first derivative of the polynomial.
+   *
+   * TODO(me): these should just be computed on the fly; don't store them
    */
   std::array<double, 2> dx_coefficients_;
 };  // class Polynomial

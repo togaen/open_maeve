@@ -367,7 +367,23 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& polynomial) {
             << ", \"b\": " << Polynomial::b(polynomial)
             << ", \"c\": " << Polynomial::c(polynomial)
             << ", domain: " << Polynomial::get_domain(polynomial) << "}";
-}  // namespace maeve_automation_core
+}
+
+//------------------------------------------------------------------------------
+
+bool operator==(const Polynomial& p1, const Polynomial& p2) {
+  const auto domains_equal = (p1.domain_ == p2.domain_);
+  const auto coefficients_equal = (p1.coefficients_ == p2.coefficients_);
+  const auto dx_coefficients_equal =
+      (p1.dx_coefficients_ == p2.dx_coefficients_);
+  return (domains_equal && coefficients_equal && dx_coefficients_equal);
+}
+
+//------------------------------------------------------------------------------
+
+bool operator!=(const Polynomial& p1, const Polynomial& p2) {
+  return !(p1 == p2);
+}
 
 //------------------------------------------------------------------------------
 
