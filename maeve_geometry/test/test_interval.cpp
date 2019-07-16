@@ -32,8 +32,26 @@ const auto Inf = std::numeric_limits<double>::infinity();
 const auto Min = std::numeric_limits<double>::lowest();
 const auto Max = std::numeric_limits<double>::max();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
-const auto epsilon = 0.00001;
+const auto epsilon = 1e-5;
 }  // namespace
+
+//------------------------------------------------------------------------------
+
+TEST(Maeve_Geometry_Interval, approx_eq) {
+  const auto i1 = Interval_d(-1.0, 1.0);
+  const auto i2 = Interval_d(-1.0 + 0.5 * epsilon, 1.0 + 0.5 * epsilon);
+  const auto i3 = (i1 + (2.0 * epsilon));
+  const auto i_empty = Interval_d();
+
+  EXPECT_TRUE(Interval_d::approx_eq(i1, i1, epsilon));
+  EXPECT_TRUE(Interval_d::approx_eq(i1, i2, epsilon));
+  EXPECT_TRUE(Interval_d::approx_eq(i2, i1, epsilon));
+  EXPECT_FALSE(Interval_d::approx_eq(i1, i3, epsilon));
+  EXPECT_FALSE(Interval_d::approx_eq(i3, i1, epsilon));
+  EXPECT_FALSE(Interval_d::approx_eq(i1, i_empty, epsilon));
+  EXPECT_FALSE(Interval_d::approx_eq(i_empty, i1, epsilon));
+  EXPECT_TRUE(Interval_d::approx_eq(i_empty, i_empty, epsilon));
+}
 
 //------------------------------------------------------------------------------
 

@@ -33,6 +33,8 @@
 #include <boost/io/ios_state.hpp>
 #include <boost/optional.hpp>
 
+#include "maeve_automation_core/maeve_geometry/comparisons.h"
+
 namespace maeve_automation_core {
 /**
  * @brief Data structure to contain scalar interval bounds.
@@ -177,6 +179,16 @@ class Interval {
     return (interval + -scalar);
   }
   /** @} */
+
+  /**
+   * @brief Test whether the two intervals have bounds within epsilon of each
+   * other.
+   *
+   * @note If both intervals are empty, this returns true. If only one is empty,
+   * this returns false.
+   */
+  static bool approx_eq(const Interval& interval1, const Interval& interval2,
+                        const T& epsilon);
 
   /**
    * @brief The minimum bound of the interval.
@@ -468,6 +480,31 @@ constexpr T Interval<T>::SUPREMUM;
 
 template <typename T>
 constexpr T Interval<T>::INFIMUM;
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+bool Interval<T>::approx_eq(const Interval& interval1,
+                            const Interval& interval2, const T& epsilon) {
+  const auto i1_empty = Interval::empty(interval1);
+  const auto i2_empty = Interval::empty(interval2);
+  if (i1_empty && i2_empty) {
+    return true;
+  }
+  if (exclusiveOr(i1_empty, i2_empty)) {
+    return false;
+  }
+
+  const auto min1 = Interval::min(interval1);
+  const auto min2 = Interval::min(interval2);
+  const auto mins_equal = approxEq(min1, min2, epsilon);
+
+  const auto max1 = Interval::max(interval1);
+  const auto max2 = Interval::max(interval2);
+  const auto maxs_equal = approxEq(max1, max2, epsilon);
+
+  return (mins_equal && maxs_equal);
+}
 
 //------------------------------------------------------------------------------
 
