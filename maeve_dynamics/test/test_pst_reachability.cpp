@@ -46,12 +46,13 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
       ASSERT_FALSE(!connector);
       std::stringstream ss;
       ss << *connector;
-      EXPECT_EQ(ss.str(),
-                "{\"switching_times\": [0, 0.25, 0.806351, 1], "
-                "\"parabola_coefficients\": [{\"a\": -2.00000, \"b\": 1.00000, "
-                "\"c\": 0.00000}, {\"a\": 0.00000, \"b\": 0.00000, \"c\": "
-                "0.12500}, {\"a\": 2.00000, \"b\": -3.22540, \"c\": "
-                "1.42540}]}");
+      EXPECT_EQ(
+          ss.str(),
+          "\"parabola_coefficients\": [{\"a\": -2.00000, \"b\": 1.00000, "
+          "\"c\": 0.00000, domain: {\"min\": 0.00000, \"max\": 0.25000}}, "
+          "{\"a\": 0.00000, \"b\": 0.00000, \"c\": 0.12500, domain: {\"min\": "
+          "0.25000, \"max\": 0.80635}}, {\"a\": 2.00000, \"b\": -3.22540, "
+          "\"c\": 1.42540, domain: {\"min\": 0.80635, \"max\": 1.00000}}]}");
     });
   }
 
@@ -70,14 +71,17 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
       ss << *reachability;
       EXPECT_EQ(
           ss.str(),
-          "{\"min_speed_connector\": {\"switching_times\": [0, 0.125, 0.875, "
-          "1], \"parabola_coefficients\": [{\"a\": -2.00000, \"b\": 1.00000, "
-          "\"c\": -0.00000}, {\"a\": 0.00000, \"b\": 0.50000, \"c\": 0.03125}, "
-          "{\"a\": -2.00000, \"b\": 4.00000, \"c\": -1.50000}]}, "
-          "\"max_speed_connector\": {\"switching_times\": [0, 0.25, 0.566987, "
-          "1], \"parabola_coefficients\": [{\"a\": -2.00000, \"b\": 1.00000, "
-          "\"c\": 0.00000}, {\"a\": 0.00000, \"b\": 0.00000, \"c\": 0.12500}, "
-          "{\"a\": 2.00000, \"b\": -2.26795, \"c\": 0.76795}]}}");
+          "{\"min_speed_connector\": \"parabola_coefficients\": [{\"a\": "
+          "-2.00000, \"b\": 1.00000, \"c\": -0.00000, domain: {\"min\": "
+          "0.00000, \"max\": 0.12500}}, {\"a\": 0.00000, \"b\": 0.50000, "
+          "\"c\": 0.03125, domain: {\"min\": 0.12500, \"max\": 0.87500}}, "
+          "{\"a\": -2.00000, \"b\": 4.00000, \"c\": -1.50000, domain: "
+          "{\"min\": 0.87500, \"max\": 1.00000}}]}, \"max_speed_connector\": "
+          "\"parabola_coefficients\": [{\"a\": -2.00000, \"b\": 1.00000, "
+          "\"c\": 0.00000, domain: {\"min\": 0.00000, \"max\": 0.25000}}, "
+          "{\"a\": 0.00000, \"b\": 0.00000, \"c\": 0.12500, domain: {\"min\": "
+          "0.25000, \"max\": 0.56699}}, {\"a\": 2.00000, \"b\": -2.26795, "
+          "\"c\": 0.76795, domain: {\"min\": 0.56699, \"max\": 1.00000}}]}}");
     });
   }
 
