@@ -39,15 +39,6 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 //------------------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
-  os << "{\"switching_times\": ["
-     << PST_Connector::switching_time<PST_Connector::Idx::FIRST>(connector)
-     << ", "
-     << PST_Connector::switching_time<PST_Connector::Idx::SECOND>(connector)
-     << ", "
-     << PST_Connector::switching_time<PST_Connector::Idx::THIRD>(connector)
-     << ", "
-     << PST_Connector::switching_time<PST_Connector::Idx::FOURTH>(connector)
-     << "], ";
   os << "\"parabola_coefficients\": ["
      << PST_Connector::function<PST_Connector::Idx::FIRST>(connector) << ", "
      << PST_Connector::function<PST_Connector::Idx::SECOND>(connector) << ", "
