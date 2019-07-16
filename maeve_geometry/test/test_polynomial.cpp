@@ -24,6 +24,7 @@
 #include <cmath>
 #include <limits>
 
+#include "maeve_automation_core/maeve_geometry/comparisons.h"
 #include "maeve_automation_core/maeve_geometry/polynomial.h"
 
 namespace maeve_automation_core {
@@ -31,6 +32,21 @@ namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto Inf = std::numeric_limits<double>::infinity();
 const auto epsilon = 5e-4;
+
+bool polys_near(const Polynomial& P1, const Polynomial& P2, const double EPS) {
+  const auto domains_equal =
+      (Polynomial::get_domain(P1) == Polynomial::get_domain(P2));
+
+  double a1, b1, c1;
+  std::tie(a1, b1, c1) = Polynomial::coefficients(P1);
+
+  double a2, b2, c2;
+  std::tie(a2, b2, c2) = Polynomial::coefficients(P2);
+
+  return (domains_equal && approxEq(a1, a2, epsilon) &&
+          approxEq(b1, b2, epsilon) && approxEq(c1, c2, epsilon));
+}
+
 }  // namespace
 
 //------------------------------------------------------------------------------
@@ -118,14 +134,8 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto p1 = Polynomial::from_point_with_derivatives(pt1, 0.0, ddx);
     const auto p2 = Polynomial::from_point_with_derivatives(pt2, 0.0, ddx);
 
-    std::stringstream ss1, ss2;
-    ss1 << p1;
-    EXPECT_EQ(ss1.str(),
-              std::string("{\"a\": 2.00000, \"b\": -4.00000, \"c\": 3.00000}"));
-    ss2 << p2;
-    EXPECT_EQ(
-        ss2.str(),
-        std::string("{\"a\": 2.00000, \"b\": -12.00000, \"c\": 19.00000}"));
+    EXPECT_EQ(p1, Polynomial(2.0, -4.0, 3.0));
+    EXPECT_EQ(p2, Polynomial(2.0, -12.0, 19.0));
   }
 
   {
@@ -143,13 +153,8 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto p1 = Polynomial::from_point_with_derivatives(pt1, 0.0, ddx);
     const auto p2 = Polynomial::from_point_with_derivatives(pt2, 0.0, ddx);
 
-    std::stringstream ss1, ss2;
-    ss1 << p1;
-    EXPECT_EQ(ss1.str(),
-              std::string("{\"a\": 2.00000, \"b\": 0.89898, \"c\": 0.10102}"));
-    ss2 << p2;
-    EXPECT_EQ(ss2.str(),
-              std::string("{\"a\": 2.00000, \"b\": -8.89898, \"c\": 9.89898}"));
+    EXPECT_TRUE(polys_near(p1, Polynomial(2.0, 0.89898, 0.10102), epsilon));
+    EXPECT_TRUE(polys_near(p2, Polynomial(2.0, -8.89898, 9.89898), epsilon));
   }
 
   {
@@ -167,13 +172,8 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto p1 = Polynomial::from_point_with_derivatives(pt1, 0.0, ddx);
     const auto p2 = Polynomial::from_point_with_derivatives(pt2, 0.0, ddx);
 
-    std::stringstream ss1, ss2;
-    ss1 << p1;
-    EXPECT_EQ(ss1.str(),
-              std::string("{\"a\": 1.00000, \"b\": 1.46410, \"c\": 0.53590}"));
-    ss2 << p2;
-    EXPECT_EQ(ss2.str(),
-              std::string("{\"a\": 1.00000, \"b\": -5.46410, \"c\": 7.46410}"));
+    EXPECT_TRUE(polys_near(p1, Polynomial(1.0, 1.4641, 0.5359), epsilon));
+    EXPECT_TRUE(polys_near(p2, Polynomial(1.0, -5.4641, 7.4641), epsilon));
   }
 }
 
