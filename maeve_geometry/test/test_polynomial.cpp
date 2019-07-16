@@ -35,6 +35,18 @@ const auto epsilon = 5e-4;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Polynomial, domain) {
+  EXPECT_NO_THROW({ const auto P = Polynomial(1.0, 1.0, 1.0); });
+  EXPECT_THROW(
+      {
+        const auto P = Polynomial(1.0, 1.0, 1.0,
+                                  Interval<double>::affinely_extended_reals());
+      },
+      std::domain_error);
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Polynomial, is_constant) {
   EXPECT_TRUE(Polynomial::is_constant(Polynomial(0.0, 0.0, 1.0)));
   EXPECT_FALSE(Polynomial::is_constant(Polynomial(0.0, 1.0, 1.0)));
@@ -351,7 +363,7 @@ TEST(Maeve_Geometry_Polynomial, testEval) {
 TEST(Maeve_Geometry_Polynomial, testConstruction) {
   {
     EXPECT_THROW({ const auto p = Polynomial(Inf, Inf, Inf); },
-                 std::runtime_error);
+                 std::domain_error);
   }
 
   {

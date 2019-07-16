@@ -40,20 +40,41 @@ const auto Inf = std::numeric_limits<double>::infinity();
 
 //------------------------------------------------------------------------------
 
-Polynomial::Polynomial(const double a, const double b, const double c)
-    : coefficients_({a, b, c}), dx_coefficients_({2.0 * a, b}) {
+Polynomial::Polynomial(const double a, const double b, const double c,
+                       const Interval<double>& domain)
+    : domain_(domain),
+      coefficients_({a, b, c}),
+      dx_coefficients_({2.0 * a, b}) {
   if (!Polynomial::is_y_axis(*this)) {
     if (!Polynomial::valid(*this)) {
       std::stringstream ss;
       ss << "Attempted to consruct an invalid polynomial: " << *this;
-      throw std::runtime_error(ss.str());
+      throw std::domain_error(ss.str());
     }
+  }
+
+  // Entire domain must be real valued.
+  const auto min = Interval<double>::min(domain_);
+  const auto max = Interval<double>::max(domain_);
+  if (!std::isfinite(min) || !std::isfinite(max)) {
+    std::stringstream ss;
+    ss << "Polynomial domain must be real valued. Given domain is: " << domain_;
+    throw std::domain_error(ss.str());
   }
 }
 
 //------------------------------------------------------------------------------
 
-Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
+Polynomial::Polynomial(const Polynomial& p, const Interval<double>& domain) {
+  double a, b, c;
+  std::tie(a, b, c) = Polynomial::coefficients(p);
+  *this = Polynomial(a, b, c, domain);
+}
+
+//------------------------------------------------------------------------------
+
+Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+                       const Interval<double>& domain) {
   // Allocate coefficients.
   auto a = 0.0;
   auto b = NaN;
@@ -69,7 +90,7 @@ Polynomial::Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2) {
   }
 
   // Poor man's delegated constructor
-  *this = Polynomial(a, b, c);
+  *this = Polynomial(a, b, c, domain);
 }
 
 //------------------------------------------------------------------------------
@@ -134,13 +155,13 @@ boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
 
 //------------------------------------------------------------------------------
 
-Polynomial Polynomial::from_point_with_derivatives(const Eigen::Vector2d& p,
-                                                   const double dx,
-                                                   const double ddx) {
+Polynomial Polynomial::from_point_with_derivatives(
+    const Eigen::Vector2d& p, const double dx, const double ddx,
+    const Interval<double>& domain) {
   const auto a = ddx;
   const auto b = dx - 2.0 * a * p.x();
   const auto c = p.y() + p.x() * (a * p.x() - dx);
-  return Polynomial(a, b, c);
+  return Polynomial(a, b, c, domain);
 }
 
 //------------------------------------------------------------------------------
@@ -215,15 +236,22 @@ double Polynomial::c(const Polynomial& polynomial) {
 //------------------------------------------------------------------------------
 
 double Polynomial::operator()(const double x) const {
-  // Enforce pre-condition
-  if (!std::isfinite(x)) {
+  // Enforce domain
+  if (!Interval<double>::contains(domain_, x)) {
     std::stringstream ss;
-    ss << "Polynomial can only be evaluated with real values. Given input \""
-       << x << "\" is not real valued.";
+    ss << "Attempted to evaluate polynomial for value \"" << x
+       << "\", which is outside the domain " << domain_;
     throw std::domain_error(ss.str());
   }
+
   return ((x * (Polynomial::a(*this) * x + Polynomial::b(*this))) +
           Polynomial::c(*this));
+}
+
+//------------------------------------------------------------------------------
+
+const Interval<double>& Polynomial::get_domain(const Polynomial& p) {
+  return p.domain_;
 }
 
 //------------------------------------------------------------------------------

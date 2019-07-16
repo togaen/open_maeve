@@ -36,8 +36,6 @@ namespace maeve_automation_core {
  * @brief This class defines a functor that evaluates a polynomial.
  *
  * @note The class only supports polynomials up to order 2.
- *
- * TODO(me): It might make sense to add a domain member to this.
  */
 class Polynomial {
  public:
@@ -73,7 +71,12 @@ class Polynomial {
    * @param b The linear coefficient.
    * @param c The constant coefficient.
    */
-  Polynomial(const double a, const double b, const double c);
+  Polynomial(const double a, const double b, const double c,
+             const Interval<double>& domain =
+                 Interval<double>::max_representable_reals());
+
+  /** @brief Construct a copy of polynomial 'p' with a new domain. */
+  Polynomial(const Polynomial& p, const Interval<double>& domain);
 
   /**
    * @brief Constructor: build a linear polynomial from two points.
@@ -86,7 +89,9 @@ class Polynomial {
    * @param p1 The first point.
    * @param p2 The second point.
    */
-  Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2);
+  Polynomial(const Eigen::Vector2d& p1, const Eigen::Vector2d& p2,
+             const Interval<double>& domain =
+                 Interval<double>::max_representable_reals());
 
   /**
    * @brief Operator to evaluate the polynomial at a given value.
@@ -98,6 +103,9 @@ class Polynomial {
    * @return The value of the polynomial at 'x'.
    */
   double operator()(const double x) const;
+
+  /** @brief Access the domain of a given polynomial. */
+  static const Interval<double>& get_domain(const Polynomial& p);
 
   /** @brief Check whether the given polynomial is a constant function. */
   static bool is_constant(const Polynomial& p);
@@ -249,9 +257,10 @@ class Polynomial {
    *
    * @return The polynomial that contains 'p' and has derivative 's_dot' at 'p'.
    */
-  static Polynomial from_point_with_derivatives(const Eigen::Vector2d& p,
-                                                const double dx,
-                                                const double ddx);
+  static Polynomial from_point_with_derivatives(
+      const Eigen::Vector2d& p, const double dx, const double ddx,
+      const Interval<double>& domain =
+          Interval<double>::max_representable_reals());
 
   /**
    * @brief Compute the point at which a polynomial achieves a derivative value.
@@ -283,6 +292,9 @@ class Polynomial {
                                 const double tolerance);
 
  private:
+  /** @brief Specify the domain of this function. */
+  Interval<double> domain_;
+
   /**
    * @brief Coefficients for the polynomial in canonical form.
    *
