@@ -387,7 +387,7 @@ class Interval {
   static Interval nonpositive_affinely_extended_reals();
 
   /**
-   * @brief Factory method to build the set of machien representable reals.
+   * @brief Factory method to build the set of machine representable reals.
    *
    * @return [-DBL_MAX, DBL_MAX]
    */
