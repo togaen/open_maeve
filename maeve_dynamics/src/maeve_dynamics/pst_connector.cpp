@@ -646,10 +646,17 @@ PST_Connector::PST_Connector(const std::array<double, 4>& switching_times,
   const auto d1 = Interval<double>(switching_times[0], switching_times[1]);
   const auto d2 = Interval<double>(switching_times[1], switching_times[2]);
   const auto d3 = Interval<double>(switching_times[2], switching_times[3]);
-  functions_[0] = Polynomial(functions_[0], d1);
-  functions_[1] = Polynomial(functions_[1], d2);
-  functions_[2] = Polynomial(functions_[2], d3);
+  const auto f1 = Polynomial(functions_[0], d1);
+  const auto f2 = Polynomial(functions_[1], d2);
+  const auto f3 = Polynomial(functions_[2], d3);
+  *this = PST_Connector({f1, f2, f3}, speed_constraint);
+}
 
+//------------------------------------------------------------------------------
+
+PST_Connector::PST_Connector(const std::array<Polynomial, 3>& functions,
+                             const SpeedConstraint speed_constraint)
+    : functions_(functions) {
   // TODO(me): why am I using affine extension to reals here?
   auto speed_bounds = Interval<double>::affinely_extended_reals();
   switch (speed_constraint) {

@@ -79,6 +79,17 @@ class PST_Connector {
    * @note This constructor checks for validity of the arguments and throws an
    * exception if they do not meet basic necessary conditions.
    */
+  PST_Connector(const std::array<Polynomial, 3>& functions,
+                const SpeedConstraint speed_constraint =
+                    SpeedConstraint::STRICTLY_NON_NEGATIVE);
+
+  /**
+   * @brief Overload for legacy instantiations the specify switching times
+   * explicitly.
+   *
+   * @note The specified switching time override the domains of the polynomials
+   * in the 'functions' array.
+   */
   PST_Connector(const std::array<double, 4>& switching_times,
                 const std::array<Polynomial, 3>& functions,
                 const SpeedConstraint speed_constraint =
