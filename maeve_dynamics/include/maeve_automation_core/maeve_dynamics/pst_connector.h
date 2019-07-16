@@ -44,8 +44,7 @@ namespace maeve_automation_core {
  * not, but dependent libraries already rely on that behavior. Need to refactor
  * so that constraints are passed into the factory methods.
  *
- * TODO(me): This class is overly complicated. A Polynomial class with a domain
- * member would simplify things (see todo in polynomial.h)
+ * TODO(me): This class is over complicated; a lot of streamlining could happen.
  *
  * The canonical form of a PST connecting trajectory is
  * Parabolic-Linear-Parabolic. The trajectory begins at the first switching
@@ -487,18 +486,6 @@ class PST_Connector {
   static std::tuple<bool, std::string> valid(const PST_Connector& connector);
 
   /**
-   * @brief Switching times, in order, of the trajectory.
-   *
-   * The switching times are ordered as follows:
-   *
-   *   0: Trajectory begins, switches to initial parabolic portion
-   *   1: Trajectory switches to linear portion
-   *   2: Trajectory switches to second parabolic portion
-   *   3: Trajectory ends
-   */
-  std::array<double, 4> switching_times_;
-
-  /**
    * @brief Ordered functional segments of trajectory.
    *
    * The functional segments are ordered as follows:
@@ -619,23 +606,28 @@ const Polynomial& PST_Connector::function<PST_Connector::Idx::THIRD>(
 /** @} */
 
 /**
- * Specializations for getting switching times.
+ * @brief Accessors for switching times.
+ *
+ * @note The fourth time needs a specialization due to different behavior.
+ *
+ * The switching times are ordered as follows:
+ *
+ *   0: Trajectory begins, switches to initial parabolic portion
+ *   1: Trajectory switches to linear portion
+ *   2: Trajectory switches to second parabolic portion
+ *   3: Trajectory ends
+ *
  * @{
  */
 template <>
-const double PST_Connector::switching_time<PST_Connector::Idx::FIRST>(
-    const PST_Connector& connector);
-
-template <>
-const double PST_Connector::switching_time<PST_Connector::Idx::SECOND>(
-    const PST_Connector& connector);
-
-template <>
-const double PST_Connector::switching_time<PST_Connector::Idx::THIRD>(
-    const PST_Connector& connector);
-
-template <>
 const double PST_Connector::switching_time<PST_Connector::Idx::FOURTH>(
     const PST_Connector& connector);
+
+template <PST_Connector::Idx I>
+const double PST_Connector::switching_time(const PST_Connector& connector) {
+  const auto& P1 = PST_Connector::function<I>(connector);
+  const auto& domain = Polynomial::get_domain(P1);
+  return Interval<double>::min(domain);
+}
 /** @} */
 }  // namespace maeve_automation_core

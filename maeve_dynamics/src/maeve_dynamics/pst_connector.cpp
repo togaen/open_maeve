@@ -445,33 +445,11 @@ const Polynomial& PST_Connector::function<PST_Connector::Idx::THIRD>(
 //------------------------------------------------------------------------------
 
 template <>
-const double PST_Connector::switching_time<PST_Connector::Idx::FIRST>(
-    const PST_Connector& connector) {
-  return connector.switching_times_[0];
-}
-
-//------------------------------------------------------------------------------
-
-template <>
-const double PST_Connector::switching_time<PST_Connector::Idx::SECOND>(
-    const PST_Connector& connector) {
-  return connector.switching_times_[1];
-}
-
-//------------------------------------------------------------------------------
-
-template <>
-const double PST_Connector::switching_time<PST_Connector::Idx::THIRD>(
-    const PST_Connector& connector) {
-  return connector.switching_times_[2];
-}
-
-//------------------------------------------------------------------------------
-
-template <>
 const double PST_Connector::switching_time<PST_Connector::Idx::FOURTH>(
     const PST_Connector& connector) {
-  return connector.switching_times_[3];
+  const auto& P1 = PST_Connector::function<Idx::THIRD>(connector);
+  const auto& domain = Polynomial::get_domain(P1);
+  return Interval<double>::max(domain);
 }
 
 //------------------------------------------------------------------------------
@@ -596,9 +574,10 @@ bool PST_Connector::boundedInteriorPositions(const PST_Connector& connector,
 
 bool PST_Connector::boundedInteriorTimes(const PST_Connector& connector,
                                          const Interval<double>& bounds) {
-  return std::all_of(std::begin(connector.switching_times_),
-                     std::end(connector.switching_times_), [&](const double t) {
-                       return Interval<double>::contains(bounds, t);
+  return std::all_of(std::begin(connector.functions_),
+                     std::end(connector.functions_), [&](const Polynomial& p) {
+                       const auto& domain = Polynomial::get_domain(p);
+                       return Interval<double>::is_subset_eq(domain, bounds);
                      });
 }
 
@@ -671,7 +650,15 @@ std::tuple<bool, std::string> PST_Connector::valid(
 PST_Connector::PST_Connector(const std::array<double, 4>& switching_times,
                              const std::array<Polynomial, 3>& functions,
                              const SpeedConstraint speed_constraint)
-    : switching_times_(switching_times), functions_(functions) {
+    : functions_(functions) {
+  // Set function domains.
+  const auto d1 = Interval<double>(switching_times[0], switching_times[1]);
+  const auto d2 = Interval<double>(switching_times[1], switching_times[2]);
+  const auto d3 = Interval<double>(switching_times[2], switching_times[3]);
+  functions_[0] = Polynomial(functions_[0], d1);
+  functions_[1] = Polynomial(functions_[1], d2);
+  functions_[2] = Polynomial(functions_[2], d3);
+
   // TODO(me): why am I using affine extension to reals here?
   auto speed_bounds = Interval<double>::affinely_extended_reals();
   switch (speed_constraint) {
