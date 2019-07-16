@@ -384,6 +384,23 @@ bool operator!=(const Polynomial& p1, const Polynomial& p2) {
 
 //------------------------------------------------------------------------------
 
+bool Polynomial::approx_eq(const Polynomial& P1, const Polynomial& P2,
+                           const double epsilon) {
+  const auto domains_equal = Interval_d::approx_eq(
+      Polynomial::get_domain(P1), Polynomial::get_domain(P2), epsilon);
+
+  double a1, b1, c1;
+  std::tie(a1, b1, c1) = Polynomial::coefficients(P1);
+
+  double a2, b2, c2;
+  std::tie(a2, b2, c2) = Polynomial::coefficients(P2);
+
+  return (domains_equal && approxEq(a1, a2, epsilon) &&
+          approxEq(b1, b2, epsilon) && approxEq(c1, c2, epsilon));
+}
+
+//------------------------------------------------------------------------------
+
 template <>
 double Polynomial::dx_coefficient<0>(const Polynomial& p) {
   return (2.0 * p.coefficients_[0]);

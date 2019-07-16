@@ -60,6 +60,13 @@ class Polynomial {
   friend bool operator!=(const Polynomial& p1, const Polynomial& p2);
   /** @} */
 
+  /**
+   * @brief Test whether the two polynomials have coefficients and domains
+   * within epsilon of each other.
+   */
+  static bool approx_eq(const Polynomial& P1, const Polynomial& P2,
+                        const double epsilon);
+
   /** @brief No default initialization. */
   Polynomial() = delete;
 

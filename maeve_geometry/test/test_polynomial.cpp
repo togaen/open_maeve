@@ -32,21 +32,6 @@ namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto Inf = std::numeric_limits<double>::infinity();
 const auto epsilon = 5e-4;
-
-bool polys_near(const Polynomial& P1, const Polynomial& P2, const double EPS) {
-  const auto domains_equal =
-      (Polynomial::get_domain(P1) == Polynomial::get_domain(P2));
-
-  double a1, b1, c1;
-  std::tie(a1, b1, c1) = Polynomial::coefficients(P1);
-
-  double a2, b2, c2;
-  std::tie(a2, b2, c2) = Polynomial::coefficients(P2);
-
-  return (domains_equal && approxEq(a1, a2, epsilon) &&
-          approxEq(b1, b2, epsilon) && approxEq(c1, c2, epsilon));
-}
-
 }  // namespace
 
 //------------------------------------------------------------------------------
@@ -153,8 +138,10 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto p1 = Polynomial::from_point_with_derivatives(pt1, 0.0, ddx);
     const auto p2 = Polynomial::from_point_with_derivatives(pt2, 0.0, ddx);
 
-    EXPECT_TRUE(polys_near(p1, Polynomial(2.0, 0.89898, 0.10102), epsilon));
-    EXPECT_TRUE(polys_near(p2, Polynomial(2.0, -8.89898, 9.89898), epsilon));
+    EXPECT_TRUE(
+        Polynomial::approx_eq(p1, Polynomial(2.0, 0.89898, 0.10102), epsilon));
+    EXPECT_TRUE(
+        Polynomial::approx_eq(p2, Polynomial(2.0, -8.89898, 9.89898), epsilon));
   }
 
   {
@@ -172,8 +159,10 @@ TEST(Maeve_Geometry_Polynomial, testFromPointAndCriticalLine) {
     const auto p1 = Polynomial::from_point_with_derivatives(pt1, 0.0, ddx);
     const auto p2 = Polynomial::from_point_with_derivatives(pt2, 0.0, ddx);
 
-    EXPECT_TRUE(polys_near(p1, Polynomial(1.0, 1.4641, 0.5359), epsilon));
-    EXPECT_TRUE(polys_near(p2, Polynomial(1.0, -5.4641, 7.4641), epsilon));
+    EXPECT_TRUE(
+        Polynomial::approx_eq(p1, Polynomial(1.0, 1.4641, 0.5359), epsilon));
+    EXPECT_TRUE(
+        Polynomial::approx_eq(p2, Polynomial(1.0, -5.4641, 7.4641), epsilon));
   }
 }
 
