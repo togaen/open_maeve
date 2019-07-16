@@ -130,6 +130,11 @@ class Interval {
       return os << "{}";
     }
 
+    // Improve readability.
+    if (interval == Interval::max_representable_reals()) {
+      return os << "{\"min\": REAL_MIN, \"max\": REAL_MAX}";
+    }
+
     return os << "{\"min\": " << Interval::min(interval)
               << ", \"max\": " << Interval::max(interval) << "}";
   }
