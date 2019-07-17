@@ -1,22 +1,27 @@
 library("rjson")
+# json_data <- fromJSON(file='~/Desktop/test.json')
 
 parabola <- function(a, b, c, value) {
   return(a * value * value + b * value + c);
 }
 
 plot_connector <- function(legend_x, legend_y, connector) {
-  x = seq(connector$switching_times[1], connector$switching_times[4], 0.01)
+  t1 = connector$parabolic_segments[[1]]$domain$min
+  t2 = connector$parabolic_segments[[2]]$domain$min
+  t3 = connector$parabolic_segments[[3]]$domain$min
+  t4 = connector$parabolic_segments[[3]]$domain$max
+  x = seq(t1, t4, 0.01)
   y = c();
   
   for (t in x) {
-    if (t < connector$switching_times[2]) {
-      y = c(y, parabola(connector$parabola_coefficients[[1]]$a,connector$parabola_coefficients[[1]]$b, connector$parabola_coefficients[[1]]$c, t))
+    if (t < t2) {
+      y = c(y, parabola(connector$parabolic_segments[[1]]$a,connector$parabolic_segments[[1]]$b, connector$parabolic_segments[[1]]$c, t))
     }
-    else if (t < connector$switching_times[3]) {
-      y = c(y, parabola(connector$parabola_coefficients[[2]]$a,connector$parabola_coefficients[[2]]$b, connector$parabola_coefficients[[2]]$c, t))
+    else if (t < t3) {
+      y = c(y, parabola(connector$parabolic_segments[[2]]$a,connector$parabolic_segments[[2]]$b, connector$parabolic_segments[[2]]$c, t))
     }
     else {
-      y = c(y, parabola(connector$parabola_coefficients[[3]]$a,connector$parabola_coefficients[[3]]$b, connector$parabola_coefficients[[3]]$c, t))
+      y = c(y, parabola(connector$parabolic_segments[[3]]$a,connector$parabolic_segments[[3]]$b, connector$parabolic_segments[[3]]$c, t))
     }
   }
 
