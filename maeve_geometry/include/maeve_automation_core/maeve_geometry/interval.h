@@ -132,13 +132,24 @@ class Interval {
       return os << "{}";
     }
 
-    // Improve readability.
-    if (interval == Interval::max_representable_reals()) {
-      return os << "{\"min\": REAL_MIN, \"max\": REAL_MAX}";
-    }
+    const auto readable_extremum = [](const T& val) {
+      if (val == std::numeric_limits<T>::lowest()) {
+        return std::string("REAL_MIN");
+      }
+      if (val == std::numeric_limits<T>::max()) {
+        return std::string("REAL_MAX");
+      }
 
-    return os << "{\"min\": " << Interval::min(interval)
-              << ", \"max\": " << Interval::max(interval) << "}";
+      std::stringstream ss;
+      ss.setf(std::ios::fixed, std::ios::floatfield);
+      ss.precision(PRECISION);
+      ss << val;
+      return ss.str();
+    };
+
+    return os << "{\"min\": " << readable_extremum(Interval::min(interval))
+              << ", \"max\": " << readable_extremum(Interval::max(interval))
+              << "}";
   }
 
   /**
