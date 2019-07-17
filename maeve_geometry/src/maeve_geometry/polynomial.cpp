@@ -365,7 +365,7 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& polynomial) {
   return os << "{\"a\": " << Polynomial::a(polynomial)
             << ", \"b\": " << Polynomial::b(polynomial)
             << ", \"c\": " << Polynomial::c(polynomial)
-            << ", domain: " << Polynomial::get_domain(polynomial) << "}";
+            << ", \"domain\": " << Polynomial::get_domain(polynomial) << "}";
 }
 
 //------------------------------------------------------------------------------

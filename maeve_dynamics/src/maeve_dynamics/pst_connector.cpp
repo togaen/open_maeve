@@ -39,7 +39,7 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 //------------------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
-  os << "\"parabolic_segments\": ["
+  os << "{\"parabolic_segments\": ["
      << PST_Connector::function<PST_Connector::Idx::FIRST>(connector) << ", "
      << PST_Connector::function<PST_Connector::Idx::SECOND>(connector) << ", "
      << PST_Connector::function<PST_Connector::Idx::THIRD>(connector) << "]}";
