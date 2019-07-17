@@ -39,7 +39,7 @@ const auto NaN = std::numeric_limits<double>::quiet_NaN();
 //------------------------------------------------------------------------------
 
 std::ostream& operator<<(std::ostream& os, const PST_Connector& connector) {
-  os << "\"parabola_coefficients\": ["
+  os << "\"parabolic_segments\": ["
      << PST_Connector::function<PST_Connector::Idx::FIRST>(connector) << ", "
      << PST_Connector::function<PST_Connector::Idx::SECOND>(connector) << ", "
      << PST_Connector::function<PST_Connector::Idx::THIRD>(connector) << "]}";
@@ -194,35 +194,6 @@ boost::optional<PST_Connector> PST_Connector::computePLP(
 
   // Done.
   return (C1 ? *C1 : *C2);
-}
-
-//------------------------------------------------------------------------------
-
-template <>
-Interval<double> PST_Connector::domain<PST_Connector::Idx::FIRST>(
-    const PST_Connector& connector) {
-  return Interval<double>(
-      PST_Connector::switching_time<Idx::FIRST>(connector),
-      PST_Connector::switching_time<Idx::SECOND>(connector));
-}
-
-//------------------------------------------------------------------------------
-
-template <>
-Interval<double> PST_Connector::domain<PST_Connector::Idx::SECOND>(
-    const PST_Connector& connector) {
-  return Interval<double>(PST_Connector::switching_time<Idx::SECOND>(connector),
-                          PST_Connector::switching_time<Idx::THIRD>(connector));
-}
-
-//------------------------------------------------------------------------------
-
-template <>
-Interval<double> PST_Connector::domain<PST_Connector::Idx::THIRD>(
-    const PST_Connector& connector) {
-  return Interval<double>(
-      PST_Connector::switching_time<Idx::THIRD>(connector),
-      PST_Connector::switching_time<Idx::FOURTH>(connector));
 }
 
 //------------------------------------------------------------------------------
@@ -445,21 +416,16 @@ const double PST_Connector::switching_time<PST_Connector::Idx::FOURTH>(
 
 //------------------------------------------------------------------------------
 
-bool PST_Connector::switchingTimesNonDecreasing(
-    const PST_Connector& connector) {
-  const auto s1_nondecreasing =
-      (PST_Connector::switching_time<Idx::SECOND>(connector) >=
-       PST_Connector::switching_time<Idx::FIRST>(connector));
+bool PST_Connector::domains_adjacent(const PST_Connector& connector) {
+  const auto& d1 =
+      Polynomial::get_domain(PST_Connector::function<Idx::FIRST>(connector));
+  const auto& d2 =
+      Polynomial::get_domain(PST_Connector::function<Idx::SECOND>(connector));
+  const auto& d3 =
+      Polynomial::get_domain(PST_Connector::function<Idx::THIRD>(connector));
 
-  const auto s2_nondecreasing =
-      (PST_Connector::switching_time<Idx::THIRD>(connector) >=
-       PST_Connector::switching_time<Idx::SECOND>(connector));
-
-  const auto s3_nondecreasing =
-      (PST_Connector::switching_time<Idx::FOURTH>(connector) >=
-       PST_Connector::switching_time<Idx::THIRD>(connector));
-
-  return (s1_nondecreasing && s2_nondecreasing && s3_nondecreasing);
+  return (Interval_d::are_adjacent_ordered(d1, d2) &&
+          Interval_d::are_adjacent_ordered(d2, d3));
 }
 
 //------------------------------------------------------------------------------
@@ -509,7 +475,7 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
   constexpr auto EPS = 1e-5;
 
   // The path values at t1 and at t2 should be equal.
-  return approxEq(s_dot01, s_dot11, EPS) && approxEq(s_dot12, s_dot22, EPS);
+  return (approxEq(s_dot01, s_dot11, EPS) && approxEq(s_dot12, s_dot22, EPS));
 }
 
 //------------------------------------------------------------------------------
@@ -605,8 +571,7 @@ bool PST_Connector::dynamicallyFeasible(
 std::tuple<bool, std::string> PST_Connector::valid(
     const PST_Connector& connector) {
   // Check monotonicity.
-  const auto non_decreasing =
-      PST_Connector::switchingTimesNonDecreasing(connector);
+  const auto adjacent_domains = PST_Connector::domains_adjacent(connector);
 
   // Check connectivity.
   const auto segments_connected = PST_Connector::segmentsConnected(connector);
@@ -623,7 +588,7 @@ std::tuple<bool, std::string> PST_Connector::valid(
 
   // For debugging.
   std::stringstream ss;
-  ss << "non_decreasing: " << non_decreasing
+  ss << "adjacent_domains: " << adjacent_domains
      << ", segments_connected: " << segments_connected
      << ", segments_tangent: " << segments_tangent
      << ", segments_valid: " << segments_valid
@@ -631,7 +596,7 @@ std::tuple<bool, std::string> PST_Connector::valid(
 
   // Done.
   const auto is_valid =
-      (non_decreasing && segments_connected && segments_tangent &&
+      (adjacent_domains && segments_connected && segments_tangent &&
        segments_valid && time_domain_valid);
   return std::make_tuple(is_valid, ss.str());
 }
@@ -708,9 +673,12 @@ boost::optional<PST_Connector> PST_Connector::noExceptionConstructor(
 //------------------------------------------------------------------------------
 
 bool PST_Connector::is_Pminus(const PST_Connector& connector) {
-  const auto P1_domain = PST_Connector::domain<Idx::FIRST>(connector);
-  const auto L_domain = PST_Connector::domain<Idx::SECOND>(connector);
-  const auto P2_domain = PST_Connector::domain<Idx::THIRD>(connector);
+  const auto& P1_domain =
+      Polynomial::get_domain(PST_Connector::function<Idx::FIRST>(connector));
+  const auto& L_domain =
+      Polynomial::get_domain(PST_Connector::function<Idx::SECOND>(connector));
+  const auto& P2_domain =
+      Polynomial::get_domain(PST_Connector::function<Idx::THIRD>(connector));
   const auto is_P =
       (!Interval_d::zero_length(P1_domain) &&
        Interval_d::zero_length(L_domain) && Interval_d::zero_length(P2_domain));
@@ -723,9 +691,12 @@ bool PST_Connector::is_Pminus(const PST_Connector& connector) {
 //------------------------------------------------------------------------------
 
 bool PST_Connector::is_PminusL_0(const PST_Connector& connector) {
-  const auto P1_domain = PST_Connector::domain<Idx::FIRST>(connector);
-  const auto L_domain = PST_Connector::domain<Idx::SECOND>(connector);
-  const auto P2_domain = PST_Connector::domain<Idx::THIRD>(connector);
+  const auto& P1_domain =
+      Polynomial::get_domain(PST_Connector::function<Idx::FIRST>(connector));
+  const auto& L_domain =
+      Polynomial::get_domain(PST_Connector::function<Idx::SECOND>(connector));
+  const auto& P2_domain =
+      Polynomial::get_domain(PST_Connector::function<Idx::THIRD>(connector));
   const auto is_PL = (!Interval_d::zero_length(P1_domain) &&
                       !Interval_d::zero_length(L_domain) &&
                       Interval_d::zero_length(P2_domain));

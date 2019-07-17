@@ -148,7 +148,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       ss << *connector;
       EXPECT_EQ(
           ss.str(),
-          "\"parabola_coefficients\": [{\"a\": -3.00000, \"b\": 21.00000, "
+          "\"parabolic_segments\": [{\"a\": -3.00000, \"b\": 21.00000, "
           "\"c\": -34.00000, domain: {\"min\": 3.00000, \"max\": 3.02778}}, "
           "{\"a\": 0.00000, \"b\": 2.83333, \"c\": -6.49769, domain: {\"min\": "
           "3.02778, \"max\": 4.52778}}, {\"a\": -3.00000, \"b\": 30.00000, "
@@ -173,7 +173,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       ss << *connector;
       EXPECT_EQ(
           ss.str(),
-          "\"parabola_coefficients\": [{\"a\": 2.00000, \"b\": -11.00000, "
+          "\"parabolic_segments\": [{\"a\": 2.00000, \"b\": -11.00000, "
           "\"c\": 17.00000, domain: {\"min\": 3.00000, \"max\": 3.37500}}, "
           "{\"a\": 0.00000, \"b\": 2.50000, \"c\": -5.78125, domain: {\"min\": "
           "3.37500, \"max\": 4.62500}}, {\"a\": 2.00000, \"b\": -16.00000, "
@@ -198,7 +198,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       ss << *connector;
       EXPECT_EQ(
           ss.str(),
-          "\"parabola_coefficients\": [{\"a\": -4.00000, \"b\": 28.00000, "
+          "\"parabolic_segments\": [{\"a\": -4.00000, \"b\": 28.00000, "
           "\"c\": -46.00000, domain: {\"min\": 3.00000, \"max\": 3.21429}}, "
           "{\"a\": 0.00000, \"b\": 2.28571, \"c\": -4.67347, domain: {\"min\": "
           "3.21429, \"max\": 4.71429}}, {\"a\": 3.00000, \"b\": -26.00000, "
@@ -223,7 +223,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       ss << *connector;
       EXPECT_EQ(
           ss.str(),
-          "\"parabola_coefficients\": [{\"a\": 4.00000, \"b\": -24.00000, "
+          "\"parabolic_segments\": [{\"a\": 4.00000, \"b\": -24.00000, "
           "\"c\": 38.00000, domain: {\"min\": 3.00000, \"max\": 3.41107}}, "
           "{\"a\": 0.00000, \"b\": 3.28857, \"c\": -8.54164, domain: {\"min\": "
           "3.41107, \"max\": 4.45190}}, {\"a\": -3.00000, \"b\": 30.00000, "
@@ -248,7 +248,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePLP) {
       ss << *connector;
       EXPECT_EQ(
           ss.str(),
-          "\"parabola_coefficients\": [{\"a\": 4.00000, \"b\": 0.00000, \"c\": "
+          "\"parabolic_segments\": [{\"a\": 4.00000, \"b\": 0.00000, \"c\": "
           "0.00000, domain: {\"min\": 0.00000, \"max\": 0.12888}}, {\"a\": "
           "0.00000, \"b\": 1.03100, \"c\": -0.06644, domain: {\"min\": "
           "0.12888, \"max\": 4.82817}}, {\"a\": -3.00000, \"b\": 30.00000, "
@@ -293,7 +293,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
       ss << *connector;
       EXPECT_EQ(
           ss.str(),
-          "\"parabola_coefficients\": [{\"a\": 1.00000, \"b\": -6.00000, "
+          "\"parabolic_segments\": [{\"a\": 1.00000, \"b\": -6.00000, "
           "\"c\": 11.00000, domain: {\"min\": 3.00000, \"max\": 4.00000}}, "
           "{\"a\": 0.00000, \"b\": 2.00000, \"c\": -5.00000, domain: {\"min\": "
           "4.00000, \"max\": 4.00000}}, {\"a\": -1.00000, \"b\": 10.00000, "
@@ -334,7 +334,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePP) {
       ss << *connector;
       EXPECT_EQ(
           ss.str(),
-          "\"parabola_coefficients\": [{\"a\": 1.00000, \"b\": 0.00000, \"c\": "
+          "\"parabolic_segments\": [{\"a\": 1.00000, \"b\": 0.00000, \"c\": "
           "0.00000, domain: {\"min\": 0.00000, \"max\": 1.00000}}, {\"a\": "
           "0.00000, \"b\": 2.00000, \"c\": -1.00000, domain: {\"min\": "
           "1.00000, \"max\": 1.00000}}, {\"a\": -1.00000, \"b\": 4.00000, "
@@ -414,7 +414,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
     ss << *connector;
     EXPECT_EQ(
         ss.str(),
-        "\"parabola_coefficients\": [{\"a\": 4.00000, \"b\": -8.00000, \"c\": "
+        "\"parabolic_segments\": [{\"a\": 4.00000, \"b\": -8.00000, \"c\": "
         "7.00000, domain: {\"min\": 1.00000, \"max\": 1.00000}}, {\"a\": "
         "0.00000, \"b\": 0.00000, \"c\": 3.00000, domain: {\"min\": 1.00000, "
         "\"max\": 1.00000}}, {\"a\": 4.00000, \"b\": -8.00000, \"c\": 7.00000, "
@@ -435,7 +435,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputePL_0P) {
     ss << *connector;
     EXPECT_EQ(
         ss.str(),
-        "\"parabola_coefficients\": [{\"a\": 4.00000, \"b\": 0.00000, \"c\": "
+        "\"parabolic_segments\": [{\"a\": 4.00000, \"b\": 0.00000, \"c\": "
         "0.00000, domain: {\"min\": 0.00000, \"max\": -0.00000}}, {\"a\": "
         "0.00000, \"b\": 0.00000, \"c\": 0.00000, domain: {\"min\": -0.00000, "
         "\"max\": 9.29289}}, {\"a\": 4.00000, \"b\": -74.34315, \"c\": "
@@ -458,7 +458,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     std::stringstream ss;
     ss << *connector;
     const auto expected_str = std::string(
-        "\"parabola_coefficients\": [{\"a\": 0.00000, \"b\": 1.00000, \"c\": "
+        "\"parabolic_segments\": [{\"a\": 0.00000, \"b\": 1.00000, \"c\": "
         "0.00000, domain: {\"min\": 0.00000, \"max\": 0.00000}}, {\"a\": "
         "0.00000, \"b\": 1.00000, \"c\": 0.00000, domain: {\"min\": 0.00000, "
         "\"max\": 5.00000}}, {\"a\": 4.00000, \"b\": -39.00000, \"c\": "
@@ -478,7 +478,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     std::stringstream ss;
     ss << *connector;
     const auto expected_str = std::string(
-        "\"parabola_coefficients\": [{\"a\": 0.00000, \"b\": 0.77709, \"c\": "
+        "\"parabolic_segments\": [{\"a\": 0.00000, \"b\": 0.77709, \"c\": "
         "1.66874, domain: {\"min\": 3.00000, \"max\": 3.00000}}, {\"a\": "
         "0.00000, \"b\": 0.77709, \"c\": 1.66874, domain: {\"min\": 3.00000, "
         "\"max\": 7.47214}}, {\"a\": 4.00000, \"b\": -59.00000, \"c\": "
@@ -498,7 +498,7 @@ TEST(Maeve_Dynamics_PST_Connector, testComputeLP) {
     std::stringstream ss;
     ss << *connector;
     const auto expected_str = std::string(
-        "\"parabola_coefficients\": [{\"a\": 0.00000, \"b\": 1.01282, \"c\": "
+        "\"parabolic_segments\": [{\"a\": 0.00000, \"b\": 1.01282, \"c\": "
         "0.96153, domain: {\"min\": 3.00000, \"max\": 3.00000}}, {\"a\": "
         "0.00000, \"b\": 1.01282, \"c\": 0.96153, domain: {\"min\": 3.00000, "
         "\"max\": 7.87340}}, {\"a\": -4.00000, \"b\": 64.00000, \"c\": "
@@ -525,6 +525,28 @@ TEST(Maeve_Dynamics_PST_Connector, testEndPoints) {
 //------------------------------------------------------------------------------
 
 TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
+  {  // Test that switching times are non decreasing *and* domains are connected
+    const auto t2 = 1.707106709480286;
+    const auto t3 = 3.121320247650146;
+    const auto P1 = Polynomial(1.0, 0.0, 0.0);
+    const auto L = Polynomial::from_point_with_derivatives(
+        Eigen::Vector2d(t2, P1(t2)), Polynomial::dx(P1, t2), 0.0,
+        Interval_d(t2, t2));
+    const auto P3 = Polynomial(-2.0, 10.242640687119284, -8.742641037942761,
+                               Interval_d(t2, t3));
+
+    auto exception_thrown = false;
+    try {
+      auto pc =
+          PST_Connector({P1, L, P3}, PST_Connector::SpeedConstraint::NONE);
+      std::cerr << "should throw: " << pc << std::endl;
+    } catch (const std::exception& e) {
+      std::cout << "Exception correctly thrown: " << e.what() << std::endl;
+      exception_thrown = true;
+    }
+    EXPECT_TRUE(exception_thrown);
+  }
+
   {
     auto exception_thrown = false;
     try {
@@ -533,7 +555,7 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
           {Polynomial(2.0, 1.0, 0.0), Polynomial(0.0, 2.39232, -0.24232),
            Polynomial(-2.0, 3.78464, -0.48464)});
     } catch (const std::exception& e) {
-      std::cout << "Exception caught: " << e.what() << std::endl;
+      std::cout << "Exception correctly thrown: " << e.what() << std::endl;
       exception_thrown = true;
     }
     EXPECT_TRUE(exception_thrown);
@@ -545,7 +567,7 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
     try {
       auto pc = PST_Connector({0.0, 1.0, 3.0, 2.0}, {p, p, p});
     } catch (const std::exception& e) {
-      std::cout << "Exception caught: " << e.what() << std::endl;
+      std::cout << "Exception correctly thrown: " << e.what() << std::endl;
       exception_thrown = true;
     }
     EXPECT_TRUE(exception_thrown);

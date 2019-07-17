@@ -306,18 +306,6 @@ class PST_Connector {
   enum class Idx { FIRST, SECOND, THIRD, FOURTH };
 
   /**
-   * @brief Get an interval representation of a segment's domain.
-   *
-   * @tparam I The segment index desired.
-   *
-   * @param connector The connecting trajectory.
-   *
-   * @return An interval representing the segment's domain.
-   */
-  template <Idx I>
-  static Interval<double> domain(const PST_Connector& connector);
-
-  /**
    * @brief Get an interval representation of a segment's range.
    *
    * @tparam I The segment index desired.
@@ -341,6 +329,16 @@ class PST_Connector {
   template <Idx I>
   static const Polynomial& function(const PST_Connector& connector);
 
+  /**
+   * @brief Convenience method for retrieving all switching times as doubles.
+   *
+   * @param connector The connecting trajectory.
+   *
+   * @return A tuple of ordered switching times.
+   */
+  static std::tuple<double, double, double, double> switchingTimes(
+      const PST_Connector& connector);
+
  private:
   /**
    * @brief Get the desired switching time.
@@ -355,13 +353,12 @@ class PST_Connector {
   static const double switching_time(const PST_Connector& connector);
 
   /**
-   * @brief Check whether switching times are strictly non-decreasing.
+   * @brief Test whether the time domains are adjacent in order, i.e., overlap
+   * exactly at their boundaries.
    *
-   * @param connector The connecting trajectory to check.
-   *
-   * @return True if the switching times are non-decreasing; otherwise false.
+   * @return True iff time domains are adjacent.
    */
-  static bool switchingTimesNonDecreasing(const PST_Connector& connector);
+  static bool domains_adjacent(const PST_Connector& connector);
 
   /**
    * @brief Check whether the function segments of the connector intersect at
@@ -465,16 +462,6 @@ class PST_Connector {
   static bool segmentActive(const PST_Connector& connector);
 
   /**
-   * @brief Convenience method for retrieving all switching times as doubles.
-   *
-   * @param connector The connecting trajectory.
-   *
-   * @return A tuple of ordered switching times.
-   */
-  static std::tuple<double, double, double, double> switchingTimes(
-      const PST_Connector& connector);
-
-  /**
    * @brief Perform basic checks for validity of the connecting trajectory.
    *
    * In order to be valid, the following are necessary conditions:
@@ -529,7 +516,8 @@ bool PST_Connector::boundedFirstDerivatives(const PST_Connector& connector,
   const auto& function = PST_Connector::function<I>(connector);
 
   // Capture the time domain.
-  const auto domain = PST_Connector::domain<I>(connector);
+  const auto& domain =
+      Polynomial::get_domain(PST_Connector::function<I>(connector));
 
   // Compute dx at domain bounds.
   const auto s_dot1 = Polynomial::dx(function, Interval<double>::min(domain));
@@ -567,7 +555,7 @@ bool PST_Connector::boundedSecondDerivatives(const PST_Connector& connector,
 
 template <PST_Connector::Idx I>
 bool PST_Connector::segmentActive(const PST_Connector& connector) {
-  const auto D = PST_Connector::domain<I>(connector);
+  const auto& D = Polynomial::get_domain(PST_Connector::function<I>(connector));
   return !Interval<double>::zero_length(D);
 }
 
@@ -576,28 +564,11 @@ bool PST_Connector::segmentActive(const PST_Connector& connector) {
 template <PST_Connector::Idx I>
 Interval<double> PST_Connector::range(const PST_Connector& connector) {
   const auto& f = PST_Connector::function<I>(connector);
-  const auto d = PST_Connector::domain<I>(connector);
+  const auto& d = Polynomial::get_domain(PST_Connector::function<I>(connector));
   const auto r1 = f(Interval<double>::min(d));
   const auto r2 = f(Interval<double>::max(d));
   return Interval<double>(std::min(r1, r2), std::max(r1, r2));
 }
-
-/**
- * Specializations for computing segment domain.
- * @{
- */
-template <>
-Interval<double> PST_Connector::domain<PST_Connector::Idx::FIRST>(
-    const PST_Connector& connector);
-
-template <>
-Interval<double> PST_Connector::domain<PST_Connector::Idx::SECOND>(
-    const PST_Connector& connector);
-
-template <>
-Interval<double> PST_Connector::domain<PST_Connector::Idx::THIRD>(
-    const PST_Connector& connector);
-/** @} */
 
 /**
  * Specializations for getting segment functions.
