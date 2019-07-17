@@ -389,6 +389,12 @@ class Interval {
   static Interval grow(const Interval& interval, const T& margin);
 
   /**
+   * @brief Convenience factory method for building an interval:
+   *     [min(b1, b2), max(b1, b2)]
+   */
+  static Interval from_unordered_bounds(const T& b1, const T& b2);
+
+  /**
    * @brief Factory method to build the set of affinely extended reals.
    *
    * @return [-\infty, +\infty]
@@ -747,6 +753,13 @@ Interval<T> Interval<T>::grow(const Interval& interval, const T& margin) {
   const T min = (Interval::min(interval) - margin);
   const T max = (Interval::max(interval) + margin);
   return Interval(min, max);
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+Interval<T> Interval<T>::from_unordered_bounds(const T& b1, const T& b2) {
+  return Interval(std::min(b1, b2), std::max(b1, b2));
 }
 
 //------------------------------------------------------------------------------

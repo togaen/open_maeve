@@ -37,6 +37,14 @@ const auto epsilon = 1e-5;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Interval, from_unordered_bounds) {
+  ASSERT_NO_THROW(
+      { const auto i = Interval_d::from_unordered_bounds(1.0, 0.0); });
+  EXPECT_EQ(Interval_d(0.0, 1.0), Interval_d::from_unordered_bounds(1.0, 0.0));
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, are_adjacent_ordered) {
   const auto i1 = Interval_d(-1.0, 1.0);
   const auto i2 = Interval_d(1.0, 2.0);
