@@ -246,6 +246,14 @@ class Interval {
   static T nearest_value(const Interval& interval, const T& value);
 
   /**
+   * @brief Test whether the given two intervals share a boundary in the order
+   * they are given
+   *
+   * @note If either interval is empty, this returns false.
+   */
+  static bool are_adjacent_ordered(const Interval& i1, const Interval& i2);
+
+  /**
    * @brief Whether the interval is empty or not.
    *
    * @note Emptiness refers to whether the interval contains any points and is
@@ -558,6 +566,19 @@ T Interval<T>::nearest_value(const Interval& interval, const T& value) {
   const auto min_is_nearer = (distance_from_min < distance_from_max);
 
   return (min_is_nearer ? Interval::min(interval) : Interval::max(interval));
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+bool Interval<T>::are_adjacent_ordered(const Interval& i1, const Interval& i2) {
+  const auto i1_empty = Interval::empty(i1);
+  const auto i2_empty = Interval::empty(i2);
+  if (i1_empty || i2_empty) {
+    return false;
+  }
+
+  return (Interval::max(i1) == Interval::min(i2));
 }
 
 //------------------------------------------------------------------------------

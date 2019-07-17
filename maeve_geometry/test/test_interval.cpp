@@ -37,6 +37,31 @@ const auto epsilon = 1e-5;
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Interval, are_adjacent_ordered) {
+  const auto i1 = Interval_d(-1.0, 1.0);
+  const auto i2 = Interval_d(1.0, 2.0);
+  const auto i_empty = Interval_d();
+  const auto i4 = Interval_d(3.0, 4.0);
+  const auto i_reals = Interval_d::max_representable_reals();
+  const auto i5 = Interval_d(1.70711, 1.70711);
+
+  EXPECT_TRUE(Interval_d::are_adjacent_ordered(i1, i2));
+  EXPECT_FALSE(Interval_d::are_adjacent_ordered(i2, i1));
+
+  EXPECT_FALSE(Interval_d::are_adjacent_ordered(i_empty, i_empty));
+
+  EXPECT_FALSE(Interval_d::are_adjacent_ordered(i1, i_empty));
+  EXPECT_FALSE(Interval_d::are_adjacent_ordered(i_empty, i1));
+
+  EXPECT_FALSE(Interval_d::are_adjacent_ordered(i2, i4));
+  EXPECT_FALSE(Interval_d::are_adjacent_ordered(i4, i2));
+
+  EXPECT_FALSE(Interval_d::are_adjacent_ordered(i5, i_reals));
+  EXPECT_FALSE(Interval_d::are_adjacent_ordered(i_reals, i5));
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, approx_eq) {
   const auto i1 = Interval_d(-1.0, 1.0);
   const auto i2 = Interval_d(-1.0 + 0.5 * epsilon, 1.0 + 0.5 * epsilon);
