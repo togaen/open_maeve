@@ -46,7 +46,7 @@ Polynomial::Polynomial(const double a, const double b, const double c,
   if (!Polynomial::is_y_axis(*this)) {
     if (!Polynomial::valid(*this)) {
       std::stringstream ss;
-      ss << "Attempted to consruct an invalid polynomial: " << *this;
+      ss << "Attempted to construct an invalid polynomial: " << *this;
       throw std::domain_error(ss.str());
     }
   }
