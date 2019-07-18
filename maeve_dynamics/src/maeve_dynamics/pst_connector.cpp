@@ -693,6 +693,34 @@ PST_Connector PST_Connector::P(const Polynomial& P_raw,
 
 //------------------------------------------------------------------------------
 
+PST_Connector PST_Connector::L(const Polynomial& L_raw,
+                               const Interval_d& connector_domain,
+                               const SpeedConstraint speed_constraint) {
+  const auto L = Polynomial(L_raw, connector_domain);
+
+  const auto t_initial = Interval_d::min(connector_domain);
+  const auto p_initial = L(t_initial);
+  const Eigen::Vector2d initial_point(t_initial, p_initial);
+
+  const auto t_final = Interval_d::max(connector_domain);
+  const auto p_final = L(t_final);
+  const Eigen::Vector2d terminal_point(t_final, p_final);
+
+  const auto P_dt = Polynomial::dx(L, t_final);
+  const auto P_ddt = 1.0;
+  const auto P1_domain = Interval_d(t_initial, t_initial);
+  const auto P1 = Polynomial::from_point_with_derivatives(initial_point, P_dt,
+                                                          P_ddt, P1_domain);
+
+  const auto P2_domain = Interval_d(t_final, t_final);
+  const auto P2 = Polynomial::from_point_with_derivatives(terminal_point, P_dt,
+                                                          P_ddt, P2_domain);
+
+  return PST_Connector({P1, L, P2}, speed_constraint);
+}
+
+//------------------------------------------------------------------------------
+
 PST_Connector PST_Connector::Pminus_L0(const Polynomial& P_raw,
                                        const Interval_d& connector_domain,
                                        const SpeedConstraint speed_constraint) {
@@ -732,16 +760,42 @@ PST_Connector PST_Connector::Pminus_L0(const Polynomial& P_raw,
 
 //------------------------------------------------------------------------------
 
-bool PST_Connector::is_Pminus(const PST_Connector& connector) {
+bool PST_Connector::is_P(const PST_Connector& connector) {
   const auto P1_active = PST_Connector::segmentActive<Idx::FIRST>(connector);
   const auto L_active = PST_Connector::segmentActive<Idx::SECOND>(connector);
   const auto P2_active = PST_Connector::segmentActive<Idx::THIRD>(connector);
   const auto is_P = (P1_active && !L_active && !P2_active);
+  return is_P;
+}
 
+//------------------------------------------------------------------------------
+
+bool PST_Connector::is_Pminus(const PST_Connector& connector) {
+  const auto is_P = PST_Connector::is_P(connector);
   const auto P1_is_minus =
       (PST_Connector::initialAcceleration(connector) < 0.0);
-
   return (is_P && P1_is_minus);
+}
+
+//------------------------------------------------------------------------------
+
+bool PST_Connector::is_L(const PST_Connector& connector) {
+  const auto P1_active = PST_Connector::segmentActive<Idx::FIRST>(connector);
+  const auto L_active = PST_Connector::segmentActive<Idx::SECOND>(connector);
+  const auto P2_active = PST_Connector::segmentActive<Idx::THIRD>(connector);
+  const auto is_L = (!P1_active && L_active && !P2_active);
+  return is_L;
+}
+
+//------------------------------------------------------------------------------
+
+bool PST_Connector::is_L0(const PST_Connector& connector) {
+  const auto is_L = PST_Connector::is_L(connector);
+
+  const auto L = PST_Connector::function<Idx::SECOND>(connector);
+  const auto is_zero_slope = Polynomial::is_constant(L);
+
+  return (is_L && is_zero_slope);
 }
 
 //------------------------------------------------------------------------------

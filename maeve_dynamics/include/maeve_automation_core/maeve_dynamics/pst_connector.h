@@ -126,6 +126,15 @@ class PST_Connector {
                          const SpeedConstraint speed_constraint);
 
   /**
+   * @brief Build a connector that is a single active L segment.
+   *
+   * TODO(me): unit tests
+   */
+  static PST_Connector L(const Polynomial& L,
+                         const Interval_d& connector_domain,
+                         const SpeedConstraint speed_constraint);
+
+  /**
    * @brief Build a connector that decelerates to a stop.
    *
    * TODO(me): unit tests
@@ -135,7 +144,10 @@ class PST_Connector {
                                  const SpeedConstraint speed_constraint);
 
   /** @brief Check the connector taxonomy. @{ */
+  static bool is_P(const PST_Connector& connector);
   static bool is_Pminus(const PST_Connector& connector);
+  static bool is_L(const PST_Connector& connector);
+  static bool is_L0(const PST_Connector& connector);
   static bool is_PminusL_0(const PST_Connector& connector);
   /** @} */
 
