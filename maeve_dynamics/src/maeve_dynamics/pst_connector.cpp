@@ -445,7 +445,7 @@ bool PST_Connector::segmentsConnected(const PST_Connector& connector) {
 
   // Absolute error for doing approximate floating point comparisons.
   // TODO(me): This should be a parameter.
-  constexpr auto EPS = 1e-5;
+  constexpr auto EPS = 1e-4;
 
   // The path values at t1 and at t2 should be equal.
   const auto connected = approxEq(s01, s11, EPS) && approxEq(s12, s22, EPS);
