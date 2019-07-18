@@ -628,10 +628,10 @@ const Polynomial& PST_Connector::function<PST_Connector::Idx::THIRD>(
  *
  * The switching times are ordered as follows:
  *
- *   0: Trajectory begins, switches to initial parabolic portion
- *   1: Trajectory switches to linear portion
- *   2: Trajectory switches to second parabolic portion
- *   3: Trajectory ends
+ *   1: Trajectory begins, switches to initial parabolic portion
+ *   2: Trajectory switches to linear portion
+ *   3: Trajectory switches to second parabolic portion
+ *   4: Trajectory ends
  *
  * @{
  */
