@@ -570,29 +570,32 @@ bool PST_Connector::dynamicallyFeasible(
 
 std::tuple<bool, std::string> PST_Connector::valid(
     const PST_Connector& connector) {
-  // Check monotonicity.
-  const auto adjacent_domains = PST_Connector::domains_adjacent(connector);
-
-  // Check connectivity.
-  const auto segments_connected = PST_Connector::segmentsConnected(connector);
-
-  // Check tangency.
-  const auto segments_tangent = PST_Connector::segmentsTangent(connector);
-
   // Check validity.
   const auto segments_valid = PST_Connector::validSegments(connector);
 
+  // Check monotonicity.
+  const auto adjacent_domains =
+      (segments_valid && PST_Connector::domains_adjacent(connector));
+
   // Check time domain.
   const auto time_domain_valid =
-      PST_Connector::timeDomainNonZeroMeasure(connector);
+      (adjacent_domains && PST_Connector::timeDomainNonZeroMeasure(connector));
+
+  // Check connectivity.
+  const auto segments_connected =
+      (adjacent_domains && PST_Connector::segmentsConnected(connector));
+
+  // Check tangency.
+  const auto segments_tangent =
+      (segments_connected && PST_Connector::segmentsTangent(connector));
 
   // For debugging.
   std::stringstream ss;
-  ss << "adjacent_domains: " << adjacent_domains
+  ss << "segments_valid: " << segments_valid
+     << ", adjacent_domains: " << adjacent_domains
+     << ", time_domain_valid: " << time_domain_valid
      << ", segments_connected: " << segments_connected
-     << ", segments_tangent: " << segments_tangent
-     << ", segments_valid: " << segments_valid
-     << ", time_domain_valid: " << time_domain_valid;
+     << ", segments_tangent: " << segments_tangent;
 
   // Done.
   const auto is_valid =
