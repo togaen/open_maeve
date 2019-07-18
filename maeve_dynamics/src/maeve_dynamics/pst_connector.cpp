@@ -730,15 +730,11 @@ PST_Connector PST_Connector::Pminus_L0(const Polynomial& P_raw,
 //------------------------------------------------------------------------------
 
 bool PST_Connector::is_Pminus(const PST_Connector& connector) {
-  const auto& P1_domain =
-      Polynomial::get_domain(PST_Connector::function<Idx::FIRST>(connector));
-  const auto& L_domain =
-      Polynomial::get_domain(PST_Connector::function<Idx::SECOND>(connector));
-  const auto& P2_domain =
-      Polynomial::get_domain(PST_Connector::function<Idx::THIRD>(connector));
-  const auto is_P =
-      (!Interval_d::zero_length(P1_domain) &&
-       Interval_d::zero_length(L_domain) && Interval_d::zero_length(P2_domain));
+  const auto P1_active = PST_Connector::segmentActive<Idx::FIRST>(connector);
+  const auto L_active = PST_Connector::segmentActive<Idx::SECOND>(connector);
+  const auto P2_active = PST_Connector::segmentActive<Idx::THIRD>(connector);
+  const auto is_P = (P1_active && !L_active && !P2_active);
+
   const auto P1_is_minus =
       (PST_Connector::initialAcceleration(connector) < 0.0);
 
@@ -748,21 +744,13 @@ bool PST_Connector::is_Pminus(const PST_Connector& connector) {
 //------------------------------------------------------------------------------
 
 bool PST_Connector::is_PminusL_0(const PST_Connector& connector) {
-  const auto& P1_domain =
-      Polynomial::get_domain(PST_Connector::function<Idx::FIRST>(connector));
-  const auto& L_domain =
-      Polynomial::get_domain(PST_Connector::function<Idx::SECOND>(connector));
-  const auto& P2_domain =
-      Polynomial::get_domain(PST_Connector::function<Idx::THIRD>(connector));
-  const auto is_PL = (!Interval_d::zero_length(P1_domain) &&
-                      !Interval_d::zero_length(L_domain) &&
-                      Interval_d::zero_length(P2_domain));
+  const auto P1_active = PST_Connector::segmentActive<Idx::FIRST>(connector);
+  const auto L_active = PST_Connector::segmentActive<Idx::SECOND>(connector);
+  const auto P2_active = PST_Connector::segmentActive<Idx::THIRD>(connector);
+  const auto is_PL = (P1_active && L_active && !P2_active);
+
   const auto P1_is_minus =
       (PST_Connector::initialAcceleration(connector) < 0.0);
-
-  const auto L = PST_Connector::function<Idx::SECOND>(connector);
-  double a, b, c;
-  std::tie(a, b, c) = Polynomial::coefficients(L);
 
   return (is_PL && P1_is_minus);
 }
