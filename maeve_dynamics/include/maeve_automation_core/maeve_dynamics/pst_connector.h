@@ -76,6 +76,8 @@ class PST_Connector {
   /**
    * @brief Constructor: explicitly initialize the connector.
    *
+   * TODO(me): get rid of default parameter value
+   *
    * @note This constructor checks for validity of the arguments and throws an
    * exception if they do not meet basic necessary conditions.
    */
@@ -86,6 +88,8 @@ class PST_Connector {
   /**
    * @brief Overload for legacy instantiations the specify switching times
    * explicitly.
+   *
+   * TODO(me): get rid of default parameter value
    *
    * @note The specified switching time override the domains of the polynomials
    * in the 'functions' array.
@@ -111,6 +115,24 @@ class PST_Connector {
   static boost::optional<PST_Connector> noExceptionConstructor(
       const std::array<double, 4>& switching_times,
       const std::array<Polynomial, 3>& functions) noexcept;
+
+  /**
+   * @brief Build a connector that is a single active P segment.
+   *
+   * TODO(me): unit tests
+   */
+  static PST_Connector P(const Polynomial& P,
+                         const Interval_d& connector_domain,
+                         const SpeedConstraint speed_constraint);
+
+  /**
+   * @brief Build a connector that decelerates to a stop.
+   *
+   * TODO(me): unit tests
+   */
+  static PST_Connector Pminus_L0(const Polynomial& P,
+                                 const Interval_d& connector_domain,
+                                 const SpeedConstraint speed_constraint);
 
   /** @brief Check the connector taxonomy. @{ */
   static bool is_Pminus(const PST_Connector& connector);

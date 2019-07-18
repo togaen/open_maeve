@@ -672,6 +672,63 @@ boost::optional<PST_Connector> PST_Connector::noExceptionConstructor(
 
 //------------------------------------------------------------------------------
 
+PST_Connector PST_Connector::P(const Polynomial& P_raw,
+                               const Interval_d& connector_domain,
+                               const SpeedConstraint speed_constraint) {
+  const auto P = Polynomial(P_raw, connector_domain);
+  const auto t_final = Interval_d::max(connector_domain);
+  const auto p_final = P(t_final);
+  const Eigen::Vector2d terminal_point(t_final, p_final);
+
+  constexpr auto L_ddx = 0.0;
+  const auto L_dx = Polynomial::dx(P, t_final);
+  const auto noop_domain = Interval_d(t_final, t_final);
+  const auto L_noop = Polynomial::from_point_with_derivatives(
+      terminal_point, L_dx, L_ddx, noop_domain);
+  return PST_Connector({P, L_noop, L_noop}, speed_constraint);
+}
+
+//------------------------------------------------------------------------------
+
+PST_Connector PST_Connector::Pminus_L0(const Polynomial& P_raw,
+                                       const Interval_d& connector_domain,
+                                       const SpeedConstraint speed_constraint) {
+  const auto a_is_nonnegative = (Polynomial::a(P_raw) >= 0.0);
+  if (a_is_nonnegative) {
+    std::stringstream ss;
+    ss << "Cannot construct Pminus_L0. The given function has nonnegative "
+          "quadratic term.";
+    throw std::runtime_error(ss.str());
+  }
+
+  const auto critical_point = Polynomial::uniqueCriticalPoint(P_raw);
+  if (!critical_point) {
+    std::stringstream ss;
+    ss << "Cannot construct Pminus_L0. The given function " << P_raw
+       << " has critical point outside the function domain.";
+    throw std::runtime_error(ss.str());
+  }
+
+  const auto& P_raw_domain = Polynomial::get_domain(P_raw);
+  const auto P_domain =
+      Interval_d(Interval_d::min(connector_domain), critical_point->x());
+  const auto P = Polynomial(P_raw, P_domain);
+
+  const auto L_domain =
+      Interval_d(critical_point->x(), Interval_d::max(connector_domain));
+  constexpr auto L_dx = 0.0;
+  constexpr auto L_ddx = 0.0;
+  const auto L = Polynomial::from_point_with_derivatives(*critical_point, L_dx,
+                                                         L_ddx, L_domain);
+
+  const auto noop_domain =
+      Interval_d(Interval_d::max(L_domain), Interval_d::max(L_domain));
+  const auto L_noop = Polynomial(L, noop_domain);
+  return PST_Connector({P, L, L_noop}, speed_constraint);
+}
+
+//------------------------------------------------------------------------------
+
 bool PST_Connector::is_Pminus(const PST_Connector& connector) {
   const auto& P1_domain =
       Polynomial::get_domain(PST_Connector::function<Idx::FIRST>(connector));
