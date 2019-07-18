@@ -390,6 +390,8 @@ class PST_Connector {
    * @brief Test whether the time domains are adjacent in order, i.e., overlap
    * exactly at their boundaries.
    *
+   * TODO(me): return an error code instead of bool
+   *
    * @return True iff time domains are adjacent.
    */
   static bool domains_adjacent(const PST_Connector& connector);
@@ -399,6 +401,8 @@ class PST_Connector {
    * the switching times.
    *
    * @note An approximate floating point comparison is used.
+   *
+   * TODO(me): return an error code instead of bool
    *
    * @param connector The connecting trajectory to check.
    *
@@ -412,6 +416,8 @@ class PST_Connector {
    *
    * @note An approximate floating point comparison is used.
    *
+   * TODO(me): return an error code instead of bool
+   *
    * @param connector The connecting trajectory to check.
    *
    * @return True if the segments have equal first derivatives; otherwise false.
@@ -420,6 +426,8 @@ class PST_Connector {
 
   /**
    * @brief Check whether all segments have valid coefficients.
+   *
+   * TODO(me): return an error code instead of bool
    *
    * @param connector The connecting trajectory to check.
    *

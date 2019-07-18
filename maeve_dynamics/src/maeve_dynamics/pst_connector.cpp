@@ -448,7 +448,14 @@ bool PST_Connector::segmentsConnected(const PST_Connector& connector) {
   constexpr auto EPS = 1e-5;
 
   // The path values at t1 and at t2 should be equal.
-  return approxEq(s01, s11, EPS) && approxEq(s12, s22, EPS);
+  const auto connected = approxEq(s01, s11, EPS) && approxEq(s12, s22, EPS);
+#if 0
+  if (!connected) {
+    std::cerr << "s01: " << s01 << ", s11: " << s11 << ", s12: " << s12
+              << ", s22: " << s22 << std::endl;
+  }
+#endif
+  return connected;
 }
 
 //------------------------------------------------------------------------------
