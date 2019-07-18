@@ -35,6 +35,8 @@ namespace maeve_automation_core {
 /**
  * @brief This class defines a functor that evaluates a polynomial.
  *
+ * TODO(me): make sure all methods respect domain information
+ *
  * @note The class only supports polynomials up to order 2.
  */
 class Polynomial {
@@ -131,7 +133,8 @@ class Polynomial {
    * @param polynomial The polynomial.
    *
    * @return A nullable object of the unique critical point of the polynomial,
-   * or boost::none if no such point exists.
+   * or boost::none if no such point exists, or if the critical point is outside
+   * the polynomial's domain.
    */
   static boost::optional<Eigen::Vector2d> uniqueCriticalPoint(
       const Polynomial& polynomial);

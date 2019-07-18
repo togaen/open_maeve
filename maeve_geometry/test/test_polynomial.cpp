@@ -189,6 +189,20 @@ TEST(Maeve_Geometry_Polynomial, testUniqueCriticalPoint) {
     EXPECT_NEAR(c->y(), p(c->x()), epsilon);
     EXPECT_NEAR(Polynomial::dx(p, c->x()), 0.0, epsilon);
   }
+
+  {
+    const auto P = Polynomial(1.0, 0.0, 0.0);
+    const auto c = Polynomial::uniqueCriticalPoint(P);
+    ASSERT_FALSE(!c);
+    EXPECT_EQ(c->x(), 0.0);
+    EXPECT_EQ(c->y(), 0.0);
+  }
+
+  {  // Critical point exists, but is outside the domain
+    const auto P = Polynomial(1.0, 0.0, 0.0, Interval_d(10.0, 20.0));
+    const auto c = Polynomial::uniqueCriticalPoint(P);
+    ASSERT_TRUE(!c);
+  }
 }
 
 //------------------------------------------------------------------------------

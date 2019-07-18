@@ -143,8 +143,13 @@ boost::optional<Eigen::Vector2d> Polynomial::uniqueCriticalPoint(
   if (std::abs(Polynomial::a(polynomial)) > 0.0) {
     const auto x_critical = (-Polynomial::dx_coefficient<1>(polynomial) /
                              Polynomial::dx_coefficient<0>(polynomial));
-    const auto y_critical = polynomial(x_critical);
-    return Eigen::Vector2d(x_critical, y_critical);
+    try {
+      const auto y_critical = polynomial(x_critical);
+      return Eigen::Vector2d(x_critical, y_critical);
+    } catch (...) {
+      // Exception thrown if x_critical is outside poly domain.
+      return boost::none;
+    }
   }
 
   // This function is not defined for other polynomials.
