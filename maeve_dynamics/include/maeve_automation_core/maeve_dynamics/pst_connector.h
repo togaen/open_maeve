@@ -117,31 +117,24 @@ class PST_Connector {
       const std::array<Polynomial, 3>& functions) noexcept;
 
   /**
-   * @brief Build a connector that is a single active P segment.
+   * @brief Factory methods for specific types of connectors.
+   * @{
    *
    * TODO(me): unit tests
+   * TODO(me): these evaluate P at the domain extremum; this can cause numerical
+   * issues if the domains are really large (say, DBL_MAX). need to rework these
+   * to avoid that.
    */
   static PST_Connector P(const Polynomial& P,
                          const Interval_d& connector_domain,
                          const SpeedConstraint speed_constraint);
-
-  /**
-   * @brief Build a connector that is a single active L segment.
-   *
-   * TODO(me): unit tests
-   */
   static PST_Connector L(const Polynomial& L,
                          const Interval_d& connector_domain,
                          const SpeedConstraint speed_constraint);
-
-  /**
-   * @brief Build a connector that decelerates to a stop.
-   *
-   * TODO(me): unit tests
-   */
   static PST_Connector Pminus_L0(const Polynomial& P,
                                  const Interval_d& connector_domain,
                                  const SpeedConstraint speed_constraint);
+  /** @} */
 
   /** @brief Check the connector taxonomy. @{ */
   static bool is_P(const PST_Connector& connector);
