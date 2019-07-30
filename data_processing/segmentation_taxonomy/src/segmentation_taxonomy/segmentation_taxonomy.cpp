@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/segmentation_taxonomy/segmentation_taxonomy.h"
+#include "maeve_core/segmentation_taxonomy/segmentation_taxonomy.h"
 
 #include <string>
 
@@ -27,7 +27,7 @@
 
 #include "segmentation_taxonomy/io.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 std::ostream& operator<<(std::ostream& os, const SegmentationTaxonomy& t) {
   os << "===Classes===\n";
   os << t.classes << "\n";
@@ -85,4 +85,4 @@ int SegmentationTaxonomy::cvVec3bToInt(const cv::Vec3b& v) {
   return static_cast<int>(v[0]) + (255 * static_cast<int>(v[1])) +
          (255 * 255 * static_cast<int>(v[2]));
 }
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

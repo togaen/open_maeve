@@ -27,7 +27,7 @@
 #include <yaml-cpp/yaml.h>
 #include <boost/optional.hpp>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 boost::optional<cv::Vec3b> yaml_rgb_to_cvvec3b(const YAML::Node& node) {
   if (!node.IsSequence() || (node.size() != 3)) {
@@ -128,4 +128,4 @@ std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
   // Done.
   return std::make_tuple(classes, instances, instance_classes);
 }
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

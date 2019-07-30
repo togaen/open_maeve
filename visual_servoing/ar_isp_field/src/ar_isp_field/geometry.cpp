@@ -21,7 +21,7 @@
  */
 #include "ar_isp_field/geometry.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 void arFillISP(const cv::Point2d& potential_value,
                const std::vector<cv::Point2d>& image_corner_points,
                cv::Mat& field) {
@@ -76,4 +76,4 @@ std::vector<cv::Point3d> arEigenPoints2OpenCV(const AR_Points& points) {
 
   return cv_points;
 }
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

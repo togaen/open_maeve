@@ -19,11 +19,11 @@ bounds and an XOR operator.
 ### Example Usage ###
 
 ```c++
-#include "maeve_automation_core/maeve_geometry/comparisons.h"
+#include "maeve_core/maeve_geometry/comparisons.h"
 
 #include <iostream>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 static constexpr auto epsilon = 1e-6;
 
 std::cout << exclusiveOr(true, false) << "\n";
@@ -52,7 +52,7 @@ std::cout << approxGt(1.0 + 1e-5, 1.0, epsilon) << "\n";
 
 std::cout << approxGe(1.0 - 1e-5, 1.0, epsilon) << "\n";
 // Prints: false
-}  // namespace maeve_automation_core
+}  // namespace maeve_core
 ```
 ## Disjoint Interval ##
 
@@ -64,11 +64,11 @@ disjointness. In effect, the class generalizes 1D intervals to be non-convex.
 ### Example Usage ###
 
 ```c++
-#include "maeve_automation_core/maeve_geometry/disjoint_interval.h"
+#include "maeve_core/maeve_geometry/disjoint_interval.h"
 
 #include <iostream>
 
-namespace maeve_automation_core {
+namespace maeve_core {
   //
   // Construct a disjoint interval.
   //
@@ -116,7 +116,7 @@ namespace maeve_automation_core {
   // Prints:
   // {{"min": 0.50000, "max": 1.00000}, {"min": 2.00000, "max": 2.50000}} 
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core
 ```
 
 ## Interval ##
@@ -143,11 +143,11 @@ element, the interval is *not* empty.
 
 ### Example Usage ###
 ```c++
-#include "maeve_automation_core/maeve_geometry/interval.h"
+#include "maeve_core/maeve_geometry/interval.h"
 
 #include <iostream>
 
-namespace maeve_automation_core {
+namespace maeve_core {
   //
   // Construct an interval from 0 to 1
   //
@@ -226,7 +226,7 @@ namespace maeve_automation_core {
 
   std::cout << Interval::nonPositiveReals() << "\n";
   // Prints: {"min": -DBL_MAX, "max": 0.0}  
-}  // namespace maeve_automation_core
+}  // namespace maeve_core
 ```
 
 ## Polynomial ##
@@ -259,11 +259,11 @@ critical points of those parabolas.
 ### Example Usage ###
 
 ```c++
-#include "maeve_automation_core/maeve_geometry/polynomial.h"
+#include "maeve_core/maeve_geometry/polynomial.h"
 
 #include <iostream>
 
-namespace maeve_automation_core {
+namespace maeve_core {
   //
   // Construct a quadratic.
   //
@@ -339,7 +339,7 @@ namespace maeve_automation_core {
       // Prints: 1 1 3 1
     }
   }
-}  // namespace maeve_automation_core
+}  // namespace maeve_core
 ```
 
 ## Powers ##

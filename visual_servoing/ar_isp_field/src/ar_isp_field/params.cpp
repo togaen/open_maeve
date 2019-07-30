@@ -24,10 +24,10 @@
 #include <cstdlib>
 #include <limits>
 
-#include "maeve_automation_core/isp_controller_2d/ros_interface.h"
-#include "maeve_automation_core/isp_field/ros_interface.h"
+#include "maeve_core/isp_controller_2d/ros_interface.h"
+#include "maeve_core/isp_field/ros_interface.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
@@ -135,4 +135,4 @@ bool AR_ISPFieldParams::valid() const {
          soft_constraint_transform.valid() && isp_controller_params.valid();
 }
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

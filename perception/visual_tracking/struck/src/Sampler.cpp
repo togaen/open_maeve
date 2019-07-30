@@ -26,7 +26,7 @@
  */
 
 #include "Sampler.h"
-#include "maeve_automation_core/struck/Config.h"
+#include "maeve_core/struck/Config.h"
 
 #define _USE_MATH_DEFINES
 #include <cmath>

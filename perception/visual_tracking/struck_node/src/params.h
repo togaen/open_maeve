@@ -33,10 +33,10 @@
 
 #include "./bb_params.h"
 
-#include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
-#include "maeve_automation_core/struck/Config.h"
+#include "maeve_core/ros_parameter_loading/ros_parameter_loading.h"
+#include "maeve_core/struck/Config.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 
 /** @brief Parameter object to load and convert STRUCK parameters from ROS.*/
 struct StruckVisualTrackingParams : public ParamsBase {
@@ -142,4 +142,4 @@ struct StruckVisualTrackingParams : public ParamsBase {
   }
 };  // struct StruckVisualTrackingParams
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

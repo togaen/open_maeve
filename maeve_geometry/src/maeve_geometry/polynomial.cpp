@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/maeve_geometry/polynomial.h"
+#include "maeve_core/maeve_geometry/polynomial.h"
 
 #include <algorithm>
 #include <cmath>
@@ -29,10 +29,10 @@
 
 #include "boost/io/ios_state.hpp"
 
-#include "maeve_automation_core/maeve_geometry/comparisons.h"
-#include "maeve_automation_core/maeve_geometry/powers.h"
+#include "maeve_core/maeve_geometry/comparisons.h"
+#include "maeve_core/maeve_geometry/powers.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto Inf = std::numeric_limits<double>::infinity();
@@ -420,4 +420,4 @@ double Polynomial::dx_coefficient<1>(const Polynomial& p) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

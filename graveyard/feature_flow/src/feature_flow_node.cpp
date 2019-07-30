@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
   ros::NodeHandle nh(node_name);
 
   // Create handler.
-  maeve_automation_core::FeatureFlowNodeHandler handler(nh);
+  maeve_core::FeatureFlowNodeHandler handler(nh);
 
   // Kick it off.
   ros::spin();

@@ -23,11 +23,11 @@
 
 #include <string>
 
-#include "maeve_automation_core/feature_flow/feature_flow.h"
+#include "maeve_core/feature_flow/feature_flow.h"
 
-#include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
+#include "maeve_core/ros_parameter_loading/ros_parameter_loading.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 
 /** @brief Parameter object to load ROS params.*/
 struct FeatureFlowParams : public ParamsBase {
@@ -59,4 +59,4 @@ struct FeatureFlowParams : public ParamsBase {
       const ros::NodeHandle& nh) override;
 };  // struct FeatureFlowParams
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

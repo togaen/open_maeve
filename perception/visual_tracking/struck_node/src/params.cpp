@@ -29,7 +29,7 @@
 
 #include "./params.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 
 bool StruckVisualTrackingParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(camera_topic);
@@ -86,4 +86,4 @@ Config StruckVisualTrackingParams::toStruckConfig() const {
   return config;
 }
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

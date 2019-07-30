@@ -14,7 +14,7 @@ check results in a function immediately returning `false`. Examples below.
 #include <limits>
 #include <string>
 
-#include "maeve_automation_core/maeve_macros/checks.h"
+#include "maeve_core/maeve_macros/checks.h"
 
 bool valid() {
   // Check the following conditions.

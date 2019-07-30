@@ -19,16 +19,16 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/isp_controller_2d/control_command.h"
+#include "maeve_core/isp_controller_2d/control_command.h"
 
 #include <cmath>
 #include <iostream>
 #include <limits>
 
 #include "controller_interface_msgs/Command2D.h"
-#include "maeve_automation_core/maeve_macros/checks.h"
+#include "maeve_core/maeve_macros/checks.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
@@ -55,4 +55,4 @@ ControlCommand::ControlCommand() : throttle(NaN), yaw(NaN) {}
 
 ControlCommand::ControlCommand(const double t, const double y)
     : throttle(t), yaw(y) {}
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

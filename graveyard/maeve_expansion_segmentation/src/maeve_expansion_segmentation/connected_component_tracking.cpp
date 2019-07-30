@@ -19,14 +19,14 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/maeve_expansion_segmentation/connected_component_tracking.h"
+#include "maeve_core/maeve_expansion_segmentation/connected_component_tracking.h"
 
 #include <algorithm>
 #include <limits>
 #include <utility>
 #include <vector>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 static const auto INF = std::numeric_limits<double>::infinity();
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -249,4 +249,4 @@ bool ConnectedComponentTracker::addEdgeFrame(const double timestamp,
 
   return true;
 }
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

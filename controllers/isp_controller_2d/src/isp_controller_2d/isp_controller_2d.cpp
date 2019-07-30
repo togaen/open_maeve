@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/isp_controller_2d/isp_controller_2d.h"
+#include "maeve_core/isp_controller_2d/isp_controller_2d.h"
 
 #include <array>
 #include <limits>
@@ -28,10 +28,10 @@
 #include <string>
 
 #include "isp_controller_2d/lib.h"
-#include "maeve_automation_core/maeve_geometry/interval.h"
-#include "maeve_automation_core/maeve_macros/checks.h"
+#include "maeve_core/maeve_geometry/interval.h"
+#include "maeve_core/maeve_macros/checks.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
@@ -388,4 +388,4 @@ ControlCommand ISP_Controller2D::SD_Control(const cv::Mat& ISP,
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

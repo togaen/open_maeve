@@ -23,9 +23,9 @@
 
 #include <cmath>
 
-#include "maeve_automation_core/isp_field/shape_parameters.h"
+#include "maeve_core/isp_field/shape_parameters.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 constexpr auto epsilon = 0.00001;
 }  // namespace
@@ -40,4 +40,4 @@ TEST(ShapeParams, testMidPoint) {
   EXPECT_NEAR(sp.rangeMidPoint(), (r_min + r_max) / 2.0, epsilon);
   EXPECT_TRUE(std::isnan(ShapeParameters().rangeMidPoint()));
 }
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

@@ -34,7 +34,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace karlsruhe_dataset {
 
 const std::string CV_IMAGE_ENCODING = sensor_msgs::image_encodings::BGR8;
@@ -134,4 +134,4 @@ geometry_msgs::TransformStamped getStampedTransformFromCameraToIMU(
 }
 
 }  // namespace karlsruhe_dataset
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

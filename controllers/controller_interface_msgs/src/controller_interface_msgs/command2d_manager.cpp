@@ -19,9 +19,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/controller_interface_msgs/command2d_manager.h"
+#include "maeve_core/controller_interface_msgs/command2d_manager.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 
 //------------------------------------------------------------------------------
 
@@ -42,4 +42,4 @@ Command2D_Manager::most_recent_msg_ptr() {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

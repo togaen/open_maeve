@@ -3,5 +3,5 @@ device_id: 0 # (int: default 0) capture device id.
 frame_id: 'camera' # (string: default "camera") frame_id of message header.
 #image_width: 640 # (int) try to set capture image width.
 #image_height: 480 # (int) try to set capture image height.
-camera_info_url: 'file:///home/jj56/catkin_ws/src/maeve_automation_core/sensors/maeve_cameras/camera_info/webcam-calibration.yaml' # (string) url of camera info yaml.
+camera_info_url: 'file:///home/jj56/catkin_ws/src/maeve_core/sensors/maeve_cameras/camera_info/webcam-calibration.yaml' # (string) url of camera info yaml.
 file: '' # (string: default "") if not "" then use movie file instead of device.

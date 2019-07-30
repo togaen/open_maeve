@@ -26,7 +26,7 @@
 #include <sstream>
 #include <stdexcept>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace karlsruhe_dataset {
 
 calib::stereoCameraInfo::stereoCameraInfo(sensor_msgs::CameraInfo _left,
@@ -111,4 +111,4 @@ calib calib::createCalib(const std::string& text) {
 //------------------------------------------------------------------------------
 
 }  // namespace karlsruhe_dataset
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

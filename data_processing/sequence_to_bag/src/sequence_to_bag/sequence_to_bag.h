@@ -36,7 +36,7 @@
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 
 /** @brief When printing program options to terminal, use this line length */
 static constexpr unsigned int PROGRAM_OPTIONS_LINE_LENGTH = 120u;
@@ -138,4 +138,4 @@ geometry_msgs::TransformStamped getStampedTransformFromPose(
     const std_msgs::Header& header, const geometry_msgs::Pose& pose,
     const std::string& frame_id, const std::string& child_frame_id);
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

@@ -27,10 +27,10 @@
 #include <limits>
 #include <vector>
 
-#include "maeve_automation_core/isp_field/isp_field.h"
-#include "maeve_automation_core/maeve_geometry/interval.h"
+#include "maeve_core/isp_field/isp_field.h"
+#include "maeve_core/maeve_geometry/interval.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
@@ -197,4 +197,4 @@ int dampedMaxThrottleIndex(const cv::Mat& guided_throttle_h,
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

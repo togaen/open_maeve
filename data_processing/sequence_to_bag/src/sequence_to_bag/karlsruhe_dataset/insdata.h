@@ -27,7 +27,7 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/NavSatFix.h>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace karlsruhe_dataset {
 
 /**
@@ -146,4 +146,4 @@ struct insdataRow {
 };  // struct insdataRow
 
 }  // namespace karlsruhe_dataset
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

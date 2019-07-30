@@ -23,7 +23,7 @@
 
 #include "boost/optional.hpp"
 
-#include "maeve_automation_core/maeve_geometry/comparisons.h"
+#include "maeve_core/maeve_geometry/comparisons.h"
 
 namespace {
 const auto a = 1.317;
@@ -35,7 +35,7 @@ const auto f = -5.2749;
 const auto epsilon = 0.0001;
 }  // namespace
 
-namespace maeve_automation_core {
+namespace maeve_core {
 
 //------------------------------------------------------------------------------
 
@@ -152,4 +152,4 @@ TEST(Maeve_Geometry_Comparisons, testGreaterThanEqual) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

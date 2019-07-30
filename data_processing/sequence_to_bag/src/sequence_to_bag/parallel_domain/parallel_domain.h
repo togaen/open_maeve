@@ -31,7 +31,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace parallel_domain {
 
 /**
@@ -127,4 +127,4 @@ std::map<int, std::string> getSortedIndexedFileList(
     const std::vector<boost::filesystem::path>& file_list);
 
 }  // namespace parallel_domain
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

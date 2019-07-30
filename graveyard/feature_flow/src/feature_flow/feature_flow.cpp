@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/feature_flow/feature_flow.h"
+#include "maeve_core/feature_flow/feature_flow.h"
 
 #include <opencv2/calib3d/calib3d.hpp>
 
@@ -28,7 +28,7 @@
 #include <limits>
 #include <vector>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 
 FeatureFlow::ScaleComponents::ScaleComponents()
     : x(std::numeric_limits<double>::quiet_NaN()),
@@ -174,4 +174,4 @@ void FeatureFlow::addFrame(const cv::Mat& frame) {
   }
 }
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

@@ -22,9 +22,9 @@
 #include <limits>
 #include <vector>
 
-#include "maeve_automation_core/isp_field/visualize.h"
+#include "maeve_core/isp_field/visualize.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
@@ -124,4 +124,4 @@ cv::Mat computeISPFieldVisualization(const cv::Mat& isp,
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

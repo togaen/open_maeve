@@ -23,9 +23,9 @@
 
 #include <cmath>
 
-#include "maeve_automation_core/maeve_geometry/optical_flow.h"
+#include "maeve_core/maeve_geometry/optical_flow.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 constexpr auto EPS = 1e-4;
 }  // namespace
@@ -112,4 +112,4 @@ TEST(OpticalFlow, flow_component_not_centered_outward_flow) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

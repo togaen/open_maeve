@@ -69,7 +69,7 @@ A struct definition that corresponds to this parameter file might look like:
 
 #include <string>
 
-#include "maeve_automation_core/ros_parameter_loading/ros_parameter_loading.h"
+#include "maeve_core/ros_parameter_loading/ros_parameter_loading.h"
 
 struct MyParams : public ParamsBase {
   struct GroupedParams {

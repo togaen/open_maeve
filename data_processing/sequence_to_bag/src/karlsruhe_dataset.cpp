@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
       "Karlsruhe Dataset sequencer. See README.md for details.\nAvailable "
       "options are listed below. Arguments without default "
       "values are required",
-      maeve_automation_core::PROGRAM_OPTIONS_LINE_LENGTH);
+      maeve_core::PROGRAM_OPTIONS_LINE_LENGTH);
   desc.add_options()("help,h", "Print help and exit.")(
       "data-set-path,d", po::value(&data_set_path_opt)->required(),
       "Absolute path to the data set directory.")(
@@ -85,9 +85,9 @@ int main(int argc, char** argv) {
   const auto imu_name = vm["imu-name"].as<std::string>();
 
   const auto calib_text =
-      maeve_automation_core::karlsruhe_dataset::getCalibText(data_set_path);
+      maeve_core::karlsruhe_dataset::getCalibText(data_set_path);
   const auto insdata_text =
-      maeve_automation_core::karlsruhe_dataset::getInsdataText(data_set_path);
+      maeve_core::karlsruhe_dataset::getInsdataText(data_set_path);
 
   // Look at the first row of the insdata file to get timestamp information for
   // static transforms and camera info
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
   }
 
   const auto stamped_header =
-      maeve_automation_core::karlsruhe_dataset::insdataRow::getStampedHeader(
+      maeve_core::karlsruhe_dataset::insdataRow::getStampedHeader(
           first_row);
 
   auto camera_header = stamped_header;
@@ -107,21 +107,21 @@ int main(int argc, char** argv) {
 
   // Look at the first stereo image to get dimensions for camera info
   const auto stereo_image_paths =
-      maeve_automation_core::karlsruhe_dataset::getStereoImageFiles(
+      maeve_core::karlsruhe_dataset::getStereoImageFiles(
           data_set_path);
-  const auto img = maeve_automation_core::karlsruhe_dataset::getImageMessage(
+  const auto img = maeve_core::karlsruhe_dataset::getImageMessage(
       camera_header, *stereo_image_paths.left.begin());
 
   try {
     // Get the camera info
     const auto calib =
-        maeve_automation_core::karlsruhe_dataset::calib::createCalib(
+        maeve_core::karlsruhe_dataset::calib::createCalib(
             calib_text);
 
     // Build rosbag
     rosbag::Bag bag;
     bag.open(output_path + "/" + data_set_name +
-                 maeve_automation_core::BAG_FILE_EXTENSION,
+                 maeve_core::BAG_FILE_EXTENSION,
              rosbag::bagmode::Write);
 
     auto error_encountered = false;
@@ -143,30 +143,30 @@ int main(int argc, char** argv) {
       }
 
       // Get messages
-      const auto gps_imu_msg = maeve_automation_core::karlsruhe_dataset::
+      const auto gps_imu_msg = maeve_core::karlsruhe_dataset::
           insdataRow::convertToGPS_IMU(insdata_row_text, global_name, imu_name);
 
       auto img_header = gps_imu_msg.imu.header;
       img_header.frame_id = camera_name;
       const auto left_camera_msg =
-          maeve_automation_core::karlsruhe_dataset::getImageMessage(
+          maeve_core::karlsruhe_dataset::getImageMessage(
               img_header, *it_left_image_path);
       const auto right_camera_msg =
-          maeve_automation_core::karlsruhe_dataset::getImageMessage(
+          maeve_core::karlsruhe_dataset::getImageMessage(
               img_header, *it_right_image_path);
 
       const auto camera_info =
-          maeve_automation_core::karlsruhe_dataset::calib::convertToCameraInfo(
+          maeve_core::karlsruhe_dataset::calib::convertToCameraInfo(
               img_header, calib, img->width, img->height);
 
       // Get transform from world to odom
       const auto world_T_odom =
-          maeve_automation_core::getStampedTransformFromPose(
+          maeve_core::getStampedTransformFromPose(
               gps_imu_msg.imu.header, gps_imu_msg.imu.pose.pose, imu_name,
               global_name);
 
       // Get transform from odom to camera
-      const auto odom_T_camera = maeve_automation_core::karlsruhe_dataset::
+      const auto odom_T_camera = maeve_core::karlsruhe_dataset::
           getStampedTransformFromCameraToIMU(gps_imu_msg.imu.header, imu_name,
                                              camera_name);
 
@@ -176,7 +176,7 @@ int main(int argc, char** argv) {
       tf2_msgs::TFMessage tf_msg;
       tf_msg.transforms.push_back(odom_T_camera);
       tf_msg.transforms.push_back(world_T_odom);
-      //      bag.write(maeve_automation_core::TF_TOPIC, imu_stamp, tf_msg);
+      //      bag.write(maeve_core::TF_TOPIC, imu_stamp, tf_msg);
 
       bag.write("/" + camera_name + "/left/image_raw", img_header.stamp,
                 *left_camera_msg);

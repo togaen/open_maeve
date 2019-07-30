@@ -21,7 +21,7 @@
  */
 #include "maeve_expansion_segmentation/params.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 // Aribtrarily chosen bad value.
 static const int BAD_INT = -9;
 
@@ -124,4 +124,4 @@ bool MaeveExpansionSegmentationParams::load(const ros::NodeHandle& nh) {
   return true;
 }
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

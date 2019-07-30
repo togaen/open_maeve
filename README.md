@@ -12,7 +12,7 @@ of the code.
 
 ## Cloning ##
 
-See the [Overview](https://bitbucket.org/maeveautomation/maeve_automation_core/overview)
+See the [Overview](https://bitbucket.org/maeveautomation/maeve_core/overview)
 page for links to clone this repository.
 
 ## Releases ##
@@ -49,7 +49,7 @@ If any code in these libraries is useful for published work, a citation is appre
     @misc{maeve-development-libraries,
         author          = {Jeffrey Kane Johnson},
         title           = {{Maeve Automation Development Libraries}},
-        howpublished    = {\url{https://bitbucket.org/maeveautomation/maeve_automation_core}},
+        howpublished    = {\url{https://bitbucket.org/maeveautomation/maeve_core}},
         year            = {2017},
         institution     = {{Maeve Automation}}
     }

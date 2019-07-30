@@ -31,7 +31,7 @@
 #include "GraphUtils/GraphUtils.h"
 #include "Kernels.h"
 #include "Sample.h"
-#include "maeve_automation_core/struck/Config.h"
+#include "maeve_core/struck/Config.h"
 
 #include <Eigen/Core>
 

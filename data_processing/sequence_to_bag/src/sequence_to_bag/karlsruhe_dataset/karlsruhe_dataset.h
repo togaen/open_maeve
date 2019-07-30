@@ -29,7 +29,7 @@
 #include "sequence_to_bag/karlsruhe_dataset/calib.h"
 #include "sequence_to_bag/sequence_to_bag.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace karlsruhe_dataset {
 constexpr auto CALIBRATION_FILENAME = "calib.txt";
 extern const std::string CV_IMAGE_ENCODING;
@@ -89,4 +89,4 @@ geometry_msgs::TransformStamped getStampedTransformFromCameraToIMU(
     const std::string& camera_name);
 
 }  // namespace karlsruhe_dataset
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

@@ -23,9 +23,9 @@
 
 #include <cmath>
 
-#include "maeve_automation_core/maeve_dynamics/simple.h"
+#include "maeve_core/maeve_dynamics/simple.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 constexpr auto EPS = 1e-4;
 }  // namespace
@@ -96,4 +96,4 @@ TEST(Maeve_Dynamics_simple, time_to_zero_relative_speed_in_past) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

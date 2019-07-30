@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_automation_core/isp_controller_2d/ros_interface.h"
+#include "maeve_core/isp_controller_2d/ros_interface.h"
 
 #include <cv_bridge/cv_bridge.h>
 
@@ -27,11 +27,11 @@
 #include <limits>
 #include <stdexcept>
 
-#include "maeve_automation_core/isp_field/ros_interface.h"
-#include "maeve_automation_core/isp_field/visualize.h"
-#include "maeve_automation_core/ros_parameter_loading/macros.h"
+#include "maeve_core/isp_field/ros_interface.h"
+#include "maeve_core/isp_field/visualize.h"
+#include "maeve_core/ros_parameter_loading/macros.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
@@ -188,4 +188,4 @@ void HorizonVisualizer::visualizeHorizon(
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

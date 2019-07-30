@@ -25,9 +25,9 @@
 
 #include <algorithm>
 
-#include "maeve_automation_core/isp_field/potential_transforms.h"
+#include "maeve_core/isp_field/potential_transforms.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 /**
  * @brief Print an ISP field to console. Useful for debugging.
  *
@@ -186,4 +186,4 @@ cv::Mat throttleGuidance(const cv::Mat& throttle_h, const cv::Mat& guidance_h);
  */
 int dampedMaxThrottleIndex(const cv::Mat& guided_throttle_h,
                            const double inertia, const int damp_idx);
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

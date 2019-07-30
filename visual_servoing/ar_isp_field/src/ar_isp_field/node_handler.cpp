@@ -32,11 +32,11 @@
 #include <vector>
 
 #include "ar_isp_field/geometry.h"
-#include "maeve_automation_core/isp_field/isp_field.h"
-#include "maeve_automation_core/isp_field/visualize.h"
-#include "maeve_automation_core/maeve_geometry/tau.h"
+#include "maeve_core/isp_field/isp_field.h"
+#include "maeve_core/isp_field/visualize.h"
+#include "maeve_core/maeve_geometry/tau.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 const auto EPS = 1e-4;
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -352,4 +352,4 @@ void AR_ISPFieldNodeHandler::visualize(const cv::Mat& ISP,
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

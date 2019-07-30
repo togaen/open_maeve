@@ -22,10 +22,10 @@ Note that the get() method returns elements using [boost::optional](http://www.b
 
 ```c++
 // my_file.cpp
-#include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
+#include "maeve_core/maeve_time_queue/maeve_time_queue.h"
 
 namespace {
-namespace mac = maeve_automation_core;
+namespace mac = maeve_core;
 }  // namespace
 
 // Parameters for the queue: its maximum size, and maximum allowable time gap

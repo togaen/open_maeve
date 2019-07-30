@@ -21,9 +21,9 @@
  */
 #include <gtest/gtest.h>
 
-#include "maeve_automation_core/maeve_macros/checks.h"
+#include "maeve_core/maeve_macros/checks.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 TEST(MaeveMacros, testNotNaN) {
   EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
                         "replace with a real test.";
@@ -98,7 +98,7 @@ TEST(MaeveMacros, testNonempty) {
   EXPECT_TRUE(false) << "TODO(me): This failing test is only a placeholder; "
                         "replace with a real test.";
 }
-}  // namespace maeve_automation_core
+}  // namespace maeve_core
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);

@@ -20,7 +20,7 @@
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
   <!-- <url type="website">http://wiki.ros.org/maeve_expansion_segmentation</url> -->
-  <url type="repository">https://bitbucket.org/maeveautomation/maeve_automation_core/src</url>
+  <url type="repository">https://bitbucket.org/maeveautomation/maeve_core/src</url>
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
   <!-- Authors do not have to be maintainers, but could be -->

@@ -31,7 +31,7 @@
 #include <tf/transform_datatypes.h>
 #include <tf2/LinearMath/Quaternion.h>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace karlsruhe_dataset {
 
 static constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -208,4 +208,4 @@ std::tuple<uint32_t, uint32_t> insdataRow::parseTime(
 }
 
 }  // namespace karlsruhe_dataset
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

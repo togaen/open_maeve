@@ -24,9 +24,9 @@
 #include <string>
 #include <tuple>
 
-#include "maeve_automation_core/segmentation_taxonomy/types.h"
+#include "maeve_core/segmentation_taxonomy/types.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 /**
  * @brief Load a taxonomy from a yaml file.
  *
@@ -37,4 +37,4 @@ namespace maeve_automation_core {
  */
 std::tuple<LabelClasses, LabelInstances, LabelInstanceClasses> loadLabels(
     const std::string& segmentation_taxonomy, const std::string& data_set_name);
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

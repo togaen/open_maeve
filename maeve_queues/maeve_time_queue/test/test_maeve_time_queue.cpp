@@ -21,9 +21,9 @@
  */
 #include <gtest/gtest.h>
 
-#include "maeve_automation_core/maeve_time_queue/maeve_time_queue.h"
+#include "maeve_core/maeve_time_queue/maeve_time_queue.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 TEST(MTQ, testDifferentiation1) {
   const auto buffer_size = 5;
   const auto max_time_gap = 10.0;
@@ -192,7 +192,7 @@ TEST(MTQ, tests) {
   EXPECT_TRUE(mtq.insert(10.0, 1.0));
   EXPECT_EQ(mtq.size(), 1);
 }
-}  // namespace maeve_automation_core
+}  // namespace maeve_core
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);

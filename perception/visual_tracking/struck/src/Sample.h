@@ -29,7 +29,7 @@
 #define SAMPLE_H
 
 #include "ImageRep.h"
-#include "maeve_automation_core/struck/Rect.h"
+#include "maeve_core/struck/Rect.h"
 
 #include <vector>
 

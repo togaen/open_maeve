@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
       "Parallel Domain data set sequencer. See README.md for "
       "details.\nAvailable options are listed below. Arguments without "
       "default values are required",
-      maeve_automation_core::PROGRAM_OPTIONS_LINE_LENGTH);
+      maeve_core::PROGRAM_OPTIONS_LINE_LENGTH);
   desc.add_options()("help,h", "Print help and exit.")(
       "data-set-path,d", po::value(&data_set_path_opt)->required(),
       "Absolute path to the data set.")(
@@ -81,10 +81,10 @@ int main(int argc, char** argv) {
 
   // Get meta information.
   const auto meta_info =
-      maeve_automation_core::parallel_domain::getMetaInfo(data_set_path);
+      maeve_core::parallel_domain::getMetaInfo(data_set_path);
   if (!meta_info) {
     std::cerr << "Failed retrieving meta info; does "
-              << maeve_automation_core::parallel_domain::constructMetaYamlPath(
+              << maeve_core::parallel_domain::constructMetaYamlPath(
                      data_set_path)
               << " exist?\n";
     return EXIT_FAILURE;
@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
   std::map<int, sensor_msgs::ImagePtr> raw_images_idx;
   std::map<int, sensor_msgs::ImagePtr> seg_images_idx;
   if (auto m =
-          maeve_automation_core::parallel_domain::getSortedIndexedImageLists(
+          maeve_core::parallel_domain::getSortedIndexedImageLists(
               meta_info->raw_image_dir, meta_info->seg_image_dir)) {
     std::tie(raw_images_idx, seg_images_idx) = *m;
   } else {
@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
     const auto& seg_image_ptr = seg_images_idx.begin()->second;
     camera_name = "camera";
     cam_info_msg =
-        maeve_automation_core::synthesizeCameraInfoFromImageMsg(seg_image_ptr);
+        maeve_core::synthesizeCameraInfoFromImageMsg(seg_image_ptr);
   }
 
   // Time between frames.
@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
   ros::Time::init();
   auto t = ros::Time::now();
   bag.open(output_path + "/" + meta_info->name +
-               maeve_automation_core::BAG_FILE_EXTENSION,
+               maeve_core::BAG_FILE_EXTENSION,
            rosbag::bagmode::Write);
   auto elapsed_time = 0.0;
   std::for_each(

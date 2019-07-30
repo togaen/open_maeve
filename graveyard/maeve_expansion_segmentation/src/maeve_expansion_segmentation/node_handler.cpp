@@ -23,7 +23,7 @@
 
 #include <ros/ros.h>
 
-namespace maeve_automation_core {
+namespace maeve_core {
 MaeveExpansionSegmentationNodeHandler::MaeveExpansionSegmentationNodeHandler(
     const ros::NodeHandle& nh)
     : cc_tracker_ptr_(nullptr) {
@@ -185,4 +185,4 @@ void MaeveExpansionSegmentationNodeHandler::callback(
   // Publish images.
   visualize(msg->header, te_image_blurred, se_image, AND_image);
 }
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

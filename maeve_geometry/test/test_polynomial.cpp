@@ -24,10 +24,10 @@
 #include <cmath>
 #include <limits>
 
-#include "maeve_automation_core/maeve_geometry/comparisons.h"
-#include "maeve_automation_core/maeve_geometry/polynomial.h"
+#include "maeve_core/maeve_geometry/comparisons.h"
+#include "maeve_core/maeve_geometry/polynomial.h"
 
-namespace maeve_automation_core {
+namespace maeve_core {
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 const auto Inf = std::numeric_limits<double>::infinity();
@@ -439,4 +439,4 @@ TEST(Maeve_Geometry_Polynomial, testConstruction) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_automation_core
+}  // namespace maeve_core

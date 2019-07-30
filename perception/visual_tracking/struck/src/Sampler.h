@@ -28,7 +28,7 @@
 #ifndef SAMPLER_H
 #define SAMPLER_H
 
-#include "maeve_automation_core/struck/Rect.h"
+#include "maeve_core/struck/Rect.h"
 
 #include <vector>
 
