@@ -1,6 +1,6 @@
 require(latex2exp)
 
-# Be sure working direction is set to source file location.
+# Be sure working directory is set to source file location: Session > Set Working Directory
 source('constraint-functions.R')
 
 # plot_constraint("hard",0,0,1,-3,3,1,1,5,c(-25, 0))
