@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iomanip>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
@@ -452,8 +453,8 @@ bool PST_Connector::segmentsConnected(const PST_Connector& connector) {
   const auto connected = (approxEq(s01, s11, EPS) && approxEq(s12, s22, EPS));
 #if 0
   if (!connected) {
-    std::cerr << "s01: " << s01 << ", s11: " << s11 << ", s12: " << s12
-              << ", s22: " << s22 << std::endl;
+    std::cerr << std::setprecision(20) << "s01: " << s01 << ", s11: " << s11
+              << ", s12: " << s12 << ", s22: " << s22 << std::endl;
   }
 #endif
   return connected;
