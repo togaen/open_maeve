@@ -26,13 +26,6 @@ and tested. To get a release 'X', clone the repo, then:
 Revisions of the codebase between releases may include new functionality and
 fixes but may also include incomplete or broken code, so caveat emptor.
 
-## The Ubuntu MATE platform ##
-
-Maeve Automation maintains a release of Ubuntu MATE 16.04.3 LTS for Raspberry
-Pi 3 that is intended for use on mobile autonomous robots in conjunction with
-the packages in this repository. For details and download, see
-[https://maeveautomation.com/development](https://maeveautomation.com/development).
-
 ## Collaboration ##
 
 Collaboration is welcome and encouraged using [feature branches](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow) or [forks](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow).
