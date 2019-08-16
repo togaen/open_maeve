@@ -79,6 +79,25 @@ TEST(Maeve_Geometry_Comparisons, testZero) {
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Comparisons, testRelEquality) {
+  EXPECT_TRUE(approxRelEq(c, e, epsilon, 0.0));
+  EXPECT_TRUE(approxRelEq(e, c, epsilon, 0.0));
+  EXPECT_TRUE(approxRelEq(a, a, epsilon, 0.0));
+  EXPECT_TRUE(approxRelEq(a, a, 0.0, 0.0));
+
+  EXPECT_FALSE(approxRelEq(c, e, 0.0, 0.0));
+  EXPECT_FALSE(approxRelEq(e, c, 0.0, 0.0));
+  EXPECT_FALSE(approxRelEq(a, b, epsilon, 0.0));
+  EXPECT_FALSE(approxRelEq(b, a, epsilon, 0.0));
+
+  EXPECT_TRUE(approxRelEq(c, e, 0.0, 1.0));
+  EXPECT_TRUE(approxRelEq(e, c, 0.0, 1.0));
+  EXPECT_TRUE(approxRelEq(a, b, epsilon, 1.0));
+  EXPECT_TRUE(approxRelEq(b, a, epsilon, 1.0));
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Comparisons, testEquality) {
   EXPECT_TRUE(approxEq(c, e, epsilon));
   EXPECT_TRUE(approxEq(e, c, epsilon));

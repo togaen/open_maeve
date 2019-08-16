@@ -21,7 +21,9 @@
  */
 #pragma once
 
+#include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace open_maeve {
 /**
@@ -52,8 +54,22 @@ inline bool exclusiveOr(const T& a, const T& b) {
  */
 template <typename T>
 inline bool approxEq(const T& a, const T& b, const T& eps) {
-  // TODO(me): make this use relative magnitude comparison
   return std::abs(a - b) <= eps;
+}
+
+/**
+ * @brief
+ * https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+ */
+template <typename T>
+inline bool approxRelEq(const T& a, const T& b, const T& abs_eps,
+                        const T& rel_eps) {
+  const auto abs_approx_eq = approxEq(a, b, abs_eps);
+
+  const auto larger = std::max(std::abs(a), std::abs(b));
+  const auto rel_approx_eq = (std::abs(a - b) <= (larger * rel_eps));
+
+  return (abs_approx_eq || rel_approx_eq);
 }
 
 /**
