@@ -20,7 +20,7 @@
  * IN THE SOFTWARE.
  */
 #pragma once
-#include "maeve_core/feature_flow/feature_flow.h"
+#include "open_maeve/feature_flow/feature_flow.h"
 
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
@@ -32,7 +32,7 @@
 
 #include "feature_flow/params.h"
 
-namespace maeve_core {
+namespace open_maeve {
 /**
  * @brief Interface between ROS node and Feature Flow class.
  */
@@ -71,6 +71,6 @@ class FeatureFlowNodeHandler {
   /** @brief Keep track of frames if skipping is enabled. */
   int skipped_frames;
   /** @brief The Feature Flow object segmentation and tracker. */
-  std::unique_ptr<maeve_core::FeatureFlow> feature_flow_ptr;
+  std::unique_ptr<open_maeve::FeatureFlow> feature_flow_ptr;
 };  // class FeatureFlowNodeHandler
-}  // namespace maeve_core
+}  // namespace open_maeve

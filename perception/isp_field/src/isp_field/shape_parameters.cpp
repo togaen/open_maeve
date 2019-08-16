@@ -19,13 +19,13 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_core/isp_field/shape_parameters.h"
+#include "open_maeve/isp_field/shape_parameters.h"
 
 #include <limits>
 
-#include "maeve_core/maeve_macros/checks.h"
+#include "open_maeve/maeve_macros/checks.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 static const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
@@ -60,4 +60,4 @@ std::ostream& operator<<(std::ostream& o, const ShapeParameters& sp) {
            << ", alpha: " << sp.alpha << ", beta: " << sp.beta << "]";
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

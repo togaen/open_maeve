@@ -21,9 +21,9 @@
  */
 #include <gtest/gtest.h>
 
-#include "maeve_core/isp_controller_2d/ros_interface.h"
+#include "open_maeve/isp_controller_2d/ros_interface.h"
 
-namespace maeve_core {
+namespace open_maeve {
 TEST(ISP_Controller_ROS, testROS_Interface) {
   ControlCommand cmd(1.3, 4.7);
   // \TODO(me) Also test that header is set correctly.
@@ -35,7 +35,7 @@ TEST(ISP_Controller_ROS, testROS_Interface) {
   EXPECT_EQ(gsm.throttle, cmd.throttle);
   EXPECT_EQ(gsm.yaw, cmd.yaw);
 }
-}  // namespace maeve_core
+}  // namespace open_maeve
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);

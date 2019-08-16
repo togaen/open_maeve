@@ -27,8 +27,8 @@
 
 #include "HistogramFeatures.h"
 #include "Sample.h"
-#include "maeve_core/struck/Config.h"
-#include "maeve_core/struck/Rect.h"
+#include "open_maeve/struck/Config.h"
+#include "open_maeve/struck/Rect.h"
 
 #include <iostream>
 

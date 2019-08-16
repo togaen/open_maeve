@@ -27,7 +27,7 @@
 #include <array>
 #include <vector>
 
-namespace maeve_core {
+namespace open_maeve {
 /** @brief Set of points describing an AR tag. */
 typedef std::array<Eigen::Vector3d, 4> AR_Points;
 
@@ -77,4 +77,4 @@ double arComputeMaxXY_Extent(const std::vector<cv::Point2d>& points);
  * @return A vector of projected cv::Point3d objects.
  */
 std::vector<cv::Point3d> arEigenPoints2OpenCV(const AR_Points& points);
-}  // namespace maeve_core
+}  // namespace open_maeve

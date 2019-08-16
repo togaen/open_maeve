@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
   ros::NodeHandle nh(node_name);
 
   // Create handler.
-  maeve_core::MaeveExpansionSegmentationNodeHandler handler(nh);
+  open_maeve::MaeveExpansionSegmentationNodeHandler handler(nh);
 
   // Kick it off.
   ros::spin();

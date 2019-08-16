@@ -19,12 +19,12 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_core/isp_field/potential_transforms.h"
+#include "open_maeve/isp_field/potential_transforms.h"
 
 #include <cmath>
 #include <limits>
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 static const auto INF = std::numeric_limits<double>::infinity();
 }  // namespace
@@ -101,4 +101,4 @@ cv::Point2d PotentialTransform<ConstraintType::SOFT>::operator()(
   return return_value;
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

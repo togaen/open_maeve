@@ -19,11 +19,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_core/segmentation_taxonomy/types.h"
+#include "open_maeve/segmentation_taxonomy/types.h"
 
 #include <algorithm>
 
-namespace maeve_core {
+namespace open_maeve {
 std::ostream& operator<<(std::ostream& os, const LabelRange& label_range) {
   return os << "[" << std::get<0>(label_range) << ", "
             << std::get<1>(label_range) << "]";
@@ -69,4 +69,4 @@ bool labelRangeValid(const LabelRange& label_range) {
   return true;
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

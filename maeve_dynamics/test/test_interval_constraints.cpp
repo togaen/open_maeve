@@ -21,9 +21,9 @@
  */
 #include <gtest/gtest.h>
 
-#include "maeve_core/maeve_dynamics/interval_constraints.h"
+#include "open_maeve/maeve_dynamics/interval_constraints.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 const auto singleton_bounds = Interval<double>(0.0, 0.0);
 const auto unit_bounds = Interval<double>(0.0, 1.0);
@@ -179,4 +179,4 @@ TEST(Maeve_Dynamics_Interval_Constraints, testConstruction) {
     // EXPECT_TRUE(false);
   }
 }
-}  // namespace maeve_core
+}  // namespace open_maeve

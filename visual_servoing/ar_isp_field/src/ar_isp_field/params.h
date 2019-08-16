@@ -24,12 +24,12 @@
 #include <string>
 #include <vector>
 
-#include "maeve_core/isp_controller_2d/isp_controller_2d.h"
-#include "maeve_core/isp_field/shape_parameters.h"
-#include "maeve_core/maeve_geometry/interval.h"
-#include "maeve_core/ros_parameter_loading/ros_parameter_loading.h"
+#include "open_maeve/isp_controller_2d/isp_controller_2d.h"
+#include "open_maeve/isp_field/shape_parameters.h"
+#include "open_maeve/maeve_geometry/interval.h"
+#include "open_maeve/ros_parameter_loading/ros_parameter_loading.h"
 
-namespace maeve_core {
+namespace open_maeve {
 
 /** @brief Parameter object to load ROS params.*/
 struct AR_ISPFieldParams : public ParamsBase {
@@ -129,4 +129,4 @@ struct AR_ISPFieldParams : public ParamsBase {
   std::vector<double> viz_potential_bounds_;
 };  // struct AR_ISPFieldParams
 
-}  // namespace maeve_core
+}  // namespace open_maeve

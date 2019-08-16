@@ -24,9 +24,9 @@
 #include <cmath>
 #include <limits>
 
-#include "maeve_core/maeve_geometry/interval.h"
+#include "open_maeve/maeve_geometry/interval.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 const auto Inf = std::numeric_limits<double>::infinity();
 const auto Min = std::numeric_limits<double>::lowest();
@@ -497,4 +497,4 @@ TEST(Maeve_Geometry_Interval, addition) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

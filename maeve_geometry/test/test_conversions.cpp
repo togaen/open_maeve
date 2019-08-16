@@ -23,7 +23,7 @@
 
 #include "boost/optional.hpp"
 
-#include "maeve_core/maeve_geometry/conversions.h"
+#include "open_maeve/maeve_geometry/conversions.h"
 
 namespace {
 const auto a = 1.317;
@@ -32,7 +32,7 @@ const auto c = -5.2747;
 const auto f = -5.2749;
 }  // namespace
 
-namespace maeve_core {
+namespace open_maeve {
 
 //------------------------------------------------------------------------------
 
@@ -77,4 +77,4 @@ TEST(Maeve_Geometry_Conversions, signed_value) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

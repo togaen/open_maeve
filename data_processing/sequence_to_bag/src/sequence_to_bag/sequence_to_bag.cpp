@@ -29,7 +29,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/range/iterator_range.hpp>
 
-namespace maeve_core {
+namespace open_maeve {
 
 //------------------------------------------------------------------------------
 
@@ -170,4 +170,4 @@ geometry_msgs::TransformStamped getStampedTransformFromPose(
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

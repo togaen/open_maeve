@@ -37,7 +37,7 @@ namespace {
 const auto CLOCK_HZ_DEFAULT = 1000;
 }  // namespace
 
-namespace maeve_core {
+namespace open_maeve {
 namespace parallel_domain {
 
 std::ostream& operator<<(std::ostream& os, const MetaInfo& meta_info) {
@@ -158,4 +158,4 @@ std::map<int, std::string> getSortedIndexedFileList(
 }
 
 }  // namespace parallel_domain
-}  // namespace maeve_core
+}  // namespace open_maeve

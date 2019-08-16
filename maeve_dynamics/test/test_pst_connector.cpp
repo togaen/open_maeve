@@ -24,9 +24,9 @@
 
 #include <gtest/gtest.h>
 
-#include "maeve_core/maeve_dynamics/pst_connector.h"
+#include "open_maeve/maeve_dynamics/pst_connector.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 constexpr auto EPS = 1e-4;
 }  // namespace
@@ -599,4 +599,4 @@ TEST(Maeve_Dynamics_PST_Connector, testConstruction) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

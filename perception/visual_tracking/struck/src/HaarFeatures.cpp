@@ -26,7 +26,7 @@
  */
 
 #include "HaarFeatures.h"
-#include "maeve_core/struck/Config.h"
+#include "open_maeve/struck/Config.h"
 
 static const int kSystematicFeatureCount = 192;
 

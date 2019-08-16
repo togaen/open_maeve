@@ -21,9 +21,9 @@
  */
 #include "segmentation_isp_field/lib.h"
 
-#include "maeve_core/isp_field/isp_field.h"
+#include "open_maeve/isp_field/isp_field.h"
 
-namespace maeve_core {
+namespace open_maeve {
 cv::Mat extractGuidanceField(const cv::Mat& segmentation,
                              const LabelRange& label_range,
                              const cv::Point2d& potential_value) {
@@ -42,4 +42,4 @@ cv::Mat extractGuidanceField(const cv::Mat& segmentation,
   // Return field.
   return f;
 }
-}  // namespace maeve_core
+}  // namespace open_maeve

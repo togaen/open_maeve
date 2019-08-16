@@ -21,7 +21,7 @@
  */
 #include "./bb_params.h"
 
-namespace maeve_core {
+namespace open_maeve {
 
 bool BoundingBoxParams::load(const ros::NodeHandle& nh) {
   LOAD_PARAM(bb_x_min);
@@ -41,4 +41,4 @@ bool BoundingBoxParams::load(const ros::NodeHandle& nh) {
   return true;
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

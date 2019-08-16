@@ -23,7 +23,7 @@
 
 #include <cv_bridge/cv_bridge.h>
 
-namespace maeve_core {
+namespace open_maeve {
 FeatureFlowNodeHandler::FeatureFlowNodeHandler(const ros::NodeHandle& nh)
     : skipped_frames(0), feature_flow_ptr(nullptr) {
   if (!params.load(nh)) {
@@ -146,4 +146,4 @@ void FeatureFlowNodeHandler::callback(const sensor_msgs::Image::ConstPtr& msg) {
   // Publish visualization.
   visualize(msg->header);
 }
-}  // namespace maeve_core
+}  // namespace open_maeve

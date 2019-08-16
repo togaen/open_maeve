@@ -21,9 +21,9 @@
  */
 #include <gtest/gtest.h>
 
-#include "maeve_core/maeve_geometry/powers.h"
+#include "open_maeve/maeve_geometry/powers.h"
 
-namespace maeve_core {
+namespace open_maeve {
 
 TEST(Maeve_Geometry_Comparisons, testPowers) {
   const auto x = 3.5;
@@ -34,4 +34,4 @@ TEST(Maeve_Geometry_Comparisons, testPowers) {
   EXPECT_EQ(sixth(x), x * x * x * x * x * x);
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

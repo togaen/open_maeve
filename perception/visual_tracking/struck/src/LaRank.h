@@ -29,7 +29,7 @@
 #define LARANK_H
 
 #include "Sample.h"
-#include "maeve_core/struck/Rect.h"
+#include "open_maeve/struck/Rect.h"
 
 #include <Eigen/Core>
 #include <vector>

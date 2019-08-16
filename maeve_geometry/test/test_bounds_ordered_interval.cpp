@@ -21,9 +21,9 @@
  */
 #include <gtest/gtest.h>
 
-#include "maeve_core/maeve_geometry/bounds_ordered_interval.h"
+#include "open_maeve/maeve_geometry/bounds_ordered_interval.h"
 
-namespace maeve_core {
+namespace open_maeve {
 
 //------------------------------------------------------------------------------
 
@@ -85,4 +85,4 @@ TEST(BoundsOrderedInterval, ordering) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

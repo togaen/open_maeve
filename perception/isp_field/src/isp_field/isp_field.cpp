@@ -19,9 +19,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_core/isp_field/isp_field.h"
+#include "open_maeve/isp_field/isp_field.h"
 
-namespace maeve_core {
+namespace open_maeve {
 
 //------------------------------------------------------------------------------
 
@@ -75,4 +75,4 @@ cv::Rect ISP_ROI(const cv::Mat& ISP, const double kernel_height,
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

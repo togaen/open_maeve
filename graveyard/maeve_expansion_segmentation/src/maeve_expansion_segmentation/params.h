@@ -24,10 +24,10 @@
 #include <string>
 #include <vector>
 
-#include "maeve_core/maeve_expansion_segmentation/connected_component_tracking.h"
-#include "maeve_core/ros_parameter_loading/ros_parameter_loading.h"
+#include "open_maeve/maeve_expansion_segmentation/connected_component_tracking.h"
+#include "open_maeve/ros_parameter_loading/ros_parameter_loading.h"
 
-namespace maeve_core {
+namespace open_maeve {
 
 /** @brief Parameter object to load ROS params.*/
 struct MaeveExpansionSegmentationParams : public ParamsBase {
@@ -139,4 +139,4 @@ struct MaeveExpansionSegmentationParams : public ParamsBase {
       const ros::NodeHandle& nh) override;
 };  // struct FeatureFlowParams
 
-}  // namespace maeve_core
+}  // namespace open_maeve

@@ -22,9 +22,9 @@
 #include <gtest/gtest.h>
 #include <cmath>
 
-#include "maeve_core/maeve_geometry/disjoint_interval.h"
+#include "open_maeve/maeve_geometry/disjoint_interval.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 const auto epsilon = 0.00001;
 DisjointInterval<double> makeTestDI() {
@@ -294,4 +294,4 @@ TEST(Maeve_Geometry_Disjoint_Interval, testInsert) {
   }
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

@@ -23,10 +23,10 @@
 
 #include <boost/filesystem.hpp>
 
-#include "maeve_core/isp_controller_2d/ros_interface.h"
-#include "maeve_core/isp_field/ros_interface.h"
+#include "open_maeve/isp_controller_2d/ros_interface.h"
+#include "open_maeve/isp_field/ros_interface.h"
 
-namespace maeve_core {
+namespace open_maeve {
 bool SegmentationFieldParams::load(const ros::NodeHandle& nh) {
   // Load node parameters.
   LOAD_PARAM(segmentation_sequence_topic);
@@ -105,4 +105,4 @@ bool SegmentationFieldParams::valid() const {
   // All good.
   return true;
 }
-}  // namespace maeve_core
+}  // namespace open_maeve

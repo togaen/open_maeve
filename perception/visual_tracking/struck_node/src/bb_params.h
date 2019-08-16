@@ -21,9 +21,9 @@
  */
 #pragma once
 
-#include "maeve_core/ros_parameter_loading/ros_parameter_loading.h"
+#include "open_maeve/ros_parameter_loading/ros_parameter_loading.h"
 
-namespace maeve_core {
+namespace open_maeve {
 
 /** @brief Parameter class for a geometric description of a 2D bounding box.*/
 struct BoundingBoxParams : public ParamsBase {
@@ -62,4 +62,4 @@ struct BoundingBoxParams : public ParamsBase {
       const ros::NodeHandle& nh) override;
 };  // struct BoundingBoxParams
 
-}  // namespace maeve_core
+}  // namespace open_maeve

@@ -24,11 +24,11 @@
 #include <string>
 #include <vector>
 
-#include "maeve_core/isp_controller_2d/isp_controller_2d.h"
-#include "maeve_core/maeve_geometry/interval.h"
-#include "maeve_core/ros_parameter_loading/ros_parameter_loading.h"
+#include "open_maeve/isp_controller_2d/isp_controller_2d.h"
+#include "open_maeve/maeve_geometry/interval.h"
+#include "open_maeve/ros_parameter_loading/ros_parameter_loading.h"
 
-namespace maeve_core {
+namespace open_maeve {
 /** @brief Parameter object to load ROS params.*/
 struct SegmentationFieldParams : public ParamsBase {
   /** @brief ISP controller parameters. */
@@ -88,4 +88,4 @@ struct SegmentationFieldParams : public ParamsBase {
   std::vector<double> viz_potential_bounds_;
 };  // struct SegmentationFieldParams
 
-}  // namespace maeve_core
+}  // namespace open_maeve

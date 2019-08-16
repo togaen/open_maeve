@@ -31,7 +31,7 @@
 
 #include <ros/console.h>
 
-namespace maeve_core {
+namespace open_maeve {
 
 StruckTracker::StruckTracker(ros::NodeHandle& nh)
     : doInitialise(false),
@@ -145,4 +145,4 @@ void StruckTracker::cameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
   publishBoundingBox(msg->header.stamp);
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

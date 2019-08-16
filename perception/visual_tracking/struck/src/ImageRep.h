@@ -28,7 +28,7 @@
 #ifndef IMAGE_REP_H
 #define IMAGE_REP_H
 
-#include "maeve_core/struck/Rect.h"
+#include "open_maeve/struck/Rect.h"
 
 #include <opencv2/core.hpp>
 #include <vector>

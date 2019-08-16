@@ -29,12 +29,12 @@
 #include <limits>
 #include <string>
 
-#include "maeve_core/isp_field/isp_field.h"
-#include "maeve_core/isp_field/visualize.h"
-#include "maeve_core/segmentation_taxonomy/types.h"
+#include "open_maeve/isp_field/isp_field.h"
+#include "open_maeve/isp_field/visualize.h"
+#include "open_maeve/segmentation_taxonomy/types.h"
 #include "segmentation_isp_field/lib.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
 }  // namespace
@@ -210,4 +210,4 @@ void SegmentationFieldNodeHandler::segmentationSequenceCallback(
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

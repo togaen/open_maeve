@@ -25,12 +25,12 @@
  *
  */
 
-#include "maeve_core/struck/Tracker.h"
+#include "open_maeve/struck/Tracker.h"
 #include "GraphUtils/GraphUtils.h"
 #include "ImageRep.h"
 #include "Sample.h"
 #include "Sampler.h"
-#include "maeve_core/struck/Config.h"
+#include "open_maeve/struck/Config.h"
 
 #include "HaarFeatures.h"
 #include "HistogramFeatures.h"

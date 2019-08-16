@@ -64,11 +64,11 @@ The following example code sets up a PST reachability problem and computes the
 reachability object.
 
 ```c++
-#include "maeve_core/maeve_dynamics/pst_reachability.h"
+#include "open_maeve/maeve_dynamics/pst_reachability.h"
 
 #include <iostream>
 
-namespace maeve_core {
+namespace open_maeve {
   //
   // Construct start and target points (time, path position)
   //
@@ -118,7 +118,7 @@ namespace maeve_core {
                 << p2.x() << ", " << p2.y() << ") is: "
                 << PST_Reachability::reachableInterval(*reachability) << "\n";
   }
-}  // namespace maeve_core
+}  // namespace open_maeve
 ```
 
 Running the above code will compute reachability and print

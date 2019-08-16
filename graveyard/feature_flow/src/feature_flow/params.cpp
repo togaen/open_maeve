@@ -23,7 +23,7 @@
 
 #include <limits>
 
-namespace maeve_core {
+namespace open_maeve {
 
 bool FeatureFlowParams::load(const ros::NodeHandle& nh) {
   // Load parameters.
@@ -69,4 +69,4 @@ bool FeatureFlowParams::load(const ros::NodeHandle& nh) {
   return true;
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

@@ -19,11 +19,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_core/isp_field/ros_interface.h"
+#include "open_maeve/isp_field/ros_interface.h"
 
-#include "maeve_core/ros_parameter_loading/macros.h"
+#include "open_maeve/ros_parameter_loading/macros.h"
 
-namespace maeve_core {
+namespace open_maeve {
 bool loadShapeParamsROS_Params(const ros::NodeHandle& nh, const std::string& ns,
                                ShapeParameters& shape_params) {
   // Attempt to load params.
@@ -37,4 +37,4 @@ bool loadShapeParamsROS_Params(const ros::NodeHandle& nh, const std::string& ns,
   return true;
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

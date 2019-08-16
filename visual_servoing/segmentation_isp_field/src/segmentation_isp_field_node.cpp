@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
   ros::init(argc, argv, node_name);
 
   // Create handler.
-  maeve_core::SegmentationFieldNodeHandler handler(node_name);
+  open_maeve::SegmentationFieldNodeHandler handler(node_name);
 
   // Kick it off.
   ros::spin();

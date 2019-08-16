@@ -29,10 +29,10 @@
 
 #include <memory>
 
-#include "maeve_core/maeve_expansion_segmentation/connected_component_tracking.h"
+#include "open_maeve/maeve_expansion_segmentation/connected_component_tracking.h"
 #include "maeve_expansion_segmentation/params.h"
 
-namespace maeve_core {
+namespace open_maeve {
 /**
  * @brief Interface between ROS and the expansion segmentation libraries.
  */
@@ -82,4 +82,4 @@ class MaeveExpansionSegmentationNodeHandler {
   /** @brief AND visualization publisher. */
   image_transport::Publisher viz_AND_pub;
 };  // class MaeveExpansionSegmentationNodeHandler
-}  // namespace maeve_core
+}  // namespace open_maeve

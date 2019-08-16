@@ -23,9 +23,9 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "maeve_core/segmentation_taxonomy/types.h"
+#include "open_maeve/segmentation_taxonomy/types.h"
 
-namespace maeve_core {
+namespace open_maeve {
 /**
  * @brief Compute an ISP field where all pixels of value 'label' in
  * 'segmentation' are set to 'potential_value'.
@@ -39,4 +39,4 @@ namespace maeve_core {
 cv::Mat extractGuidanceField(const cv::Mat& segmentation,
                              const LabelRange& label_range,
                              const cv::Point2d& potential_value);
-}  // namespace maeve_core
+}  // namespace open_maeve

@@ -25,12 +25,12 @@
 #include <cmath>
 #include <vector>
 
-#include "maeve_core/isp_controller_2d/control_command.h"
-#include "maeve_core/isp_controller_2d/isp_controller_2d.h"
-#include "maeve_core/isp_field/isp_field.h"
-#include "maeve_core/maeve_geometry/interval.h"
+#include "open_maeve/isp_controller_2d/control_command.h"
+#include "open_maeve/isp_controller_2d/isp_controller_2d.h"
+#include "open_maeve/isp_field/isp_field.h"
+#include "open_maeve/maeve_geometry/interval.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 static const auto epsilon = 0.0001;
 cv::Mat dummyMatrix(const int rows, const int cols) {
@@ -299,7 +299,7 @@ TEST(ISP_Controller, testSafeControls) {
     // EXPECT_NEAR(throttle_max, projections[i], epsilon);
   }
 }
-}  // namespace maeve_core
+}  // namespace open_maeve
 
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);

@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
   ros::NodeHandle nh(node_name);
 
   // Initialize STRUCK tracker.
-  auto struck_tracker = maeve_core::StruckTracker(nh);
+  auto struck_tracker = open_maeve::StruckTracker(nh);
   if (!struck_tracker.valid()) {
     ROS_INFO_STREAM("Struck config object failed sanity check.");
     return EXIT_FAILURE;

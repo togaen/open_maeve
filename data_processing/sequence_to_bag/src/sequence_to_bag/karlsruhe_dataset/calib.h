@@ -23,7 +23,7 @@
 
 #include <sensor_msgs/CameraInfo.h>
 
-namespace maeve_core {
+namespace open_maeve {
 namespace karlsruhe_dataset {
 
 /**
@@ -75,4 +75,4 @@ struct calib {
 };  // struct calib
 
 }  // namespace karlsruhe_dataset
-}  // namespace maeve_core
+}  // namespace open_maeve

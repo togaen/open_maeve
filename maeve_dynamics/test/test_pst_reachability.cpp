@@ -21,9 +21,9 @@
  */
 #include <gtest/gtest.h>
 
-#include "maeve_core/maeve_dynamics/pst_reachability.h"
+#include "open_maeve/maeve_dynamics/pst_reachability.h"
 
-namespace maeve_core {
+namespace open_maeve {
 TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
   const Eigen::Vector2d p1(0.0, 0.0);
   const auto speed = 1.0;
@@ -120,4 +120,4 @@ TEST(Maeve_Dynamics_PST_Reachability, testTargetTerminalSpeed) {
     }
   }
 }
-}  // namespace maeve_core
+}  // namespace open_maeve

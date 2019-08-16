@@ -26,9 +26,9 @@
 #include <cmath>
 #include <tuple>
 
-#include "maeve_core/maeve_geometry/tau.h"
+#include "open_maeve/maeve_geometry/tau.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 constexpr auto EPS = 1e-4;
 constexpr auto INF = std::numeric_limits<double>::infinity();
@@ -116,4 +116,4 @@ TEST(Tau, verifyScaling) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

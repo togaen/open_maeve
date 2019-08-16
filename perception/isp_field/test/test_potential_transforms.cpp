@@ -24,9 +24,9 @@
 #include <cmath>
 #include <limits>
 
-#include "maeve_core/isp_field/potential_transforms.h"
+#include "open_maeve/isp_field/potential_transforms.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 constexpr auto INF = std::numeric_limits<double>::infinity();
 constexpr auto EPS = 1e-4;
@@ -60,4 +60,4 @@ TEST(PotentialTransform, testSoft) {
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

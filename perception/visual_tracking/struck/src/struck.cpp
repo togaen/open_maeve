@@ -27,13 +27,13 @@
  *
  */
 
-#include "maeve_core/struck/struck.h"
+#include "open_maeve/struck/struck.h"
 
 #include <ros/console.h>
 
 #include <fstream>
 
-namespace maeve_core {
+namespace open_maeve {
 
 void rectangle(cv::Mat& rMat, const FloatRect& rRect,
                const cv::Scalar& rColour) {
@@ -42,4 +42,4 @@ void rectangle(cv::Mat& rMat, const FloatRect& rRect,
             rColour);
 }
 
-}  // namespace maeve_core
+}  // namespace open_maeve

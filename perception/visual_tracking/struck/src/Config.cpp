@@ -25,7 +25,7 @@
  *
  */
 
-#include "maeve_core/struck/Config.h"
+#include "open_maeve/struck/Config.h"
 
 #include <fstream>
 #include <iostream>

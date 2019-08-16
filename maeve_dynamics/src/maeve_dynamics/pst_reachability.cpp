@@ -19,15 +19,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-#include "maeve_core/maeve_dynamics/pst_reachability.h"
+#include "open_maeve/maeve_dynamics/pst_reachability.h"
 
 #include <cmath>
 #include <limits>
 #include <sstream>
 
-#include "maeve_core/maeve_geometry/comparisons.h"
+#include "open_maeve/maeve_geometry/comparisons.h"
 
-namespace maeve_core {
+namespace open_maeve {
 namespace {
 const auto Inf = std::numeric_limits<double>::infinity();
 const auto NaN = std::numeric_limits<double>::quiet_NaN();
@@ -298,4 +298,4 @@ boost::optional<PST_Connector> PST_Reachability::targetTerminalSpeed(
 
 //------------------------------------------------------------------------------
 
-}  // namespace maeve_core
+}  // namespace open_maeve

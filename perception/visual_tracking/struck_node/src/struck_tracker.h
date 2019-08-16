@@ -40,10 +40,10 @@
 #include <string>
 
 #include "./params.h"
-#include "maeve_core/struck/struck.h"
+#include "open_maeve/struck/struck.h"
 #include "struck_node/ImageBoundingBox.h"
 
-namespace maeve_core {
+namespace open_maeve {
 
 /**
  * @brief Convenience encapsulaton of functions/variable for running tracker.
@@ -136,4 +136,4 @@ class StruckTracker {
   void publishBoundingBox(const ros::Time& time) const;
 };  // class StruckTracker
 
-}  // namespace maeve_core
+}  // namespace open_maeve
