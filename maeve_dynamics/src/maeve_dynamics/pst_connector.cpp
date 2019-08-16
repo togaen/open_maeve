@@ -446,15 +446,19 @@ bool PST_Connector::segmentsConnected(const PST_Connector& connector) {
 
   // Absolute error for doing approximate floating point comparisons.
   // TODO(me): This should be a parameter.
-  // TODO(me): desparately need to be computing some kind of relative error
-  constexpr auto EPS = 1e-2;
+  constexpr auto EPS = 1e-5;
 
   // The path values at t1 and at t2 should be equal.
-  const auto connected = (approxEq(s01, s11, EPS) && approxEq(s12, s22, EPS));
+  const auto connected =
+      (approxRelEq(s01, s11, EPS, EPS) && approxRelEq(s12, s22, EPS, EPS));
 #if 0
   if (!connected) {
-    std::cerr << std::setprecision(20) << "s01: " << s01 << ", s11: " << s11
-              << ", s12: " << s12 << ", s22: " << s22 << std::endl;
+    const auto rel_diff = std::abs(s01 - s11);
+    const auto rel_eps = (std::max(std::abs(s01), std::abs(s11)) * EPS);
+    std::cerr << std::setprecision(20) << "rel_diff: " << rel_diff
+              << ", rel_eps: " << rel_eps << ", s01: " << s01
+              << ", s11: " << s11 << ", s12: " << s12 << ", s22: " << s22
+              << std::endl;
   }
 #endif
   return connected;
@@ -481,11 +485,11 @@ bool PST_Connector::segmentsTangent(const PST_Connector& connector) {
 
   // Absolute error for doing approximate floating point comparisons.
   // TODO(me): This should be a parameter.
-  constexpr auto EPS = 5e-4;
+  constexpr auto EPS = 1e-5;
 
   // The path values at t1 and at t2 should be equal.
-  const auto tangent =
-      (approxEq(s_dot01, s_dot11, EPS) && approxEq(s_dot12, s_dot22, EPS));
+  const auto tangent = (approxRelEq(s_dot01, s_dot11, EPS, EPS) &&
+                        approxRelEq(s_dot12, s_dot22, EPS, EPS));
 #if 0
   if (!tangent) {
     std::cerr << "s_dot01: " << s_dot01 << ", s_dot11: " << s_dot11
