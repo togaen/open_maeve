@@ -172,6 +172,46 @@ TEST(Maeve_Geometry_Interval, project_to_range) {
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Interval, get_normalized_position_precondition_violation) {
+  EXPECT_THROW({ Interval_d::get_normalized_position(Interval_d(), 0.0); },
+               std::domain_error);
+
+  EXPECT_THROW(
+      { Interval_d::get_normalized_position(Interval_d(0.0, 0.0), 0.0); },
+      std::domain_error);
+
+  const auto valid_interval = Interval_d(0.0, 1.0);
+  EXPECT_NO_THROW({
+    Interval_d::get_normalized_position(valid_interval,
+                                        Interval_d::min(valid_interval));
+  });
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Maeve_Geometry_Interval, get_normalized_position_simple) {
+  const auto i = Interval_d(0.0, 1.0);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, 0.0), 0.0);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, 0.5), 0.5);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, 1.0), 1.0);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, 1.2), 1.2);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, -1.0), -1.0);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Maeve_Geometry_Interval, get_normalized_position) {
+  const auto i = Interval_d(-1.0, 1.0);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, 0.0), 0.5);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, 0.5), 0.75);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, 1.0), 1.0);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, 1.2), 1.1);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, -1.0), 0.0);
+  EXPECT_EQ(Interval_d::get_normalized_position(i, -1.5), -0.25);
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, testProjectToInterval) {
   const auto i = Interval<double>(-1.0, 1.0);
   {

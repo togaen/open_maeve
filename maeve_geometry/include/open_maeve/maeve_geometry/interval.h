@@ -335,6 +335,14 @@ class Interval {
   static T project_to_interval(const Interval& interval, const T& val);
 
   /**
+   * @brief Compute a normalized along an interval.
+   *
+   * @note For 'pos' on the interval, the return value will be in [0, 1]. For
+   * 'pos' below or above, the return value will be < 0 or > 1, respectively.
+   */
+  static T get_normalized_position(const Interval& interval, const T& pos);
+
+  /**
    * @brief Project a value 'val' from one range onto another.
    *
    * @tparam T The type of numbers being projected.
@@ -822,10 +830,38 @@ T Interval<T>::project_to_interval(const Interval& interval, const T& val) {
 //------------------------------------------------------------------------------
 
 template <typename T>
+T Interval<T>::get_normalized_position(const Interval& interval, const T& pos) {
+  // Functor to verify function pre-conditions
+  const auto check_preconditions = [](const Interval& i, const T& p) {
+    if (Interval::empty(i)) {
+      throw std::domain_error(
+          "Cannot compute normalized position along empty interval.");
+    }
+
+    if (Interval::zero_length(i)) {
+      throw std::domain_error(
+          "Cannot compute normalized position along an interval with zero "
+          "length.");
+    }
+
+    if (std::isnan(p)) {
+      throw std::domain_error("Cannot compute normalized position for NaN.");
+    }
+  };
+
+  check_preconditions(interval, pos);
+
+  const auto offset = (pos - Interval::min(interval));
+  const auto s = (offset / Interval::length(interval));
+  return s;
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
 T Interval<T>::project_to_range(const T& val, const Interval<T>& from_range,
                                 const Interval<T>& to_range) {
-  const auto val_offset = (val - Interval<T>::min(from_range));
-  const auto s = (val_offset / Interval<T>::length(from_range));
+  const auto s = Interval<T>::get_normalized_position(from_range, val);
   return (Interval<T>::min(to_range) + s * Interval<T>::length(to_range));
 }
 
