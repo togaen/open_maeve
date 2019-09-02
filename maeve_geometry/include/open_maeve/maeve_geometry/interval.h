@@ -337,6 +337,11 @@ class Interval {
   /**
    * @brief Compute a normalized along an interval.
    *
+   * @pre Input Interval is non-empty and has > 0 length.
+   * @pre Input position is not NaN
+   *
+   * @note An exception is thrown if pre-conditions are not met.
+   *
    * @note For 'pos' on the interval, the return value will be in [0, 1]. For
    * 'pos' below or above, the return value will be < 0 or > 1, respectively.
    */
