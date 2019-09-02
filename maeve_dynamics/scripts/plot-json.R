@@ -10,7 +10,8 @@ plot_connector <- function(legend_x, legend_y, connector) {
   t2 = connector$parabolic_segments[[2]]$domain$min
   t3 = connector$parabolic_segments[[3]]$domain$min
   t4 = connector$parabolic_segments[[3]]$domain$max
-  x = seq(t1, t4, 0.01)
+  step_val = 1 # This may need to be adjusted depending on the domain size
+  x = seq(t1, t4, step_val)
   y = c();
   
   for (t in x) {
