@@ -180,6 +180,10 @@ TEST(Maeve_Geometry_Interval, get_normalized_position_precondition_violation) {
       { Interval_d::get_normalized_position(Interval_d(0.0, 0.0), 0.0); },
       std::domain_error);
 
+  EXPECT_THROW(
+      { Interval_d::get_normalized_position(Interval_d(-0.0, 0.0), 0.0); },
+      std::domain_error);
+
   const auto valid_interval = Interval_d(0.0, 1.0);
   EXPECT_NO_THROW({
     Interval_d::get_normalized_position(valid_interval,
