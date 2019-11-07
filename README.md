@@ -1,9 +1,7 @@
 # README #
 
 This is a collection of ROS packages maintained by [Maeve Automation](https://maeveautomation.com) for
-experimentation purposes. It is released under open source license as a service
-to the robotics community in the hope that some may find it useful; however, no
-warranty or guarantee is made to the usefulness or correctness of the code. 
+experimentation purposes. No warranty or guarantee is made to the usefulness or correctness of the code.
 
 Each package contains its own README with details about its contents.
 
@@ -28,12 +26,7 @@ fixes but may also include incomplete or broken code, so caveat emptor.
 
 ## Collaboration ##
 
-Collaboration is welcome and encouraged using [feature branches](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow) or [forks](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow).
-
-Anyone with a Bitbucket account may contribute, but users of the Maeve
-Automation Ubuntu MATE platform for Raspberry Pi get built-in team member
-access to this repository under the "maeve-pi" user. That means they can
-immediately create and push feature branches.
+Collaboration is welcome using [feature branches](https://www.atlassian.com/git/tutorials/comparing-workflows#feature-branch-workflow) or [forks](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow).
 
 ## Citing ##
 
