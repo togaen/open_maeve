@@ -21,44 +21,114 @@
  */
 #pragma once
 
-#include <cmath>
-#include <stdexcept>
+#include "checks.h"
+
 #include <type_traits>
 
 template <typename T>
-class AffinelyExtendedReal {
+class AffinelyExtended {
  public:
   /** @brief Constructor that allows implicit conversion. */
-  AffinelyExtendedReal(T value);
+  AffinelyExtended(T value);
 
  protected:
   T value;
-};  // class Real
+};  // class AffinelyExtended
 
 template <typename T>
-AffinelyExtendedReal<T>::AffinelyExtendedReal(T value) : value(value) {
+AffinelyExtended<T>::AffinelyExtended(T value) : value(value) {
   static_assert(std::is_floating_point<T>::value,
-                "Cannot instantiate class with non-floating point type.");
-
-  if (std::isnan(value)) {
-    throw std::domain_error("NaN is not a Real.");
-  }
+                "Cannot instantiate a Real with non-floating point type.");
+  throw_if_nan(value);
 }
 
 //------------------------------------------------------------------------------
 
 template <typename T>
-class Real : AffinelyExtendedReal<T> {
+class Real : public AffinelyExtended<T> {
  public:
-  /** @brief Constructor that allows implicit conversion. */
+  /** @brief Constructor that allows implicit converstion. */
   Real(T value);
 };  // class Real
 
 template <typename T>
-Real<T>::Real(T value) : AffinelyExtendedReal<T>(value) {
-  if (std::isinf(value)) {
-    throw std::domain_error("Infinity is not a Real.");
-  }
+Real<T>::Real(T value) : AffinelyExtended<T>(value) {
+  throw_if_infinite(value);
+}
+
+//------------------------------------------------------------------------------
+
+template <template <typename> class T_Domain, typename T_Scalar>
+class NonPositive : public T_Domain<T_Scalar> {
+ public:
+  /** @brief Constructor that allows implicit converstion. */
+  NonPositive(T_Scalar value);
+};  // class Real
+
+template <template <typename> class T_Domain, typename T_Scalar>
+NonPositive<T_Domain, T_Scalar>::NonPositive(T_Scalar value)
+    : T_Domain<T_Scalar>(value) {
+  throw_if_not_nonpositive(value);
+}
+
+//------------------------------------------------------------------------------
+
+template <template <typename> class T_Domain, typename T_Scalar>
+class NonNegative : public T_Domain<T_Scalar> {
+ public:
+  /** @brief Constructor that allows implicit converstion. */
+  NonNegative(T_Scalar value);
+};  // class Real
+
+template <template <typename> class T_Domain, typename T_Scalar>
+NonNegative<T_Domain, T_Scalar>::NonNegative(T_Scalar value)
+    : T_Domain<T_Scalar>(value) {
+  throw_if_not_nonnegative(value);
+}
+
+//------------------------------------------------------------------------------
+
+template <template <typename> class T_Domain, typename T_Scalar>
+class StrictlyPositive : public T_Domain<T_Scalar> {
+ public:
+  /** @brief Constructor that allows implicit converstion. */
+  StrictlyPositive(T_Scalar value);
+};  // class Real
+
+template <template <typename> class T_Domain, typename T_Scalar>
+StrictlyPositive<T_Domain, T_Scalar>::StrictlyPositive(T_Scalar value)
+    : T_Domain<T_Scalar>(value) {
+  throw_if_not_strictly_positive(value);
+}
+
+//------------------------------------------------------------------------------
+
+template <template <typename> class T_Domain, typename T_Scalar>
+class StrictlyNegative : public T_Domain<T_Scalar> {
+ public:
+  /** @brief Constructor that allows implicit converstion. */
+  StrictlyNegative(T_Scalar value);
+};  // class Real
+
+template <template <typename> class T_Domain, typename T_Scalar>
+StrictlyNegative<T_Domain, T_Scalar>::StrictlyNegative(T_Scalar value)
+    : T_Domain<T_Scalar>(value) {
+  throw_if_not_strictly_negative(value);
+}
+
+//------------------------------------------------------------------------------
+
+template <template <typename> class T_Domain, typename T_Scalar>
+class NonZero : public T_Domain<T_Scalar> {
+ public:
+  /** @brief Constructor that allows implicit converstion. */
+  NonZero(T_Scalar value);
+};  // class Real
+
+template <template <typename> class T_Domain, typename T_Scalar>
+NonZero<T_Domain, T_Scalar>::NonZero(T_Scalar value)
+    : T_Domain<T_Scalar>(value) {
+  throw_if_zero(value);
 }
 
 //------------------------------------------------------------------------------

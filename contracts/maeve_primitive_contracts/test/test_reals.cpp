@@ -36,12 +36,12 @@ constexpr auto NaN = std::numeric_limits<double>::quiet_NaN();
 //------------------------------------------------------------------------------
 
 TEST(Maeve_Primitives_Contracts, affinely_extended) {
-  EXPECT_THROW({ const auto tmp = AffinelyExtendedReal<double>(NaN); },
+  EXPECT_THROW({ const auto tmp = AffinelyExtended<double>(NaN); },
                std::domain_error);
 
-  EXPECT_NO_THROW({ const auto tmp = AffinelyExtendedReal<double>(INF); });
+  EXPECT_NO_THROW({ const auto tmp = AffinelyExtended<double>(INF); });
 
-  EXPECT_NO_THROW({ const auto tmp = AffinelyExtendedReal<double>(0.0); });
+  EXPECT_NO_THROW({ const auto tmp = AffinelyExtended<double>(0.0); });
 }
 
 //------------------------------------------------------------------------------
@@ -52,6 +52,36 @@ TEST(Maeve_Primitives_Contracts, real) {
   EXPECT_THROW({ const auto tmp = Real<double>(INF); }, std::domain_error);
 
   EXPECT_NO_THROW({ const auto tmp = Real<double>(0.0); });
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Maeve_Primitives_Contracts, non_positive) {
+  EXPECT_THROW({ const auto tmp = (NonPositive<Real, double>(NaN)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (NonPositive<Real, double>(INF)); },
+               std::domain_error);
+
+  EXPECT_NO_THROW({ const auto tmp = (NonPositive<Real, double>(0.0)); });
+
+  EXPECT_THROW({ const auto tmp = (NonPositive<Real, double>(1.0)); },
+               std::domain_error);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Maeve_Primitives_Contracts, non_negative) {
+  EXPECT_THROW({ const auto tmp = (NonNegative<Real, double>(NaN)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (NonNegative<Real, double>(INF)); },
+               std::domain_error);
+
+  EXPECT_NO_THROW({ const auto tmp = (NonNegative<Real, double>(0.0)); });
+
+  EXPECT_THROW({ const auto tmp = (NonNegative<Real, double>(-1.0)); },
+               std::domain_error);
 }
 
 //------------------------------------------------------------------------------
