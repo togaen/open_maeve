@@ -63,10 +63,79 @@ TEST(Maeve_Primitives_Contracts, non_positive) {
   EXPECT_THROW({ const auto tmp = (NonPositive<Real, double>(INF)); },
                std::domain_error);
 
+  EXPECT_THROW({ const auto tmp = (NonPositive<Real, double>(-INF)); },
+               std::domain_error);
+
   EXPECT_NO_THROW({ const auto tmp = (NonPositive<Real, double>(0.0)); });
 
   EXPECT_THROW({ const auto tmp = (NonPositive<Real, double>(1.0)); },
                std::domain_error);
+
+  EXPECT_NO_THROW({ const auto tmp = (NonPositive<Real, double>(-1.0)); });
+
+  EXPECT_THROW(
+      { const auto tmp = (NonPositive<AffinelyExtended, double>(NaN)); },
+      std::domain_error);
+
+  EXPECT_THROW(
+      { const auto tmp = (NonPositive<AffinelyExtended, double>(INF)); },
+      std::domain_error);
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonPositive<AffinelyExtended, double>(-INF)); });
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonPositive<AffinelyExtended, double>(0.0)); });
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonPositive<AffinelyExtended, double>(-1.0)); });
+
+  EXPECT_THROW(
+      { const auto tmp = (NonPositive<AffinelyExtended, double>(1.0)); },
+      std::domain_error);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Maeve_Primitives_Contracts, strictly_positive) {
+  EXPECT_THROW({ const auto tmp = (StrictlyPositive<Real, double>(NaN)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (StrictlyPositive<Real, double>(-INF)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (StrictlyPositive<Real, double>(INF)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (StrictlyPositive<Real, double>(0.0)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (StrictlyPositive<Real, double>(-1.0)); },
+               std::domain_error);
+
+  EXPECT_NO_THROW({ const auto tmp = (StrictlyPositive<Real, double>(1.0)); });
+
+  EXPECT_THROW(
+      { const auto tmp = (StrictlyPositive<AffinelyExtended, double>(NaN)); },
+      std::domain_error);
+
+  EXPECT_THROW(
+      { const auto tmp = (StrictlyPositive<AffinelyExtended, double>(-INF)); },
+      std::domain_error);
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (StrictlyPositive<AffinelyExtended, double>(INF)); });
+
+  EXPECT_THROW(
+      { const auto tmp = (StrictlyPositive<AffinelyExtended, double>(0.0)); },
+      std::domain_error);
+
+  EXPECT_THROW(
+      { const auto tmp = (StrictlyPositive<AffinelyExtended, double>(-1.0)); },
+      std::domain_error);
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (StrictlyPositive<AffinelyExtended, double>(1.0)); });
 }
 
 //------------------------------------------------------------------------------
@@ -78,10 +147,117 @@ TEST(Maeve_Primitives_Contracts, non_negative) {
   EXPECT_THROW({ const auto tmp = (NonNegative<Real, double>(INF)); },
                std::domain_error);
 
+  EXPECT_THROW({ const auto tmp = (NonNegative<Real, double>(-INF)); },
+               std::domain_error);
+
   EXPECT_NO_THROW({ const auto tmp = (NonNegative<Real, double>(0.0)); });
 
   EXPECT_THROW({ const auto tmp = (NonNegative<Real, double>(-1.0)); },
                std::domain_error);
+
+  EXPECT_NO_THROW({ const auto tmp = (NonNegative<Real, double>(1.0)); });
+
+  EXPECT_THROW(
+      { const auto tmp = (NonNegative<AffinelyExtended, double>(NaN)); },
+      std::domain_error);
+
+  EXPECT_THROW(
+      { const auto tmp = (NonNegative<AffinelyExtended, double>(-INF)); },
+      std::domain_error);
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonNegative<AffinelyExtended, double>(INF)); });
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonNegative<AffinelyExtended, double>(0.0)); });
+
+  EXPECT_THROW(
+      { const auto tmp = (NonNegative<AffinelyExtended, double>(-1.0)); },
+      std::domain_error);
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonNegative<AffinelyExtended, double>(1.0)); });
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Maeve_Primitives_Contracts, strictly_negative) {
+  EXPECT_THROW({ const auto tmp = (StrictlyNegative<Real, double>(NaN)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (StrictlyNegative<Real, double>(-INF)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (StrictlyNegative<Real, double>(INF)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (StrictlyNegative<Real, double>(0.0)); },
+               std::domain_error);
+
+  EXPECT_NO_THROW({ const auto tmp = (StrictlyNegative<Real, double>(-1.0)); });
+
+  EXPECT_THROW({ const auto tmp = (StrictlyNegative<Real, double>(1.0)); },
+               std::domain_error);
+
+  EXPECT_THROW(
+      { const auto tmp = (StrictlyNegative<AffinelyExtended, double>(NaN)); },
+      std::domain_error);
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (StrictlyNegative<AffinelyExtended, double>(-INF)); });
+
+  EXPECT_THROW(
+      { const auto tmp = (StrictlyNegative<AffinelyExtended, double>(INF)); },
+      std::domain_error);
+
+  EXPECT_THROW(
+      { const auto tmp = (StrictlyNegative<AffinelyExtended, double>(0.0)); },
+      std::domain_error);
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (StrictlyNegative<AffinelyExtended, double>(-1.0)); });
+
+  EXPECT_THROW(
+      { const auto tmp = (StrictlyNegative<AffinelyExtended, double>(1.0)); },
+      std::domain_error);
+}
+
+//------------------------------------------------------------------------------
+
+TEST(Maeve_Primitives_Contracts, non_zero) {
+  EXPECT_THROW({ const auto tmp = (NonZero<Real, double>(NaN)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (NonZero<Real, double>(-INF)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (NonZero<Real, double>(INF)); },
+               std::domain_error);
+
+  EXPECT_THROW({ const auto tmp = (NonZero<Real, double>(0.0)); },
+               std::domain_error);
+
+  EXPECT_NO_THROW({ const auto tmp = (NonZero<Real, double>(-1.0)); });
+
+  EXPECT_NO_THROW({ const auto tmp = (NonZero<Real, double>(1.0)); });
+
+  EXPECT_THROW({ const auto tmp = (NonZero<AffinelyExtended, double>(NaN)); },
+               std::domain_error);
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonZero<AffinelyExtended, double>(-INF)); });
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonZero<AffinelyExtended, double>(INF)); });
+
+  EXPECT_THROW({ const auto tmp = (NonZero<AffinelyExtended, double>(0.0)); },
+               std::domain_error);
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonZero<AffinelyExtended, double>(-1.0)); });
+
+  EXPECT_NO_THROW(
+      { const auto tmp = (NonZero<AffinelyExtended, double>(1.0)); });
 }
 
 //------------------------------------------------------------------------------
