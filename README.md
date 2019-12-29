@@ -8,11 +8,6 @@ Each package contains its own README with details about its contents.
 If using the code, be aware that different licenses may apply to different parts
 of the code.
 
-## Cloning ##
-
-See the [Overview](https://bitbucket.org/maeveautomation/open_maeve/overview)
-page for links to clone this repository.
-
 ## Releases ##
 
 Each release of the codebase is tagged with `release-X` where 'X' is the
