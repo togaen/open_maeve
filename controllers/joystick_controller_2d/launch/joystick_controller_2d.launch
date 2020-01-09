@@ -3,10 +3,13 @@
   <!-- System joystick interface. For details on setting this parameter, see:
          http://wiki.ros.org/joy/Tutorials/ConfiguringALinuxJoystick -->
   <arg name="joy_input" default="/dev/input/js0"/>
-  <param name="/joy_node/dev" type="string" value="$(arg joy_input)"/>
+  <arg name="autorepeat_rate" default="0.0"/>
 
   <!-- Joystick interface node. -->
-  <node name="joy" pkg="joy" type="joy_node" output="screen"/>
+  <node name="joy" pkg="joy" type="joy_node" output="screen">
+    <param name="/dev" type="string" value="$(arg joy_input)"/>
+    <param name="autorepeat_rate" type="double" value="$(arg autorepeat_rate)"/>
+  </node>
 
   <!-- Name of output topic. -->
   <arg name="output_topic" value="/joystick_controller_2d/command"/>
