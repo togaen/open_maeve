@@ -66,8 +66,10 @@ inline bool approxRelEq(const T& a, const T& b, const T& abs_eps,
                         const T& rel_eps) {
   const auto abs_approx_eq = approxEq(a, b, abs_eps);
 
+  const auto delta = std::abs(a - b);
   const auto larger = std::max(std::abs(a), std::abs(b));
-  const auto rel_approx_eq = (std::abs(a - b) <= (larger * rel_eps));
+  const auto rel_delta = (larger * rel_eps);
+  const auto rel_approx_eq = (delta <= rel_delta);
 
   return (abs_approx_eq || rel_approx_eq);
 }
