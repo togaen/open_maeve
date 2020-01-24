@@ -335,7 +335,7 @@ class Interval {
   static T project_to_interval(const Interval& interval, const T& val);
 
   /**
-   * @brief Compute a normalized along an interval.
+   * @brief Compute a normalized position along an interval.
    *
    * @pre Input Interval is non-empty and has > 0 length.
    * @pre Input position is not NaN
