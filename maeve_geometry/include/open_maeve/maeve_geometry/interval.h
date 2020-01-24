@@ -253,6 +253,12 @@ class Interval {
    */
   static bool zero_length(const Interval& interval);
 
+  /**
+   * @brief Compute the minimum distance from value to any value in the
+   * interval.
+   */
+  static T distance_from(const Interval& interval, const T& value);
+
   /** @brief Get the interval value nearest to the given value. */
   static T nearest_value(const Interval& interval, const T& value);
 
@@ -573,6 +579,25 @@ bool Interval<T>::zero_length(const Interval& interval) {
   const auto length_is_zero =
       (Interval::min(interval) == Interval::max(interval));
   return (is_not_empty && length_is_zero);
+}
+
+//------------------------------------------------------------------------------
+
+template <typename T>
+T Interval<T>::distance_from(const Interval& interval, const T& value) {
+  if (Interval::empty(interval) || std::isnan(value)) {
+    return NaN;
+  }
+
+  if (Interval::contains(interval, value)) {
+    return static_cast<T>(0);
+  }
+
+  if (value < Interval::min(interval)) {
+    return (value - Interval::min(interval));
+  }
+
+  return (value - Interval::max(interval));
 }
 
 //------------------------------------------------------------------------------

@@ -140,6 +140,20 @@ TEST(Maeve_Geometry_Interval, nearest_value) {
 
 //------------------------------------------------------------------------------
 
+TEST(Maeve_Geometry_Interval, distance_from) {
+  const auto i = Interval_d(-1.0, 1.0);
+  EXPECT_EQ(Interval_d::distance_from(i, 0.0), 0.0);
+  EXPECT_EQ(Interval_d::distance_from(i, 0.25), 0.0);
+  EXPECT_EQ(Interval_d::distance_from(i, -10.0), -9.0);
+  EXPECT_EQ(Interval_d::distance_from(i, 10.0), 9.0);
+  EXPECT_TRUE(std::isnan(Interval_d::distance_from(i, NaN)));
+  EXPECT_TRUE(std::isnan(Interval_d::distance_from(Interval_d(), 0.0)));
+  EXPECT_EQ(Interval_d::distance_from(i, Inf), Inf);
+  EXPECT_EQ(Interval_d::distance_from(i, -Inf), -Inf);
+}
+
+//------------------------------------------------------------------------------
+
 TEST(Maeve_Geometry_Interval, center) {
   EXPECT_EQ(Interval_d::center(Interval_d(-1.0, 1.0)), 0.0);
   EXPECT_EQ(Interval_d::center(Interval_d(-3.0, -2.0)), -2.5);
