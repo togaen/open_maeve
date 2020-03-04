@@ -1,6 +1,6 @@
 # README
 
-    This library is no longer actively maintained. It is archived here as a reference.
+    PLEASE NOTE: This library is no longer actively maintained. It is archived here as a reference.
 
 This is a collection of ROS packages maintained by [Maeve Automation](https://maeveautomation.com) for
 experimentation purposes. No warranty or guarantee is made to the usefulness or correctness of the code.
